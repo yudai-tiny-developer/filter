@@ -1,2 +1,3 @@
-# filter
-Filter for YouTube
+# Filter for YouTube
+
+YouTubeのホーム画面にあるフィルターと同じエクスペリエンスを、登録チャンネルやライブラリでも提供する拡張機能です。
