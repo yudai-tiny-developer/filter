@@ -53,68 +53,68 @@ function isNotificationOff_button(text) {
 
 function updateButtonVisibility(node) {
 	if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.search').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.search').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.search').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.search').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.search').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.search').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'none'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.search').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
 	}
 }
 
@@ -203,34 +203,36 @@ function matchTextContent(node) {
 
 function updateVisibility(updateVisibilityFunction) {
 	// subscriptions?flow=1, library
-	app.querySelectorAll('ytd-grid-video-renderer').forEach((n) => { updateVisibilityFunction(n, 'video'); });
+	app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
 
 	// subscriptions?flow=2, history
-	app.querySelectorAll('ytd-video-renderer').forEach((n) => { updateVisibilityFunction(n, 'video'); });
+	app.querySelectorAll('ytd-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
 
 	// playlist
-	app.querySelectorAll('ytd-playlist-video-renderer').forEach((n) => { updateVisibilityFunction(n, 'playlist'); });
+	app.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateVisibilityFunction(n, 'playlist'));
 
 	// channels
-	app.querySelectorAll('ytd-channel-renderer').forEach((n) => { updateVisibilityFunction(n, 'channel'); });
+	app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
 }
 
 function insertMenu(node) {
-	const container = node.querySelector('div#header-container');
-	if (container) {
-		const header = container.querySelector('div#header');
-		if (header) {
-			container.insertBefore(createMenu(isFloatingTarget()), header);
-			container.insertBefore(createSpacer(), header);
+	if (!node.querySelector('div.filter-menu')) {
+		const container = node.querySelector('div#header-container');
+		if (container) {
+			const header = container.querySelector('div#header');
+			if (header) {
+				container.insertBefore(createMenu(isFloatingTarget()), header);
+				container.insertBefore(createSpacer(), header);
 
-			updateMenuVisibility(container);
-			updateButtonVisibility(container);
-			clickDefaultButtonIfSelectedHidden(container);
+				updateMenuVisibility(container);
+				updateButtonVisibility(container);
+				clickDefaultButtonIfSelectedHidden(container);
+			} else {
+				console.warn('div#header not found');
+			}
 		} else {
-			console.warn('div#header not found');
+			console.warn('div#header-container not found');
 		}
-	} else {
-		console.warn('div#header-container not found');
 	}
 }
 
@@ -270,11 +272,11 @@ function updateVisibility_Match(node, display_type) {
 
 function updateMenuVisibility(node) {
 	if (isMenuTarget()) {
-		node.querySelectorAll('div.filter-menu').forEach((n) => { n.style.display = 'block'; });
-		node.querySelectorAll('div.filter-spacer').forEach((n) => { n.style.display = 'block'; });
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'block');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'block');
 	} else {
-		node.querySelectorAll('div.filter-menu').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('div.filter-spacer').forEach((n) => { n.style.display = 'none'; });
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'none');
 	}
 }
 
@@ -363,15 +365,15 @@ function createButton(mode, text, modeButtons, updateVisibilityFunction, onClick
 	button.addEventListener('click', () => {
 		activeMode = mode;
 
-		modeButtons_all.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_live.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_video.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_scheduled.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_notification_on.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_notification_off.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_search.forEach((n) => { n.classList.remove('selected'); });
+		modeButtons_all.forEach(n => n.classList.remove('selected'));
+		modeButtons_live.forEach(n => n.classList.remove('selected'));
+		modeButtons_video.forEach(n => n.classList.remove('selected'));
+		modeButtons_scheduled.forEach(n => n.classList.remove('selected'));
+		modeButtons_notification_on.forEach(n => n.classList.remove('selected'));
+		modeButtons_notification_off.forEach(n => n.classList.remove('selected'));
+		modeButtons_search.forEach(n => n.classList.remove('selected'));
 
-		modeButtons.forEach((n) => { n.classList.add('selected'); });
+		modeButtons.forEach(n => n.classList.add('selected'));
 
 		updateVisibility(updateVisibilityFunction);
 	});
@@ -393,7 +395,7 @@ function createQueryInput() {
 	input.id = 'filter-query';
 	input.value = queryString;
 
-	input.addEventListener('keypress', (e) => {
+	input.addEventListener('keypress', e => {
 		if (e.code === 'Enter') {
 			modeInput2Button.get(input).click();
 		}
@@ -425,7 +427,7 @@ function createMenu(floating) {
 	const searchButton = createButton('search', mode_search, modeButtons_search, updateVisibility_Match, () => {
 		queryString = input.value;
 		queryRegex = new RegExp('(^|[^a-z])' + queryString + '($|[^a-z])', 'i');
-		modeInput_query.forEach((e) => { e.value = queryString; });
+		modeInput_query.forEach(e => e.value = queryString);
 	});
 	modeInput2Button.set(input, searchButton);
 
@@ -500,24 +502,14 @@ let activeMode = 'all';
 let queryString = '';
 let queryRegex;
 
-new MutationObserver((mutations, observer) => {
-	mutations.forEach((m) => {
-		if (m.target.nodeName === 'TITLE') {
-			onUpdated();
-		}
-	});
-}).observe(document.head, {
+new MutationObserver((mutations, observer) => mutations.filter(m => m.target.nodeName === 'TITLE').forEach(() => onUpdated())).observe(document.head, {
 	subtree: true,
 	childList: true,
 });
 
-new MutationObserver((mutations, observer) => {
-	mutations.forEach((m) => { m.addedNodes.forEach((n) => { onAdded(n); }); });
-}).observe(app, {
+new MutationObserver((mutations, observer) => mutations.forEach(m => m.addedNodes.forEach(n => onAdded(n)))).observe(app, {
 	subtree: true,
 	childList: true,
 });
 
-app.querySelectorAll('ytd-section-list-renderer').forEach((n) => {
-	insertMenu(n);
-});
+app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
