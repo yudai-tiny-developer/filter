@@ -107,13 +107,7 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else {
-		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
 	}
 }
@@ -351,7 +345,7 @@ function clickSelectedButton(menu) {
 	}
 }
 
-function createButton(mode, text, modeButtons, updateVisibilityFunction, input) {
+function createButton(text, mode, updateVisibilityFunction, menu, input) {
 	const button = document.createElement('span');
 	button.innerHTML = text;
 	button.classList.add('filter-button');
@@ -364,14 +358,8 @@ function createButton(mode, text, modeButtons, updateVisibilityFunction, input) 
 	button.addEventListener('click', () => {
 		activeMode = mode;
 
-		modeButtons_all.forEach(n => n.classList.remove('selected'));
-		modeButtons_live.forEach(n => n.classList.remove('selected'));
-		modeButtons_video.forEach(n => n.classList.remove('selected'));
-		modeButtons_scheduled.forEach(n => n.classList.remove('selected'));
-		modeButtons_notification_on.forEach(n => n.classList.remove('selected'));
-		modeButtons_notification_off.forEach(n => n.classList.remove('selected'));
-
-		modeButtons.forEach(n => n.classList.add('selected'));
+		menu.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
+		menu.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
 
 		queryString = input.value;
 		queryRegex = new RegExp('(^|[^a-z])' + queryString + '($|[^a-z])', 'i');
@@ -380,14 +368,12 @@ function createButton(mode, text, modeButtons, updateVisibilityFunction, input) 
 		updateVisibility(updateVisibilityFunction);
 	});
 
-	modeButtons.push(button);
-
 	return button;
 }
 
-function createClearButton(text, menu) {
+function createClearButton(menu) {
 	const button = document.createElement('span');
-	button.innerHTML = text;
+	button.innerHTML = button_clear;
 	button.classList.add('filter-button');
 	button.classList.add('clear');
 
@@ -398,8 +384,6 @@ function createClearButton(text, menu) {
 
 		clickSelectedButton(menu);
 	});
-
-	modeButtons_clear.push(button);
 
 	return button;
 }
@@ -441,15 +425,15 @@ function createMenu(floating) {
 	const input = createQueryInput();
 	modeInput2Menu.set(input, menu);
 
-	menu.appendChild(createButton('all', button_all, modeButtons_all, updateVisibility_Always, input));
-	menu.appendChild(createButton('live', button_live, modeButtons_live, updateVisibility_Live, input));
-	menu.appendChild(createButton('video', button_video, modeButtons_video, updateVisibility_Video, input));
-	menu.appendChild(createButton('scheduled', button_scheduled, modeButtons_scheduled, updateVisibility_Scheduled, input));
-	menu.appendChild(createButton('notification_on', button_notification_on, modeButtons_notification_on, updateVisibility_notification_on, input));
-	//menu.appendChild(createButton('notification_off', button_notification_off, modeButtons_notification_off, updateVisibility_notification_off, input));
+	menu.appendChild(createButton(button_all, 'all', updateVisibility_Always, menu, input));
+	menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, menu, input));
+	menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, menu, input));
+	menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, menu, input));
+	menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, menu, input));
+	//menu.appendChild(createButton(button_notification_off, 'notification_off', updateVisibility_notification_off, menu, input));
 
 	menu.appendChild(createQueryInputArea(input));
-	menu.appendChild(createClearButton(button_clear, menu));
+	menu.appendChild(createClearButton(menu));
 
 	return menu;
 }
@@ -505,13 +489,6 @@ const button_clear = chrome.i18n.getMessage('button_clear');
 
 const app = document.querySelector('ytd-app');
 
-let modeButtons_all = [];
-let modeButtons_live = [];
-let modeButtons_video = [];
-let modeButtons_scheduled = [];
-let modeButtons_notification_on = [];
-let modeButtons_notification_off = [];
-let modeButtons_clear = [];
 let modeInput_query = [];
 let modeInput2Menu = new Map();
 let activeMode = 'all';
