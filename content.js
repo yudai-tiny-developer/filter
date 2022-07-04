@@ -389,7 +389,7 @@ function createQueryInputArea(input) {
 
 function createQueryInput(menu) {
 	const input = document.createElement('input');
-	input.attributes['type'] = 'text';
+	input.setAttribute('type', 'text');
 	input.id = 'filter-query';
 	input.value = queryString;
 
