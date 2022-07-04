@@ -362,7 +362,7 @@ function createButton(text, mode, updateVisibilityFunction, menu, input) {
 		menu.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
 
 		queryString = input.value;
-		queryRegex = new RegExp('(^|[^a-z])' + queryString + '($|[^a-z])', 'i');
+		queryRegex = new RegExp('(^|[^a-z])' + queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&') + '($|[^a-z])', 'i');
 		modeInput_query.forEach(e => e.value = queryString);
 
 		updateVisibility(updateVisibilityFunction);
