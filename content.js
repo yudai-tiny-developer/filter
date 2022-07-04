@@ -363,7 +363,7 @@ function createButton(text, mode, updateVisibilityFunction, menu, input) {
 
 		queryString = input.value;
 		queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
-		modeInput_query.forEach(e => e.value = queryString);
+		app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
 
 		updateVisibility(updateVisibilityFunction);
 	});
@@ -380,7 +380,7 @@ function createClearButton(menu) {
 	button.addEventListener('click', () => {
 		queryString = '';
 		queryRegex = undefined;
-		modeInput_query.forEach(e => e.value = '');
+		app.querySelectorAll('input#filter-query').forEach(e => e.value = '');
 
 		clickSelectedButton(menu);
 	});
@@ -404,8 +404,6 @@ function createQueryInput(menu) {
 	input.addEventListener('change', e => {
 		clickSelectedButton(menu);
 	});
-
-	modeInput_query.push(input);
 
 	return input;
 }
@@ -485,7 +483,6 @@ const button_clear = chrome.i18n.getMessage('button_clear');
 
 const app = document.querySelector('ytd-app');
 
-let modeInput_query = [];
 let activeMode = 'all';
 let queryString = '';
 let queryRegex;
