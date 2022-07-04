@@ -395,17 +395,14 @@ function createQueryInputArea(input) {
 	return inputArea;
 }
 
-function createQueryInput() {
+function createQueryInput(menu) {
 	const input = document.createElement('input');
 	input.attributes['type'] = 'text';
 	input.id = 'filter-query';
 	input.value = queryString;
 
-	input.addEventListener('keypress', e => {
-		if (e.code === 'Enter') {
-			const menu = modeInput2Menu.get(input);
-			clickSelectedButton(menu);
-		}
+	input.addEventListener('change', e => {
+		clickSelectedButton(menu);
 	});
 
 	modeInput_query.push(input);
@@ -422,8 +419,7 @@ function createMenu(floating) {
 		menu.style.zIndex = '2000';
 	}
 
-	const input = createQueryInput();
-	modeInput2Menu.set(input, menu);
+	const input = createQueryInput(menu);
 
 	menu.appendChild(createButton(button_all, 'all', updateVisibility_Always, menu, input));
 	menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, menu, input));
@@ -490,7 +486,6 @@ const button_clear = chrome.i18n.getMessage('button_clear');
 const app = document.querySelector('ytd-app');
 
 let modeInput_query = [];
-let modeInput2Menu = new Map();
 let activeMode = 'all';
 let queryString = '';
 let queryRegex;
