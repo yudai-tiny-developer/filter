@@ -366,17 +366,14 @@ function createButton(text, mode, updateVisibilityFunction, input) {
 	return button;
 }
 
-function createClearButton(menu) {
+function createClearButton(input, menu) {
 	const button = document.createElement('span');
 	button.innerHTML = button_clear;
 	button.classList.add('filter-button');
 	button.classList.add('clear');
 
 	button.addEventListener('click', () => {
-		queryString = '';
-		queryRegex = undefined;
-		app.querySelectorAll('input#filter-query').forEach(e => e.value = '');
-
+		input.value = '';
 		clickSelectedButton(menu);
 	});
 
@@ -422,7 +419,7 @@ function createMenu(floating) {
 	//menu.appendChild(createButton(button_notification_off, 'notification_off', updateVisibility_notification_off, input));
 
 	menu.appendChild(createQueryInputArea(input));
-	menu.appendChild(createClearButton(menu));
+	menu.appendChild(createClearButton(input, menu));
 
 	return menu;
 }
