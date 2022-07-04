@@ -336,16 +336,11 @@ function clickSelectedButton(menu) {
 	if (selectedButton) {
 		selectedButton.click();
 	} else {
-		const allButton = menu.querySelector('span.filter-button.all');
-		if (allButton) {
-			allButton.click();
-		} else {
-			console.warn('span.filter-button.selected|.all not found');
-		}
+		console.warn('span.filter-button.selected not found');
 	}
 }
 
-function createButton(text, mode, updateVisibilityFunction, menu, input) {
+function createButton(text, mode, updateVisibilityFunction, input) {
 	const button = document.createElement('span');
 	button.innerHTML = text;
 	button.classList.add('filter-button');
@@ -358,8 +353,8 @@ function createButton(text, mode, updateVisibilityFunction, menu, input) {
 	button.addEventListener('click', () => {
 		activeMode = mode;
 
-		menu.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
-		menu.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
+		app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
+		app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
 
 		queryString = input.value;
 		queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
@@ -419,12 +414,12 @@ function createMenu(floating) {
 
 	const input = createQueryInput(menu);
 
-	menu.appendChild(createButton(button_all, 'all', updateVisibility_Always, menu, input));
-	menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, menu, input));
-	menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, menu, input));
-	menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, menu, input));
-	menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, menu, input));
-	//menu.appendChild(createButton(button_notification_off, 'notification_off', updateVisibility_notification_off, menu, input));
+	menu.appendChild(createButton(button_all, 'all', updateVisibility_Always, input));
+	menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, input));
+	menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, input));
+	menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, input));
+	menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, input));
+	//menu.appendChild(createButton(button_notification_off, 'notification_off', updateVisibility_notification_off, input));
 
 	menu.appendChild(createQueryInputArea(input));
 	menu.appendChild(createClearButton(menu));
