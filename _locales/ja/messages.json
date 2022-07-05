@@ -1,23 +1,23 @@
 {
-   "mode_all": {
+   "button_all": {
       "message": "すべて"
    },
-   "mode_live": {
+   "button_live": {
       "message": "ライブ"
    },
-   "mode_video": {
+   "button_video": {
       "message": "動画"
    },
-   "mode_scheduled": {
+   "button_scheduled": {
       "message": "予定"
    },
-   "mode_notification_on": {
+   "button_notification_on": {
       "message": "通知オン"
    },
-   "mode_notification_off": {
+   "button_notification_off": {
       "message": "通知オフ"
    },
-   "mode_search": {
-      "message": "<svg viewBox='0 0 24 24' style='width: 100%; height: 100%;'><g><path d='M20.87,20.17l-5.59-5.59C16.35,13.35,17,11.75,17,10c0-3.87-3.13-7-7-7s-7,3.13-7,7s3.13,7,7,7c1.75,0,3.35-0.65,4.58-1.71 l5.59,5.59L20.87,20.17z M10,16c-3.31,0-6-2.69-6-6s2.69-6,6-6s6,2.69,6,6S13.31,16,10,16z'></path></g></svg>"
+   "button_clear": {
+      "message": "<svg xmlns='http://www.w3.org/2000/svg' width='90%' height='90%' viewBox='0 0 199.997 200'><path d='M235.177,4027.791l38.549-38.552,83.632-83.63-77.816-77.818-83.632,83.635-38.549,38.549Zm31.834-45.265L235.735,4013.8l-64.386-64.392,31.274-31.274Z' transform='translate(-157.361 -3827.791)'/></svg>"
    }
 }

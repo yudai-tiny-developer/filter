@@ -27,6 +27,12 @@ span.filter-button.selected {
 	fill: var(--yt-spec-text-primary-inverse);
 }
 
+span.filter-button.clear:active {
+	background-color: var(--yt-spec-text-primary);
+	color: var(--yt-spec-text-primary-inverse);
+	fill: var(--yt-spec-text-primary-inverse);
+}
+
 span.filter-query {
 	background-color: var(--ytd-searchbox-background);
 	color: var(--ytd-searchbox-text-color);

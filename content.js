@@ -53,68 +53,62 @@ function isNotificationOff_button(text) {
 
 function updateButtonVisibility(node) {
 	if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/')) {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'inline-flex'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'inline-flex'; });
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else {
-		node.querySelectorAll('span.filter-button.all').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.live').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.video').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.scheduled').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_on').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.notification_off').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-button.search').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('span.filter-query').forEach((n) => { n.style.display = 'none'; });
+		node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
 	}
 }
 
@@ -203,49 +197,41 @@ function matchTextContent(node) {
 
 function updateVisibility(updateVisibilityFunction) {
 	// subscriptions?flow=1, library
-	app.querySelectorAll('ytd-grid-video-renderer').forEach((n) => { updateVisibilityFunction(n, 'video'); });
+	app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
 
 	// subscriptions?flow=2, history
-	app.querySelectorAll('ytd-video-renderer').forEach((n) => { updateVisibilityFunction(n, 'video'); });
+	app.querySelectorAll('ytd-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
 
 	// playlist
-	app.querySelectorAll('ytd-playlist-video-renderer').forEach((n) => { updateVisibilityFunction(n, 'playlist'); });
+	app.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateVisibilityFunction(n, 'playlist'));
 
 	// channels
-	app.querySelectorAll('ytd-channel-renderer').forEach((n) => { updateVisibilityFunction(n, 'channel'); });
+	app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
 }
 
 function insertMenu(node) {
-	const container = node.querySelector('div#header-container');
-	if (container) {
-		const header = container.querySelector('div#header');
-		if (header) {
-			container.insertBefore(createMenu(isFloatingTarget()), header);
-			container.insertBefore(createSpacer(), header);
+	if (!node.querySelector('div.filter-menu')) {
+		const container = node.querySelector('div#header-container');
+		if (container) {
+			const header = container.querySelector('div#header');
+			if (header) {
+				container.insertBefore(createMenu(isFloatingTarget()), header);
+				container.insertBefore(createSpacer(), header);
 
-			updateMenuVisibility(container);
-			updateButtonVisibility(container);
-			clickDefaultButtonIfSelectedHidden(container);
+				updateMenuVisibility(container);
+				updateButtonVisibility(container);
+				clickDefaultButtonIfSelectedHidden(container);
+			} else {
+				console.warn('div#header not found');
+			}
 		} else {
-			console.warn('div#header not found');
+			console.warn('div#header-container not found');
 		}
-	} else {
-		console.warn('div#header-container not found');
 	}
 }
 
 function updateVisibility_Always(node, display_type) {
-	if (display_type === 'playlist') {
-		node.style.display = 'flex';
-	} else {
-		node.style.display = 'inline-block';
-	}
-}
-
-function updateVisibility_Status(node, display_type, status) {
-	if (display_type === 'channel') {
-		node.style.display = 'block';
-	} else if (classifyStatus(node).includes(status)) {
+	if (matchTextContent(node)) {
 		if (display_type === 'playlist') {
 			node.style.display = 'flex';
 		} else {
@@ -256,8 +242,10 @@ function updateVisibility_Status(node, display_type, status) {
 	}
 }
 
-function updateVisibility_Match(node, display_type) {
-	if (matchTextContent(node)) {
+function updateVisibility_Status(node, display_type, status) {
+	if (display_type === 'channel') {
+		node.style.display = 'block';
+	} else if (classifyStatus(node).includes(status) && matchTextContent(node)) {
 		if (display_type === 'playlist') {
 			node.style.display = 'flex';
 		} else {
@@ -270,11 +258,11 @@ function updateVisibility_Match(node, display_type) {
 
 function updateMenuVisibility(node) {
 	if (isMenuTarget()) {
-		node.querySelectorAll('div.filter-menu').forEach((n) => { n.style.display = 'block'; });
-		node.querySelectorAll('div.filter-spacer').forEach((n) => { n.style.display = 'block'; });
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'block');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'block');
 	} else {
-		node.querySelectorAll('div.filter-menu').forEach((n) => { n.style.display = 'none'; });
-		node.querySelectorAll('div.filter-spacer').forEach((n) => { n.style.display = 'none'; });
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'none');
 	}
 }
 
@@ -326,9 +314,6 @@ function updateVisibility_ActiveMode(node, display_type) {
 		case 'notification_off':
 			updateVisibility_notification_off(node, display_type);
 			break;
-		case 'search':
-			updateVisibility_Match(node, display_type);
-			break;
 	}
 }
 
@@ -346,7 +331,16 @@ function clickDefaultButtonIfSelectedHidden(node) {
 	}
 }
 
-function createButton(mode, text, modeButtons, updateVisibilityFunction, onClick) {
+function clickSelectedButton(menu) {
+	const selectedButton = menu.querySelector('span.filter-button.selected');
+	if (selectedButton) {
+		selectedButton.click();
+	} else {
+		console.warn('span.filter-button.selected not found');
+	}
+}
+
+function createButton(text, mode, updateVisibilityFunction, input) {
 	const button = document.createElement('span');
 	button.innerHTML = text;
 	button.classList.add('filter-button');
@@ -356,50 +350,52 @@ function createButton(mode, text, modeButtons, updateVisibilityFunction, onClick
 		button.classList.add('selected');
 	}
 
-	if (onClick) {
-		button.addEventListener('click', onClick);
-	}
-
 	button.addEventListener('click', () => {
 		activeMode = mode;
 
-		modeButtons_all.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_live.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_video.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_scheduled.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_notification_on.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_notification_off.forEach((n) => { n.classList.remove('selected'); });
-		modeButtons_search.forEach((n) => { n.classList.remove('selected'); });
+		app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
+		app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
 
-		modeButtons.forEach((n) => { n.classList.add('selected'); });
+		queryString = input.value;
+		queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
+		app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
 
 		updateVisibility(updateVisibilityFunction);
 	});
 
-	modeButtons.push(button);
+	return button;
+}
+
+function createClearButton(input, menu) {
+	const button = document.createElement('span');
+	button.innerHTML = button_clear;
+	button.classList.add('filter-button');
+	button.classList.add('clear');
+
+	button.addEventListener('click', () => {
+		input.value = '';
+		clickSelectedButton(menu);
+	});
 
 	return button;
 }
 
-function createQueryInputArea() {
+function createQueryInputArea(input) {
 	const inputArea = document.createElement('span');
 	inputArea.classList.add('filter-query');
+	inputArea.appendChild(input);
 	return inputArea;
 }
 
-function createQueryInput() {
+function createQueryInput(menu) {
 	const input = document.createElement('input');
-	input.attributes['type'] = 'text';
+	input.setAttribute('type', 'text');
 	input.id = 'filter-query';
 	input.value = queryString;
 
-	input.addEventListener('keypress', (e) => {
-		if (e.code === 'Enter') {
-			modeInput2Button.get(input).click();
-		}
+	input.addEventListener('change', e => {
+		clickSelectedButton(menu);
 	});
-
-	modeInput_query.push(input);
 
 	return input;
 }
@@ -413,25 +409,17 @@ function createMenu(floating) {
 		menu.style.zIndex = '2000';
 	}
 
-	menu.appendChild(createButton('all', mode_all, modeButtons_all, updateVisibility_Always));
-	menu.appendChild(createButton('live', mode_live, modeButtons_live, updateVisibility_Live));
-	menu.appendChild(createButton('video', mode_video, modeButtons_video, updateVisibility_Video));
-	menu.appendChild(createButton('scheduled', mode_scheduled, modeButtons_scheduled, updateVisibility_Scheduled));
-	menu.appendChild(createButton('notification_on', mode_notification_on, modeButtons_notification_on, updateVisibility_notification_on));
-	//menu.appendChild(createButton('notification_off', mode_notification_off, modeButtons_notification_off, updateVisibility_notification_off));
+	const input = createQueryInput(menu);
 
-	const inputArea = createQueryInputArea();
-	const input = createQueryInput();
-	const searchButton = createButton('search', mode_search, modeButtons_search, updateVisibility_Match, () => {
-		queryString = input.value;
-		queryRegex = new RegExp('(^|[^a-z])' + queryString + '($|[^a-z])', 'i');
-		modeInput_query.forEach((e) => { e.value = queryString; });
-	});
-	modeInput2Button.set(input, searchButton);
+	menu.appendChild(createButton(button_all, 'all', updateVisibility_Always, input));
+	menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, input));
+	menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, input));
+	menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, input));
+	menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, input));
+	//menu.appendChild(createButton(button_notification_off, 'notification_off', updateVisibility_notification_off, input));
 
-	inputArea.appendChild(input);
-	menu.appendChild(inputArea);
-	menu.appendChild(searchButton);
+	menu.appendChild(createQueryInputArea(input));
+	menu.appendChild(createClearButton(input, menu));
 
 	return menu;
 }
@@ -473,51 +461,32 @@ function onAdded(node) {
 	}
 }
 
-// mode: 'all', 'live', 'video', 'scheduled', 'notification_on', 'notification_off', 'search'
+// mode: 'all', 'live', 'video', 'scheduled', 'notification_on', 'notification_off'
 // status: 'live.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.'
 // display_type: 'video', 'playlist', 'channel'
 
-const mode_all = chrome.i18n.getMessage('mode_all');
-const mode_live = chrome.i18n.getMessage('mode_live');
-const mode_video = chrome.i18n.getMessage('mode_video');
-const mode_scheduled = chrome.i18n.getMessage('mode_scheduled');
-const mode_notification_on = chrome.i18n.getMessage('mode_notification_on');
-const mode_notification_off = chrome.i18n.getMessage('mode_notification_off');
-const mode_search = chrome.i18n.getMessage('mode_search');
+const button_all = chrome.i18n.getMessage('button_all');
+const button_live = chrome.i18n.getMessage('button_live');
+const button_video = chrome.i18n.getMessage('button_video');
+const button_scheduled = chrome.i18n.getMessage('button_scheduled');
+const button_notification_on = chrome.i18n.getMessage('button_notification_on');
+const button_notification_off = chrome.i18n.getMessage('button_notification_off');
+const button_clear = chrome.i18n.getMessage('button_clear');
 
 const app = document.querySelector('ytd-app');
 
-let modeButtons_all = [];
-let modeButtons_live = [];
-let modeButtons_video = [];
-let modeButtons_scheduled = [];
-let modeButtons_notification_on = [];
-let modeButtons_notification_off = [];
-let modeButtons_search = [];
-let modeInput_query = [];
-let modeInput2Button = new Map();
 let activeMode = 'all';
 let queryString = '';
 let queryRegex;
 
-new MutationObserver((mutations, observer) => {
-	mutations.forEach((m) => {
-		if (m.target.nodeName === 'TITLE') {
-			onUpdated();
-		}
-	});
-}).observe(document.head, {
+new MutationObserver((mutations, observer) => mutations.filter(m => m.target.nodeName === 'TITLE').forEach(() => onUpdated())).observe(document.head, {
 	subtree: true,
 	childList: true,
 });
 
-new MutationObserver((mutations, observer) => {
-	mutations.forEach((m) => { m.addedNodes.forEach((n) => { onAdded(n); }); });
-}).observe(app, {
+new MutationObserver((mutations, observer) => mutations.forEach(m => m.addedNodes.forEach(n => onAdded(n)))).observe(app, {
 	subtree: true,
 	childList: true,
 });
 
-app.querySelectorAll('ytd-section-list-renderer').forEach((n) => {
-	insertMenu(n);
-});
+app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
