@@ -498,7 +498,7 @@ function createSpacer() {
 	return spacer;
 }
 
-function onUpdated() {
+function onViewChanged() {
 	updateMenuVisibility(app);
 	updateButtonVisibility(app);
 	clickDefaultButtonIfSelectedHidden(app);
@@ -506,7 +506,7 @@ function onUpdated() {
 	updateVisibility(updateVisibility_ActiveMode);
 }
 
-function onReload(node) {
+function onNodeLoaded(node) {
 	switch (node.nodeName) {
 		case 'YTD-SECTION-LIST-RENDERER':
 			insertMenu(node);
@@ -549,14 +549,14 @@ let activeMode = 'all';
 let queryString = '';
 let queryRegex;
 
-new MutationObserver((mutations, observer) => mutations.filter(m => m.target.nodeName === 'TITLE').forEach(() => onUpdated())).observe(document.head, {
+new MutationObserver((mutations, observer) => mutations.filter(m => m.target.nodeName === 'TITLE').forEach(() => onViewChanged())).observe(document.head, {
 	subtree: true,
 	childList: true,
 });
 
 new MutationObserver((mutations, observer) => mutations.forEach(m => {
-	onReload(m.target);
-	m.addedNodes.forEach(n => onReload(n));
+	onNodeLoaded(m.target);
+	m.addedNodes.forEach(n => onNodeLoaded(n));
 })).observe(app, {
 	subtree: true,
 	childList: true,
