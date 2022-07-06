@@ -274,21 +274,21 @@ function updateVisibility(updateVisibilityFunction) {
 
 function insertMenu(node) {
 	if (!node.querySelector('div.filter-menu')) {
-		const container = node.querySelector('div#header-container');
-		if (container) {
-			const header = container.querySelector('div#header');
-			if (header) {
-				container.insertBefore(createMenu(isFloatingTarget()), header);
-				container.insertBefore(createSpacer(), header);
+		const browse = searchParentNode(node, 'YTD-BROWSE');
+		if (browse) {
+			const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
+			if (sibling) {
+				browse.insertBefore(createMenu(isFloatingTarget()), sibling);
+				browse.insertBefore(createSpacer(), sibling);
 
-				updateMenuVisibility(container);
-				updateButtonVisibility(container);
-				clickDefaultButtonIfSelectedHidden(container);
+				updateMenuVisibility(browse);
+				updateButtonVisibility(browse);
+				clickDefaultButtonIfSelectedHidden(browse);
 			} else {
-				console.warn('div#header not found');
+				console.warn('ytd-two-column-browse-results-renderer not found');
 			}
 		} else {
-			console.warn('div#header-container not found');
+			console.warn('ytd-browse not found');
 		}
 	}
 }
