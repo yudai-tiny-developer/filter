@@ -231,25 +231,30 @@ function classifyStatus(node) {
 }
 
 function matchTextContent(node) {
-	// video
-	const title = node.querySelector('a#video-title');
-	if (title) {
-		return title.textContent.match(queryRegex);
+	if (node.nodeName === 'YTD-GRID-VIDEO-RENDERER'
+		|| (node.nodeName === 'YTD-VIDEO-RENDERER' && !node.classList.contains('ytd-backstage-post-renderer'))) {
+		const title = node.querySelector('a#video-title');
+		if (title) {
+			return title.textContent.match(queryRegex);
+		}
+	} else if (node.nodeName === 'YTD-PLAYLIST-VIDEO-RENDERER') { // playlist video lazy load
+		const meta = node.querySelector('div#meta');
+		if (meta) {
+			return meta.textContent.match(queryRegex);
+		}
+	} else if (node.nodeName === 'YTD-CHANNEL-RENDERER') {
+		const info = node.querySelector('div#info');
+		if (info) {
+			return info.textContent.match(queryRegex);
+		}
+	} else if (node.nodeName === 'YTD-BACKSTAGE-POST-THREAD-RENDERER') {
+		const post = node.querySelector('div#content');
+		if (post) {
+			return post.textContent.match(queryRegex);
+		}
 	}
 
-	// playlist
-	const meta = node.querySelector('div#meta');
-	if (meta) {
-		return meta.textContent.match(queryRegex);
-	}
-
-	// channel
-	const info = node.querySelector('div#info');
-	if (info) {
-		return info.textContent.match(queryRegex);
-	}
-
-	console.warn('Unknown content: ' + node.textContent);
+	console.warn('Unknown content: ' + node.nodeName + ' = ' + node.textContent);
 }
 
 function updateVisibility(updateVisibilityFunction) {
@@ -257,13 +262,14 @@ function updateVisibility(updateVisibilityFunction) {
 	app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
 
 	// subscriptions?flow=2, history
-	app.querySelectorAll('ytd-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
+	app.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateVisibilityFunction(n, 'video'));
 
 	// playlist
 	app.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateVisibilityFunction(n, 'playlist'));
 
 	// channels
 	app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
+	app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
 }
 
 function insertMenu(node) {
@@ -471,8 +477,7 @@ function createMenu(floating) {
 	menu.classList.add('filter-menu');
 
 	if (floating) {
-		menu.style.position = 'fixed';
-		menu.style.zIndex = '2000';
+		menu.classList.add('floating');
 	}
 
 	const input = createQueryInput(menu);
@@ -508,25 +513,22 @@ function onViewChanged() {
 }
 
 function onNodeLoaded(node) {
-	switch (node.nodeName) {
-		case 'YTD-SECTION-LIST-RENDERER':
-			insertMenu(node);
-			break;
-		case 'YTD-GRID-VIDEO-RENDERER':
-		case 'YTD-VIDEO-RENDERER':
-			updateVisibility_ActiveMode(node, 'video');
-			break;
-		case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER': // playlist video lazy load
-			if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
-				const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-				if (video) {
-					updateVisibility_ActiveMode(video, 'playlist');
-				}
+	if (node.nodeName === 'YTD-SECTION-LIST-RENDERER') {
+		insertMenu(node);
+	} else if (node.nodeName === 'YTD-GRID-VIDEO-RENDERER'
+		|| (node.nodeName === 'YTD-VIDEO-RENDERER' && !node.classList.contains('ytd-backstage-post-renderer'))) {
+		updateVisibility_ActiveMode(node, 'video');
+	} else if (node.nodeName === 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER') { // playlist video lazy load
+		if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
+			const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
+			if (video) {
+				updateVisibility_ActiveMode(video, 'playlist');
 			}
-			break;
-		case 'YTD-CHANNEL-RENDERER':
-			updateVisibility_ActiveMode(node, 'channel');
-			break;
+		}
+	} else if (node.nodeName === 'YTD-CHANNEL-RENDERER') {
+		updateVisibility_ActiveMode(node, 'channel');
+	} else if (node.nodeName === 'YTD-BACKSTAGE-POST-THREAD-RENDERER') {
+		updateVisibility_ActiveMode(node, 'channel');
 	}
 }
 
