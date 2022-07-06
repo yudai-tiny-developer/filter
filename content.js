@@ -135,7 +135,7 @@ function updateButtonVisibility(node) {
 
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
-	} else if (window.location.href.startsWith('https://www.youtube.com/channel/')) {
+	} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
