@@ -477,7 +477,8 @@ function createMenu(floating) {
 	menu.classList.add('filter-menu');
 
 	if (floating) {
-		menu.classList.add('floating');
+		menu.style.position = 'fixed';
+		menu.style.zIndex = '2000';
 	}
 
 	const input = createQueryInput(menu);

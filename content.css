@@ -66,11 +66,6 @@ div.filter-menu {
 	border-width: 1px;
 }
 
-div.filter-menu.floating {
-	position: 'fixed';
-	z-index: '2000';
-}
-
 div.filter-spacer {
 	height: 32px;
 	margin: 12px 6px 12px 6px;
