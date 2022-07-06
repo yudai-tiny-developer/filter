@@ -19,5 +19,14 @@
    },
    "button_clear": {
       "message": "<svg xmlns='http://www.w3.org/2000/svg' width='90%' height='90%' viewBox='0 0 199.997 200'><path d='M235.177,4027.791l38.549-38.552,83.632-83.63-77.816-77.818-83.632,83.635-38.549,38.549Zm31.834-45.265L235.735,4013.8l-64.386-64.392,31.274-31.274Z' transform='translate(-157.361 -3827.791)'/></svg>"
+   },
+   "button_channels_all": {
+      "message": "All notifications"
+   },
+   "button_channels_personalized": {
+      "message": "Personalized notifications"
+   },
+   "button_channels_none": {
+      "message": "No notifications"
    }
 }

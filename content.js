@@ -51,6 +51,24 @@ function isNotificationOff_button(text) {
 		|| text.includes('通知する');
 }
 
+// ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
+function isChannelsAllNotifications(text) {
+	return text.includes('all notifications.')
+		|| text.includes('すべての通知を受け取る');
+}
+
+// ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
+function isChannelsPersonalizedNotifications(text) {
+	return text.includes('personalized notifications.')
+		|| text.includes('カスタマイズされた通知を受け取る');
+}
+
+// ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
+function isChannelsNoNotifications(text) {
+	return text.includes('receive no notifications.')
+		|| text.includes('通知を受け取らない');
+}
+
 function updateButtonVisibility(node) {
 	if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
@@ -58,48 +76,78 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+
+		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+
+		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+
+		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+
+		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+
+		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'inline-flex');
+
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
+
+		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else {
 		node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
@@ -164,6 +212,20 @@ function classifyStatus(node) {
 		}
 	}
 
+	const notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label]');
+	if (notification) {
+		const t = notification.attributes['aria-label'].value;
+		if (isChannelsAllNotifications(t)) {
+			status += 'channels_all.';
+		} else if (isChannelsPersonalizedNotifications(t)) {
+			status += 'channels_personalized.';
+		} else if (isChannelsNoNotifications(t)) {
+			status += 'channels_none.';
+		} else {
+			console.warn('Unknown notification: ' + t);
+		}
+	}
+
 	return status;
 }
 
@@ -224,48 +286,25 @@ function insertMenu(node) {
 	}
 }
 
-function updateVisibility_Always(node, display_type) {
-	if (matchTextContent(node)) {
-		if (display_type === 'playlist') {
-			node.style.display = 'flex';
-		} else {
-			node.style.display = 'inline-block';
-		}
-	} else {
-		node.style.display = 'none';
-	}
-}
-
 function updateVisibility_Status(node, display_type, status) {
-	if (display_type === 'channel') {
-		node.style.display = 'block';
-	} else if (classifyStatus(node).includes(status) && matchTextContent(node)) {
-		if (display_type === 'playlist') {
-			node.style.display = 'flex';
-		} else {
-			node.style.display = 'inline-block';
+	if ((!status || classifyStatus(node).includes(status)) && matchTextContent(node)) {
+		switch (display_type) {
+			case 'channel':
+				node.style.display = 'block';
+				break;
+			case 'playlist':
+				node.style.display = 'flex';
+				break;
+			default:
+				node.style.display = 'inline-block';
 		}
 	} else {
 		node.style.display = 'none';
 	}
 }
 
-function updateMenuVisibility(node) {
-	if (isMenuTarget()) {
-		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'block');
-		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'block');
-	} else {
-		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'none');
-	}
-}
-
-function searchParentNode(node, nodeName) {
-	for (let n = node; n; n = n.parentNode) {
-		if (n.nodeName === nodeName) {
-			return n;
-		}
-	}
+function updateVisibility_Always(node, display_type) {
+	updateVisibility_Status(node, display_type)
 }
 
 function updateVisibility_Live(node, display_type) {
@@ -282,6 +321,18 @@ function updateVisibility_Scheduled(node, display_type) {
 
 function updateVisibility_notification_on(node, display_type) {
 	updateVisibility_Status(node, display_type, 'notification_on.');
+}
+
+function updateVisibility_channels_all(node, display_type) {
+	updateVisibility_Status(node, display_type, 'channels_all.');
+}
+
+function updateVisibility_channels_personalized(node, display_type) {
+	updateVisibility_Status(node, display_type, 'channels_personalized.');
+}
+
+function updateVisibility_channels_none(node, display_type) {
+	updateVisibility_Status(node, display_type, 'channels_none.');
 }
 
 function updateVisibility_ActiveMode(node, display_type) {
@@ -301,6 +352,33 @@ function updateVisibility_ActiveMode(node, display_type) {
 		case 'notification_on':
 			updateVisibility_notification_on(node, display_type);
 			break;
+		case 'channels_all':
+			updateVisibility_channels_all(node, display_type);
+			break;
+		case 'channels_personalized':
+			updateVisibility_channels_personalized(node, display_type);
+			break;
+		case 'channels_none':
+			updateVisibility_channels_none(node, display_type);
+			break;
+	}
+}
+
+function updateMenuVisibility(node) {
+	if (isMenuTarget()) {
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'block');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'block');
+	} else {
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'none');
+	}
+}
+
+function searchParentNode(node, nodeName) {
+	for (let n = node; n; n = n.parentNode) {
+		if (n.nodeName === nodeName) {
+			return n;
+		}
 	}
 }
 
@@ -404,6 +482,10 @@ function createMenu(floating) {
 	menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, input));
 	menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, input));
 
+	menu.appendChild(createButton(button_channels_all, 'channels_all', updateVisibility_channels_all, input));
+	menu.appendChild(createButton(button_channels_personalized, 'channels_personalized', updateVisibility_channels_personalized, input));
+	menu.appendChild(createButton(button_channels_none, 'channels_none', updateVisibility_channels_none, input));
+
 	menu.appendChild(createQueryInputArea(input));
 	menu.appendChild(createClearButton(input, menu));
 
@@ -424,7 +506,7 @@ function onUpdated() {
 	updateVisibility(updateVisibility_ActiveMode);
 }
 
-function onAdded(node) {
+function onReload(node) {
 	switch (node.nodeName) {
 		case 'YTD-SECTION-LIST-RENDERER':
 			insertMenu(node);
@@ -447,8 +529,8 @@ function onAdded(node) {
 	}
 }
 
-// mode: 'all', 'live', 'video', 'scheduled', 'notification_on'
-// status: 'live.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.'
+// mode: 'all', 'live', 'video', 'scheduled', 'notification_on', 'channels_all', 'channels_personalized', 'channels_none'
+// status: 'live.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.', 'channels_all.', 'channels_personalized.', 'channels_none.'
 // display_type: 'video', 'playlist', 'channel'
 
 const button_all = chrome.i18n.getMessage('button_all');
@@ -457,6 +539,9 @@ const button_video = chrome.i18n.getMessage('button_video');
 const button_scheduled = chrome.i18n.getMessage('button_scheduled');
 const button_notification_on = chrome.i18n.getMessage('button_notification_on');
 const button_clear = chrome.i18n.getMessage('button_clear');
+const button_channels_all = chrome.i18n.getMessage('button_channels_all');
+const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
+const button_channels_none = chrome.i18n.getMessage('button_channels_none');
 
 const app = document.querySelector('ytd-app');
 
@@ -469,7 +554,10 @@ new MutationObserver((mutations, observer) => mutations.filter(m => m.target.nod
 	childList: true,
 });
 
-new MutationObserver((mutations, observer) => mutations.forEach(m => m.addedNodes.forEach(n => onAdded(n)))).observe(app, {
+new MutationObserver((mutations, observer) => mutations.forEach(m => {
+	onReload(m.target);
+	m.addedNodes.forEach(n => onReload(n));
+})).observe(app, {
 	subtree: true,
 	childList: true,
 });
