@@ -301,8 +301,6 @@ function insertMenu(node) {
 			} else {
 				console.warn('ytd-two-column-browse-results-renderer not found');
 			}
-		} else {
-			console.warn('ytd-browse not found');
 		}
 	}
 }
