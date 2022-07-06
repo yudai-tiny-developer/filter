@@ -160,7 +160,8 @@ function isMenuTarget() {
 		|| window.location.href.startsWith('https://www.youtube.com/feed/history')
 		|| window.location.href.startsWith('https://www.youtube.com/playlist')
 		|| window.location.href.startsWith('https://www.youtube.com/feed/channels')
-		|| window.location.href.startsWith('https://www.youtube.com/channel/');
+		|| window.location.href.startsWith('https://www.youtube.com/channel/')
+		|| window.location.href.startsWith('https://www.youtube.com/c/');
 }
 
 function isFloatingTarget() {
