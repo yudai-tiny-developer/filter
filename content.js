@@ -310,7 +310,6 @@ function insertMenu(node) {
 	const browse = searchParentNode(node, 'YTD-BROWSE');
 	if (browse) {
 		if (!browse.querySelector('div.filter-menu')) {
-
 			const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
 			if (sibling) {
 				browse.insertBefore(createMenu(isFloatingTarget()), sibling);
