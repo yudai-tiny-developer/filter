@@ -574,15 +574,24 @@ let activeMode = 'all';
 let queryString = '';
 let queryRegex;
 
-new MutationObserver((mutations, observer) => mutations.filter(m => m.target.nodeName === 'TITLE').forEach(() => onViewChanged())).observe(document.head, {
+new MutationObserver((mutations, observer) => {
+	for (const m of mutations) {
+		if (m.target.nodeName === 'TITLE') {
+			onViewChanged();
+			return;
+		}
+	}
+}).observe(document.head, {
 	subtree: true,
 	childList: true,
 });
 
-new MutationObserver((mutations, observer) => mutations.forEach(m => {
-	onNodeLoaded(m.target);
-	m.addedNodes.forEach(n => onNodeLoaded(n));
-})).observe(app, {
+new MutationObserver((mutations, observer) => {
+	for (const m of mutations) {
+		onNodeLoaded(m.target);
+		m.addedNodes.forEach(n => onNodeLoaded(n));
+	}
+}).observe(app, {
 	subtree: true,
 	childList: true,
 });
