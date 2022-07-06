@@ -147,8 +147,8 @@ function classifyStatus(node) {
 					console.warn('Unknown label: ' + t);
 				}
 			}
-		} else {
-			console.warn('Unknown metadata: ' + t);
+		} else { // Members-only videos
+			status += 'video.';
 		}
 	}
 
