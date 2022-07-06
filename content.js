@@ -58,7 +58,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
@@ -67,7 +66,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
@@ -76,7 +74,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
@@ -85,7 +82,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
@@ -94,7 +90,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/')) {
@@ -103,7 +98,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
 	} else {
@@ -290,10 +284,6 @@ function updateVisibility_notification_on(node, display_type) {
 	updateVisibility_Status(node, display_type, 'notification_on.');
 }
 
-function updateVisibility_notification_off(node, display_type) {
-	updateVisibility_Status(node, display_type, 'notification_off.');
-}
-
 function updateVisibility_ActiveMode(node, display_type) {
 	switch (activeMode) {
 		case 'all':
@@ -310,9 +300,6 @@ function updateVisibility_ActiveMode(node, display_type) {
 			break;
 		case 'notification_on':
 			updateVisibility_notification_on(node, display_type);
-			break;
-		case 'notification_off':
-			updateVisibility_notification_off(node, display_type);
 			break;
 	}
 }
@@ -416,7 +403,6 @@ function createMenu(floating) {
 	menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, input));
 	menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, input));
 	menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, input));
-	//menu.appendChild(createButton(button_notification_off, 'notification_off', updateVisibility_notification_off, input));
 
 	menu.appendChild(createQueryInputArea(input));
 	menu.appendChild(createClearButton(input, menu));
@@ -461,7 +447,7 @@ function onAdded(node) {
 	}
 }
 
-// mode: 'all', 'live', 'video', 'scheduled', 'notification_on', 'notification_off'
+// mode: 'all', 'live', 'video', 'scheduled', 'notification_on'
 // status: 'live.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.'
 // display_type: 'video', 'playlist', 'channel'
 
@@ -470,7 +456,6 @@ const button_live = chrome.i18n.getMessage('button_live');
 const button_video = chrome.i18n.getMessage('button_video');
 const button_scheduled = chrome.i18n.getMessage('button_scheduled');
 const button_notification_on = chrome.i18n.getMessage('button_notification_on');
-const button_notification_off = chrome.i18n.getMessage('button_notification_off');
 const button_clear = chrome.i18n.getMessage('button_clear');
 
 const app = document.querySelector('ytd-app');
