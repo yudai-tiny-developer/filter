@@ -1,78 +1,104 @@
 // div#metadata-line
 function isLive_metadata(text) {
-	return text.includes('watching')
-		|| text.includes('視聴中');
+	return text.includes('watching') // English (US)
+		|| text.includes('視聴中') // 日本語
+		|| text.includes('menonton') // Bahasa Indonesia
+		;
 }
 
 // div#metadata-line
 function isStreamed_metadata(text) {
-	return text.includes('Streamed')
-		|| text.includes('配信済み');
+	return text.includes('Streamed') // English (US)
+		|| text.includes('配信済み') // 日本語
+		|| text.includes('Streaming') // Bahasa Indonesia
+		;
 }
 
 // div#metadata-line
 function isVideo_metadata(text) {
-	return (text.includes('views')
-		|| text.includes('回視聴'))
-		&& !text.includes('Streamed')
-		&& !text.includes('配信済み');
+	return (text.includes('views') // English (US)
+		|| text.includes('回視聴')) // 日本語
+		|| text.includes('ditonton') // Bahasa Indonesia
+
+		&& !text.includes('Streamed') // English (US)
+		&& !text.includes('配信済み') // 日本語
+		&& !text.includes('Streaming') // Bahasa Indonesia
+		;
 }
 
 // div#metadata-line
 function isScheduled_metadata(text) {
-	return text.includes('Scheduled')
-		|| text.includes('Premieres')
-		|| text.includes('公開予定')
-		|| text.includes('プレミア公開');
+	return text.includes('Scheduled') // English (US)
+		|| text.includes('公開予定') // 日本語
+		|| text.includes('Tayang') // Bahasa Indonesia
+
+		|| text.includes('Premieres') // English (US)
+		|| text.includes('プレミア公開') // 日本語
+		|| text.includes('perdana') // Bahasa Indonesia
+		;
 }
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 function isLive_status_label(text) {
-	return text === 'LIVE'
-		|| text === 'ライブ';
+	return text === 'LIVE' // English (US), Bahasa Indonesia
+		|| text === 'ライブ' // 日本語
+		;
 }
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 function isVideo_status_label(text) {
-	return text.endsWith('second')
-		|| text.endsWith('seconds')
-		|| text.endsWith('minute')
-		|| text.endsWith('minutes')
-		|| text.endsWith('hour')
-		|| text.endsWith('hours')
-		|| text.endsWith('秒')
-		|| text.endsWith('分')
-		|| text.endsWith('時間');
+	return text.endsWith('second') || text.endsWith('seconds') // English (US)
+		|| text.endsWith('秒') // 日本語
+		|| text.endsWith('detik') // Bahasa Indonesia
+
+		|| text.endsWith('minute') || text.endsWith('minutes') // English (US)
+		|| text.endsWith('分') // 日本語
+		|| text.endsWith('menit') // Bahasa Indonesia
+
+		|| text.endsWith('hour') || text.endsWith('hours') // English (US)
+		|| text.endsWith('時間') // 日本語
+		|| text.endsWith('jam') // Bahasa Indonesia
+		;
 }
 
 // ytd-toggle-button-renderer
 function isNotificationOn_button(text) {
-	return text.includes('Notification on')
-		|| text.includes('通知オン');
+	return text.includes('Notification on') // English (US)
+		|| text.includes('通知オン') // 日本語
+		|| text.includes('Notifikasi aktif') // Bahasa Indonesia
+		;
 }
 
 // ytd-toggle-button-renderer
 function isNotificationOff_button(text) {
-	return text.includes('Notify me')
-		|| text.includes('通知する');
+	return text.includes('Notify me') // English (US)
+		|| text.includes('通知する') // 日本語
+		|| text.includes('Beri tahu saya') // Bahasa Indonesia
+		;
 }
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
 function isChannelsAllNotifications(text) {
-	return text.includes('all notifications.')
-		|| text.includes('すべての通知を受け取る');
+	return text.includes('all notifications.') // English (US)
+		|| text.includes('すべての通知を受け取る') // 日本語
+		|| text.includes('terima semua notifikasi.') // Bahasa Indonesia
+		;
 }
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
 function isChannelsPersonalizedNotifications(text) {
-	return text.includes('personalized notifications.')
-		|| text.includes('カスタマイズされた通知を受け取る');
+	return text.includes('personalized notifications.') // English (US)
+		|| text.includes('カスタマイズされた通知を受け取る') // 日本語
+		|| text.includes('notifikasi hasil personalisasi.') // Bahasa Indonesia
+		;
 }
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
 function isChannelsNoNotifications(text) {
-	return text.includes('receive no notifications.')
-		|| text.includes('通知を受け取らない');
+	return text.includes('receive no notifications.') // English (US)
+		|| text.includes('通知を受け取らない') // 日本語
+		|| text.includes('tidak menerima notifikasi.') // Bahasa Indonesia
+		;
 }
 
 function updateButtonVisibility(node) {
@@ -206,8 +232,6 @@ function classifyStatus(node) {
 					status += 'live.';
 				} else if (isVideo_status_label(t)) {
 					status += 'video.';
-				} else {
-					console.warn('Unknown label: ' + t);
 				}
 			}
 		} else { // Members-only videos
@@ -222,8 +246,6 @@ function classifyStatus(node) {
 			status += 'notification_on.';
 		} else if (isNotificationOff_button(t)) {
 			status += 'notification_off.';
-		} else {
-			console.warn('Unknown button: ' + t);
 		}
 	}
 
@@ -236,8 +258,6 @@ function classifyStatus(node) {
 			status += 'channels_personalized.';
 		} else if (isChannelsNoNotifications(t)) {
 			status += 'channels_none.';
-		} else {
-			console.warn('Unknown notification: ' + t);
 		}
 	}
 
@@ -268,7 +288,7 @@ function matchTextContent(node) {
 		}
 	}
 
-	console.warn('Unknown content: ' + node.nodeName + ' = ' + node.textContent);
+	console.warn('Unknown node: ' + node.nodeName);
 }
 
 function updateVisibility(updateVisibilityFunction) {
