@@ -137,10 +137,10 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
 		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
