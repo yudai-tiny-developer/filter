@@ -5,11 +5,17 @@ function isLive_metadata(text) {
 }
 
 // div#metadata-line
-function isVideo_metadata(text) {
-	return text.includes('views')
-		|| text.includes('Streamed')
-		|| text.includes('回視聴')
+function isStreamed_metadata(text) {
+	return text.includes('Streamed')
 		|| text.includes('配信済み');
+}
+
+// div#metadata-line
+function isVideo_metadata(text) {
+	return (text.includes('views')
+		|| text.includes('回視聴'))
+		&& !text.includes('Streamed')
+		&& !text.includes('配信済み');
 }
 
 // div#metadata-line
@@ -73,6 +79,7 @@ function updateButtonVisibility(node) {
 	if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
@@ -86,6 +93,7 @@ function updateButtonVisibility(node) {
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
@@ -99,6 +107,7 @@ function updateButtonVisibility(node) {
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
@@ -112,6 +121,7 @@ function updateButtonVisibility(node) {
 	} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
@@ -125,6 +135,7 @@ function updateButtonVisibility(node) {
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
@@ -138,6 +149,7 @@ function updateButtonVisibility(node) {
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
@@ -180,6 +192,8 @@ function classifyStatus(node) {
 		const t = metadata.textContent;
 		if (isLive_metadata(t)) {
 			status += 'live.';
+		} else if (isStreamed_metadata(t)) {
+			status += 'streamed.';
 		} else if (isVideo_metadata(t)) {
 			status += 'video.';
 		} else if (isScheduled_metadata(t)) {
@@ -237,7 +251,7 @@ function matchTextContent(node) {
 		if (title) {
 			return title.textContent.match(queryRegex);
 		}
-	} else if (node.nodeName === 'YTD-PLAYLIST-VIDEO-RENDERER') { // playlist video lazy load
+	} else if (node.nodeName === 'YTD-PLAYLIST-VIDEO-RENDERER') {
 		const meta = node.querySelector('div#meta');
 		if (meta) {
 			return meta.textContent.match(queryRegex);
@@ -318,6 +332,10 @@ function updateVisibility_Live(node, display_type) {
 	updateVisibility_Status(node, display_type, 'live.');
 }
 
+function updateVisibility_Streamed(node, display_type) {
+	updateVisibility_Status(node, display_type, 'streamed.');
+}
+
 function updateVisibility_Video(node, display_type) {
 	updateVisibility_Status(node, display_type, 'video.');
 }
@@ -349,6 +367,9 @@ function updateVisibility_ActiveMode(node, display_type) {
 			break;
 		case 'live':
 			updateVisibility_Live(node, display_type);
+			break;
+		case 'streamed':
+			updateVisibility_Streamed(node, display_type);
 			break;
 		case 'video':
 			updateVisibility_Video(node, display_type);
@@ -485,6 +506,7 @@ function createMenu(floating) {
 
 	menu.appendChild(createButton(button_all, 'all', updateVisibility_Always, input));
 	menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, input));
+	menu.appendChild(createButton(button_streamed, 'streamed', updateVisibility_Streamed, input));
 	menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, input));
 	menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, input));
 	menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, input));
@@ -533,12 +555,13 @@ function onNodeLoaded(node) {
 	}
 }
 
-// mode: 'all', 'live', 'video', 'scheduled', 'notification_on', 'channels_all', 'channels_personalized', 'channels_none'
-// status: 'live.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.', 'channels_all.', 'channels_personalized.', 'channels_none.'
+// mode: 'all', 'live', 'streamed', 'video', 'scheduled', 'notification_on', 'channels_all', 'channels_personalized', 'channels_none'
+// status: 'live.', 'streamed.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.', 'channels_all.', 'channels_personalized.', 'channels_none.'
 // display_type: 'video', 'playlist', 'channel'
 
 const button_all = chrome.i18n.getMessage('button_all');
 const button_live = chrome.i18n.getMessage('button_live');
+const button_streamed = chrome.i18n.getMessage('button_streamed');
 const button_video = chrome.i18n.getMessage('button_video');
 const button_scheduled = chrome.i18n.getMessage('button_scheduled');
 const button_notification_on = chrome.i18n.getMessage('button_notification_on');

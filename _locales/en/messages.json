@@ -5,6 +5,9 @@
    "button_live": {
       "message": "Live"
    },
+   "button_streamed": {
+      "message": "Streamed"
+   },
    "button_video": {
       "message": "Video"
    },
