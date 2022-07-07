@@ -10,7 +10,8 @@ span.filter-button {
 	border-width: 1px;
 	box-sizing: border-box;
 	cursor: pointer;
-	font-size: 14px;
+	font-size: var(--ytd-user-comment-font-size);
+	font-weight: var(--ytd-user-comment-font-weight);
 	height: 32px;
 	margin: 12px 6px 12px 6px;
 	padding: 0px 12px 0px 12px;
@@ -19,6 +20,7 @@ span.filter-button {
 	transition-property: background-color;
 	transition-timing-function: cubic-bezier(0.05, 0, 0, 1);
 	vertical-align: middle;
+	word-break: keep-all;
 }
 
 span.filter-button.selected {
@@ -27,36 +29,55 @@ span.filter-button.selected {
 	fill: var(--yt-spec-text-primary-inverse);
 }
 
-span.filter-button.clear:active {
-	background-color: var(--yt-spec-text-primary);
-	color: var(--yt-spec-text-primary-inverse);
-	fill: var(--yt-spec-text-primary-inverse);
-}
-
-span.filter-query {
+span.filter-query.area {
 	background-color: var(--ytd-searchbox-background);
-	color: var(--ytd-searchbox-text-color);
 
 	align-items: center;
 	border: solid;
 	border-color: var(--ytd-searchbox-legacy-border-color);
 	border-width: 1px;
 	box-sizing: border-box;
-	cursor: pointer;
-	font-size: 14px;
 	height: 32px;
-	margin: 12px 6px 12px 24px;
-	padding: 0px 12px 0px 12px;
-	vertical-align: middle;
+	margin: 12px 6px 12px 12px;
+	padding: 0px 0px 0px 12px;
 }
 
 input#filter-query {
 	border: none;
 	color: var(--ytd-searchbox-text-color);
 	outline: none;
+	width: 100%;
 
 	box-shadow: var(--ytd-searchbox-background) 0 32px inset !important;
 	-webkit-text-fill-color: var(--ytd-searchbox-text-color);
+}
+
+input#filter-query::placeholder {
+	opacity: 0;
+}
+
+span.filter-query.clear {
+	background-color: var(--ytd-searchbox-background);
+	color: var(--ytd-searchbox-text-color);
+	fill: var(--ytd-searchbox-text-color);
+	height: 100%;
+	padding: 0px 6px 0px 6px;
+}
+
+input#filter-query:placeholder-shown+span.filter-query.clear {
+	visibility: hidden;
+}
+
+span.filter-query.search {
+	background-color: var(--yt-spec-badge-chip-background);
+	color: var(--yt-spec-text-primary);
+	fill: var(--yt-spec-text-primary);
+
+	border: solid;
+	border-color: var(--ytd-searchbox-legacy-border-color);
+	border-width: 1px;
+	height: 100%;
+	padding: 0px 6px 0px 6px;
 }
 
 div.filter-menu {

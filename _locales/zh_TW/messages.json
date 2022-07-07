@@ -1,21 +1,21 @@
 {
    "button_all": {
-      "message": "All"
+      "message": "全部"
    },
    "button_live": {
-      "message": "Live"
+      "message": "直播中"
    },
    "button_streamed": {
-      "message": "Streamed"
+      "message": "封存"
    },
    "button_video": {
-      "message": "Video"
+      "message": "影片"
    },
    "button_scheduled": {
-      "message": "Scheduled"
+      "message": "預定"
    },
    "button_notification_on": {
-      "message": "Notification on"
+      "message": "已開啟通知"
    },
    "button_clear": {
       "message": "<svg viewBox='0 0 24 24' style='width: 100%; height: 100%;'><path d='M12.7,12l6.6,6.6l-0.7,0.7L12,12.7l-6.6,6.6l-0.7-0.7l6.6-6.6L4.6,5.4l0.7-0.7l6.6,6.6l6.6-6.6l0.7,0.7L12.7,12z' /></svg>"
