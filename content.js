@@ -144,7 +144,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
@@ -158,7 +157,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
@@ -172,7 +170,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
@@ -186,7 +183,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
@@ -200,7 +196,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'inline-flex');
 
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
 		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
@@ -214,7 +209,6 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.clear').forEach(n => n.style.display = 'inline-flex');
 	} else {
 		node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
@@ -507,7 +501,7 @@ function createButton(text, mode, updateVisibilityFunction, input) {
 function createClearButton(input, menu) {
 	const button = document.createElement('span');
 	button.innerHTML = button_clear;
-	button.classList.add('filter-button');
+	button.classList.add('filter-query');
 	button.classList.add('clear');
 
 	button.addEventListener('click', () => {
@@ -518,10 +512,22 @@ function createClearButton(input, menu) {
 	return button;
 }
 
-function createQueryInputArea(input) {
+function createSearchButton() {
+	const button = document.createElement('span');
+	button.innerHTML = button_search;
+	button.classList.add('filter-query');
+	button.classList.add('search');
+
+	return button;
+}
+
+function createQueryInputArea(input, menu) {
 	const inputArea = document.createElement('span');
 	inputArea.classList.add('filter-query');
+	inputArea.classList.add('area');
 	inputArea.appendChild(input);
+	inputArea.appendChild(createClearButton(input, menu));
+	inputArea.appendChild(createSearchButton());
 	return inputArea;
 }
 
@@ -560,8 +566,7 @@ function createMenu(floating) {
 	menu.appendChild(createButton(button_channels_personalized, 'channels_personalized', updateVisibility_channels_personalized, input));
 	menu.appendChild(createButton(button_channels_none, 'channels_none', updateVisibility_channels_none, input));
 
-	menu.appendChild(createQueryInputArea(input));
-	menu.appendChild(createClearButton(input, menu));
+	menu.appendChild(createQueryInputArea(input, menu));
 
 	return menu;
 }
@@ -611,6 +616,7 @@ const button_video = chrome.i18n.getMessage('button_video');
 const button_scheduled = chrome.i18n.getMessage('button_scheduled');
 const button_notification_on = chrome.i18n.getMessage('button_notification_on');
 const button_clear = chrome.i18n.getMessage('button_clear');
+const button_search = chrome.i18n.getMessage('button_search');
 const button_channels_all = chrome.i18n.getMessage('button_channels_all');
 const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
 const button_channels_none = chrome.i18n.getMessage('button_channels_none');
