@@ -17,9 +17,6 @@
    "button_notification_on": {
       "message": "通知オン"
    },
-   "button_notification_off": {
-      "message": "通知オフ"
-   },
    "button_clear": {
       "message": "<svg viewBox='0 0 199.997 200' width='90%' height='90%'><path d='M235.177,4027.791l38.549-38.552,83.632-83.63-77.816-77.818-83.632,83.635-38.549,38.549Zm31.834-45.265L235.735,4013.8l-64.386-64.392,31.274-31.274Z' transform='translate(-157.361 -3827.791)' /></svg>"
    },
