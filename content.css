@@ -52,12 +52,20 @@ input#filter-query {
 	-webkit-text-fill-color: var(--ytd-searchbox-text-color);
 }
 
+input#filter-query::placeholder {
+	opacity: 0;
+}
+
 span.filter-query.clear {
 	background-color: var(--ytd-searchbox-background);
 	color: var(--ytd-searchbox-text-color);
 	fill: var(--ytd-searchbox-text-color);
 	height: 100%;
 	padding: 0px 6px 0px 6px;
+}
+
+input#filter-query:placeholder-shown+span.filter-query.clear {
+	visibility: hidden;
 }
 
 span.filter-query.search {

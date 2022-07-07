@@ -534,6 +534,7 @@ function createQueryInputArea(input, menu) {
 function createQueryInput(menu) {
 	const input = document.createElement('input');
 	input.setAttribute('type', 'text');
+	input.setAttribute('placeholder', ' ');
 	input.id = 'filter-query';
 	input.value = queryString;
 
