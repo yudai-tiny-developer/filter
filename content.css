@@ -10,7 +10,8 @@ span.filter-button {
 	border-width: 1px;
 	box-sizing: border-box;
 	cursor: pointer;
-	font-size: 14px;
+	font-size: var(--ytd-user-comment-font-size);
+	font-weight: var(--ytd-user-comment-font-weight);
 	height: 32px;
 	margin: 12px 6px 12px 6px;
 	padding: 0px 12px 0px 12px;
@@ -36,7 +37,6 @@ span.filter-query.area {
 	border-color: var(--ytd-searchbox-legacy-border-color);
 	border-width: 1px;
 	box-sizing: border-box;
-	font-size: 14px;
 	height: 32px;
 	margin: 12px 6px 12px 12px;
 	padding: 0px 0px 0px 12px;
