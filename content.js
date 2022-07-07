@@ -308,19 +308,17 @@ function updateVisibility(updateVisibilityFunction) {
 
 function insertMenu(node) {
 	const browse = searchParentNode(node, 'YTD-BROWSE');
-	if (browse) {
-		if (!browse.querySelector('div.filter-menu')) {
-			const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
-			if (sibling) {
-				browse.insertBefore(createMenu(isFloatingTarget()), sibling);
-				browse.insertBefore(createSpacer(), sibling);
+	if (browse && !browse.querySelector('div.filter-menu')) {
+		const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
+		if (sibling) {
+			browse.insertBefore(createMenu(isFloatingTarget()), sibling);
+			browse.insertBefore(createSpacer(), sibling);
 
-				updateMenuVisibility(browse);
-				updateButtonVisibility(browse);
-				clickDefaultButtonIfSelectedHidden(browse);
-			} else {
-				console.warn('ytd-two-column-browse-results-renderer not found');
-			}
+			updateMenuVisibility(browse);
+			updateButtonVisibility(browse);
+			clickDefaultButtonIfSelectedHidden(browse);
+		} else {
+			console.warn('ytd-two-column-browse-results-renderer not found');
 		}
 	}
 }
