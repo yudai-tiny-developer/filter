@@ -314,7 +314,11 @@ function matchTextContent(node) {
 	console.warn('Unknown node: ' + node.nodeName);
 }
 
-function updateVisibility(updateVisibilityFunction) {
+function updateVisibility(updateVisibilityFunction, input) {
+	queryString = input.value;
+	queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
+	app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
+
 	// subscriptions?flow=1, library
 	app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
 
@@ -453,11 +457,11 @@ function clickDefaultButtonIfSelectedHidden(node) {
 	const selectedButton = node.querySelector('span.filter-button.selected');
 	if (selectedButton) {
 		if (selectedButton.style.display === 'none') {
-			const allButton = node.querySelector('span.filter-button.all');
-			if (allButton) {
-				allButton.click();
+			const input = menu.querySelector('input#filter-query');
+			if (input) {
+				updateVisibility(updateVisibility_Always, input);
 			} else {
-				console.warn('span.filter-button.all not found');
+				console.warn('input#filter-query not found');
 			}
 		}
 	}
@@ -466,7 +470,12 @@ function clickDefaultButtonIfSelectedHidden(node) {
 function clickSelectedButton(menu) {
 	const selectedButton = menu.querySelector('span.filter-button.selected');
 	if (selectedButton) {
-		selectedButton.click();
+		const input = menu.querySelector('input#filter-query');
+		if (input) {
+			updateVisibility(updateVisibility_ActiveMode, input);
+		} else {
+			console.warn('input#filter-query not found');
+		}
 	} else {
 		console.warn('span.filter-button.selected not found');
 	}
@@ -488,11 +497,7 @@ function createButton(text, mode, updateVisibilityFunction, input) {
 		app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
 		app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
 
-		queryString = input.value;
-		queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
-		app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
-
-		updateVisibility(updateVisibilityFunction);
+		updateVisibility(updateVisibilityFunction, input);
 	});
 
 	return button;
@@ -512,11 +517,15 @@ function createClearButton(input, menu) {
 	return button;
 }
 
-function createSearchButton() {
+function createSearchButton(menu) {
 	const button = document.createElement('span');
 	button.innerHTML = button_search;
 	button.classList.add('filter-query');
 	button.classList.add('search');
+
+	button.addEventListener('click', () => {
+		clickSelectedButton(menu);
+	});
 
 	return button;
 }
@@ -527,7 +536,7 @@ function createQueryInputArea(input, menu) {
 	inputArea.classList.add('area');
 	inputArea.appendChild(input);
 	inputArea.appendChild(createClearButton(input, menu));
-	inputArea.appendChild(createSearchButton());
+	inputArea.appendChild(createSearchButton(menu));
 	return inputArea;
 }
 
@@ -582,8 +591,6 @@ function onViewChanged() {
 	updateMenuVisibility(app);
 	updateButtonVisibility(app);
 	clickDefaultButtonIfSelectedHidden(app);
-
-	updateVisibility(updateVisibility_ActiveMode);
 }
 
 function onNodeLoaded(node) {
