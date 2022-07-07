@@ -343,7 +343,7 @@ function insertMenu(node) {
 
 			updateMenuVisibility(browse);
 			updateButtonVisibility(browse);
-			clickDefaultButtonIfSelectedHidden(browse);
+			updateVisibility_Always_IfSelectedHidden(browse);
 		} else {
 			console.warn('ytd-two-column-browse-results-renderer not found');
 		}
@@ -453,11 +453,11 @@ function searchParentNode(node, nodeName) {
 	}
 }
 
-function clickDefaultButtonIfSelectedHidden(node) {
+function updateVisibility_Always_IfSelectedHidden(node) {
 	const selectedButton = node.querySelector('span.filter-button.selected');
 	if (selectedButton) {
 		if (selectedButton.style.display === 'none') {
-			const input = menu.querySelector('input#filter-query');
+			const input = node.querySelector('input#filter-query');
 			if (input) {
 				updateVisibility(updateVisibility_Always, input);
 			} else {
@@ -467,7 +467,7 @@ function clickDefaultButtonIfSelectedHidden(node) {
 	}
 }
 
-function clickSelectedButton(menu) {
+function updateVisibility_ActiveMode_SelectorMenu(menu) {
 	const selectedButton = menu.querySelector('span.filter-button.selected');
 	if (selectedButton) {
 		const input = menu.querySelector('input#filter-query');
@@ -511,7 +511,7 @@ function createClearButton(input, menu) {
 
 	button.addEventListener('click', () => {
 		input.value = '';
-		clickSelectedButton(menu);
+		updateVisibility_ActiveMode_SelectorMenu(menu);
 	});
 
 	return button;
@@ -524,7 +524,7 @@ function createSearchButton(menu) {
 	button.classList.add('search');
 
 	button.addEventListener('click', () => {
-		clickSelectedButton(menu);
+		updateVisibility_ActiveMode_SelectorMenu(menu);
 	});
 
 	return button;
@@ -548,7 +548,7 @@ function createQueryInput(menu) {
 	input.value = queryString;
 
 	input.addEventListener('change', e => {
-		clickSelectedButton(menu);
+		updateVisibility_ActiveMode_SelectorMenu(menu);
 	});
 
 	return input;
@@ -590,7 +590,7 @@ function createSpacer() {
 function onViewChanged() {
 	updateMenuVisibility(app);
 	updateButtonVisibility(app);
-	clickDefaultButtonIfSelectedHidden(app);
+	updateVisibility_Always_IfSelectedHidden(app);
 }
 
 function onNodeLoaded(node) {
