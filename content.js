@@ -4,6 +4,7 @@ function isLive_metadata(text) {
 		|| text.includes('視聴中') // 日本語
 		|| text.includes('menonton') // Bahasa Indonesia
 		|| text.includes('시청 중') // 한국어
+		|| text.includes('人正在觀看') // 中文 (繁體)
 		;
 }
 
@@ -13,6 +14,7 @@ function isStreamed_metadata(text) {
 		|| text.includes('配信済み') // 日本語
 		|| text.includes('Streaming') // Bahasa Indonesia
 		|| text.includes('스트리밍 시간') // 한국어
+		|| text.includes('直播時間') // 中文 (繁體)
 		;
 }
 
@@ -22,11 +24,13 @@ function isVideo_metadata(text) {
 		|| text.includes('回視聴')) // 日本語
 		|| text.includes('ditonton') // Bahasa Indonesia
 		|| text.includes('조회수') // 한국어
+		|| text.includes('觀看次數') // 中文 (繁體)
 
 		&& !text.includes('Streamed') // English (US)
 		&& !text.includes('配信済み') // 日本語
 		&& !text.includes('Streaming') // Bahasa Indonesia
 		&& !text.includes('스트리밍 시간') // 한국어
+		&& !text.includes('直播時間') // 中文 (繁體)
 		;
 }
 
@@ -36,11 +40,13 @@ function isScheduled_metadata(text) {
 		|| text.includes('公開予定') // 日本語
 		|| text.includes('Tayang') // Bahasa Indonesia
 		|| text.includes('예정일') // 한국어
+		|| text.includes('預定發布時間') // 中文 (繁體)
 
 		|| text.includes('Premieres') // English (US)
 		|| text.includes('プレミア公開') // 日本語
 		|| text.includes('perdana') // Bahasa Indonesia
 		|| text.includes('최초') // 한국어
+		|| text.includes('首播日期') // 中文 (繁體)
 		;
 }
 
@@ -49,13 +55,14 @@ function isLive_status_label(text) {
 	return text === 'LIVE' // English (US), Bahasa Indonesia
 		|| text === 'ライブ' // 日本語
 		|| text === '실시간' // 한국어
+		|| text === '直播' // 中文 (繁體)
 		;
 }
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 function isVideo_status_label(text) {
 	return text.endsWith('second') || text.endsWith('seconds') // English (US)
-		|| text.endsWith('秒') // 日本語
+		|| text.endsWith('秒') // 日本語, 中文 (繁體)
 		|| text.endsWith('detik') // Bahasa Indonesia
 		|| text.endsWith('초') // 한국어
 
@@ -63,11 +70,13 @@ function isVideo_status_label(text) {
 		|| text.endsWith('分') // 日本語
 		|| text.endsWith('menit') // Bahasa Indonesia
 		|| text.endsWith('분') // 한국어
+		|| text.endsWith('分鐘') // 中文 (繁體)
 
 		|| text.endsWith('hour') || text.endsWith('hours') // English (US)
 		|| text.endsWith('時間') // 日本語
 		|| text.endsWith('jam') // Bahasa Indonesia
 		|| text.endsWith('시간') // 한국어
+		|| text.endsWith('小時') // 中文 (繁體)
 		;
 }
 
@@ -77,6 +86,7 @@ function isNotificationOn_button(text) {
 		|| text.includes('通知オン') // 日本語
 		|| text.includes('Notifikasi aktif') // Bahasa Indonesia
 		|| text.includes('알림 사용 중') // 한국어
+		|| text.endsWith('已開啟通知') // 中文 (繁體)
 		;
 }
 
@@ -86,6 +96,7 @@ function isNotificationOff_button(text) {
 		|| text.includes('通知する') // 日本語
 		|| text.includes('Beri tahu saya') // Bahasa Indonesia
 		|| text.includes('알림 받기') // 한국어
+		|| text.endsWith('通知我') // 中文 (繁體)
 		;
 }
 
@@ -95,6 +106,7 @@ function isChannelsAllNotifications(text) {
 		|| text.includes('すべての通知を受け取る') // 日本語
 		|| text.includes('terima semua notifikasi.') // Bahasa Indonesia
 		|| text.includes('모든 알림 수신입니다.') // 한국어
+		|| text.includes('接收所有通知。') // 中文 (繁體)
 		;
 }
 
@@ -104,6 +116,7 @@ function isChannelsPersonalizedNotifications(text) {
 		|| text.includes('カスタマイズされた通知を受け取る') // 日本語
 		|| text.includes('notifikasi hasil personalisasi.') // Bahasa Indonesia
 		|| text.includes('맞춤설정 알림 수신입니다.') // 한국어
+		|| text.includes('接收個人化通知。') // 中文 (繁體)
 		;
 }
 
@@ -113,6 +126,7 @@ function isChannelsNoNotifications(text) {
 		|| text.includes('通知を受け取らない') // 日本語
 		|| text.includes('tidak menerima notifikasi.') // Bahasa Indonesia
 		|| text.includes('알림 수신 안함입니다.') // 한국어
+		|| text.includes('不接收任何通知。') // 中文 (繁體)
 		;
 }
 
