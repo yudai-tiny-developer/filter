@@ -343,7 +343,7 @@ function insertMenu(node) {
 
 			updateMenuVisibility(browse);
 			updateButtonVisibility(browse);
-			updateVisibility_Always_IfSelectedHidden(browse);
+			updateVisibility_QuerySelector(browse);
 		} else {
 			console.warn('ytd-two-column-browse-results-renderer not found');
 		}
@@ -453,31 +453,22 @@ function searchParentNode(node, nodeName) {
 	}
 }
 
-function updateVisibility_Always_IfSelectedHidden(node) {
+function updateVisibility_QuerySelector(node) {
 	const selectedButton = node.querySelector('span.filter-button.selected');
 	if (selectedButton) {
-		if (selectedButton.style.display === 'none') {
-			const input = node.querySelector('input#filter-query');
-			if (input) {
+		const input = node.querySelector('input#filter-query');
+		if (input) {
+			if (selectedButton.style.display === 'none') {
+				activeMode = 'all';
+				app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
+				app.querySelectorAll('span.filter-button.all').forEach(n => n.classList.add('selected'));
 				updateVisibility(updateVisibility_Always, input);
 			} else {
-				console.warn('input#filter-query not found');
+				updateVisibility(updateVisibility_ActiveMode, input);
 			}
-		}
-	}
-}
-
-function updateVisibility_ActiveMode_SelectorMenu(menu) {
-	const selectedButton = menu.querySelector('span.filter-button.selected');
-	if (selectedButton) {
-		const input = menu.querySelector('input#filter-query');
-		if (input) {
-			updateVisibility(updateVisibility_ActiveMode, input);
 		} else {
 			console.warn('input#filter-query not found');
 		}
-	} else {
-		console.warn('span.filter-button.selected not found');
 	}
 }
 
@@ -511,7 +502,7 @@ function createClearButton(input, menu) {
 
 	button.addEventListener('click', () => {
 		input.value = '';
-		updateVisibility_ActiveMode_SelectorMenu(menu);
+		updateVisibility_QuerySelector(menu);
 	});
 
 	return button;
@@ -524,7 +515,7 @@ function createSearchButton(menu) {
 	button.classList.add('search');
 
 	button.addEventListener('click', () => {
-		updateVisibility_ActiveMode_SelectorMenu(menu);
+		updateVisibility_QuerySelector(menu);
 	});
 
 	return button;
@@ -548,7 +539,7 @@ function createQueryInput(menu) {
 	input.value = queryString;
 
 	input.addEventListener('change', e => {
-		updateVisibility_ActiveMode_SelectorMenu(menu);
+		updateVisibility_QuerySelector(menu);
 	});
 
 	return input;
@@ -590,7 +581,7 @@ function createSpacer() {
 function onViewChanged() {
 	updateMenuVisibility(app);
 	updateButtonVisibility(app);
-	updateVisibility_Always_IfSelectedHidden(app);
+	updateVisibility_QuerySelector(app);
 }
 
 function onNodeLoaded(node) {
