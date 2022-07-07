@@ -453,21 +453,23 @@ function searchParentNode(node, nodeName) {
 	}
 }
 
+function changeMode(mode) {
+	activeMode = mode;
+
+	app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
+	app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
+}
+
 function updateVisibility_QuerySelector(node) {
 	const selectedButton = node.querySelector('span.filter-button.selected');
 	if (selectedButton) {
 		const input = node.querySelector('input#filter-query');
 		if (input) {
 			if (selectedButton.style.display === 'none') {
-				activeMode = 'all';
-				app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
-				app.querySelectorAll('span.filter-button.all').forEach(n => n.classList.add('selected'));
-				updateVisibility(updateVisibility_Always, input);
-			} else {
-				updateVisibility(updateVisibility_ActiveMode, input);
+				changeMode('all');
 			}
-		} else {
-			console.warn('input#filter-query not found');
+
+			updateVisibility(updateVisibility_ActiveMode, input);
 		}
 	}
 }
@@ -483,11 +485,7 @@ function createButton(text, mode, updateVisibilityFunction, input) {
 	}
 
 	button.addEventListener('click', () => {
-		activeMode = mode;
-
-		app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
-		app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
-
+		changeMode(mode);
 		updateVisibility(updateVisibilityFunction, input);
 	});
 
