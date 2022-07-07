@@ -288,8 +288,12 @@ function classifyStatus(node) {
 }
 
 function matchTextContent(node) {
-	if (node.nodeName === 'YTD-GRID-VIDEO-RENDERER'
-		|| (node.nodeName === 'YTD-VIDEO-RENDERER' && !node.classList.contains('ytd-backstage-post-renderer'))) {
+	if (node.nodeName === 'YTD-GRID-VIDEO-RENDERER') {
+		const title = node.querySelector('a#video-title');
+		if (title) {
+			return title.textContent.match(queryRegex);
+		}
+	} else if (node.nodeName === 'YTD-VIDEO-RENDERER' && !node.classList.contains('ytd-backstage-post-renderer')) {
 		const title = node.querySelector('a#video-title');
 		if (title) {
 			return title.textContent.match(queryRegex);
@@ -305,9 +309,14 @@ function matchTextContent(node) {
 			return info.textContent.match(queryRegex);
 		}
 	} else if (node.nodeName === 'YTD-BACKSTAGE-POST-THREAD-RENDERER') {
-		const post = node.querySelector('div#content');
-		if (post) {
-			return post.textContent.match(queryRegex);
+		const content = node.querySelector('div#content');
+		if (content) {
+			return content.textContent.match(queryRegex);
+		}
+	} else if (node.nodeName === 'YTD-GRID-PLAYLIST-RENDERER') {
+		const title = node.querySelector('a#video-title');
+		if (title) {
+			return title.textContent.match(queryRegex);
 		}
 	}
 
@@ -331,6 +340,7 @@ function updateVisibility(updateVisibilityFunction, input) {
 	// channels
 	app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
 	app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
+	app.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
 }
 
 function insertMenu(node) {
@@ -338,8 +348,16 @@ function insertMenu(node) {
 	if (browse && !browse.querySelector('div.filter-menu')) {
 		const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
 		if (sibling) {
-			browse.insertBefore(createMenu(isFloatingTarget()), sibling);
-			browse.insertBefore(createSpacer(), sibling);
+			const floating = isFloatingTarget();
+			browse.insertBefore(createMenu(floating), sibling);
+			if (floating) {
+				browse.insertBefore(createSpacer(), sibling);
+				const sidebar = browse.querySelector('ytd-playlist-sidebar-renderer');
+				if (sidebar) {
+					sidebar.insertBefore(createSpacer(), sidebar.firstChild);
+					browse.style.alignItems = 'center';
+				}
+			}
 
 			updateMenuVisibility(browse);
 			updateButtonVisibility(browse);
@@ -598,6 +616,8 @@ function onNodeLoaded(node) {
 	} else if (node.nodeName === 'YTD-CHANNEL-RENDERER') {
 		updateVisibility_ActiveMode(node, 'channel');
 	} else if (node.nodeName === 'YTD-BACKSTAGE-POST-THREAD-RENDERER') {
+		updateVisibility_ActiveMode(node, 'channel');
+	} else if (node.nodeName === 'YTD-GRID-PLAYLIST-RENDERER') {
 		updateVisibility_ActiveMode(node, 'channel');
 	}
 }
