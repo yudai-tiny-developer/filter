@@ -19,6 +19,7 @@ span.filter-button {
 	transition-property: background-color;
 	transition-timing-function: cubic-bezier(0.05, 0, 0, 1);
 	vertical-align: middle;
+	word-break: keep-all;
 }
 
 span.filter-button.selected {

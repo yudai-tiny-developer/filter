@@ -439,8 +439,8 @@ function updateVisibility_ActiveMode(node, display_type) {
 
 function updateMenuVisibility(node) {
 	if (isMenuTarget()) {
-		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'block');
-		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'block');
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'flex');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'flex');
 	} else {
 		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'none');
