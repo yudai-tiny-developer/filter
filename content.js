@@ -82,21 +82,21 @@ function isVideo_status_label(text) {
 
 // ytd-toggle-button-renderer
 function isNotificationOn_button(text) {
-	return text.includes('Notification on') // English (US)
-		|| text.includes('通知オン') // 日本語
-		|| text.includes('Notifikasi aktif') // Bahasa Indonesia
-		|| text.includes('알림 사용 중') // 한국어
-		|| text.endsWith('已開啟通知') // 中文 (繁體)
+	return text === 'Notification on' // English (US)
+		|| text === '通知オン' // 日本語
+		|| text === 'Notifikasi aktif' // Bahasa Indonesia
+		|| text === '알림 사용 중' // 한국어
+		|| text === '已開啟通知' // 中文 (繁體)
 		;
 }
 
 // ytd-toggle-button-renderer
 function isNotificationOff_button(text) {
-	return text.includes('Notify me') // English (US)
-		|| text.includes('通知する') // 日本語
-		|| text.includes('Beri tahu saya') // Bahasa Indonesia
-		|| text.includes('알림 받기') // 한국어
-		|| text.endsWith('通知我') // 中文 (繁體)
+	return text === 'Notify me' // English (US)
+		|| text === '通知する' // 日本語
+		|| text === 'Beri tahu saya' // Bahasa Indonesia
+		|| text === '알림 받기' // 한국어
+		|| text === '通知我' // 中文 (繁體)
 		;
 }
 
