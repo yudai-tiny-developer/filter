@@ -3,6 +3,7 @@ function isLive_metadata(text) {
 	return text.includes('watching') // English (US)
 		|| text.includes('視聴中') // 日本語
 		|| text.includes('menonton') // Bahasa Indonesia
+		|| text.includes('시청 중') // 한국어
 		;
 }
 
@@ -11,6 +12,7 @@ function isStreamed_metadata(text) {
 	return text.includes('Streamed') // English (US)
 		|| text.includes('配信済み') // 日本語
 		|| text.includes('Streaming') // Bahasa Indonesia
+		|| text.includes('스트리밍 시간') // 한국어
 		;
 }
 
@@ -19,10 +21,12 @@ function isVideo_metadata(text) {
 	return (text.includes('views') // English (US)
 		|| text.includes('回視聴')) // 日本語
 		|| text.includes('ditonton') // Bahasa Indonesia
+		|| text.includes('조회수') // 한국어
 
 		&& !text.includes('Streamed') // English (US)
 		&& !text.includes('配信済み') // 日本語
 		&& !text.includes('Streaming') // Bahasa Indonesia
+		&& !text.includes('스트리밍 시간') // 한국어
 		;
 }
 
@@ -31,10 +35,12 @@ function isScheduled_metadata(text) {
 	return text.includes('Scheduled') // English (US)
 		|| text.includes('公開予定') // 日本語
 		|| text.includes('Tayang') // Bahasa Indonesia
+		|| text.includes('예정일') // 한국어
 
 		|| text.includes('Premieres') // English (US)
 		|| text.includes('プレミア公開') // 日本語
 		|| text.includes('perdana') // Bahasa Indonesia
+		|| text.includes('최초') // 한국어
 		;
 }
 
@@ -42,6 +48,7 @@ function isScheduled_metadata(text) {
 function isLive_status_label(text) {
 	return text === 'LIVE' // English (US), Bahasa Indonesia
 		|| text === 'ライブ' // 日本語
+		|| text === '실시간' // 한국어
 		;
 }
 
@@ -50,14 +57,17 @@ function isVideo_status_label(text) {
 	return text.endsWith('second') || text.endsWith('seconds') // English (US)
 		|| text.endsWith('秒') // 日本語
 		|| text.endsWith('detik') // Bahasa Indonesia
+		|| text.endsWith('초') // 한국어
 
 		|| text.endsWith('minute') || text.endsWith('minutes') // English (US)
 		|| text.endsWith('分') // 日本語
 		|| text.endsWith('menit') // Bahasa Indonesia
+		|| text.endsWith('분') // 한국어
 
 		|| text.endsWith('hour') || text.endsWith('hours') // English (US)
 		|| text.endsWith('時間') // 日本語
 		|| text.endsWith('jam') // Bahasa Indonesia
+		|| text.endsWith('시간') // 한국어
 		;
 }
 
@@ -66,6 +76,7 @@ function isNotificationOn_button(text) {
 	return text.includes('Notification on') // English (US)
 		|| text.includes('通知オン') // 日本語
 		|| text.includes('Notifikasi aktif') // Bahasa Indonesia
+		|| text.includes('알림 사용 중') // 한국어
 		;
 }
 
@@ -74,6 +85,7 @@ function isNotificationOff_button(text) {
 	return text.includes('Notify me') // English (US)
 		|| text.includes('通知する') // 日本語
 		|| text.includes('Beri tahu saya') // Bahasa Indonesia
+		|| text.includes('알림 받기') // 한국어
 		;
 }
 
@@ -82,6 +94,7 @@ function isChannelsAllNotifications(text) {
 	return text.includes('all notifications.') // English (US)
 		|| text.includes('すべての通知を受け取る') // 日本語
 		|| text.includes('terima semua notifikasi.') // Bahasa Indonesia
+		|| text.includes('모든 알림 수신입니다.') // 한국어
 		;
 }
 
@@ -90,6 +103,7 @@ function isChannelsPersonalizedNotifications(text) {
 	return text.includes('personalized notifications.') // English (US)
 		|| text.includes('カスタマイズされた通知を受け取る') // 日本語
 		|| text.includes('notifikasi hasil personalisasi.') // Bahasa Indonesia
+		|| text.includes('맞춤설정 알림 수신입니다.') // 한국어
 		;
 }
 
@@ -98,6 +112,7 @@ function isChannelsNoNotifications(text) {
 	return text.includes('receive no notifications.') // English (US)
 		|| text.includes('通知を受け取らない') // 日本語
 		|| text.includes('tidak menerima notifikasi.') // Bahasa Indonesia
+		|| text.includes('알림 수신 안함입니다.') // 한국어
 		;
 }
 
