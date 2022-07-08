@@ -518,4 +518,4 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 	});
 
 	app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
-});
+}, error => { /* Not supported */ });
