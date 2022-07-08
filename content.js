@@ -651,7 +651,7 @@ new MutationObserver((mutations, observer) => {
 			return;
 		}
 	}
-}).observe(document.head, {
+}).observe(document, {
 	subtree: true,
 	childList: true,
 });
