@@ -79,6 +79,32 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
 			node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+		} else if (window.location.href.startsWith('https://www.youtube.com/feed/explore')) {
+			node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+
+			node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
+			node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+		} else if (window.location.href.startsWith('https://www.youtube.com/feed/trending')) {
+			node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+
+			node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
+			node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 		} else {
 			node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
@@ -92,7 +118,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			|| window.location.href.startsWith('https://www.youtube.com/playlist')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/channels')
 			|| window.location.href.startsWith('https://www.youtube.com/channel/')
-			|| window.location.href.startsWith('https://www.youtube.com/c/');
+			|| window.location.href.startsWith('https://www.youtube.com/c/')
+			|| window.location.href.startsWith('https://www.youtube.com/feed/explore')
+			|| window.location.href.startsWith('https://www.youtube.com/feed/trending')
+			;
 	}
 
 	function isFloatingTarget() {
@@ -100,7 +129,9 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			|| window.location.href.startsWith('https://www.youtube.com/feed/library')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/history')
 			|| window.location.href.startsWith('https://www.youtube.com/playlist')
-			|| window.location.href.startsWith('https://www.youtube.com/feed/channels');
+			|| window.location.href.startsWith('https://www.youtube.com/feed/channels')
+			|| window.location.href.startsWith('https://www.youtube.com/feed/explore')
+			;
 	}
 
 	function classifyStatus(node) {
