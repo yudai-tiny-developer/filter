@@ -132,36 +132,36 @@ function isChannelsNoNotifications(text) {
 
 function updateButtonVisibility(node) {
 	if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
 
 		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
-		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
-		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
 
 		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
-		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
-		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
@@ -169,35 +169,35 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
-		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 	} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
-		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
 
 		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
-		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 	} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
-		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'inline-flex');
-		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = '');
+		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = '');
 
-		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 	} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
-		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 		node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
@@ -208,7 +208,7 @@ function updateButtonVisibility(node) {
 		node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 
-		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'inline-flex');
+		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 	} else {
 		node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
@@ -329,18 +329,18 @@ function updateVisibility(updateVisibilityFunction, input) {
 	app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
 
 	// subscriptions?flow=1, library
-	app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateVisibilityFunction(n, 'video'));
+	app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateVisibilityFunction(n));
 
 	// subscriptions?flow=2, history
-	app.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateVisibilityFunction(n, 'video'));
+	app.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateVisibilityFunction(n));
 
 	// playlist
-	app.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateVisibilityFunction(n, 'playlist'));
+	app.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateVisibilityFunction(n));
 
 	// channels
-	app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
-	app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
-	app.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateVisibilityFunction(n, 'channel'));
+	app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n));
+	app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateVisibilityFunction(n));
+	app.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateVisibilityFunction(n));
 }
 
 function insertMenu(node) {
@@ -368,95 +368,86 @@ function insertMenu(node) {
 	}
 }
 
-function updateVisibility_Status(node, display_type, status) {
+function updateVisibility_Status(node, status) {
 	if ((!status || classifyStatus(node).includes(status)) && matchTextContent(node)) {
-		switch (display_type) {
-			case 'channel':
-				node.style.display = 'block';
-				break;
-			case 'playlist':
-				node.style.display = 'flex';
-				break;
-			default:
-				node.style.display = 'inline-block';
-		}
+		node.style.display = '';
 	} else {
 		node.style.display = 'none';
 	}
 }
 
-function updateVisibility_Always(node, display_type) {
-	updateVisibility_Status(node, display_type)
+function updateVisibility_Always(node) {
+	updateVisibility_Status(node)
 }
 
-function updateVisibility_Live(node, display_type) {
-	updateVisibility_Status(node, display_type, 'live.');
+function updateVisibility_Live(node) {
+	updateVisibility_Status(node, 'live.');
 }
 
-function updateVisibility_Streamed(node, display_type) {
-	updateVisibility_Status(node, display_type, 'streamed.');
+function updateVisibility_Streamed(node) {
+	updateVisibility_Status(node, 'streamed.');
 }
 
-function updateVisibility_Video(node, display_type) {
-	updateVisibility_Status(node, display_type, 'video.');
+function updateVisibility_Video(node) {
+	updateVisibility_Status(node, 'video.');
 }
 
-function updateVisibility_Scheduled(node, display_type) {
-	updateVisibility_Status(node, display_type, 'scheduled.');
+function updateVisibility_Scheduled(node) {
+	updateVisibility_Status(node, 'scheduled.');
 }
 
-function updateVisibility_notification_on(node, display_type) {
-	updateVisibility_Status(node, display_type, 'notification_on.');
+function updateVisibility_notification_on(node) {
+	updateVisibility_Status(node, 'notification_on.');
 }
 
-function updateVisibility_channels_all(node, display_type) {
-	updateVisibility_Status(node, display_type, 'channels_all.');
+function updateVisibility_channels_all(node) {
+	updateVisibility_Status(node, 'channels_all.');
 }
 
-function updateVisibility_channels_personalized(node, display_type) {
-	updateVisibility_Status(node, display_type, 'channels_personalized.');
+function updateVisibility_channels_personalized(node) {
+	updateVisibility_Status(node, 'channels_personalized.');
 }
 
-function updateVisibility_channels_none(node, display_type) {
-	updateVisibility_Status(node, display_type, 'channels_none.');
+function updateVisibility_channels_none(node) {
+	updateVisibility_Status(node, 'channels_none.');
 }
 
-function updateVisibility_ActiveMode(node, display_type) {
+function updateVisibility_ActiveMode(node) {
 	switch (activeMode) {
 		case 'all':
-			updateVisibility_Always(node, display_type);
+			updateVisibility_Always(node);
 			break;
 		case 'live':
-			updateVisibility_Live(node, display_type);
+			updateVisibility_Live(node);
 			break;
 		case 'streamed':
-			updateVisibility_Streamed(node, display_type);
+			updateVisibility_Streamed(node);
 			break;
 		case 'video':
-			updateVisibility_Video(node, display_type);
+			updateVisibility_Video(node);
 			break;
 		case 'scheduled':
-			updateVisibility_Scheduled(node, display_type);
+			updateVisibility_Scheduled(node);
 			break;
 		case 'notification_on':
-			updateVisibility_notification_on(node, display_type);
+			updateVisibility_notification_on(node);
 			break;
 		case 'channels_all':
-			updateVisibility_channels_all(node, display_type);
+			updateVisibility_channels_all(node);
 			break;
 		case 'channels_personalized':
-			updateVisibility_channels_personalized(node, display_type);
+			updateVisibility_channels_personalized(node);
 			break;
 		case 'channels_none':
-			updateVisibility_channels_none(node, display_type);
+			updateVisibility_channels_none(node);
 			break;
 	}
 }
 
 function updateMenuVisibility(node) {
 	if (isMenuTarget()) {
-		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'flex');
-		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'flex');
+		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = '');
+		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = '');
 	} else {
 		node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
 		node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'none');
@@ -605,26 +596,25 @@ function onNodeLoaded(node) {
 		insertMenu(node);
 	} else if (node.nodeName === 'YTD-GRID-VIDEO-RENDERER'
 		|| (node.nodeName === 'YTD-VIDEO-RENDERER' && !node.classList.contains('ytd-backstage-post-renderer'))) {
-		updateVisibility_ActiveMode(node, 'video');
+		updateVisibility_ActiveMode(node);
 	} else if (node.nodeName === 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER') { // playlist video lazy load
 		if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
 			const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
 			if (video) {
-				updateVisibility_ActiveMode(video, 'playlist');
+				updateVisibility_ActiveMode(video);
 			}
 		}
 	} else if (node.nodeName === 'YTD-CHANNEL-RENDERER') {
-		updateVisibility_ActiveMode(node, 'channel');
+		updateVisibility_ActiveMode(node);
 	} else if (node.nodeName === 'YTD-BACKSTAGE-POST-THREAD-RENDERER') {
-		updateVisibility_ActiveMode(node, 'channel');
+		updateVisibility_ActiveMode(node);
 	} else if (node.nodeName === 'YTD-GRID-PLAYLIST-RENDERER') {
-		updateVisibility_ActiveMode(node, 'channel');
+		updateVisibility_ActiveMode(node);
 	}
 }
 
 // mode: 'all', 'live', 'streamed', 'video', 'scheduled', 'notification_on', 'channels_all', 'channels_personalized', 'channels_none'
 // status: 'live.', 'streamed.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.', 'channels_all.', 'channels_personalized.', 'channels_none.'
-// display_type: 'video', 'playlist', 'channel'
 
 const button_all = chrome.i18n.getMessage('button_all');
 const button_live = chrome.i18n.getMessage('button_live');

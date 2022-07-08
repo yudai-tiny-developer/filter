@@ -10,6 +10,7 @@ span.filter-button {
 	border-width: 1px;
 	box-sizing: border-box;
 	cursor: pointer;
+	display: inline-flex;
 	font-size: var(--ytd-user-comment-font-size);
 	font-weight: var(--ytd-user-comment-font-weight);
 	height: 32px;
@@ -27,6 +28,10 @@ span.filter-button.selected {
 	background-color: var(--yt-spec-text-primary);
 	color: var(--yt-spec-text-primary-inverse);
 	fill: var(--yt-spec-text-primary-inverse);
+}
+
+span.filter-query {
+	display: inline-flex;
 }
 
 span.filter-query.area {
@@ -85,9 +90,11 @@ div.filter-menu {
 	border-color: var(--yt-spec-10-percent-layer);
 	border-style: solid;
 	border-width: 1px;
+	display: flex;
 }
 
 div.filter-spacer {
+	display: flex;
 	height: 32px;
 	margin: 12px 6px 12px 6px;
 	visibility: hidden;
