@@ -45,7 +45,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
-			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
 			node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
