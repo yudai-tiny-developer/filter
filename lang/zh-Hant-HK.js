@@ -5,18 +5,18 @@ export function isLive_metadata(text) {
 
 // div#metadata-line
 export function isStreamed_metadata(text) {
-    return text.includes('直播時間');
+    return text.includes('曾經串流');
 }
 
 // div#metadata-line
 export function isVideo_metadata(text) {
-    return text.includes('觀看次數')
-        && !text.includes('直播時間');
+    return text.includes('收看次數')
+        && !text.includes('曾經串流');
 }
 
 // div#metadata-line
 export function isScheduled_metadata(text) {
-    return text.includes('預定發布時間')
+    return text.includes('預定發佈時間')
         || text.includes('首播日期');
 }
 
@@ -54,5 +54,5 @@ export function isChannelsPersonalizedNotifications(text) {
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
 export function isChannelsNoNotifications(text) {
-    return text.includes('不接收任何通知。');
+    return text.includes('不接收通知。');
 }
