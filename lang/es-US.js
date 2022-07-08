@@ -16,7 +16,7 @@ export function isVideo_metadata(text) {
 
 // div#metadata-line
 export function isScheduled_metadata(text) {
-    return text.includes('Programado para')
+    return text.includes('Programado')
         || text.includes('Se estrena');
 }
 

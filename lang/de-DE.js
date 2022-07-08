@@ -16,8 +16,8 @@ export function isVideo_metadata(text) {
 
 // div#metadata-line
 export function isScheduled_metadata(text) {
-    return text.includes('Geplant für')
-        || text.includes('Premiere am');
+    return text.includes('Geplant')
+        || text.includes('Premiere');
 }
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
