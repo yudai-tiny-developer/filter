@@ -1,4 +1,7 @@
-import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang'].value + '.js')).then(lang => {
+const html_lang = document.documentElement.attributes['lang'];
+const html_lang_value = html_lang ? html_lang.value : 'en';
+const lang_js = chrome.runtime.getURL('lang/' + html_lang_value + '.js') || chrome.runtime.getURL('lang/en.js');
+import(lang_js).then(lang => {
 	function updateButtonVisibility(node) {
 		if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 			node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
@@ -540,25 +543,26 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 	const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
 	const button_channels_none = chrome.i18n.getMessage('button_channels_none');
 
-	const app = document.querySelector('ytd-app');
-
 	let activeMode = 'all';
 	let queryString = '';
 	let queryRegex;
 
-	new MutationObserver((mutations, observer) => {
-		for (const m of mutations) {
-			if (m.target.nodeName === 'TITLE') {
-				onViewChanged();
-			} else {
-				onNodeLoaded(m.target);
-				m.addedNodes.forEach(n => onNodeLoaded(n));
+	const app = document.querySelector('ytd-app');
+	if (app) {
+		new MutationObserver((mutations, observer) => {
+			for (const m of mutations) {
+				if (m.target.nodeName === 'TITLE') {
+					onViewChanged();
+				} else {
+					onNodeLoaded(m.target);
+					m.addedNodes.forEach(n => onNodeLoaded(n));
+				}
 			}
-		}
-	}).observe(document, {
-		subtree: true,
-		childList: true,
-	});
+		}).observe(document, {
+			subtree: true,
+			childList: true,
+		});
 
-	app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
+		app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
+	}
 }, error => { /* Not supported */ });
