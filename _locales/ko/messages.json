@@ -11,6 +11,9 @@
    "button_video": {
       "message": "동영상"
    },
+   "button_history_video": {
+      "message": "보관처리/동영상"
+   },
    "button_scheduled": {
       "message": "예정"
    },

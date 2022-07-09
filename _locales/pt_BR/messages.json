@@ -11,6 +11,9 @@
    "button_video": {
       "message": "Vídeo"
    },
+   "button_history_video": {
+      "message": "Transmitido/Vídeo"
+   },
    "button_scheduled": {
       "message": "Agendado"
    },

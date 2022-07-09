@@ -11,6 +11,9 @@
    "button_video": {
       "message": "Vidéo"
    },
+   "button_history_video": {
+      "message": "Diffusé/Vidéo"
+   },
    "button_scheduled": {
       "message": "Planifié"
    },

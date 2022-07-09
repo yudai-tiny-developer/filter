@@ -11,6 +11,9 @@
    "button_video": {
       "message": "Video"
    },
+   "button_history_video": {
+      "message": "Trasmesso in streaming/Video"
+   },
    "button_scheduled": {
       "message": "Programmato"
    },

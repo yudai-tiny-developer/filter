@@ -11,6 +11,9 @@
    "button_video": {
       "message": "Video"
    },
+   "button_history_video": {
+      "message": "Nai-stream/Video"
+   },
    "button_scheduled": {
       "message": "Naka-iskedyul"
    },

@@ -11,6 +11,9 @@
    "button_video": {
       "message": "影片"
    },
+   "button_history_video": {
+      "message": "封存/影片"
+   },
    "button_scheduled": {
       "message": "預定"
    },

@@ -5,6 +5,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
 
@@ -18,6 +19,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
 
@@ -30,7 +32,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
@@ -44,6 +47,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
@@ -57,6 +61,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
@@ -71,6 +76,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
 
@@ -84,6 +90,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
@@ -97,6 +104,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 			node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
+			node.querySelectorAll('span.filter-button.history_video').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 			node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 
@@ -468,6 +476,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 		menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, input));
 		menu.appendChild(createButton(button_streamed, 'streamed', updateVisibility_Streamed, input));
 		menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, input));
+		menu.appendChild(createButton(button_history_video, 'history_video', updateVisibility_Video, input));
 		menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, input));
 		menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, input));
 
@@ -521,6 +530,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 	const button_live = chrome.i18n.getMessage('button_live');
 	const button_streamed = chrome.i18n.getMessage('button_streamed');
 	const button_video = chrome.i18n.getMessage('button_video');
+	const button_history_video = chrome.i18n.getMessage('button_history_video');
 	const button_scheduled = chrome.i18n.getMessage('button_scheduled');
 	const button_notification_on = chrome.i18n.getMessage('button_notification_on');
 	const button_clear = chrome.i18n.getMessage('button_clear');
