@@ -22,7 +22,9 @@ export function isScheduled_metadata(text) {
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 export function isLive_status_label(text) {
-    return text === 'LIVE';
+    return text === 'LIVE'
+        || text === 'TAYANG PERDANA'
+        ;
 }
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]

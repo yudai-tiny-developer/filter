@@ -22,7 +22,9 @@ export function isScheduled_metadata(text) {
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 export function isLive_status_label(text) {
-    return text === 'DAL VIVO';
+    return text === 'DAL VIVO'
+        || text === 'PREMIÈRE'
+        ;
 }
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
