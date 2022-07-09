@@ -11,8 +11,8 @@
    "button_video": {
       "message": "動画"
    },
-   "button_history_video": {
-      "message": "配信済み/動画"
+   "button_streamed_video": {
+      "message": "配信済み / 動画"
    },
    "button_scheduled": {
       "message": "予定"

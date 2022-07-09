@@ -11,8 +11,8 @@
    "button_video": {
       "message": "วีดีโอ"
    },
-   "button_history_video": {
-      "message": "สตรีมแล้วเมื่อ/วีดีโอ"
+   "button_streamed_video": {
+      "message": "สตรีมแล้วเมื่อ / วีดีโอ"
    },
    "button_scheduled": {
       "message": "กำหนดการ"

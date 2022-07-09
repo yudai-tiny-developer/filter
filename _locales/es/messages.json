@@ -11,8 +11,8 @@
    "button_video": {
       "message": "Vídeo"
    },
-   "button_history_video": {
-      "message": "Emitido/Vídeo"
+   "button_streamed_video": {
+      "message": "Emitido / Vídeo"
    },
    "button_scheduled": {
       "message": "Programado"
