@@ -333,6 +333,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 				updateVisibility_Streamed(node);
 				break;
 			case 'video':
+			case 'history_video':
 				updateVisibility_Video(node);
 				break;
 			case 'scheduled':
