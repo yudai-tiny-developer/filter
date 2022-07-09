@@ -10,7 +10,7 @@ export function isStreamed_metadata(text) {
 
 // div#metadata-line
 export function isVideo_metadata(text) {
-    return text.includes('visualizações')
+    return text.includes('visualizaç') // visualização, visualizações
         && !text.includes('Transmitido');
 }
 

@@ -10,7 +10,7 @@ export function isStreamed_metadata(text) {
 
 // div#metadata-line
 export function isVideo_metadata(text) {
-    return text.includes('Aufrufe')
+    return text.includes('Aufruf') // Aufrufe
         && !text.includes('gestreamt');
 }
 
