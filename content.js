@@ -148,7 +148,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 		const metadata = node.querySelector('div#metadata-line');
 		if (metadata) {
 			const t = metadata.textContent;
-			if (lang.isLive_metadata(t)) {
+			if (lang.isLive_metadata(t) || t === '') {
 				status += 'live.';
 			} else if (lang.isStreamed_metadata(t)) {
 				status += 'streamed.';
