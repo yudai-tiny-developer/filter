@@ -272,7 +272,7 @@ if (html_lang) {
 
 					updateMenuVisibility(browse);
 					updateButtonVisibility(browse);
-					updateVisibility_QuerySelector(browse);
+					updateVisibility_Selected_All(browse);
 				} else {
 					console.warn('ytd-two-column-browse-results-renderer not found');
 				}
@@ -291,19 +291,19 @@ if (html_lang) {
 			updateVisibility_Status(node)
 		}
 
-		function updateVisibility_Live(node) {
+		function updateVisibility_live(node) {
 			updateVisibility_Status(node, 'live.');
 		}
 
-		function updateVisibility_Streamed(node) {
+		function updateVisibility_streamed(node) {
 			updateVisibility_Status(node, 'streamed.');
 		}
 
-		function updateVisibility_Video(node) {
+		function updateVisibility_video(node) {
 			updateVisibility_Status(node, 'video.');
 		}
 
-		function updateVisibility_Scheduled(node) {
+		function updateVisibility_scheduled(node) {
 			updateVisibility_Status(node, 'scheduled.');
 		}
 
@@ -329,17 +329,17 @@ if (html_lang) {
 					updateVisibility_Always(node);
 					break;
 				case 'live':
-					updateVisibility_Live(node);
+					updateVisibility_live(node);
 					break;
 				case 'streamed':
-					updateVisibility_Streamed(node);
+					updateVisibility_streamed(node);
 					break;
 				case 'video':
 				case 'streamed_video':
-					updateVisibility_Video(node);
+					updateVisibility_video(node);
 					break;
 				case 'scheduled':
-					updateVisibility_Scheduled(node);
+					updateVisibility_scheduled(node);
 					break;
 				case 'notification_on':
 					updateVisibility_notification_on(node);
@@ -381,17 +381,18 @@ if (html_lang) {
 			app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
 		}
 
-		function updateVisibility_QuerySelector(node) {
+		function updateVisibility_Selected_All(node) {
 			const selectedButton = node.querySelector('span.filter-button.selected');
-			if (selectedButton) {
-				const input = node.querySelector('input#filter-query');
-				if (input) {
-					if (selectedButton.style.display === 'none') {
-						changeMode('all');
-					}
-
-					updateVisibility(updateVisibility_ActiveMode, input);
+			if (selectedButton && selectedButton.style.display === 'none') {
+				const allButton = node.querySelector('span.filter-button.all');
+				if (allButton && allButton.style.display !== 'none') {
+					changeMode('all');
 				}
+			}
+
+			const input = node.querySelector('input#filter-query');
+			if (input && input.style.display !== 'none') {
+				updateVisibility(updateVisibility_ActiveMode, input);
 			}
 		}
 
@@ -421,7 +422,7 @@ if (html_lang) {
 
 			button.addEventListener('click', () => {
 				input.value = '';
-				updateVisibility_QuerySelector(menu);
+				updateVisibility_Selected_All(menu);
 			});
 
 			return button;
@@ -434,7 +435,7 @@ if (html_lang) {
 			button.classList.add('search');
 
 			button.addEventListener('click', () => {
-				updateVisibility_QuerySelector(menu);
+				updateVisibility_Selected_All(menu);
 			});
 
 			return button;
@@ -457,7 +458,7 @@ if (html_lang) {
 			input.value = queryString;
 
 			input.addEventListener('change', e => {
-				updateVisibility_QuerySelector(menu);
+				updateVisibility_Selected_All(menu);
 			});
 
 			return input;
@@ -475,11 +476,11 @@ if (html_lang) {
 			const input = createQueryInput(menu);
 
 			menu.appendChild(createButton(button_all, 'all', updateVisibility_Always, input));
-			menu.appendChild(createButton(button_live, 'live', updateVisibility_Live, input));
-			menu.appendChild(createButton(button_streamed, 'streamed', updateVisibility_Streamed, input));
-			menu.appendChild(createButton(button_video, 'video', updateVisibility_Video, input));
-			menu.appendChild(createButton(button_streamed_video, 'streamed_video', updateVisibility_Video, input));
-			menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_Scheduled, input));
+			menu.appendChild(createButton(button_live, 'live', updateVisibility_live, input));
+			menu.appendChild(createButton(button_streamed, 'streamed', updateVisibility_streamed, input));
+			menu.appendChild(createButton(button_video, 'video', updateVisibility_video, input));
+			menu.appendChild(createButton(button_streamed_video, 'streamed_video', updateVisibility_video, input));
+			menu.appendChild(createButton(button_scheduled, 'scheduled', updateVisibility_scheduled, input));
 			menu.appendChild(createButton(button_notification_on, 'notification_on', updateVisibility_notification_on, input));
 
 			menu.appendChild(createButton(button_channels_all, 'channels_all', updateVisibility_channels_all, input));
@@ -501,7 +502,7 @@ if (html_lang) {
 		function onViewChanged() {
 			updateMenuVisibility(app);
 			updateButtonVisibility(app);
-			updateVisibility_QuerySelector(app);
+			updateVisibility_Selected_All(app);
 		}
 
 		function onNodeLoaded(node) {
