@@ -493,7 +493,8 @@ if (html_lang) {
 
 		function createSpacer() {
 			const spacer = document.createElement('div');
-			spacer.classList.add('filter-spacer');
+			spacer.classList.add('filter-menu');
+			spacer.classList.add('spacer');
 			return spacer;
 		}
 

@@ -30,6 +30,12 @@ span.filter-button.selected {
 	fill: var(--yt-spec-text-primary-inverse);
 }
 
+svg.filter-button {
+	margin: 4px;
+	height: 24px;
+	width: 24px;
+}
+
 span.filter-query {
 	display: inline-flex;
 	height: 34px;
@@ -94,12 +100,6 @@ svg.filter-search {
 	width: 24px;
 }
 
-svg.filter-button {
-	margin: 4px;
-	height: 24px;
-	width: 24px;
-}
-
 div.filter-menu {
 	background-color: var(--yt-spec-brand-background-primary);
 	border-color: var(--yt-spec-10-percent-layer);
@@ -111,8 +111,6 @@ div.filter-menu {
 	width: 100%;
 }
 
-div.filter-spacer {
-	display: flex;
-	height: 56px;
+div.filter-menu.spacer {
 	visibility: hidden;
 }
