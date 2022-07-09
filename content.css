@@ -14,7 +14,7 @@ span.filter-button {
 	font-size: var(--ytd-user-comment-font-size);
 	font-weight: var(--ytd-user-comment-font-weight);
 	height: 32px;
-	margin: 12px 12px 12px 0px;
+	margin: 12px 6px 12px 6px;
 	padding: 0px 12px 0px 12px;
 	transition-delay: 0s;
 	transition-duration: 0.5s;
@@ -28,10 +28,6 @@ span.filter-button.selected {
 	background-color: var(--yt-spec-text-primary);
 	color: var(--yt-spec-text-primary-inverse);
 	fill: var(--yt-spec-text-primary-inverse);
-}
-
-span.filter-button.all {
-	margin: 12px 12px 12px 24px;
 }
 
 svg.filter-button {
@@ -54,7 +50,7 @@ span.filter-query.area {
 	border-radius: 2px 0 0 2px;
 	border-width: 1px;
 	box-sizing: border-box;
-	margin: 12px 0px 12px 0px;
+	margin: 12px 0px 12px 6px;
 	padding: 0px 0px 0px 12px;
 }
 
@@ -95,7 +91,7 @@ span.filter-query.search {
 	fill: var(--yt-spec-text-primary);
 
 	border-radius: 0 2px 2px 0;
-	margin: 12px 24px 12px 0px;
+	margin: 12px 6px 12px 0px;
 }
 
 svg.filter-search {
