@@ -358,10 +358,8 @@ if (html_lang) {
 		function updateMenuVisibility(node) {
 			if (isMenuTarget()) {
 				node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = '');
-				node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = '');
 			} else {
 				node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('div.filter-spacer').forEach(n => n.style.display = 'none');
 			}
 		}
 
