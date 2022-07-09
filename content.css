@@ -40,10 +40,11 @@ span.filter-query.area {
 	align-items: center;
 	border: solid;
 	border-color: var(--ytd-searchbox-legacy-border-color);
+	border-radius: 2px 0 0 2px;
 	border-width: 1px;
 	box-sizing: border-box;
-	height: 32px;
-	margin: 12px 6px 12px 12px;
+	height: 34px;
+	margin: 12px 0px 12px 12px;
 	padding: 0px 0px 0px 12px;
 }
 
@@ -65,8 +66,13 @@ span.filter-query.clear {
 	background-color: var(--ytd-searchbox-background);
 	color: var(--ytd-searchbox-text-color);
 	fill: var(--ytd-searchbox-text-color);
-	height: 100%;
-	padding: 0px 6px 0px 6px;
+	height: 32px;
+}
+
+svg.filter-clear {
+	margin: 6px;
+	height: 20px;
+	width: 20px;
 }
 
 input#filter-query:placeholder-shown+span.filter-query.clear {
@@ -74,23 +80,36 @@ input#filter-query:placeholder-shown+span.filter-query.clear {
 }
 
 span.filter-query.search {
-	background-color: var(--yt-spec-badge-chip-background);
+	background-color: var(--ytd-searchbox-legacy-button-color);
 	color: var(--yt-spec-text-primary);
 	fill: var(--yt-spec-text-primary);
 
-	border: solid;
-	border-color: var(--ytd-searchbox-legacy-border-color);
-	border-width: 1px;
-	height: 100%;
-	padding: 0px 6px 0px 6px;
+	border-radius: 0 2px 2px 0;
+	height: 34px;
+	margin: 12px 6px 12px 0px;
+	vertical-align: middle;
+}
+
+svg.filter-search {
+	margin: 4px;
+	height: 24px;
+	width: 24px;
+}
+
+svg.filter-button {
+	margin: 4px;
+	height: 24px;
+	width: 24px;
 }
 
 div.filter-menu {
-	background-color: var(--yt-spec-general-background-a);
+	background-color: var(--yt-spec-brand-background-primary);
 	border-color: var(--yt-spec-10-percent-layer);
 	border-style: solid;
 	border-width: 1px;
 	display: flex;
+	justify-content: center;
+	width: 100%;
 }
 
 div.filter-spacer {

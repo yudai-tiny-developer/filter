@@ -444,7 +444,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 		inputArea.classList.add('area');
 		inputArea.appendChild(input);
 		inputArea.appendChild(createClearButton(input, menu));
-		inputArea.appendChild(createSearchButton(menu));
 		return inputArea;
 	}
 
@@ -486,6 +485,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 		menu.appendChild(createButton(button_channels_none, 'channels_none', updateVisibility_channels_none, input));
 
 		menu.appendChild(createQueryInputArea(input, menu));
+		menu.appendChild(createSearchButton(menu));
 
 		return menu;
 	}
