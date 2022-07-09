@@ -6,13 +6,13 @@
       "message": "Dal vivo"
    },
    "button_streamed": {
-      "message": "Trasmesso in streaming"
+      "message": "Trasmesso"
    },
    "button_video": {
       "message": "Video"
    },
    "button_streamed_video": {
-      "message": "Trasmesso in streaming / Video"
+      "message": "Trasmesso / Video"
    },
    "button_scheduled": {
       "message": "Programmato"
