@@ -32,6 +32,7 @@ span.filter-button.selected {
 
 span.filter-query {
 	display: inline-flex;
+	height: 34px;
 }
 
 span.filter-query.area {
@@ -43,7 +44,6 @@ span.filter-query.area {
 	border-radius: 2px 0 0 2px;
 	border-width: 1px;
 	box-sizing: border-box;
-	height: 34px;
 	margin: 12px 0px 12px 12px;
 	padding: 0px 0px 0px 12px;
 }
@@ -62,7 +62,7 @@ input#filter-query::placeholder {
 	opacity: 0;
 }
 
-span.filter-query.clear {
+span.filter-clear {
 	background-color: var(--ytd-searchbox-background);
 	color: var(--ytd-searchbox-text-color);
 	fill: var(--ytd-searchbox-text-color);
@@ -75,7 +75,7 @@ svg.filter-clear {
 	width: 20px;
 }
 
-input#filter-query:placeholder-shown+span.filter-query.clear {
+input#filter-query:placeholder-shown+span.filter-clear {
 	visibility: hidden;
 }
 
@@ -85,9 +85,7 @@ span.filter-query.search {
 	fill: var(--yt-spec-text-primary);
 
 	border-radius: 0 2px 2px 0;
-	height: 34px;
 	margin: 12px 6px 12px 0px;
-	vertical-align: middle;
 }
 
 svg.filter-search {

@@ -3,7 +3,9 @@ if (html_lang) {
 	import(chrome.runtime.getURL('lang/' + html_lang.value + '.js')).then(lang => {
 		function updateButtonVisibility(node) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
@@ -14,10 +16,10 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
@@ -28,10 +30,10 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
@@ -42,10 +44,10 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
@@ -56,10 +58,10 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
@@ -70,11 +72,10 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = '');
-
+			} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-			} else if (window.location.href.startsWith('https://www.youtube.com/channel/')
-				|| window.location.href.startsWith('https://www.youtube.com/c/')) {
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
@@ -85,10 +86,10 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/explore')) {
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
@@ -99,10 +100,10 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/trending')) {
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
@@ -113,11 +114,9 @@ if (html_lang) {
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 			} else {
-				node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 			}
 		}
 
@@ -417,8 +416,7 @@ if (html_lang) {
 		function createClearButton(input, menu) {
 			const button = document.createElement('span');
 			button.innerHTML = button_clear;
-			button.classList.add('filter-query');
-			button.classList.add('clear');
+			button.classList.add('filter-clear');
 
 			button.addEventListener('click', () => {
 				input.value = '';
