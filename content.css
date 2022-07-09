@@ -108,13 +108,13 @@ div.filter-menu {
 	border-style: solid;
 	border-width: 1px;
 	display: flex;
+	height: 56px;
 	justify-content: center;
 	width: 100%;
 }
 
 div.filter-spacer {
 	display: flex;
-	height: 32px;
-	margin: 12px 6px 12px 6px;
+	height: 56px;
 	visibility: hidden;
 }
