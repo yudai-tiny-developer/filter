@@ -91,7 +91,7 @@ span.filter-query.search {
 }
 
 svg.filter-search {
-	margin: 4px;
+	margin: 4px 12px 4px 12px;
 	height: 24px;
 	width: 24px;
 }
