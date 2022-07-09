@@ -27,9 +27,12 @@ export function isLive_status_label(text) {
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 export function isVideo_status_label(text) {
-    return text.endsWith('Sekunden')
+    return text.endsWith('Sekunde')
+        || text.endsWith('Sekunden')
+        || text.endsWith('Minute')
         || text.endsWith('Minuten')
-        || text.endsWith('Stunde');
+        || text.endsWith('Stunde')
+        || text.endsWith('Stunden');
 }
 
 // ytd-toggle-button-renderer
