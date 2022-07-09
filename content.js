@@ -133,7 +133,7 @@ if (html_lang) {
 				;
 		}
 
-		function isFloatingTarget() {
+		function isPositionFixedTarget() {
 			return window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')
 				|| window.location.href.startsWith('https://www.youtube.com/feed/library')
 				|| window.location.href.startsWith('https://www.youtube.com/feed/history')
@@ -258,9 +258,9 @@ if (html_lang) {
 			if (browse && !browse.querySelector('div.filter-menu')) {
 				const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
 				if (sibling) {
-					const floating = isFloatingTarget();
-					browse.insertBefore(createMenu(floating), sibling);
-					if (floating) {
+					const positionFixed = isPositionFixedTarget();
+					browse.insertBefore(createMenu(positionFixed), sibling);
+					if (positionFixed) {
 						browse.insertBefore(createSpacer(), sibling);
 						const sidebar = browse.querySelector('ytd-playlist-sidebar-renderer');
 						if (sidebar) {
@@ -460,13 +460,12 @@ if (html_lang) {
 			return input;
 		}
 
-		function createMenu(floating) {
+		function createMenu(positionFixed) {
 			const menu = document.createElement('div');
 			menu.classList.add('filter-menu');
 
-			if (floating) {
-				menu.style.position = 'fixed';
-				menu.style.zIndex = '2000';
+			if (positionFixed) {
+				menu.classList.add('position-fixed');
 			}
 
 			const input = createQueryInput(menu);
