@@ -84,6 +84,10 @@ input#filter-query:placeholder-shown+span.filter-clear {
 	visibility: hidden;
 }
 
+span.filter-query.area:focus-within {
+	border-color: #1c62b9;
+}
+
 span.filter-query.search {
 	background-color: var(--ytd-searchbox-legacy-button-color);
 	border-radius: 0 2px 2px 0;

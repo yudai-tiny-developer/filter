@@ -454,7 +454,8 @@ if (html_lang) {
 			input.value = queryString;
 
 			input.addEventListener('change', e => {
-				updateVisibility_Selected_All(menu);
+				input.blur();
+				setTimeout(() => updateVisibility_Selected_All(menu));
 			});
 
 			return input;
