@@ -163,7 +163,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 			}
 		}
 
-		const button = node.querySelector('ytd-toggle-button-renderer');
+		const button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
 		if (button) {
 			const t = button.textContent;
 			if (lang.isNotificationOn_button(t)) {
