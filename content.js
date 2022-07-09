@@ -526,9 +526,6 @@ if (html_lang) {
 			}
 		}
 
-		// mode: 'all', 'live', 'streamed', 'video', 'streamed_video', 'scheduled', 'notification_on', 'channels_all', 'channels_personalized', 'channels_none'
-		// status: 'live.', 'streamed.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.', 'channels_all.', 'channels_personalized.', 'channels_none.'
-
 		const button_all = chrome.i18n.getMessage('button_all');
 		const button_live = chrome.i18n.getMessage('button_live');
 		const button_streamed = chrome.i18n.getMessage('button_streamed');
