@@ -1,6 +1,6 @@
 // div#metadata-line
 export function isLive_metadata(text) {
-    return text.includes('ver');
+    return text.includes('a ver');
 }
 
 // div#metadata-line

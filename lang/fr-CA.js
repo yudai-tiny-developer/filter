@@ -1,6 +1,6 @@
 // div#metadata-line
 export function isLive_metadata(text) {
-    return text.includes('spectateur');
+    return text.includes('spectateurs');
 }
 
 // div#metadata-line
