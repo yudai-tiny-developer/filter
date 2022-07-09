@@ -524,7 +524,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.attributes['lang
 		}
 	}
 
-	// mode: 'all', 'live', 'streamed', 'video', 'scheduled', 'notification_on', 'channels_all', 'channels_personalized', 'channels_none'
+	// mode: 'all', 'live', 'streamed', 'video', 'history_video', 'scheduled', 'notification_on', 'channels_all', 'channels_personalized', 'channels_none'
 	// status: 'live.', 'streamed.', 'video.', 'scheduled.', 'notification_on.', 'notification_off.', 'channels_all.', 'channels_personalized.', 'channels_none.'
 
 	const button_all = chrome.i18n.getMessage('button_all');
