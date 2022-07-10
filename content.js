@@ -197,51 +197,15 @@ if (html_lang) {
 			return status;
 		}
 
-		function matchTextContent(node) {
-			if (node.nodeName === 'YTD-GRID-VIDEO-RENDERER') {
-				const title = node.querySelector('a#video-title');
-				if (title) {
-					return title.textContent.match(queryRegex);
-				}
-			} else if (node.nodeName === 'YTD-VIDEO-RENDERER' && !node.classList.contains('ytd-backstage-post-renderer')) {
-				const title = node.querySelector('a#video-title');
-				if (title) {
-					return title.textContent.match(queryRegex);
-				}
-			} else if (node.nodeName === 'YTD-PLAYLIST-VIDEO-RENDERER') {
-				const meta = node.querySelector('div#meta');
-				if (meta) {
-					return meta.textContent.match(queryRegex);
-				}
-			} else if (node.nodeName === 'YTD-CHANNEL-RENDERER') {
-				const info = node.querySelector('div#info');
-				if (info) {
-					return info.textContent.match(queryRegex);
-				}
-			} else if (node.nodeName === 'YTD-BACKSTAGE-POST-THREAD-RENDERER') {
-				const content = node.querySelector('div#content');
-				if (content) {
-					return content.textContent.match(queryRegex);
-				}
-			} else if (node.nodeName === 'YTD-GRID-PLAYLIST-RENDERER') {
-				const title = node.querySelector('a#video-title');
-				if (title) {
-					return title.textContent.match(queryRegex);
-				}
-			}
-
-			console.warn('Unknown node: ' + node.nodeName);
-		}
-
 		function updateVisibility(updateVisibilityFunction, input) {
 			queryString = input.value;
 			queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
 			app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
 
-			// subscriptions?flow=1, library
+			// subscriptions?flow=1, library, explore, trending
 			app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateVisibilityFunction(n));
 
-			// subscriptions?flow=2, history
+			// subscriptions?flow=2, history, explore, trending
 			app.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateVisibilityFunction(n));
 
 			// playlist
@@ -251,6 +215,91 @@ if (html_lang) {
 			app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n));
 			app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateVisibilityFunction(n));
 			app.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateVisibilityFunction(n));
+		}
+
+		function matchTextContent(node) {
+			switch (node.nodeName) {
+				// subscriptions?flow=1, library, explore, trending
+				case 'YTD-GRID-VIDEO-RENDERER':
+					const grid_video_title = node.querySelector('a#video-title');
+					if (grid_video_title) {
+						return grid_video_title.textContent.match(queryRegex);
+					}
+					break;
+
+				// subscriptions?flow=2, history, explore, trending
+				case 'YTD-VIDEO-RENDERER':
+					if (!node.classList.contains('ytd-backstage-post-renderer')) {
+						const video_title = node.querySelector('a#video-title');
+						if (video_title) {
+							return video_title.textContent.match(queryRegex);
+						}
+					}
+					break;
+
+				// playlist
+				case 'YTD-PLAYLIST-VIDEO-RENDERER':
+					const playlist_meta = node.querySelector('div#meta');
+					if (playlist_meta) {
+						return playlist_meta.textContent.match(queryRegex);
+					}
+					break;
+
+				// channels
+				case 'YTD-CHANNEL-RENDERER':
+					const channel_info = node.querySelector('div#info');
+					if (channel_info) {
+						return channel_info.textContent.match(queryRegex);
+					}
+					break;
+				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+					const post_content = node.querySelector('div#content');
+					if (post_content) {
+						return post_content.textContent.match(queryRegex);
+					}
+					break;
+				case 'YTD-GRID-PLAYLIST-RENDERER':
+					const grid_playlist_title = node.querySelector('a#video-title');
+					if (title) {
+						return title.textContent.match(queryRegex);
+					}
+					break;
+			}
+		}
+
+		function onNodeLoaded(node) {
+			switch (node.nodeName) {
+				case 'YTD-SECTION-LIST-RENDERER':
+					insertMenu(node);
+					break;
+
+				// subscriptions?flow=1, library, explore, trending
+				case 'YTD-GRID-VIDEO-RENDERER':
+					updateVisibility_ActiveMode(node);
+					break;
+
+				// subscriptions?flow=2, history, explore, trending
+				case 'YTD-VIDEO-RENDERER':
+					if (!node.classList.contains('ytd-backstage-post-renderer')) {
+						updateVisibility_ActiveMode(node);
+					}
+					break;
+
+				// playlist
+				case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
+					const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
+					if (video) {
+						updateVisibility_ActiveMode(video);
+					}
+					break;
+
+				// channels
+				case 'YTD-CHANNEL-RENDERER':
+				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+				case 'YTD-GRID-PLAYLIST-RENDERER':
+					updateVisibility_ActiveMode(node);
+					break;
+			}
 		}
 
 		function insertMenu(node) {
@@ -500,28 +549,6 @@ if (html_lang) {
 			updateMenuVisibility(app);
 			updateButtonVisibility(app);
 			updateVisibility_Selected_All(app);
-		}
-
-		function onNodeLoaded(node) {
-			if (node.nodeName === 'YTD-SECTION-LIST-RENDERER') {
-				insertMenu(node);
-			} else if (node.nodeName === 'YTD-GRID-VIDEO-RENDERER'
-				|| (node.nodeName === 'YTD-VIDEO-RENDERER' && !node.classList.contains('ytd-backstage-post-renderer'))) {
-				updateVisibility_ActiveMode(node);
-			} else if (node.nodeName === 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER') { // playlist video lazy load
-				if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
-					const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-					if (video) {
-						updateVisibility_ActiveMode(video);
-					}
-				}
-			} else if (node.nodeName === 'YTD-CHANNEL-RENDERER') {
-				updateVisibility_ActiveMode(node);
-			} else if (node.nodeName === 'YTD-BACKSTAGE-POST-THREAD-RENDERER') {
-				updateVisibility_ActiveMode(node);
-			} else if (node.nodeName === 'YTD-GRID-PLAYLIST-RENDERER') {
-				updateVisibility_ActiveMode(node);
-			}
 		}
 
 		const button_all = chrome.i18n.getMessage('button_all');
