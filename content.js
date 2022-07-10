@@ -215,6 +215,7 @@ if (html_lang) {
 			app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n));
 			app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateVisibilityFunction(n));
 			app.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateVisibilityFunction(n));
+			app.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateVisibilityFunction(n));
 		}
 
 		function matchTextContent(node) {
@@ -239,9 +240,9 @@ if (html_lang) {
 
 				// playlist
 				case 'YTD-PLAYLIST-VIDEO-RENDERER':
-					const playlist_meta = node.querySelector('div#meta');
-					if (playlist_meta) {
-						return playlist_meta.textContent.match(queryRegex);
+					const playlist_video_meta = node.querySelector('div#meta');
+					if (playlist_video_meta) {
+						return playlist_video_meta.textContent.match(queryRegex);
 					}
 					break;
 
@@ -253,15 +254,21 @@ if (html_lang) {
 					}
 					break;
 				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-					const post_content = node.querySelector('div#content');
-					if (post_content) {
-						return post_content.textContent.match(queryRegex);
+					const backstage_post_thread_content = node.querySelector('div#content');
+					if (backstage_post_thread_content) {
+						return backstage_post_thread_content.textContent.match(queryRegex);
 					}
 					break;
 				case 'YTD-GRID-PLAYLIST-RENDERER':
 					const grid_playlist_title = node.querySelector('a#video-title');
-					if (title) {
-						return title.textContent.match(queryRegex);
+					if (grid_playlist_title) {
+						return grid_playlist_title.textContent.match(queryRegex);
+					}
+					break;
+				case 'YTD-REEL-ITEM-RENDERER':
+					const reel_item_title = node.querySelector('span#video-title');
+					if (reel_item_title) {
+						return reel_item_title.textContent.match(queryRegex);
 					}
 					break;
 			}
@@ -297,6 +304,7 @@ if (html_lang) {
 				case 'YTD-CHANNEL-RENDERER':
 				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 				case 'YTD-GRID-PLAYLIST-RENDERER':
+				case 'YTD-REEL-ITEM-RENDERER':
 					updateVisibility_ActiveMode(node);
 					break;
 			}
