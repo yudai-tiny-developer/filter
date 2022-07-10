@@ -329,33 +329,15 @@ if (html_lang) {
 				case 'YTD-CHANNEL-RENDERER':
 					updateVisibility_ActiveMode(node);
 					break;
+				case 'YTD-ITEM-SECTION-RENDERER':
+					node.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibility_ActiveMode(n));
+					break;
 
 				// channel
 				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 				case 'YTD-GRID-PLAYLIST-RENDERER':
 				case 'YTD-REEL-ITEM-RENDERER':
 					updateVisibility_ActiveMode(node);
-					break;
-
-				// container
-				case 'YTD-ITEM-SECTION-RENDERER':
-					// subscriptions?flow=1, library, explore, trending
-					node.querySelectorAll('ytd-grid-video-renderer').forEach(n => onNodeLoaded(n));
-
-					// subscriptions?flow=2, history, explore, trending
-					node.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => onNodeLoaded(n));
-
-					// playlist
-					node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => onNodeLoaded(n));
-
-					// channels
-					node.querySelectorAll('ytd-channel-renderer').forEach(n => onNodeLoaded(n));
-
-					// channel
-					node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => onNodeLoaded(n));
-					node.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => onNodeLoaded(n));
-					node.querySelectorAll('ytd-reel-item-renderer').forEach(n => onNodeLoaded(n));
-
 					break;
 			}
 		}
