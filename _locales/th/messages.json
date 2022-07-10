@@ -1,24 +1,24 @@
 {
    "button_all": {
-      "message": "All"
+      "message": "ทั้งหมด"
    },
    "button_live": {
-      "message": "Live"
+      "message": "สด"
    },
    "button_streamed": {
-      "message": "Streamed"
+      "message": "สตรีมแล้วเมื่อ"
    },
    "button_video": {
-      "message": "Video"
+      "message": "วีดีโอ"
    },
    "button_streamed_video": {
-      "message": "Streamed / Video"
+      "message": "สตรีมแล้วเมื่อ / วีดีโอ"
    },
    "button_scheduled": {
-      "message": "Scheduled"
+      "message": "กำหนดการ"
    },
    "button_notification_on": {
-      "message": "Notification on"
+      "message": "เปิดการแจ้งเตือนแล้ว"
    },
    "button_clear": {
       "message": "<svg viewBox='0 0 24 24' class='filter-clear'><path d='M12.7,12l6.6,6.6l-0.7,0.7L12,12.7l-6.6,6.6l-0.7-0.7l6.6-6.6L4.6,5.4l0.7-0.7l6.6,6.6l6.6-6.6l0.7,0.7L12.7,12z' /></svg>"

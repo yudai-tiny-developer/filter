@@ -1,24 +1,24 @@
 {
    "button_all": {
-      "message": "All"
+      "message": "Tutti"
    },
    "button_live": {
-      "message": "Live"
+      "message": "Dal vivo"
    },
    "button_streamed": {
-      "message": "Streamed"
+      "message": "Trasmesso"
    },
    "button_video": {
       "message": "Video"
    },
    "button_streamed_video": {
-      "message": "Streamed / Video"
+      "message": "Trasmesso / Video"
    },
    "button_scheduled": {
-      "message": "Scheduled"
+      "message": "Programmato"
    },
    "button_notification_on": {
-      "message": "Notification on"
+      "message": "Notifica attivata"
    },
    "button_clear": {
       "message": "<svg viewBox='0 0 24 24' class='filter-clear'><path d='M12.7,12l6.6,6.6l-0.7,0.7L12,12.7l-6.6,6.6l-0.7-0.7l6.6-6.6L4.6,5.4l0.7-0.7l6.6,6.6l6.6-6.6l0.7,0.7L12.7,12z' /></svg>"
