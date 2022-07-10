@@ -160,6 +160,11 @@ if (html_lang) {
 							status += 'video.';
 						} else if (lang.isScheduled_metadata(t)) {
 							status += 'scheduled.';
+						} else {
+							const video_badge = node.querySelector('span.ytd-badge-supported-renderer');
+							if (video_badge) { // members only video
+								status += 'video.';
+							}
 						}
 					}
 
