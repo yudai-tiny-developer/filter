@@ -146,52 +146,68 @@ if (html_lang) {
 		function classifyStatus(node) {
 			let status = '';
 
-			const metadata = node.querySelector('div#metadata-line');
-			if (metadata) {
-				const t = metadata.textContent;
-				if (lang.isLive_metadata(t) || t === '') {
-					status += 'live.';
-				} else if (lang.isStreamed_metadata(t)) {
-					status += 'streamed.';
-				} else if (lang.isVideo_metadata(t)) {
-					status += 'video.';
-				} else if (lang.isScheduled_metadata(t)) {
-					status += 'scheduled.';
-				} else if (t.match(/^\s*$/)) { // playlist
-					const label = node.querySelector('span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]');
-					if (label) {
-						const t = label.attributes['aria-label'].value;
+			switch (node.nodeName) {
+				case 'YTD-GRID-VIDEO-RENDERER':
+				case 'YTD-VIDEO-RENDERER':
+					const video_metadata = node.querySelector('div#metadata-line');
+					if (video_metadata) {
+						const t = video_metadata.textContent;
+						if (lang.isLive_metadata(t) || t === '') {
+							status += 'live.';
+						} else if (lang.isStreamed_metadata(t)) {
+							status += 'streamed.';
+						} else if (lang.isVideo_metadata(t)) {
+							status += 'video.';
+						} else if (lang.isScheduled_metadata(t)) {
+							status += 'scheduled.';
+						}
+					}
+
+					const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
+					if (video_button) {
+						const t = video_button.textContent;
+						if (lang.isNotificationOn_button(t)) {
+							status += 'notification_on.';
+						} else if (lang.isNotificationOff_button(t)) {
+							status += 'notification_off.';
+						}
+					}
+
+					break;
+				case 'YTD-PLAYLIST-VIDEO-RENDERER':
+					const playlist_label = node.querySelector('span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]');
+					if (playlist_label) {
+						const t = playlist_label.attributes['aria-label'].value;
 						if (lang.isLive_status_label(t)) {
 							status += 'live.';
 						} else if (lang.isVideo_status_label(t)) {
 							status += 'video.';
 						}
 					}
-				} else { // Members-only videos
-					status += 'video.';
-				}
-			}
 
-			const button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
-			if (button) {
-				const t = button.textContent;
-				if (lang.isNotificationOn_button(t)) {
-					status += 'notification_on.';
-				} else if (lang.isNotificationOff_button(t)) {
-					status += 'notification_off.';
-				}
-			}
+					const playlist_metadata = node.querySelector('div#metadata-line');
+					if (playlist_metadata) {
+						const t = playlist_metadata.textContent;
+						if (lang.isScheduled_metadata(t)) {
+							status += 'scheduled.';
+						}
+					}
 
-			const notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label]');
-			if (notification) {
-				const t = notification.attributes['aria-label'].value;
-				if (lang.isChannelsAllNotifications(t)) {
-					status += 'channels_all.';
-				} else if (lang.isChannelsPersonalizedNotifications(t)) {
-					status += 'channels_personalized.';
-				} else if (lang.isChannelsNoNotifications(t)) {
-					status += 'channels_none.';
-				}
+					break;
+				case 'YTD-CHANNEL-RENDERER':
+					const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label]');
+					if (channel_notification) {
+						const t = channel_notification.attributes['aria-label'].value;
+						if (lang.isChannelsAllNotifications(t)) {
+							status += 'channels_all.';
+						} else if (lang.isChannelsPersonalizedNotifications(t)) {
+							status += 'channels_personalized.';
+						} else if (lang.isChannelsNoNotifications(t)) {
+							status += 'channels_none.';
+						}
+					}
+
+					break;
 			}
 
 			return status;
@@ -213,6 +229,8 @@ if (html_lang) {
 
 			// channels
 			app.querySelectorAll('ytd-channel-renderer').forEach(n => updateVisibilityFunction(n));
+
+			// channel
 			app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateVisibilityFunction(n));
 			app.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateVisibilityFunction(n));
 			app.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateVisibilityFunction(n));
@@ -253,6 +271,8 @@ if (html_lang) {
 						return channel_info.textContent.match(queryRegex);
 					}
 					break;
+
+				// channel
 				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 					const backstage_post_thread_content = node.querySelector('div#content');
 					if (backstage_post_thread_content) {
@@ -302,6 +322,10 @@ if (html_lang) {
 
 				// channels
 				case 'YTD-CHANNEL-RENDERER':
+					updateVisibility_ActiveMode(node);
+					break;
+
+				// channel
 				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 				case 'YTD-GRID-PLAYLIST-RENDERER':
 				case 'YTD-REEL-ITEM-RENDERER':
