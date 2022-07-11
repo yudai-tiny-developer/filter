@@ -344,7 +344,7 @@ if (html_lang) {
 
 		function insertMenu(node) {
 			const browse = searchParentNode(node, 'YTD-BROWSE');
-			if (browse && !browse.querySelector('div.filter-menu')) {
+			if (browse && !browse.querySelector('form.filter-menu')) {
 				const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
 				if (sibling) {
 					const positionFixed = isPositionFixedTarget();
@@ -446,9 +446,9 @@ if (html_lang) {
 
 		function updateMenuVisibility(node) {
 			if (isMenuTarget()) {
-				node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = '');
+				node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = '');
 			} else {
-				node.querySelectorAll('div.filter-menu').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = 'none');
 			}
 		}
 
@@ -551,8 +551,9 @@ if (html_lang) {
 		}
 
 		function createMenu(positionFixed) {
-			const menu = document.createElement('div');
+			const menu = document.createElement('form');
 			menu.classList.add('filter-menu');
+			menu.setAttribute('onSubmit', 'return false;');
 
 			if (positionFixed) {
 				menu.classList.add('position-fixed');
