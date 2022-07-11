@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "Filter for YouTube",
 	"version": "1.4.0",
-	"description": "Filter for YouTube",
+	"description": "__MSG_appDesc__",
 	"default_locale": "en",
 	"icons": {
 		"16": "icons/16.png",
