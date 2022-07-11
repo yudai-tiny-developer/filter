@@ -553,7 +553,7 @@ if (html_lang) {
 		function createMenu(positionFixed) {
 			const menu = document.createElement('form');
 			menu.classList.add('filter-menu');
-			menu.setAttribute('onSubmit', 'return false;');
+			menu.setAttribute('onSubmit', 'event.preventDefault();');
 
 			if (positionFixed) {
 				menu.classList.add('position-fixed');
