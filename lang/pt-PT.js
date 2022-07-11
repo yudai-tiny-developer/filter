@@ -23,7 +23,7 @@ export function isScheduled_metadata(text) {
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 export function isLive_status_label(text) {
     return text === 'EM DIRETO'
-        || text === 'ESTREIA'
+        || text === 'Estreia'
         ;
 }
 
