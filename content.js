@@ -143,8 +143,8 @@ if (html_lang) {
 				;
 		}
 
-		function updateVisibility(input) {
-			queryString = input.value;
+		function updateVisibility(query = '') {
+			queryString = query;
 			queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
 			app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
 
@@ -379,7 +379,7 @@ if (html_lang) {
 
 			menu.addEventListener('submit', (e) => {
 				e.preventDefault();
-				updateVisibility(input);
+				updateVisibility(input.value);
 			});
 
 			menu.appendChild(createButton(button_all, 'all', input));
@@ -394,7 +394,7 @@ if (html_lang) {
 			menu.appendChild(createButton(button_channels_personalized, 'channels_personalized', input));
 			menu.appendChild(createButton(button_channels_none, 'channels_none', input));
 
-			menu.appendChild(createQueryInputArea(input, menu));
+			menu.appendChild(createQueryInputArea(input));
 			menu.appendChild(createSearchButton(input));
 
 			return menu;
@@ -419,18 +419,18 @@ if (html_lang) {
 
 			button.addEventListener('click', () => {
 				changeMode(mode);
-				updateVisibility(input);
+				updateVisibility(input.value);
 			});
 
 			return button;
 		}
 
-		function createQueryInputArea(input, menu) {
+		function createQueryInputArea(input) {
 			const inputArea = document.createElement('span');
 			inputArea.classList.add('filter-query');
 			inputArea.classList.add('area');
 			inputArea.appendChild(input);
-			inputArea.appendChild(createClearButton(input, menu));
+			inputArea.appendChild(createClearButton(input));
 			return inputArea;
 		}
 
@@ -449,14 +449,14 @@ if (html_lang) {
 			return input;
 		}
 
-		function createClearButton(input, menu) {
+		function createClearButton(input) {
 			const button = document.createElement('span');
 			button.innerHTML = button_clear;
 			button.classList.add('filter-clear');
 
 			button.addEventListener('click', () => {
 				input.value = '';
-				updateVisibility(input);
+				updateVisibility();
 			});
 
 			return button;
@@ -469,7 +469,7 @@ if (html_lang) {
 			button.classList.add('search');
 
 			button.addEventListener('click', () => {
-				updateVisibility(input);
+				updateVisibility(input.value);
 			});
 
 			return button;
@@ -540,9 +540,10 @@ if (html_lang) {
 
 			const input = node.querySelector('input#filter-query');
 			if (input) {
-				updateVisibility(input);
+				updateVisibility(input.value);
 			} else {
 				console.warn('input#filter-query not found');
+				updateVisibility();
 			}
 		}
 
