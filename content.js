@@ -244,10 +244,6 @@ if (html_lang) {
 					break;
 			}
 
-			if (status === '') {
-				console.warn('Unknown status');
-			}
-
 			return status;
 		}
 
@@ -597,6 +593,12 @@ if (html_lang) {
 
 		function includesStatus(node, status_or) {
 			const node_status = classifyStatus(node);
+
+			if (node_status === '') {
+				console.warn('Unknown status');
+				return true;
+			}
+
 			for (const status of status_or) {
 				if (node_status.includes(status)) {
 					return true;
