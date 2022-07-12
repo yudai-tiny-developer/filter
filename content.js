@@ -241,13 +241,15 @@ if (html_lang) {
 			return status;
 		}
 
-		function matchTextContent(node) {
+		function matchTextContentOrNotTarget(node) {
 			switch (node.nodeName) {
 				// subscriptions?flow=1, library, explore, trending
 				case 'YTD-GRID-VIDEO-RENDERER':
 					const grid_video_title = node.querySelector('a#video-title');
 					if (grid_video_title) {
 						return grid_video_title.textContent.match(queryRegex);
+					} else {
+						console.warn('a#video-title not found');
 					}
 					break;
 
@@ -257,6 +259,8 @@ if (html_lang) {
 						const video_title = node.querySelector('a#video-title');
 						if (video_title) {
 							return video_title.textContent.match(queryRegex);
+						} else {
+							console.warn('a#video-title not found');
 						}
 					}
 					break;
@@ -266,6 +270,8 @@ if (html_lang) {
 					const playlist_video_meta = node.querySelector('div#meta');
 					if (playlist_video_meta) {
 						return playlist_video_meta.textContent.match(queryRegex);
+					} else {
+						console.warn('div#meta not found');
 					}
 					break;
 
@@ -274,6 +280,8 @@ if (html_lang) {
 					const channel_info = node.querySelector('div#info');
 					if (channel_info) {
 						return channel_info.textContent.match(queryRegex);
+					} else {
+						console.warn('div#info not found');
 					}
 					break;
 
@@ -282,21 +290,30 @@ if (html_lang) {
 					const backstage_post_thread_content = node.querySelector('div#content');
 					if (backstage_post_thread_content) {
 						return backstage_post_thread_content.textContent.match(queryRegex);
+					} else {
+						console.warn('div#content not found');
 					}
 					break;
 				case 'YTD-GRID-PLAYLIST-RENDERER':
 					const grid_playlist_title = node.querySelector('a#video-title');
 					if (grid_playlist_title) {
 						return grid_playlist_title.textContent.match(queryRegex);
+					} else {
+						console.warn('a#video-title not found');
 					}
 					break;
 				case 'YTD-REEL-ITEM-RENDERER':
 					const reel_item_title = node.querySelector('span#video-title');
 					if (reel_item_title) {
 						return reel_item_title.textContent.match(queryRegex);
+					} else {
+						console.warn('span#video-title not found');
 					}
 					break;
 			}
+
+			// not target
+			return true;
 		}
 
 		function onNodeLoaded(node) {
@@ -522,7 +539,7 @@ if (html_lang) {
 					status_or = [''];
 			}
 
-			if (includesStatus(node, status_or) && matchTextContent(node)) {
+			if (includesStatus(node, status_or) && matchTextContentOrNotTarget(node)) {
 				node.style.display = '';
 			} else {
 				node.style.display = 'none';
