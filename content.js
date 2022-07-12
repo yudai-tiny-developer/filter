@@ -576,9 +576,6 @@ if (html_lang) {
 			const input = node.querySelector('input#filter-query');
 			if (input) {
 				updateVisibility(input.value);
-			} else {
-				console.warn('input#filter-query not found');
-				updateVisibility();
 			}
 		}
 
