@@ -185,21 +185,23 @@ if (html_lang) {
 							status += 'video.';
 						} else if (lang.isScheduled_metadata(t)) {
 							status += 'scheduled.';
+
+							const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
+							if (video_button) {
+								const t = video_button.textContent;
+								if (lang.isNotificationOn_button(t)) {
+									status += 'notification_on.';
+								} else if (lang.isNotificationOff_button(t)) {
+									status += 'notification_off.';
+								} else {
+									console.warn('Unknown notification status: ' + t);
+								}
+							}
 						} else {
 							const video_badge = node.querySelector('span.ytd-badge-supported-renderer');
 							if (video_badge) { // members only video
 								status += 'video.';
 							}
-						}
-					}
-
-					const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
-					if (video_button) {
-						const t = video_button.textContent;
-						if (lang.isNotificationOn_button(t)) {
-							status += 'notification_on.';
-						} else if (lang.isNotificationOff_button(t)) {
-							status += 'notification_off.';
 						}
 					}
 
@@ -234,10 +236,16 @@ if (html_lang) {
 							status += 'channels_personalized.';
 						} else if (lang.isChannelsNoNotifications(t)) {
 							status += 'channels_none.';
+						} else {
+							console.warn('Unknown channel notification: ' + t);
 						}
 					}
 
 					break;
+			}
+
+			if (status === '') {
+				console.warn('Unknown status');
 			}
 
 			return status;
@@ -356,7 +364,7 @@ if (html_lang) {
 					updateTargetVisibility(node);
 					break;
 
-				// item section
+				// container
 				case 'YTD-ITEM-SECTION-RENDERER':
 					updateVisibility(node);
 					break;
