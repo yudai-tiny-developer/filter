@@ -143,27 +143,29 @@ if (html_lang) {
 				;
 		}
 
-		function updateVisibility(query = '') {
+		function updateQueryRegex(query) {
 			queryString = query;
 			queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
 			app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
+		}
 
+		function updateVisibility(node) {
 			// subscriptions?flow=1, library, explore, trending
-			app.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n));
+			node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n));
 
 			// subscriptions?flow=2, history, explore, trending
-			app.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateTargetVisibility(n));
+			node.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateTargetVisibility(n));
 
 			// playlist
-			app.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n));
+			node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n));
 
 			// channels
-			app.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n));
+			node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n));
 
 			// channel
-			app.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
-			app.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateTargetVisibility(n));
-			app.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateTargetVisibility(n));
+			node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
+			node.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateTargetVisibility(n));
+			node.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateTargetVisibility(n));
 		}
 
 		function classifyStatus(node) {
@@ -356,23 +358,7 @@ if (html_lang) {
 
 				// item section
 				case 'YTD-ITEM-SECTION-RENDERER':
-					// subscriptions?flow=1, library, explore, trending
-					node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n));
-
-					// subscriptions?flow=2, history, explore, trending
-					node.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateTargetVisibility(n));
-
-					// playlist
-					node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n));
-
-					// channels
-					node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n));
-
-					// channel
-					node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
-					node.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateTargetVisibility(n));
-					node.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateTargetVisibility(n));
-
+					updateVisibility(node);
 					break;
 			}
 		}
@@ -414,7 +400,8 @@ if (html_lang) {
 
 			menu.addEventListener('submit', (e) => {
 				e.preventDefault();
-				updateVisibility(input.value);
+				updateQueryRegex(input.value);
+				updateVisibility(app);
 			});
 
 			menu.appendChild(createButton(button_all, 'all', input));
@@ -454,7 +441,8 @@ if (html_lang) {
 
 			button.addEventListener('click', () => {
 				changeMode(mode);
-				updateVisibility(input.value);
+				updateQueryRegex(input.value);
+				updateVisibility(app);
 			});
 
 			return button;
@@ -491,7 +479,8 @@ if (html_lang) {
 
 			button.addEventListener('click', () => {
 				input.value = '';
-				updateVisibility();
+				updateQueryRegex('');
+				updateVisibility(app);
 			});
 
 			return button;
@@ -504,7 +493,8 @@ if (html_lang) {
 			button.classList.add('search');
 
 			button.addEventListener('click', () => {
-				updateVisibility(input.value);
+				updateQueryRegex(input.value);
+				updateVisibility(app);
 			});
 
 			return button;
@@ -565,17 +555,29 @@ if (html_lang) {
 		}
 
 		function updateVisibility_Selected_All(node) {
-			const selectedButton = node.querySelector('span.filter-button.selected');
-			if (selectedButton && selectedButton.style.display === 'none') {
-				const allButton = node.querySelector('span.filter-button.all');
-				if (allButton && allButton.style.display !== 'none') {
-					changeMode('all');
-				}
-			}
+			for (const menu of node.querySelectorAll('form.filter-menu')) {
+				if (menu.style.display !== 'none') {
+					const selectedButton = menu.querySelector('span.filter-button.selected');
+					if (selectedButton && selectedButton.style.display === 'none') {
+						const allButton = menu.querySelector('span.filter-button.all');
+						if (allButton) {
+							changeMode('all');
+						} else {
+							console.warn('span.filter-button.all not found');
+						}
+					}
 
-			const input = node.querySelector('input#filter-query');
-			if (input) {
-				updateVisibility(input.value);
+					const input = menu.querySelector('input#filter-query');
+					if (input) {
+						updateQueryRegex(input.value);
+					} else {
+						console.warn('input#filter-query not found');
+					}
+
+					updateVisibility(node);
+
+					return;
+				}
 			}
 		}
 
