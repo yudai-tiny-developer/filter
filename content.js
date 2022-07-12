@@ -215,6 +215,8 @@ if (html_lang) {
 						} else if (lang.isVideo_status_label(t)) {
 							status += 'video.';
 						}
+					} else {
+						status += 'loading.'; // lazy load
 					}
 
 					const playlist_metadata = node.querySelector('div#metadata-line');
@@ -241,6 +243,9 @@ if (html_lang) {
 						}
 					}
 
+					break;
+				case 'YTD-GRID-PLAYLIST-RENDERER':
+					status += 'playlist.';
 					break;
 			}
 
@@ -520,31 +525,31 @@ if (html_lang) {
 					status_or = [''];
 					break;
 				case 'live':
-					status_or = ['live.'];
+					status_or = ['live.', 'playlist.', 'loading.'];
 					break;
 				case 'streamed':
-					status_or = ['streamed.'];
+					status_or = ['streamed.', 'playlist.', 'loading.'];
 					break;
 				case 'video':
-					status_or = ['video.'];
+					status_or = ['video.', 'playlist.', 'loading.'];
 					break;
 				case 'streamed_video':
-					status_or = ['streamed.', 'video.'];
+					status_or = ['streamed.', 'video.', 'playlist.', 'loading.'];
 					break;
 				case 'scheduled':
-					status_or = ['scheduled.'];
+					status_or = ['scheduled.', 'playlist.', 'loading.'];
 					break;
 				case 'notification_on':
-					status_or = ['notification_on.'];
+					status_or = ['notification_on.', 'playlist.', 'loading.'];
 					break;
 				case 'channels_all':
-					status_or = ['channels_all.'];
+					status_or = ['channels_all.', 'playlist.', 'loading.'];
 					break;
 				case 'channels_personalized':
-					status_or = ['channels_personalized.'];
+					status_or = ['channels_personalized.', 'playlist.', 'loading.'];
 					break;
 				case 'channels_none':
-					status_or = ['channels_none.'];
+					status_or = ['channels_none.', 'playlist.', 'loading.'];
 					break;
 				default:
 					console.warn('Unknown mode: ' + activeMode);
