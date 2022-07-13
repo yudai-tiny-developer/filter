@@ -185,21 +185,23 @@ if (html_lang) {
 							status += 'video.';
 						} else if (lang.isScheduled_metadata(t)) {
 							status += 'scheduled.';
+
+							const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
+							if (video_button) {
+								const t = video_button.textContent;
+								if (lang.isNotificationOn_button(t)) {
+									status += 'notification_on.';
+								} else if (lang.isNotificationOff_button(t)) {
+									status += 'notification_off.';
+								} else {
+									console.warn('Unknown notification status: ' + t);
+								}
+							}
 						} else {
 							const video_badge = node.querySelector('span.ytd-badge-supported-renderer');
 							if (video_badge) { // members only video
 								status += 'video.';
 							}
-						}
-					}
-
-					const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
-					if (video_button) {
-						const t = video_button.textContent;
-						if (lang.isNotificationOn_button(t)) {
-							status += 'notification_on.';
-						} else if (lang.isNotificationOff_button(t)) {
-							status += 'notification_off.';
 						}
 					}
 
@@ -213,6 +215,8 @@ if (html_lang) {
 						} else if (lang.isVideo_status_label(t)) {
 							status += 'video.';
 						}
+					} else {
+						status += 'loading.'; // lazy load
 					}
 
 					const playlist_metadata = node.querySelector('div#metadata-line');
@@ -234,9 +238,14 @@ if (html_lang) {
 							status += 'channels_personalized.';
 						} else if (lang.isChannelsNoNotifications(t)) {
 							status += 'channels_none.';
+						} else {
+							console.warn('Unknown channel notification: ' + t);
 						}
 					}
 
+					break;
+				case 'YTD-GRID-PLAYLIST-RENDERER':
+					status += 'playlist.';
 					break;
 			}
 
@@ -356,7 +365,7 @@ if (html_lang) {
 					updateTargetVisibility(node);
 					break;
 
-				// item section
+				// container
 				case 'YTD-ITEM-SECTION-RENDERER':
 					updateVisibility(node);
 					break;
@@ -516,31 +525,31 @@ if (html_lang) {
 					status_or = [''];
 					break;
 				case 'live':
-					status_or = ['live.'];
+					status_or = ['live.', 'playlist.', 'loading.'];
 					break;
 				case 'streamed':
-					status_or = ['streamed.'];
+					status_or = ['streamed.', 'playlist.', 'loading.'];
 					break;
 				case 'video':
-					status_or = ['video.'];
+					status_or = ['video.', 'playlist.', 'loading.'];
 					break;
 				case 'streamed_video':
-					status_or = ['streamed.', 'video.'];
+					status_or = ['streamed.', 'video.', 'playlist.', 'loading.'];
 					break;
 				case 'scheduled':
-					status_or = ['scheduled.'];
+					status_or = ['scheduled.', 'playlist.', 'loading.'];
 					break;
 				case 'notification_on':
-					status_or = ['notification_on.'];
+					status_or = ['notification_on.', 'playlist.', 'loading.'];
 					break;
 				case 'channels_all':
-					status_or = ['channels_all.'];
+					status_or = ['channels_all.', 'playlist.', 'loading.'];
 					break;
 				case 'channels_personalized':
-					status_or = ['channels_personalized.'];
+					status_or = ['channels_personalized.', 'playlist.', 'loading.'];
 					break;
 				case 'channels_none':
-					status_or = ['channels_none.'];
+					status_or = ['channels_none.', 'playlist.', 'loading.'];
 					break;
 				default:
 					console.warn('Unknown mode: ' + activeMode);
@@ -589,6 +598,12 @@ if (html_lang) {
 
 		function includesStatus(node, status_or) {
 			const node_status = classifyStatus(node);
+
+			if (node_status === '') {
+				console.warn('Unknown status');
+				return true;
+			}
+
 			for (const status of status_or) {
 				if (node_status.includes(status)) {
 					return true;

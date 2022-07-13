@@ -23,8 +23,7 @@ export function isScheduled_metadata(text) {
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
 export function isLive_status_label(text) {
     return text === '실시간'
-        || text === 'Premieres 동영상'
-        ;
+        || text === 'Premieres 동영상';
 }
 
 // span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
