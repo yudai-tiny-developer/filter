@@ -596,7 +596,7 @@ if (html_lang) {
 		}
 
 		function changeMode(mode) {
-			activeMode.set(window.location.href, mode);
+			setActiveMode(mode);
 
 			app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
 			app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
@@ -615,9 +615,13 @@ if (html_lang) {
 			if (mode) {
 				return mode;
 			} else {
-				activeMode.set(window.location.href, 'all');
+				setActiveMode('all');
 				return 'all';
 			}
+		}
+
+		function setActiveMode(mode) {
+			activeMode.set(window.location.href, mode);
 		}
 
 		function getActiveQuery() {
