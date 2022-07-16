@@ -390,7 +390,7 @@ if (html_lang) {
 
 					updateMenuVisibility(browse);
 					updateButtonVisibility(browse);
-					updateVisibility_Selected_All(browse);
+					updateVisibility_ActiveMode(browse);
 				} else {
 					console.warn('ytd-two-column-browse-results-renderer not found');
 				}
@@ -444,7 +444,7 @@ if (html_lang) {
 			button.classList.add('filter-button');
 			button.classList.add(mode);
 
-			if (mode === activeMode) {
+			if (mode === activeMode.get(window.location.href)) {
 				button.classList.add('selected');
 			}
 
@@ -520,7 +520,7 @@ if (html_lang) {
 		function updateTargetVisibility(node) {
 			let status_or;
 
-			switch (activeMode) {
+			switch (activeMode.get(window.location.href)) {
 				case 'all':
 					status_or = [''];
 					break;
@@ -552,7 +552,7 @@ if (html_lang) {
 					status_or = ['channels_none.', 'playlist.', 'loading.'];
 					break;
 				default:
-					console.warn('Unknown mode: ' + activeMode);
+					changeMode('all');
 					status_or = [''];
 			}
 
@@ -563,17 +563,16 @@ if (html_lang) {
 			}
 		}
 
-		function updateVisibility_Selected_All(node) {
+		function updateVisibility_ActiveMode(node) {
 			for (const menu of node.querySelectorAll('form.filter-menu')) {
 				if (menu.style.display !== 'none') {
-					const selectedButton = menu.querySelector('span.filter-button.selected');
-					if (selectedButton && selectedButton.style.display === 'none') {
-						const allButton = menu.querySelector('span.filter-button.all');
-						if (allButton) {
-							changeMode('all');
-						} else {
-							console.warn('span.filter-button.all not found');
-						}
+					let mode = activeMode.get(window.location.href);
+
+					const modeButton = menu.querySelector('span.filter-button.' + mode);
+					if (modeButton && modeButton.style.display !== 'none') {
+						changeMode(mode);
+					} else {
+						changeMode('all');
 					}
 
 					const input = menu.querySelector('input#filter-query');
@@ -593,7 +592,7 @@ if (html_lang) {
 		function onViewChanged() {
 			updateMenuVisibility(app);
 			updateButtonVisibility(app);
-			updateVisibility_Selected_All(app);
+			updateVisibility_ActiveMode(app);
 		}
 
 		function includesStatus(node, status_or) {
@@ -613,7 +612,7 @@ if (html_lang) {
 		}
 
 		function changeMode(mode) {
-			activeMode = mode;
+			activeMode.set(window.location.href, mode);
 
 			app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
 			app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
@@ -640,7 +639,7 @@ if (html_lang) {
 		const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
 		const button_channels_none = chrome.i18n.getMessage('button_channels_none');
 
-		let activeMode = 'all';
+		const activeMode = new Map();
 		let queryString = '';
 		let queryRegex;
 
