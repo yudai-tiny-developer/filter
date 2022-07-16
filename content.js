@@ -143,10 +143,10 @@ if (html_lang) {
 				;
 		}
 
-		function updateQueryRegex(query) {
-			queryString = query;
-			queryRegex = new RegExp(queryString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i');
-			app.querySelectorAll('input#filter-query').forEach(e => e.value = queryString);
+		function updateQueryRegex(node, query) {
+			activeQuery.set(window.location.href, query);
+			activeRegex.set(window.location.href, new RegExp(query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i'));
+			node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
 		}
 
 		function updateVisibility(node) {
@@ -258,7 +258,7 @@ if (html_lang) {
 				case 'YTD-GRID-VIDEO-RENDERER':
 					const grid_video_title = node.querySelector('a#video-title');
 					if (grid_video_title) {
-						return grid_video_title.textContent.match(queryRegex);
+						return grid_video_title.textContent.match(getActiveRegex());
 					} else {
 						console.warn('a#video-title not found');
 					}
@@ -269,7 +269,7 @@ if (html_lang) {
 					if (!node.classList.contains('ytd-backstage-post-renderer')) {
 						const video_title = node.querySelector('a#video-title');
 						if (video_title) {
-							return video_title.textContent.match(queryRegex);
+							return video_title.textContent.match(getActiveRegex());
 						} else {
 							console.warn('a#video-title not found');
 						}
@@ -280,7 +280,7 @@ if (html_lang) {
 				case 'YTD-PLAYLIST-VIDEO-RENDERER':
 					const playlist_video_meta = node.querySelector('div#meta');
 					if (playlist_video_meta) {
-						return playlist_video_meta.textContent.match(queryRegex);
+						return playlist_video_meta.textContent.match(getActiveRegex());
 					} else {
 						console.warn('div#meta not found');
 					}
@@ -290,7 +290,7 @@ if (html_lang) {
 				case 'YTD-CHANNEL-RENDERER':
 					const channel_info = node.querySelector('div#info');
 					if (channel_info) {
-						return channel_info.textContent.match(queryRegex);
+						return channel_info.textContent.match(getActiveRegex());
 					} else {
 						console.warn('div#info not found');
 					}
@@ -300,7 +300,7 @@ if (html_lang) {
 				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 					const backstage_post_thread_content = node.querySelector('div#content');
 					if (backstage_post_thread_content) {
-						return backstage_post_thread_content.textContent.match(queryRegex);
+						return backstage_post_thread_content.textContent.match(getActiveRegex());
 					} else {
 						console.warn('div#content not found');
 					}
@@ -308,7 +308,7 @@ if (html_lang) {
 				case 'YTD-GRID-PLAYLIST-RENDERER':
 					const grid_playlist_title = node.querySelector('a#video-title');
 					if (grid_playlist_title) {
-						return grid_playlist_title.textContent.match(queryRegex);
+						return grid_playlist_title.textContent.match(getActiveRegex());
 					} else {
 						console.warn('a#video-title not found');
 					}
@@ -316,7 +316,7 @@ if (html_lang) {
 				case 'YTD-REEL-ITEM-RENDERER':
 					const reel_item_title = node.querySelector('span#video-title');
 					if (reel_item_title) {
-						return reel_item_title.textContent.match(queryRegex);
+						return reel_item_title.textContent.match(getActiveRegex());
 					} else {
 						console.warn('span#video-title not found');
 					}
@@ -390,7 +390,7 @@ if (html_lang) {
 
 					updateMenuVisibility(browse);
 					updateButtonVisibility(browse);
-					updateVisibility_ActiveMode(browse);
+					updateNodeValue(browse);
 				} else {
 					console.warn('ytd-two-column-browse-results-renderer not found');
 				}
@@ -409,7 +409,7 @@ if (html_lang) {
 
 			menu.addEventListener('submit', (e) => {
 				e.preventDefault();
-				updateQueryRegex(input.value);
+				updateQueryRegex(app, input.value);
 				updateVisibility(app);
 			});
 
@@ -444,13 +444,13 @@ if (html_lang) {
 			button.classList.add('filter-button');
 			button.classList.add(mode);
 
-			if (mode === activeMode.get(window.location.href)) {
+			if (mode === getActiveMode()) {
 				button.classList.add('selected');
 			}
 
 			button.addEventListener('click', () => {
 				changeMode(mode);
-				updateQueryRegex(input.value);
+				updateQueryRegex(app, input.value);
 				updateVisibility(app);
 			});
 
@@ -471,7 +471,7 @@ if (html_lang) {
 			input.setAttribute('type', 'text');
 			input.setAttribute('placeholder', ' ');
 			input.id = 'filter-query';
-			input.value = queryString;
+			input.value = getActiveQuery();
 
 			input.addEventListener('change', e => {
 				input.blur();
@@ -488,7 +488,7 @@ if (html_lang) {
 
 			button.addEventListener('click', () => {
 				input.value = '';
-				updateQueryRegex('');
+				updateQueryRegex(app, '');
 				updateVisibility(app);
 			});
 
@@ -502,7 +502,7 @@ if (html_lang) {
 			button.classList.add('search');
 
 			button.addEventListener('click', () => {
-				updateQueryRegex(input.value);
+				updateQueryRegex(app, input.value);
 				updateVisibility(app);
 			});
 
@@ -520,7 +520,7 @@ if (html_lang) {
 		function updateTargetVisibility(node) {
 			let status_or;
 
-			switch (activeMode.get(window.location.href)) {
+			switch (getActiveMode()) {
 				case 'all':
 					status_or = [''];
 					break;
@@ -552,8 +552,8 @@ if (html_lang) {
 					status_or = ['channels_none.', 'playlist.', 'loading.'];
 					break;
 				default:
-					changeMode('all');
 					status_or = [''];
+					console.warn('Unknown mode: ' + getActiveMode());
 			}
 
 			if (includesStatus(node, status_or) && matchTextContentOrNotTarget(node)) {
@@ -563,27 +563,12 @@ if (html_lang) {
 			}
 		}
 
-		function updateVisibility_ActiveMode(node) {
+		function updateNodeValue(node) {
 			for (const menu of node.querySelectorAll('form.filter-menu')) {
 				if (menu.style.display !== 'none') {
-					let mode = activeMode.get(window.location.href);
-
-					const modeButton = menu.querySelector('span.filter-button.' + mode);
-					if (modeButton && modeButton.style.display !== 'none') {
-						changeMode(mode);
-					} else {
-						changeMode('all');
-					}
-
-					const input = menu.querySelector('input#filter-query');
-					if (input) {
-						updateQueryRegex(input.value);
-					} else {
-						console.warn('input#filter-query not found');
-					}
-
+					changeMode(getActiveMode());
+					updateQueryRegex(node, getActiveQuery());
 					updateVisibility(node);
-
 					return;
 				}
 			}
@@ -592,7 +577,7 @@ if (html_lang) {
 		function onViewChanged() {
 			updateMenuVisibility(app);
 			updateButtonVisibility(app);
-			updateVisibility_ActiveMode(app);
+			updateNodeValue(app);
 		}
 
 		function includesStatus(node, status_or) {
@@ -626,6 +611,30 @@ if (html_lang) {
 			}
 		}
 
+		function getActiveMode() {
+			const mode = activeMode.get(window.location.href);
+			if (mode) {
+				return mode;
+			} else {
+				activeMode.set(window.location.href, 'all');
+				return 'all';
+			}
+		}
+
+		function getActiveQuery() {
+			const query = activeQuery.get(window.location.href);
+			if (query) {
+				return query;
+			} else {
+				activeQuery.set(window.location.href, '');
+				return '';
+			}
+		}
+
+		function getActiveRegex() {
+			return activeRegex.get(window.location.href);
+		}
+
 		const button_all = chrome.i18n.getMessage('button_all');
 		const button_live = chrome.i18n.getMessage('button_live');
 		const button_streamed = chrome.i18n.getMessage('button_streamed');
@@ -640,8 +649,8 @@ if (html_lang) {
 		const button_channels_none = chrome.i18n.getMessage('button_channels_none');
 
 		const activeMode = new Map();
-		let queryString = '';
-		let queryRegex;
+		const activeQuery = new Map();
+		const activeRegex = new Map();
 
 		const app = document.querySelector('ytd-app');
 		if (app) {
