@@ -553,7 +553,6 @@ if (html_lang) {
 					break;
 				default:
 					status_or = [''];
-					console.warn('Unknown mode: ' + getActiveMode());
 			}
 
 			if (includesStatus(node, status_or) && matchTextContentOrNotTarget(node)) {
