@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const input of document.querySelectorAll('input.checkbox')) {
                 input.checked = input.getAttribute('default') === 'true';
             }
-            chrome.storage.local.clear();
         });
     });
 });
