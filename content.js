@@ -666,7 +666,11 @@ if (html_lang) {
 		}
 
 		function setActiveMode(mode) {
-			activeMode.set(window.location.href, mode);
+			const oldValue = activeMode.get(window.location.href);
+			if (oldValue !== mode) {
+				activeMode.set(window.location.href, mode);
+				chrome.storage.local.set({ [window.location.href]: mode });
+			}
 		}
 
 		function getActiveQuery() {
@@ -702,6 +706,14 @@ if (html_lang) {
 		const activeQuery = new Map();
 		const activeRegex = new Map();
 
+		chrome.storage.local.get(null, (data) => {
+			for (const key of Object.keys(data)) {
+				if (key.startsWith('https://www.youtube.com/')) {
+					activeMode.set(key, data[key]);
+				}
+			}
+		});
+
 		const app = document.querySelector('ytd-app');
 		if (app) {
 			new MutationObserver((mutations, observer) => {
@@ -720,8 +732,18 @@ if (html_lang) {
 
 			app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
 
-			chrome.storage.onChanged.addListener(() => {
-				updateButtonVisibility(app);
+			chrome.storage.onChanged.addListener((changes, namespace) => {
+				let modeChanged = true;
+				for (const [key, { oldValue, newValue }] of Object.entries(changes)) {
+					if (key.startsWith('https://www.youtube.com/')) {
+						activeMode.set(key, newValue);
+						modeChanged = false;
+					}
+				}
+				if (modeChanged) {
+					updateButtonVisibility(app);
+					updateNodeValue(app);
+				}
 			});
 		}
 	}, error => { /* Not supported */ });
