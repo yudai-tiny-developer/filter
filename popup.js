@@ -1,5 +1,6 @@
 const button_live = chrome.i18n.getMessage('button_live');
 const button_streamed = chrome.i18n.getMessage('button_streamed');
+const button_live_streamed = chrome.i18n.getMessage('button_live_streamed');
 const button_video = chrome.i18n.getMessage('button_video');
 const button_streamed_video = chrome.i18n.getMessage('button_streamed_video');
 const button_scheduled = chrome.i18n.getMessage('button_scheduled');
@@ -19,15 +20,15 @@ function createLabel(label) {
 function createToggle(mode, setting, deafultValue) {
     const div = document.createElement('div');
     div.classList.add('toggle');
-    div.innerHTML = '<input id="' + mode + '" class="checkbox" type="checkbox" ' + (setting === true ? 'checked' : (setting === undefined && deafultValue ? 'checked' : '')) + ' /><label for="' + mode + '" class="switch" />';
+    div.innerHTML = '<input id="' + mode + '" class="checkbox" type="checkbox" ' + (setting === true ? 'checked' : (setting === undefined && deafultValue ? 'checked' : '')) + ' default="' + deafultValue + '" /><label for="' + mode + '" class="switch" />';
     return div;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get([
-        'all',
         'live',
         'streamed',
+        'live_streamed',
         'video',
         'streamed_video',
         'scheduled',
@@ -45,11 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
             mode_list.appendChild(createLabel(button_streamed));
             mode_list.appendChild(createToggle('streamed', data.streamed, true));
 
+            mode_list.appendChild(createLabel(button_live_streamed));
+            mode_list.appendChild(createToggle('live_streamed', data.live_streamed, false));
+
             mode_list.appendChild(createLabel(button_video));
             mode_list.appendChild(createToggle('video', data.video, true));
 
             mode_list.appendChild(createLabel(button_streamed_video));
-            mode_list.appendChild(createToggle('streamed_video', data.streamed_video, true));
+            mode_list.appendChild(createToggle('streamed_video', data.streamed_video, false));
 
             mode_list.appendChild(createLabel(button_scheduled));
             mode_list.appendChild(createToggle('scheduled', data.scheduled, true));
@@ -75,5 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.storage.local.set({ [input.id]: input.checked });
             });
         }
+
+        document.querySelector('input#reset').addEventListener('click', () => {
+            for (const input of document.querySelectorAll('input.checkbox')) {
+                input.checked = input.getAttribute('default') === 'true';
+            }
+        });
     });
 });

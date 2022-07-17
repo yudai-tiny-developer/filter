@@ -1,10 +1,5 @@
-body {
-    text-align: center;
-}
-
 #container {
     display: inline-block;
-    text-align: left;
 }
 
 #mode_list {
