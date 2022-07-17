@@ -666,11 +666,7 @@ if (html_lang) {
 		}
 
 		function setActiveMode(mode) {
-			const oldValue = activeMode.get(window.location.href);
-			if (oldValue !== mode) {
-				activeMode.set(window.location.href, mode);
-				chrome.storage.local.set({ [window.location.href]: mode });
-			}
+			activeMode.set(window.location.href, mode);
 		}
 
 		function getActiveQuery() {
@@ -705,14 +701,6 @@ if (html_lang) {
 		const activeMode = new Map();
 		const activeQuery = new Map();
 		const activeRegex = new Map();
-
-		chrome.storage.local.get(null, (data) => {
-			for (const key of Object.keys(data)) {
-				if (key.startsWith('https://www.youtube.com/')) {
-					activeMode.set(key, data[key]);
-				}
-			}
-		});
 
 		const app = document.querySelector('ytd-app');
 		if (app) {
