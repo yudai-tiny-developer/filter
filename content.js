@@ -721,17 +721,8 @@ if (html_lang) {
 			app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
 
 			chrome.storage.onChanged.addListener((changes, namespace) => {
-				let modeChanged = true;
-				for (const [key, { oldValue, newValue }] of Object.entries(changes)) {
-					if (key.startsWith('https://www.youtube.com/')) {
-						activeMode.set(key, newValue);
-						modeChanged = false;
-					}
-				}
-				if (modeChanged) {
-					updateButtonVisibility(app);
-					updateNodeValue(app);
-				}
+				updateButtonVisibility(app);
+				updateNodeValue(app);
 			});
 		}
 	}, error => { /* Not supported */ });
