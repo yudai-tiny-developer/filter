@@ -1,0 +1,63 @@
+body {
+    text-align: center;
+}
+
+#container {
+    display: inline-block;
+    text-align: left;
+}
+
+#mode_list {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    grid-template-rows: repeat(10, 1fr);
+}
+
+.label {
+    margin-right: 8px;
+}
+
+svg.filter-button {
+    margin: 4px;
+    height: 24px;
+    width: 24px;
+}
+
+.checkbox {
+    display: none;
+}
+
+.switch {
+    background-color: rgb(200, 200, 200);
+
+    width: 40px;
+    height: 12px;
+    border-radius: 20px;
+    display: inline-block;
+    margin: 4px;
+    position: relative;
+    transition: 0.2s;
+}
+
+.checkbox:checked+.switch {
+    background-color: rgb(200, 255, 200);
+}
+
+.switch:after {
+    left: 0;
+    background-color: rgb(50, 50, 50);
+
+    top: -4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    content: "";
+    cursor: pointer;
+    position: absolute;
+    transition: 0.2s;
+}
+
+.checkbox:checked+.switch:after {
+    left: 20px;
+    background-color: rgb(50, 255, 50);
+}
