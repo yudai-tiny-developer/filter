@@ -54,8 +54,8 @@ if (html_lang) {
 					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
-					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === true ? '' : 'none');
-					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
 					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
@@ -70,8 +70,8 @@ if (html_lang) {
 					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
-					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === true ? '' : 'none');
-					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
 					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
 					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
