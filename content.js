@@ -478,6 +478,7 @@ if (html_lang) {
 
 		function createButton(text, mode, input) {
 			const button = document.createElement('span');
+			button.style.display = 'none';
 			button.innerHTML = text;
 			button.classList.add('filter-button');
 			button.classList.add(mode);
