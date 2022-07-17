@@ -244,8 +244,14 @@ if (html_lang) {
 					}
 
 					break;
+				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+					status += 'post.';
+					break;
 				case 'YTD-GRID-PLAYLIST-RENDERER':
 					status += 'playlist.';
+					break;
+				case 'YTD-REEL-ITEM-RENDERER':
+					status += 'reel.';
 					break;
 			}
 
@@ -525,31 +531,31 @@ if (html_lang) {
 					status_or = [''];
 					break;
 				case 'live':
-					status_or = ['live.', 'playlist.', 'loading.'];
+					status_or = ['live.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'streamed':
-					status_or = ['streamed.', 'playlist.', 'loading.'];
+					status_or = ['streamed.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'video':
-					status_or = ['video.', 'playlist.', 'loading.'];
+					status_or = ['video.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'streamed_video':
-					status_or = ['streamed.', 'video.', 'playlist.', 'loading.'];
+					status_or = ['streamed.', 'video.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'scheduled':
-					status_or = ['scheduled.', 'playlist.', 'loading.'];
+					status_or = ['scheduled.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'notification_on':
-					status_or = ['notification_on.', 'playlist.', 'loading.'];
+					status_or = ['notification_on.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'channels_all':
-					status_or = ['channels_all.', 'playlist.', 'loading.'];
+					status_or = ['channels_all.'];
 					break;
 				case 'channels_personalized':
-					status_or = ['channels_personalized.', 'playlist.', 'loading.'];
+					status_or = ['channels_personalized.'];
 					break;
 				case 'channels_none':
-					status_or = ['channels_none.', 'playlist.', 'loading.'];
+					status_or = ['channels_none.'];
 					break;
 				default:
 					status_or = [''];
@@ -583,7 +589,7 @@ if (html_lang) {
 			const node_status = classifyStatus(node);
 
 			if (node_status === '') {
-				console.warn('Unknown status');
+				console.warn('Unknown status: ' + node.nodeName);
 				return true;
 			}
 
