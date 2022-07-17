@@ -410,7 +410,7 @@ if (html_lang) {
 
 		function insertMenu(node) {
 			const browse = searchParentNode(node, 'YTD-BROWSE');
-			if (browse && !browse.querySelector('form.filter-menu')) {
+			if (browse && isMenuTarget()) {
 				const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
 				if (sibling) {
 					const positionFixed = isPositionFixedTarget();
@@ -608,13 +608,10 @@ if (html_lang) {
 		}
 
 		function updateNodeValue(node) {
-			for (const menu of node.querySelectorAll('form.filter-menu')) {
-				if (menu.style.display !== 'none') {
-					changeMode(getActiveMode());
-					updateQueryRegex(node, getActiveQuery());
-					updateVisibility(node);
-					return;
-				}
+			if (isMenuTarget()) {
+				changeMode(getActiveMode());
+				updateQueryRegex(node, getActiveQuery());
+				updateVisibility(node);
 			}
 		}
 
