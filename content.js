@@ -410,7 +410,7 @@ if (html_lang) {
 
 		function insertMenu(node) {
 			const browse = searchParentNode(node, 'YTD-BROWSE');
-			if (browse && isMenuTarget()) {
+			if (browse && !browse.querySelector('form.filter-menu')) {
 				const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
 				if (sibling) {
 					const positionFixed = isPositionFixedTarget();
