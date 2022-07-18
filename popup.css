@@ -1,18 +1,14 @@
-body {
-    background-color: rgb(230, 230, 230);
-}
-
-#container {
+div#container {
     display: inline-block;
 }
 
-#mode_list {
+div#mode_list {
     display: grid;
     grid-template-columns: repeat(2, max-content);
     grid-template-rows: repeat(10, 1fr);
 }
 
-.label {
+div.label {
     margin-right: 8px;
 }
 
@@ -22,16 +18,13 @@ svg.filter-button {
     width: 24px;
 }
 
-.checkbox {
+input.checkbox {
     display: none;
 }
 
-.switch {
-    background-color: rgb(200, 200, 200);
-
+label.switch {
     width: 40px;
     height: 12px;
-    border-color: rgb(160, 160, 160);
     border-radius: 12px;
     border-style: solid;
     border-width: 1px;
@@ -41,28 +34,104 @@ svg.filter-button {
     transition: 0.2s;
 }
 
-.checkbox:checked+.switch {
-    background-color: rgb(200, 255, 200);
-}
-
-.switch:after {
+label.switch:after {
     left: -4px;
-    background-color: rgb(50, 50, 50);
+    content: "\2715";
 
     top: -5px;
     width: 20px;
     height: 20px;
-    border-color: rgb(160, 160, 160);
     border-radius: 100%;
     border-style: solid;
     border-width: 1px;
-    content: "";
     cursor: pointer;
     position: absolute;
-    transition: 0.2s;
+    transition: all 75ms cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
 }
 
-.checkbox:checked+.switch:after {
+input.checkbox:checked+label.switch:after {
     left: 24px;
-    background-color: rgb(50, 255, 50);
+    content: "\2713";
+}
+
+div#reset_container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: rgb(249, 249, 249);
+    }
+
+    div.label {
+        color: rgb(3, 3, 3);
+        fill: rgb(3, 3, 3);
+    }
+
+    label.switch {
+        background-color: rgb(157, 157, 157);
+        border-color: rgb(123, 123, 123);
+    }
+
+    input.checkbox:checked+label.switch {
+        background-color: rgb(235, 255, 229);
+    }
+
+    label.switch:after {
+        background-color: rgb(85, 85, 85);
+        border-color: rgb(123, 123, 123);
+        color: rgb(255, 255, 255);
+    }
+
+    input.checkbox:checked+label.switch:after {
+        background-color: rgb(108, 255, 87);
+        color: rgb(3, 3, 3);
+    }
+
+    input#reset {
+        background-color: rgb(238, 238, 238);
+        border-color: rgb(123, 123, 123);
+        color: rgb(3, 3, 3);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: rgb(26, 26, 26);
+    }
+
+    div.label {
+        color: rgb(255, 255, 255);
+        fill: rgb(255, 255, 255);
+    }
+
+    label.switch {
+        background-color: rgb(157, 157, 157);
+        border-color: rgb(123, 123, 123);
+    }
+
+    input.checkbox:checked+label.switch {
+        background-color: rgb(235, 255, 229);
+    }
+
+    label.switch:after {
+        background-color: rgb(85, 85, 85);
+        border-color: rgb(123, 123, 123);
+        color: rgb(255, 255, 255);
+    }
+
+    input.checkbox:checked+label.switch:after {
+        background-color: rgb(108, 255, 87);
+        color: rgb(3, 3, 3);
+    }
+
+    input#reset {
+        background-color: rgb(85, 85, 85);
+        border-color: rgb(123, 123, 123);
+        color: rgb(255, 255, 255);
+    }
 }
