@@ -10,11 +10,32 @@ const button_channels_all = chrome.i18n.getMessage('button_channels_all');
 const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
 const button_channels_none = chrome.i18n.getMessage('button_channels_none');
 
-function createRow(label, toggle) {
+const defaultOrder = [
+    'live',
+    'streamed',
+    'live_streamed',
+    'video',
+    'streamed_video',
+    'scheduled',
+    'notification_on',
+    'notification_off',
+    'channels_all',
+    'channels_personalized',
+    'channels_none'
+];
+
+let dragStartRow;
+
+const mode_list = document.querySelector('div#mode_list');
+
+function createRow(label, mode, setting, deafultValue) {
     const div = document.createElement('div');
+    div.style.display = 'none';
     div.classList.add('row');
-    div.appendChild(label);
-    div.appendChild(toggle);
+    div.classList.add(mode);
+    div.setAttribute('draggable', 'true');
+    div.appendChild(createLabel(label));
+    div.appendChild(createToggle(mode, setting, deafultValue));
     return div;
 }
 
@@ -32,6 +53,15 @@ function createToggle(mode, setting, deafultValue) {
     return div;
 }
 
+function indexOf(row) {
+    const list = mode_list.children;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i] === row) {
+            return i;
+        }
+    }
+}
+
 chrome.storage.local.get([
     'live',
     'streamed',
@@ -43,21 +73,58 @@ chrome.storage.local.get([
     'notification_off',
     'channels_all',
     'channels_personalized',
-    'channels_none'
+    'channels_none',
+    'order'
 ], (data) => {
-    const mode_list = document.querySelector('div#mode_list');
-    if (mode_list) {
-        mode_list.appendChild(createRow(createLabel(button_live), createToggle('live', data.live, true)));
-        mode_list.appendChild(createRow(createLabel(button_streamed), createToggle('streamed', data.streamed, true)));
-        mode_list.appendChild(createRow(createLabel(button_live_streamed), createToggle('live_streamed', data.live_streamed, false)));
-        mode_list.appendChild(createRow(createLabel(button_video), createToggle('video', data.video, true)));
-        mode_list.appendChild(createRow(createLabel(button_streamed_video), createToggle('streamed_video', data.streamed_video, false)));
-        mode_list.appendChild(createRow(createLabel(button_scheduled), createToggle('scheduled', data.scheduled, true)));
-        mode_list.appendChild(createRow(createLabel(button_notification_on), createToggle('notification_on', data.notification_on, true)));
-        mode_list.appendChild(createRow(createLabel(button_notification_off), createToggle('notification_off', data.notification_off, false)));
-        mode_list.appendChild(createRow(createLabel(button_channels_all), createToggle('channels_all', data.channels_all, true)));
-        mode_list.appendChild(createRow(createLabel(button_channels_personalized), createToggle('channels_personalized', data.channels_personalized, true)));
-        mode_list.appendChild(createRow(createLabel(button_channels_none), createToggle('channels_none', data.channels_none, true)));
+    mode_list.appendChild(createRow(button_live, 'live', data.live, true));
+    mode_list.appendChild(createRow(button_streamed, 'streamed', data.streamed, true));
+    mode_list.appendChild(createRow(button_live_streamed, 'live_streamed', data.live_streamed, false));
+    mode_list.appendChild(createRow(button_video, 'video', data.video, true));
+    mode_list.appendChild(createRow(button_streamed_video, 'streamed_video', data.streamed_video, false));
+    mode_list.appendChild(createRow(button_scheduled, 'scheduled', data.scheduled, true));
+    mode_list.appendChild(createRow(button_notification_on, 'notification_on', data.notification_on, true));
+    mode_list.appendChild(createRow(button_notification_off, 'notification_off', data.notification_off, false));
+    mode_list.appendChild(createRow(button_channels_all, 'channels_all', data.channels_all, true));
+    mode_list.appendChild(createRow(button_channels_personalized, 'channels_personalized', data.channels_personalized, true));
+    mode_list.appendChild(createRow(button_channels_none, 'channels_none', data.channels_none, true));
+
+    for (const mode of data.order ? data.order.split(',') : defaultOrder) {
+        const row = mode_list.querySelector('div.row.' + mode);
+        mode_list.appendChild(row);
+        row.style.display = '';
+    }
+
+    for (const div of document.querySelectorAll('div.row')) {
+        div.addEventListener('dragstart', (event) => {
+            dragStartRow = event.target;
+            dragStartRow.classList.add('dragging');
+        });
+
+        div.addEventListener('dragover', (event) => {
+            event.preventDefault();
+
+            const dragOverRow = event.target.parentNode;
+            if (dragOverRow && dragOverRow.parentNode === mode_list) {
+                if (dragOverRow !== dragStartRow) {
+                    if (indexOf(dragOverRow) < indexOf(dragStartRow)) {
+                        dragOverRow.before(dragStartRow);
+                    } else {
+                        dragOverRow.after(dragStartRow);
+                    }
+                }
+            }
+        });
+
+        div.addEventListener('dragend', (event) => {
+            dragStartRow.classList.remove('dragging');
+            dragStartRow = undefined;
+
+            let list = [];
+            for (const input of mode_list.querySelectorAll('input')) {
+                list.push(input.id);
+            }
+            chrome.storage.local.set({ order: list.join(',') });
+        });
     }
 
     for (const input of document.querySelectorAll('input.checkbox')) {
@@ -70,6 +137,11 @@ chrome.storage.local.get([
         for (const input of document.querySelectorAll('input.checkbox')) {
             input.checked = input.getAttribute('default') === 'true';
         }
+
+        for (const mode of defaultOrder) {
+            mode_list.appendChild(mode_list.querySelector('div.row.' + mode));
+        }
+
         chrome.storage.local.clear();
     });
 });

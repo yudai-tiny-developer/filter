@@ -1,20 +1,26 @@
 div#mode_list {
     display: table;
     width: max-content;
-    border-spacing: 8px;
 }
 
 div.row {
     display: table-row;
 }
 
+div.row.dragging {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
 div.label {
     display: table-cell;
+    cursor: grab;
+    padding: 4px 8px 4px 8px;
 }
 
 div.toggle {
     display: table-cell;
     vertical-align: middle;
+    padding: 4px 8px 4px 8px;
 }
 
 svg.filter-button {
