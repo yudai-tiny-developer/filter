@@ -2,122 +2,152 @@ const html_lang = document.documentElement.attributes['lang'];
 if (html_lang) {
 	import(chrome.runtime.getURL('lang/' + html_lang.value + '.js')).then(lang => {
 		function updateButtonVisibility(node) {
-			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+			chrome.storage.local.get([
+				'live',
+				'streamed',
+				'live_streamed',
+				'video',
+				'streamed_video',
+				'scheduled',
+				'notification_on',
+				'notification_off',
+				'channels_all',
+				'channels_personalized',
+				'channels_none'
+			], (data) => {
+				if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+				} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+				} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+				} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+				} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = '');
-			} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = data.channels_all === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = data.channels_personalized === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = data.channels_none === false ? 'none' : '');
+				} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/feed/explore')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+				} else if (window.location.href.startsWith('https://www.youtube.com/feed/explore')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/feed/trending')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+				} else if (window.location.href.startsWith('https://www.youtube.com/feed/trending')) {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
+					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
+					node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+					node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
-				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
-			}
+					node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+				} else {
+					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
+					node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
+				}
+			});
 		}
 
 		function isMenuTarget() {
@@ -244,8 +274,14 @@ if (html_lang) {
 					}
 
 					break;
+				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+					status += 'post.';
+					break;
 				case 'YTD-GRID-PLAYLIST-RENDERER':
 					status += 'playlist.';
+					break;
+				case 'YTD-REEL-ITEM-RENDERER':
+					status += 'reel.';
 					break;
 			}
 
@@ -416,10 +452,12 @@ if (html_lang) {
 			menu.appendChild(createButton(button_all, 'all', input));
 			menu.appendChild(createButton(button_live, 'live', input));
 			menu.appendChild(createButton(button_streamed, 'streamed', input));
+			menu.appendChild(createButton(button_live_streamed, 'live_streamed', input));
 			menu.appendChild(createButton(button_video, 'video', input));
 			menu.appendChild(createButton(button_streamed_video, 'streamed_video', input));
 			menu.appendChild(createButton(button_scheduled, 'scheduled', input));
 			menu.appendChild(createButton(button_notification_on, 'notification_on', input));
+			menu.appendChild(createButton(button_notification_off, 'notification_off', input));
 
 			menu.appendChild(createButton(button_channels_all, 'channels_all', input));
 			menu.appendChild(createButton(button_channels_personalized, 'channels_personalized', input));
@@ -440,6 +478,7 @@ if (html_lang) {
 
 		function createButton(text, mode, input) {
 			const button = document.createElement('span');
+			button.style.display = 'none';
 			button.innerHTML = text;
 			button.classList.add('filter-button');
 			button.classList.add(mode);
@@ -525,31 +564,37 @@ if (html_lang) {
 					status_or = [''];
 					break;
 				case 'live':
-					status_or = ['live.', 'playlist.', 'loading.'];
+					status_or = ['live.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'streamed':
-					status_or = ['streamed.', 'playlist.', 'loading.'];
+					status_or = ['streamed.', 'playlist.', 'loading.', 'post.', 'reel.'];
+					break;
+				case 'live_streamed':
+					status_or = ['live.', 'streamed.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'video':
-					status_or = ['video.', 'playlist.', 'loading.'];
+					status_or = ['video.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'streamed_video':
-					status_or = ['streamed.', 'video.', 'playlist.', 'loading.'];
+					status_or = ['streamed.', 'video.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'scheduled':
-					status_or = ['scheduled.', 'playlist.', 'loading.'];
+					status_or = ['scheduled.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'notification_on':
-					status_or = ['notification_on.', 'playlist.', 'loading.'];
+					status_or = ['notification_on.', 'playlist.', 'loading.', 'post.', 'reel.'];
+					break;
+				case 'notification_off':
+					status_or = ['notification_off.', 'playlist.', 'loading.', 'post.', 'reel.'];
 					break;
 				case 'channels_all':
-					status_or = ['channels_all.', 'playlist.', 'loading.'];
+					status_or = ['channels_all.'];
 					break;
 				case 'channels_personalized':
-					status_or = ['channels_personalized.', 'playlist.', 'loading.'];
+					status_or = ['channels_personalized.'];
 					break;
 				case 'channels_none':
-					status_or = ['channels_none.', 'playlist.', 'loading.'];
+					status_or = ['channels_none.'];
 					break;
 				default:
 					status_or = [''];
@@ -563,13 +608,10 @@ if (html_lang) {
 		}
 
 		function updateNodeValue(node) {
-			for (const menu of node.querySelectorAll('form.filter-menu')) {
-				if (menu.style.display !== 'none') {
-					changeMode(getActiveMode());
-					updateQueryRegex(node, getActiveQuery());
-					updateVisibility(node);
-					return;
-				}
+			if (isMenuTarget()) {
+				changeMode(getActiveMode());
+				updateQueryRegex(node, getActiveQuery());
+				updateVisibility(node);
 			}
 		}
 
@@ -583,7 +625,7 @@ if (html_lang) {
 			const node_status = classifyStatus(node);
 
 			if (node_status === '') {
-				console.warn('Unknown status');
+				console.warn('Unknown status: ' + node.nodeName);
 				return true;
 			}
 
@@ -641,10 +683,12 @@ if (html_lang) {
 		const button_all = chrome.i18n.getMessage('button_all');
 		const button_live = chrome.i18n.getMessage('button_live');
 		const button_streamed = chrome.i18n.getMessage('button_streamed');
+		const button_live_streamed = chrome.i18n.getMessage('button_live_streamed');
 		const button_video = chrome.i18n.getMessage('button_video');
 		const button_streamed_video = chrome.i18n.getMessage('button_streamed_video');
 		const button_scheduled = chrome.i18n.getMessage('button_scheduled');
 		const button_notification_on = chrome.i18n.getMessage('button_notification_on');
+		const button_notification_off = chrome.i18n.getMessage('button_notification_off');
 		const button_clear = chrome.i18n.getMessage('button_clear');
 		const button_search = chrome.i18n.getMessage('button_search');
 		const button_channels_all = chrome.i18n.getMessage('button_channels_all');
@@ -672,6 +716,11 @@ if (html_lang) {
 			});
 
 			app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
+
+			chrome.storage.onChanged.addListener((changes, namespace) => {
+				updateButtonVisibility(app);
+				updateNodeValue(app);
+			});
 		}
 	}, error => { /* Not supported */ });
 }
