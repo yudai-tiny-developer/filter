@@ -13,8 +13,19 @@ if (html_lang) {
 				'notification_off',
 				'channels_all',
 				'channels_personalized',
-				'channels_none'
+				'channels_none',
+				'order'
 			], (data) => {
+				for (const menu of node.querySelectorAll('form.filter-menu')) {
+					menu.appendChild(menu.querySelector('span.filter-button.all'));
+					for (const mode of data.order ? data.order.split(',') : defaultOrder) {
+						menu.appendChild(menu.querySelector('span.filter-button.' + mode));
+					}
+					for (const query of menu.querySelectorAll('span.filter-query')) {
+						menu.appendChild(query);
+					}
+				}
+
 				if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 					node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 					node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
@@ -694,6 +705,20 @@ if (html_lang) {
 		const button_channels_all = chrome.i18n.getMessage('button_channels_all');
 		const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
 		const button_channels_none = chrome.i18n.getMessage('button_channels_none');
+
+		const defaultOrder = [
+			'live',
+			'streamed',
+			'live_streamed',
+			'video',
+			'streamed_video',
+			'scheduled',
+			'notification_on',
+			'notification_off',
+			'channels_all',
+			'channels_personalized',
+			'channels_none'
+		];
 
 		const activeMode = new Map();
 		const activeQuery = new Map();

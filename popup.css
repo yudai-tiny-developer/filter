@@ -1,21 +1,37 @@
-div#container {
-    display: inline-block;
+div#mode_list {
+    display: table;
+    width: max-content;
 }
 
-div#mode_list {
-    display: grid;
-    grid-template-columns: repeat(2, max-content);
-    grid-template-rows: repeat(10, 1fr);
+div.row {
+    display: table-row;
+}
+
+div.row.dragging {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+div.row.touching {
+    opacity: 0.75;
+    position: fixed;
+    white-space: nowrap;
 }
 
 div.label {
-    margin-right: 8px;
+    display: table-cell;
+    cursor: grab;
+    padding: 8px;
+}
+
+div.toggle {
+    display: table-cell;
+    vertical-align: middle;
+    padding: 8px;
 }
 
 svg.filter-button {
-    margin: 4px;
-    height: 24px;
-    width: 24px;
+    height: 1.5em;
+    width: 1.5em;
 }
 
 input.checkbox {
@@ -28,10 +44,9 @@ label.switch {
     border-radius: 12px;
     border-style: solid;
     border-width: 1px;
-    display: inline-block;
-    margin: 4px;
+    display: block;
     position: relative;
-    transition: 0.2s;
+    transition: all 75ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 label.switch:after {
@@ -60,6 +75,7 @@ input.checkbox:checked+label.switch:after {
 div#reset_container {
     display: flex;
     justify-content: flex-end;
+    padding: 8px;
 }
 
 @media (prefers-color-scheme: light) {
