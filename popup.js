@@ -116,6 +116,10 @@ function convertTouchEventToDragEvent(type, touchEvent, dataTransfer) {
         shiftKey: touchEvent.shiftKey,
         altKey: touchEvent.altKey,
         metaKey: touchEvent.metaKey,
+        button: 0,
+        buttons: 0,
+        relatedTarget: touchEvent.changedTouches[0].target,
+        region: null,
 
         detail: touchEvent.detail,
         view: touchEvent.view,
@@ -128,7 +132,7 @@ function convertTouchEventToDragEvent(type, touchEvent, dataTransfer) {
 }
 
 function getTouchTarget(touch) {
-    const target = document.elementFromPoint(touch.pageX, touch.pageY);
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
     return target ? target : touch.target;
 }
 
@@ -170,6 +174,7 @@ chrome.storage.local.get([
         div.addEventListener('dragend', onDragEnd);
 
         div.addEventListener('touchstart', (event) => {
+            event.preventDefault();
             if (touchIdentifier === undefined) {
                 touchIdentifier = event.changedTouches[0].identifier;
                 div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
