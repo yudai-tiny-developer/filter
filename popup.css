@@ -11,6 +11,11 @@ div.row.dragging {
     background-color: rgba(255, 0, 0, 0.2);
 }
 
+div.row.dragging-view {
+    position: fixed;
+    white-space: nowrap;
+}
+
 div.label {
     display: table-cell;
     cursor: grab;

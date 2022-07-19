@@ -24,9 +24,10 @@ const defaultOrder = [
     'channels_none'
 ];
 
-let dragStartRow;
-
 const mode_list = document.querySelector('div#mode_list');
+
+let dragging;
+let draggingView;
 
 function createRow(label, mode, setting, deafultValue) {
     const div = document.createElement('div');
@@ -60,6 +61,33 @@ function indexOf(row) {
             return i;
         }
     }
+}
+
+function contains(node, x, y) {
+    const r = node.getBoundingClientRect();
+    return r.left <= x && x <= r.right && r.top <= y && y <= r.bottom;
+}
+
+function onDragStart(dragTarget) {
+    dragging = dragTarget;
+    dragging.classList.add('dragging');
+}
+
+function onDragOver(overTarget) {
+    if (overTarget && overTarget.parentNode === mode_list) {
+        if (overTarget !== dragging) {
+            if (indexOf(overTarget) < indexOf(dragging)) {
+                overTarget.before(dragging);
+            } else {
+                overTarget.after(dragging);
+            }
+        }
+    }
+}
+
+function onDragEnd() {
+    dragging.classList.remove('dragging');
+    dragging = undefined;
 }
 
 chrome.storage.local.get([
@@ -96,34 +124,66 @@ chrome.storage.local.get([
 
     for (const div of document.querySelectorAll('div.row')) {
         div.addEventListener('dragstart', (event) => {
-            dragStartRow = event.target;
-            dragStartRow.classList.add('dragging');
+            onDragStart(event.target);
         });
 
         div.addEventListener('dragover', (event) => {
             event.preventDefault();
 
-            const dragOverRow = event.target.parentNode;
-            if (dragOverRow && dragOverRow.parentNode === mode_list) {
-                if (dragOverRow !== dragStartRow) {
-                    if (indexOf(dragOverRow) < indexOf(dragStartRow)) {
-                        dragOverRow.before(dragStartRow);
-                    } else {
-                        dragOverRow.after(dragStartRow);
-                    }
-                }
-            }
+            onDragOver(event.target.parentNode);
         });
 
         div.addEventListener('dragend', (event) => {
-            dragStartRow.classList.remove('dragging');
-            dragStartRow = undefined;
+            onDragEnd();
 
             let list = [];
             for (const input of mode_list.querySelectorAll('input')) {
                 list.push(input.id);
             }
             chrome.storage.local.set({ order: list.join(',') });
+        });
+
+        div.addEventListener('touchstart', (event) => {
+            const target = event.target.parentNode;
+            if (target && target.getAttribute('draggable') === 'true') {
+                event.preventDefault();
+
+                draggingView = target.cloneNode(true);
+                draggingView.classList.add('dragging-view');
+                document.body.appendChild(draggingView);
+
+                onDragStart(target);
+            }
+        });
+
+        div.addEventListener('touchmove', (event) => {
+            if (dragging) {
+                event.preventDefault();
+
+                const t = event.changedTouches[0];
+                const x = t.pageX - window.scrollX - draggingView.offsetWidth / 2;
+                const y = t.pageY - window.scrollY - draggingView.offsetHeight / 2;
+                draggingView.style.left = x + 'px';
+                draggingView.style.top = y + 'px';
+
+                for (const row of document.querySelectorAll('div.row')) {
+                    if (contains(row, t.pageX, t.pageY)) {
+                        onDragOver(row);
+                        return;
+                    }
+                }
+            }
+        });
+
+        div.addEventListener('touchend', (event) => {
+            if (dragging) {
+                event.preventDefault();
+
+                document.body.removeChild(draggingView);
+                draggingView = undefined;
+
+                onDragEnd();
+            }
         });
     }
 
