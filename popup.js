@@ -26,8 +26,8 @@ const defaultOrder = [
 
 const mode_list = document.querySelector('div#mode_list');
 
-let dragging;
-let draggingView;
+let dragTargetRow;
+let projection;
 
 function createRow(label, mode, setting, deafultValue) {
     const div = document.createElement('div');
@@ -69,25 +69,25 @@ function contains(node, x, y) {
 }
 
 function onDragStart(dragTarget) {
-    dragging = dragTarget;
-    dragging.classList.add('dragging');
+    dragTargetRow = dragTarget;
+    dragTargetRow.classList.add('dragging');
 }
 
 function onDragOver(overTarget) {
     if (overTarget && overTarget.parentNode === mode_list) {
-        if (overTarget !== dragging) {
-            if (indexOf(overTarget) < indexOf(dragging)) {
-                overTarget.before(dragging);
+        if (overTarget !== dragTargetRow) {
+            if (indexOf(overTarget) < indexOf(dragTargetRow)) {
+                overTarget.before(dragTargetRow);
             } else {
-                overTarget.after(dragging);
+                overTarget.after(dragTargetRow);
             }
         }
     }
 }
 
 function onDragEnd() {
-    dragging.classList.remove('dragging');
-    dragging = undefined;
+    dragTargetRow.classList.remove('dragging');
+    dragTargetRow = undefined;
 
     let list = [];
     for (const input of mode_list.querySelectorAll('input')) {
@@ -148,23 +148,22 @@ chrome.storage.local.get([
             if (target && target.getAttribute('draggable') === 'true') {
                 event.preventDefault();
 
-                draggingView = target.cloneNode(true);
-                draggingView.classList.add('dragging-view');
-                document.body.appendChild(draggingView);
+                projection = target.cloneNode(true);
+                projection.classList.add('dragging');
+                projection.classList.add('touching');
+                document.body.appendChild(projection);
 
                 onDragStart(target);
             }
         });
 
         div.addEventListener('touchmove', (event) => {
-            if (dragging) {
+            if (dragTargetRow) {
                 event.preventDefault();
 
                 const t = event.changedTouches[0];
-                const x = t.pageX - window.scrollX - draggingView.offsetWidth / 2;
-                const y = t.pageY - window.scrollY - draggingView.offsetHeight / 2;
-                draggingView.style.left = x + 'px';
-                draggingView.style.top = y + 'px';
+                projection.style.left = (t.pageX - window.scrollX - projection.offsetWidth / 2) + 'px';
+                projection.style.top = (t.pageY - window.scrollY - projection.offsetHeight / 2) + 'px';
 
                 for (const row of document.querySelectorAll('div.row')) {
                     if (contains(row, t.pageX, t.pageY)) {
@@ -176,11 +175,11 @@ chrome.storage.local.get([
         });
 
         div.addEventListener('touchend', (event) => {
-            if (dragging) {
+            if (dragTargetRow) {
                 event.preventDefault();
 
-                document.body.removeChild(draggingView);
-                draggingView = undefined;
+                document.body.removeChild(projection);
+                projection = undefined;
 
                 onDragEnd();
             }
