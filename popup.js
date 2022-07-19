@@ -69,15 +69,17 @@ function contains(node, x, y) {
     return r.left <= x && x <= r.right && r.top <= y && y <= r.bottom;
 }
 
-function onDragStart(dragTarget) {
-    if (dragTarget && dragTarget.parentNode === mode_list) {
+function onDragStart(event) {
+    const dragTarget = event.target;
+    if (!dragTargetRow && dragTarget.parentNode === mode_list) {
         dragTargetRow = dragTarget;
         dragTargetRow.classList.add('dragging');
     }
 }
 
-function onDragOver(overTarget) {
-    if (overTarget && overTarget.parentNode === mode_list) {
+function onDragOver(event) {
+    const overTarget = event.target.parentNode;
+    if (dragTargetRow && overTarget && overTarget.parentNode === mode_list) {
         if (overTarget !== dragTargetRow) {
             if (indexOf(overTarget) < indexOf(dragTargetRow)) {
                 overTarget.before(dragTargetRow);
@@ -86,17 +88,20 @@ function onDragOver(overTarget) {
             }
         }
     }
+    event.preventDefault();
 }
 
-function onDragEnd() {
-    dragTargetRow.classList.remove('dragging');
-    dragTargetRow = undefined;
+function onDragEnd(event) {
+    if (dragTargetRow) {
+        dragTargetRow.classList.remove('dragging');
+        dragTargetRow = undefined;
 
-    let list = [];
-    for (const input of mode_list.querySelectorAll('input')) {
-        list.push(input.id);
+        let list = [];
+        for (const input of mode_list.querySelectorAll('input')) {
+            list.push(input.id);
+        }
+        chrome.storage.local.set({ order: list.join(',') });
     }
-    chrome.storage.local.set({ order: list.join(',') });
 }
 
 function convertTouchEventToDragEvent(type, touchEvent, dataTransfer) {
@@ -160,25 +165,9 @@ chrome.storage.local.get([
     }
 
     for (const div of document.querySelectorAll('div.row')) {
-        div.addEventListener('dragstart', (event) => {
-            if (!dragTargetRow) {
-                onDragStart(event.target);
-            }
-        });
-
-        div.addEventListener('dragover', (event) => {
-            if (dragTargetRow) {
-                event.preventDefault();
-
-                onDragOver(event.target.parentNode);
-            }
-        });
-
-        div.addEventListener('dragend', (event) => {
-            if (dragTargetRow) {
-                onDragEnd();
-            }
-        });
+        div.addEventListener('dragstart', onDragStart);
+        div.addEventListener('dragover', onDragOver);
+        div.addEventListener('dragend', onDragEnd);
 
         div.addEventListener('touchstart', (event) => {
             if (touchIdentifier === undefined) {
