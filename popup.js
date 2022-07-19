@@ -167,7 +167,6 @@ chrome.storage.local.get([
         });
 
         div.addEventListener('dragover', (event) => {
-            console.log(event.target);
             if (dragTargetRow) {
                 event.preventDefault();
 
