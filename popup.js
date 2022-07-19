@@ -99,6 +99,34 @@ function onDragEnd() {
     chrome.storage.local.set({ order: list.join(',') });
 }
 
+function convertTouchEventToDragEvent(type, touchEvent, touch, dataTransfer) {
+    return new DragEvent(type, {
+        dataTransfer: dataTransfer,
+
+        screenX: touch.screenX,
+        screenY: touch.screenY,
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        ctrlKey: touchEvent.ctrlKey,
+        shiftKey: touchEvent.shiftKey,
+        altKey: touchEvent.altKey,
+        metaKey: touchEvent.metaKey,
+
+        detail: touchEvent.detail,
+        view: touchEvent.view,
+        sourceCapabilities: touchEvent.sourceCapabilities,
+
+        bubbles: touchEvent.bubbles,
+        cancelable: touchEvent.cancelable,
+        composed: touchEvent.composed
+    });
+}
+
+function getTouchTarget(touch) {
+    const target = document.elementFromPoint(touch.pageX, touch.pageY);
+    return target ? target : touch.target;
+}
+
 chrome.storage.local.get([
     'live',
     'streamed',
@@ -139,6 +167,7 @@ chrome.storage.local.get([
         });
 
         div.addEventListener('dragover', (event) => {
+            console.log(event.target);
             if (dragTargetRow) {
                 event.preventDefault();
 
@@ -154,65 +183,31 @@ chrome.storage.local.get([
 
         div.addEventListener('touchstart', (event) => {
             if (touchIdentifier === undefined) {
-                if (!dragTargetRow) {
-                    const touch = event.changedTouches[0];
-                    touchIdentifier = touch.identifier;
-
-                    const target = event.target.parentNode;
-                    if (target && target.parentNode === mode_list) {
-                        event.preventDefault();
-
-                        projection = target.cloneNode(true);
-                        projection.classList.add('dragging');
-                        projection.classList.add('touching');
-                        projection.style.left = (touch.pageX - window.scrollX - target.offsetWidth / 2) + 'px';
-                        projection.style.top = (touch.pageY - window.scrollY - target.offsetHeight / 2) + 'px';
-                        document.body.appendChild(projection);
-
-                        onDragStart(target);
-                    } else {
-                        touchIdentifier = undefined;
-                    }
-                }
+                const touch = event.targetTouches[0];
+                touchIdentifier = touch.identifier;
+                div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event, touch));
             }
         });
 
         div.addEventListener('touchmove', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
-                if (dragTargetRow) {
-                    event.preventDefault();
-
-                    projection.style.left = (touch.pageX - window.scrollX - projection.offsetWidth / 2) + 'px';
-                    projection.style.top = (touch.pageY - window.scrollY - projection.offsetHeight / 2) + 'px';
-
-                    for (const row of document.querySelectorAll('div.row')) {
-                        if (contains(row, touch.pageX, touch.pageY)) {
-                            onDragOver(row);
-                            return;
-                        }
-                    }
-                }
+                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event, touch));
             }
         });
 
         div.addEventListener('touchend', (event) => {
-            if (event.changedTouches[0].identifier === touchIdentifier) {
-                if (dragTargetRow) {
-                    event.preventDefault();
-
-                    document.body.removeChild(projection);
-                    projection = undefined;
-
-                    onDragEnd();
-                }
-
+            const touch = event.changedTouches[0];
+            if (touch.identifier === touchIdentifier) {
+                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event, touch));
                 touchIdentifier = undefined;
             }
         });
 
         div.addEventListener('touchcancel ', (event) => {
-            if (event.changedTouches[0].identifier === touchIdentifier) {
+            const touch = event.changedTouches[0];
+            if (touch.identifier === touchIdentifier) {
+                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event, touch));
                 touchIdentifier = undefined;
             }
         });
