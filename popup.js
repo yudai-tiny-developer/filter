@@ -174,11 +174,14 @@ chrome.storage.local.get([
         div.addEventListener('dragend', onDragEnd);
 
         div.addEventListener('touchstart', (event) => {
-            event.preventDefault();
             if (touchIdentifier === undefined) {
                 touchIdentifier = event.changedTouches[0].identifier;
                 div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
+                if (event.target.parentNode === mode_list) {
+                    event.preventDefault();
+                }
             }
+            console.log(event.target.classList + ', ' + event.changedTouches[0].target.classList);
         });
 
         div.addEventListener('touchmove', (event) => {
