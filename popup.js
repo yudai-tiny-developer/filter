@@ -99,14 +99,14 @@ function onDragEnd() {
     chrome.storage.local.set({ order: list.join(',') });
 }
 
-function convertTouchEventToDragEvent(type, touchEvent, touch, dataTransfer) {
+function convertTouchEventToDragEvent(type, touchEvent, dataTransfer) {
     return new DragEvent(type, {
         dataTransfer: dataTransfer,
 
-        screenX: touch.screenX,
-        screenY: touch.screenY,
-        clientX: touch.clientX,
-        clientY: touch.clientY,
+        screenX: touchEvent.changedTouches[0].screenX,
+        screenY: touchEvent.changedTouches[0].screenY,
+        clientX: touchEvent.changedTouches[0].clientX,
+        clientY: touchEvent.changedTouches[0].clientY,
         ctrlKey: touchEvent.ctrlKey,
         shiftKey: touchEvent.shiftKey,
         altKey: touchEvent.altKey,
@@ -182,23 +182,22 @@ chrome.storage.local.get([
 
         div.addEventListener('touchstart', (event) => {
             if (touchIdentifier === undefined) {
-                const touch = event.targetTouches[0];
-                touchIdentifier = touch.identifier;
-                div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event, touch));
+                touchIdentifier = event.changedTouches[0].identifier;
+                div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
             }
         });
 
         div.addEventListener('touchmove', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
-                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event, touch));
+                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event));
             }
         });
 
         div.addEventListener('touchend', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
-                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event, touch));
+                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
                 touchIdentifier = undefined;
             }
         });
@@ -206,7 +205,7 @@ chrome.storage.local.get([
         div.addEventListener('touchcancel ', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
-                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event, touch));
+                getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
                 touchIdentifier = undefined;
             }
         });
