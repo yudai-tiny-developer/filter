@@ -88,6 +88,12 @@ function onDragOver(overTarget) {
 function onDragEnd() {
     dragging.classList.remove('dragging');
     dragging = undefined;
+
+    let list = [];
+    for (const input of mode_list.querySelectorAll('input')) {
+        list.push(input.id);
+    }
+    chrome.storage.local.set({ order: list.join(',') });
 }
 
 chrome.storage.local.get([
@@ -135,12 +141,6 @@ chrome.storage.local.get([
 
         div.addEventListener('dragend', (event) => {
             onDragEnd();
-
-            let list = [];
-            for (const input of mode_list.querySelectorAll('input')) {
-                list.push(input.id);
-            }
-            chrome.storage.local.set({ order: list.join(',') });
         });
 
         div.addEventListener('touchstart', (event) => {
