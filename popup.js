@@ -28,6 +28,7 @@ const mode_list = document.querySelector('div#mode_list');
 
 let dragTargetRow;
 let projection;
+let touchIdentifier;
 
 function createRow(label, mode, setting, deafultValue) {
     const div = document.createElement('div');
@@ -69,8 +70,10 @@ function contains(node, x, y) {
 }
 
 function onDragStart(dragTarget) {
-    dragTargetRow = dragTarget;
-    dragTargetRow.classList.add('dragging');
+    if (dragTarget && dragTarget.parentNode === mode_list) {
+        dragTargetRow = dragTarget;
+        dragTargetRow.classList.add('dragging');
+    }
 }
 
 function onDragOver(overTarget) {
@@ -130,58 +133,88 @@ chrome.storage.local.get([
 
     for (const div of document.querySelectorAll('div.row')) {
         div.addEventListener('dragstart', (event) => {
-            onDragStart(event.target);
+            if (!dragTargetRow) {
+                onDragStart(event.target);
+            }
         });
 
         div.addEventListener('dragover', (event) => {
-            event.preventDefault();
+            if (dragTargetRow) {
+                event.preventDefault();
 
-            onDragOver(event.target.parentNode);
+                onDragOver(event.target.parentNode);
+            }
         });
 
         div.addEventListener('dragend', (event) => {
-            onDragEnd();
+            if (dragTargetRow) {
+                onDragEnd();
+            }
         });
 
         div.addEventListener('touchstart', (event) => {
-            const target = event.target.parentNode;
-            if (target && target.getAttribute('draggable') === 'true') {
-                event.preventDefault();
+            if (touchIdentifier === undefined) {
+                if (!dragTargetRow) {
+                    const touch = event.changedTouches[0];
+                    touchIdentifier = touch.identifier;
 
-                projection = target.cloneNode(true);
-                projection.classList.add('dragging');
-                projection.classList.add('touching');
-                document.body.appendChild(projection);
+                    const target = event.target.parentNode;
+                    if (target && target.parentNode === mode_list) {
+                        event.preventDefault();
 
-                onDragStart(target);
+                        projection = target.cloneNode(true);
+                        projection.classList.add('dragging');
+                        projection.classList.add('touching');
+                        document.body.appendChild(projection);
+
+                        projection.style.left = (touch.pageX - window.scrollX - projection.offsetWidth / 2) + 'px';
+                        projection.style.top = (touch.pageY - window.scrollY - projection.offsetHeight / 2) + 'px';
+
+                        onDragStart(target);
+                    } else {
+                        touchIdentifier = undefined;
+                    }
+                }
             }
         });
 
         div.addEventListener('touchmove', (event) => {
-            if (dragTargetRow) {
-                event.preventDefault();
+            const touch = event.changedTouches[0];
+            if (touch.identifier === touchIdentifier) {
+                if (dragTargetRow) {
+                    event.preventDefault();
 
-                const t = event.changedTouches[0];
-                projection.style.left = (t.pageX - window.scrollX - projection.offsetWidth / 2) + 'px';
-                projection.style.top = (t.pageY - window.scrollY - projection.offsetHeight / 2) + 'px';
+                    projection.style.left = (touch.pageX - window.scrollX - projection.offsetWidth / 2) + 'px';
+                    projection.style.top = (touch.pageY - window.scrollY - projection.offsetHeight / 2) + 'px';
 
-                for (const row of document.querySelectorAll('div.row')) {
-                    if (contains(row, t.pageX, t.pageY)) {
-                        onDragOver(row);
-                        return;
+                    for (const row of document.querySelectorAll('div.row')) {
+                        if (contains(row, touch.pageX, touch.pageY)) {
+                            onDragOver(row);
+                            return;
+                        }
                     }
                 }
             }
         });
 
         div.addEventListener('touchend', (event) => {
-            if (dragTargetRow) {
-                event.preventDefault();
+            if (event.changedTouches[0].identifier === touchIdentifier) {
+                if (dragTargetRow) {
+                    event.preventDefault();
 
-                document.body.removeChild(projection);
-                projection = undefined;
+                    document.body.removeChild(projection);
+                    projection = undefined;
 
-                onDragEnd();
+                    onDragEnd();
+                }
+
+                touchIdentifier = undefined;
+            }
+        });
+
+        div.addEventListener('touchcancel ', (event) => {
+            if (event.changedTouches[0].identifier === touchIdentifier) {
+                touchIdentifier = undefined;
             }
         });
     }
