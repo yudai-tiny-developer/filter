@@ -165,10 +165,9 @@ chrome.storage.local.get([
                         projection = target.cloneNode(true);
                         projection.classList.add('dragging');
                         projection.classList.add('touching');
+                        projection.style.left = (touch.pageX - window.scrollX - target.offsetWidth / 2) + 'px';
+                        projection.style.top = (touch.pageY - window.scrollY - target.offsetHeight / 2) + 'px';
                         document.body.appendChild(projection);
-
-                        projection.style.left = (touch.pageX - window.scrollX - projection.offsetWidth / 2) + 'px';
-                        projection.style.top = (touch.pageY - window.scrollY - projection.offsetHeight / 2) + 'px';
 
                         onDragStart(target);
                     } else {
