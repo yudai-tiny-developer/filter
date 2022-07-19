@@ -75,6 +75,7 @@ input.checkbox:checked+label.switch:after {
 div#reset_container {
     display: flex;
     justify-content: flex-end;
+    padding: 8px;
 }
 
 @media (prefers-color-scheme: light) {
