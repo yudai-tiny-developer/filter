@@ -28,6 +28,8 @@ const mode_list = document.querySelector('div#mode_list');
 
 let dragTargetRow;
 let projection;
+let grab_x;
+let grab_y;
 let touchIdentifier;
 
 function createRow(label, mode, setting, deafultValue) {
@@ -132,8 +134,48 @@ function convertTouchEventToDragEvent(type, touchEvent, dataTransfer) {
 }
 
 function getTouchTarget(touch) {
-    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-    return target ? target : touch.target;
+    for (const node of mode_list.querySelectorAll('div.row:not(.touching)')) {
+        if (contains(node, touch.clientX, touch.clientY)) {
+            return node.querySelector('div.label');
+        }
+    }
+    return touch.target;
+}
+
+function updateGrabbingPosition(touch, node) {
+    const rect = node.getBoundingClientRect();
+    grab_x = touch.pageX - window.pageXOffset - rect.left;
+    grab_y = touch.pageY - window.pageYOffset - rect.top;
+}
+
+function createProjection(node) {
+    const clone = node.cloneNode(true);
+    clone.classList.add('touching');
+    node.classList.add('touch-dragging');
+    return clone;
+}
+
+function fixSizeProjection(node, base) {
+    node.style.width = base.clientWidth + 'px';
+    node.style.height = base.clientHeight + 'px';
+
+    for (let i = 0; i < base.children.length; i++) {
+        fixSizeProjection(node.children[i], base.children[i]);
+    }
+}
+
+function moveProjection(node, touch) {
+    node.style.left = (touch.pageX - window.pageXOffset - grab_x) + 'px';
+    node.style.top = (touch.pageY - window.pageYOffset - grab_y) + 'px';
+}
+
+function showProjection(node) {
+    mode_list.appendChild(node);
+}
+
+function hideProjection(node) {
+    mode_list.removeChild(node);
+    dragTargetRow.classList.remove('touch-dragging');
 }
 
 chrome.storage.local.get([
@@ -168,16 +210,21 @@ chrome.storage.local.get([
         row.style.display = '';
     }
 
-    for (const div of document.querySelectorAll('div.row')) {
+    for (const div of mode_list.querySelectorAll('div.row')) {
         div.addEventListener('dragstart', onDragStart);
         div.addEventListener('dragover', onDragOver);
         div.addEventListener('dragend', onDragEnd);
 
-        div.addEventListener('touchstart', (event) => {
-            if (!event.target.classList.contains('switch')) {
-                event.preventDefault();
-            }
+        div.querySelector('div.label').addEventListener('touchstart', (event) => {
             if (touchIdentifier === undefined) {
+                const touch = event.changedTouches[0];
+                updateGrabbingPosition(touch, div);
+
+                projection = createProjection(div);
+                fixSizeProjection(projection, div);
+                moveProjection(projection, touch);
+                showProjection(projection);
+
                 touchIdentifier = event.changedTouches[0].identifier;
                 div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
             }
@@ -186,6 +233,8 @@ chrome.storage.local.get([
         div.addEventListener('touchmove', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
+                moveProjection(projection, touch);
+
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event));
             }
         });
@@ -193,28 +242,32 @@ chrome.storage.local.get([
         div.addEventListener('touchend', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
+                hideProjection(projection);
+
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
                 touchIdentifier = undefined;
             }
         });
 
-        div.addEventListener('touchcancel ', (event) => {
+        div.addEventListener('touchcancel', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
+                hideProjection(projection);
+
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
                 touchIdentifier = undefined;
             }
         });
     }
 
-    for (const input of document.querySelectorAll('input.checkbox')) {
+    for (const input of mode_list.querySelectorAll('input.checkbox')) {
         input.addEventListener('change', () => {
             chrome.storage.local.set({ [input.id]: input.checked });
         });
     }
 
     document.querySelector('input#reset').addEventListener('click', () => {
-        for (const input of document.querySelectorAll('input.checkbox')) {
+        for (const input of mode_list.querySelectorAll('input.checkbox')) {
             input.checked = input.getAttribute('default') === 'true';
         }
 
