@@ -155,12 +155,11 @@ function createProjection(node) {
     return clone;
 }
 
-function fixSizeProjection(node, base) {
+function fixWidthProjection(node, base) {
     node.style.width = base.clientWidth + 'px';
-    node.style.height = base.clientHeight + 'px';
 
-    for (let i = 0; i < base.children.length; i++) {
-        fixSizeProjection(node.children[i], base.children[i]);
+    for (let i = 0; i < node.children.length; i++) {
+        fixWidthProjection(node.children[i], base.children[i]);
     }
 }
 
@@ -221,7 +220,7 @@ chrome.storage.local.get([
                 updateGrabbingPosition(touch, div);
 
                 projection = createProjection(div);
-                fixSizeProjection(projection, div);
+                fixWidthProjection(projection, div);
                 moveProjection(projection, touch);
                 showProjection(projection);
 
