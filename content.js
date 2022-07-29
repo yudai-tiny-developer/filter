@@ -628,13 +628,21 @@ if (html_lang) {
 
 		function updateShelfVisibility(node) {
 			const title = node.querySelector('h2.ytd-shelf-renderer');
-			if (isVisible(node, 'ytd-video-renderer')) {
+			if (hasVisibleNode(node, [
+				'ytd-grid-video-renderer',
+				'ytd-video-renderer:not(.ytd-backstage-post-renderer)',
+				'ytd-playlist-video-renderer',
+				'ytd-channel-renderer',
+				'ytd-backstage-post-thread-renderer',
+				'ytd-grid-playlist-renderer',
+				'ytd-reel-item-renderer'
+			])) {
 				node.style.display = '';
 				if (title) {
 					title.style.display = '';
 				}
 			} else {
-				if (hasWidth(node, 'div#menu')) {
+				if (isVisible(node, 'ytd-menu-renderer')) {
 					if (title) {
 						title.style.display = 'none';
 					}
@@ -644,11 +652,12 @@ if (html_lang) {
 			}
 		}
 
-		function hasWidth(node, selector) {
-			for (const n of node.querySelectorAll(selector)) {
-				const rect = n.getBoundingClientRect();
-				if (rect.width > 0) {
-					return true;
+		function hasVisibleNode(node, selectors) {
+			for (const selector of selectors) {
+				for (const n of node.querySelectorAll(selector)) {
+					if (n.style.display !== 'none') {
+						return true;
+					}
 				}
 			}
 			return false;
@@ -657,10 +666,11 @@ if (html_lang) {
 		function isVisible(node, selector) {
 			for (const n of node.querySelectorAll(selector)) {
 				const rect = n.getBoundingClientRect();
-				if (n.style.display !== 'none') {
+				if (rect.width > 0 && rect.height > 0) {
 					return true;
 				}
 			}
+
 			return false;
 		}
 
