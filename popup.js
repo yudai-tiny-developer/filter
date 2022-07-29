@@ -170,13 +170,13 @@ function moveProjection(projection, x, y, gap_x, gap_y) {
     projection.style.top = (y - window.pageYOffset - gap_y) + 'px';
 }
 
-function showProjection(projection) {
+function showProjection(projection, base) {
     mode_list.appendChild(projection);
-    row.classList.add('touching');
+    base.classList.add('touching');
 }
 
-function hideProjection(projection, row) {
-    row.classList.remove('touching');
+function hideProjection(projection, base) {
+    base.classList.remove('touching');
     mode_list.removeChild(projection);
 }
 
@@ -226,7 +226,7 @@ chrome.storage.local.get([
                 projection = createProjection(div);
                 fixWidthProjection(projection, div);
                 moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
-                showProjection(projection);
+                showProjection(projection, drag_target_row);
 
                 div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
                 touch_identifier = event.changedTouches[0].identifier;
