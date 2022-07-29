@@ -533,7 +533,7 @@ if (html_lang) {
 
 		function createClearButton(input) {
 			const button = document.createElement('span');
-			button.innerHTML = button_clear;
+			button.innerHTML = button.clear;
 			button.classList.add('filter-clear');
 
 			button.addEventListener('click', () => {
@@ -547,7 +547,7 @@ if (html_lang) {
 
 		function createSearchButton(input) {
 			const button = document.createElement('span');
-			button.innerHTML = button_search;
+			button.innerHTML = button.search;
 			button.classList.add('filter-query');
 			button.classList.add('search');
 
