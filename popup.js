@@ -226,7 +226,7 @@ chrome.storage.local.get([
                 projection = createProjection(div);
                 fixWidthProjection(projection, div);
                 moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
-                showProjection(projection, drag_target_row);
+                showProjection(projection, div);
 
                 div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
                 touch_identifier = event.changedTouches[0].identifier;
