@@ -28,19 +28,19 @@ const defaultOrder = [
 
 const mode_list = document.querySelector('div#mode_list');
 
-let dragTargetRow;
+let drag_target_row;
 let projection;
 let gap;
-let touchIdentifier;
+let touch_identifier;
 
-function createRow(label, mode, setting, deafultValue) {
+function createRow(label, mode, setting, deafult_value) {
     const div = document.createElement('div');
     div.style.display = 'none';
     div.classList.add('row');
     div.classList.add(mode);
     div.setAttribute('draggable', 'true');
     div.appendChild(createLabel(label));
-    div.appendChild(createToggle(mode, setting, deafultValue));
+    div.appendChild(createToggle(mode, setting, deafult_value));
     return div;
 }
 
@@ -51,18 +51,18 @@ function createLabel(label) {
     return div;
 }
 
-function createToggle(mode, setting, deafultValue) {
+function createToggle(mode, setting, deafult_value) {
     const div = document.createElement('div');
     div.classList.add('toggle');
-    div.innerHTML = '<input id="' + mode + '" class="checkbox" type="checkbox" ' + (setting === true ? 'checked' : (setting === undefined && deafultValue ? 'checked' : '')) + ' default="' + deafultValue + '" /><label for="' + mode + '" class="switch" />';
+    div.innerHTML = '<input id="' + mode + '" class="checkbox" type="checkbox" ' + (setting === true ? 'checked' : (setting === undefined && deafult_value ? 'checked' : '')) + ' default="' + deafult_value + '" /><label for="' + mode + '" class="switch" />';
     return div;
 }
 
-function isBefore(overTargetRow, dragTargetRow) {
+function isBefore(over_target_row, drag_target_row) {
     for (const child of mode_list.children) {
-        if (child === overTargetRow) {
+        if (child === over_target_row) {
             return true;
-        } else if (child === dragTargetRow) {
+        } else if (child === drag_target_row) {
             return false;
         }
     }
@@ -76,28 +76,28 @@ function contains(node, x, y) {
 
 function onDragStart(event) {
     const dragTarget = event.target;
-    if (!dragTargetRow && dragTarget.parentNode === mode_list) {
-        dragTargetRow = dragTarget;
-        dragTargetRow.classList.add('dragging');
+    if (!drag_target_row && dragTarget.parentNode === mode_list) {
+        drag_target_row = dragTarget;
+        drag_target_row.classList.add('dragging');
     }
 }
 
 function onDragOver(event) {
-    const overTargetRow = event.target.parentNode;
-    if (dragTargetRow && overTargetRow && overTargetRow.parentNode === mode_list && overTargetRow !== dragTargetRow) {
-        if (isBefore(overTargetRow, dragTargetRow)) {
-            overTargetRow.before(dragTargetRow);
+    const over_target_row = event.target.parentNode;
+    if (drag_target_row && over_target_row && over_target_row.parentNode === mode_list && over_target_row !== drag_target_row) {
+        if (isBefore(over_target_row, drag_target_row)) {
+            over_target_row.before(drag_target_row);
         } else {
-            overTargetRow.after(dragTargetRow);
+            over_target_row.after(drag_target_row);
         }
     }
     event.preventDefault();
 }
 
 function onDragEnd(event) {
-    if (dragTargetRow) {
-        dragTargetRow.classList.remove('dragging');
-        dragTargetRow = undefined;
+    if (drag_target_row) {
+        drag_target_row.classList.remove('dragging');
+        drag_target_row = undefined;
 
         let modes = [];
         for (const input of mode_list.querySelectorAll('input')) {
@@ -107,30 +107,30 @@ function onDragEnd(event) {
     }
 }
 
-function convertTouchEventToDragEvent(type, touchEvent, dataTransfer) {
+function convertTouchEventToDragEvent(type, touch_event, dataTransfer) {
     return new DragEvent(type, {
         dataTransfer: dataTransfer,
 
-        screenX: touchEvent.changedTouches[0].screenX,
-        screenY: touchEvent.changedTouches[0].screenY,
-        clientX: touchEvent.changedTouches[0].clientX,
-        clientY: touchEvent.changedTouches[0].clientY,
-        ctrlKey: touchEvent.ctrlKey,
-        shiftKey: touchEvent.shiftKey,
-        altKey: touchEvent.altKey,
-        metaKey: touchEvent.metaKey,
+        screenX: touch_event.changedTouches[0].screenX,
+        screenY: touch_event.changedTouches[0].screenY,
+        clientX: touch_event.changedTouches[0].clientX,
+        clientY: touch_event.changedTouches[0].clientY,
+        ctrlKey: touch_event.ctrlKey,
+        shiftKey: touch_event.shiftKey,
+        altKey: touch_event.altKey,
+        metaKey: touch_event.metaKey,
         button: 0,
         buttons: 0,
-        relatedTarget: touchEvent.changedTouches[0].target,
+        relatedTarget: touch_event.changedTouches[0].target,
         region: null,
 
-        detail: touchEvent.detail,
-        view: touchEvent.view,
-        sourceCapabilities: touchEvent.sourceCapabilities,
+        detail: touch_event.detail,
+        view: touch_event.view,
+        sourceCapabilities: touch_event.sourceCapabilities,
 
-        bubbles: touchEvent.bubbles,
-        cancelable: touchEvent.cancelable,
-        composed: touchEvent.composed
+        bubbles: touch_event.bubbles,
+        cancelable: touch_event.cancelable,
+        composed: touch_event.composed
     });
 }
 
@@ -218,7 +218,7 @@ chrome.storage.local.get([
         div.addEventListener('dragend', onDragEnd);
 
         div.querySelector('div.label').addEventListener('touchstart', (event) => {
-            if (touchIdentifier === undefined) {
+            if (touch_identifier === undefined) {
                 const touch = event.changedTouches[0];
 
                 gap = getGap(div, touch);
@@ -229,13 +229,13 @@ chrome.storage.local.get([
                 showProjection(projection);
 
                 div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
-                touchIdentifier = event.changedTouches[0].identifier;
+                touch_identifier = event.changedTouches[0].identifier;
             }
         });
 
         div.addEventListener('touchmove', (event) => {
             const touch = event.changedTouches[0];
-            if (touch.identifier === touchIdentifier) {
+            if (touch.identifier === touch_identifier) {
                 moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event));
             }
@@ -243,19 +243,19 @@ chrome.storage.local.get([
 
         div.addEventListener('touchend', (event) => {
             const touch = event.changedTouches[0];
-            if (touch.identifier === touchIdentifier) {
-                hideProjection(projection, dragTargetRow);
+            if (touch.identifier === touch_identifier) {
+                hideProjection(projection, drag_target_row);
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
-                touchIdentifier = undefined;
+                touch_identifier = undefined;
             }
         });
 
         div.addEventListener('touchcancel', (event) => {
             const touch = event.changedTouches[0];
-            if (touch.identifier === touchIdentifier) {
-                hideProjection(projection, dragTargetRow);
+            if (touch.identifier === touch_identifier) {
+                hideProjection(projection, drag_target_row);
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
-                touchIdentifier = undefined;
+                touch_identifier = undefined;
             }
         });
     }

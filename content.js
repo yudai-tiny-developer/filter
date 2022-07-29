@@ -18,7 +18,7 @@ if (html_lang) {
 			], (data) => {
 				for (const menu of node.querySelectorAll('form.filter-menu')) {
 					menu.appendChild(menu.querySelector('span.filter-button.all'));
-					for (const mode of data.order ? data.order.split(',') : defaultOrder) {
+					for (const mode of data.order ? data.order.split(',') : default_order) {
 						menu.appendChild(menu.querySelector('span.filter-button.' + mode));
 					}
 					for (const query of menu.querySelectorAll('span.filter-query')) {
@@ -424,9 +424,9 @@ if (html_lang) {
 			if (browse && !browse.querySelector('form.filter-menu')) {
 				const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
 				if (sibling) {
-					const positionFixed = isPositionFixedTarget();
-					browse.insertBefore(createMenu(positionFixed), sibling);
-					if (positionFixed) {
+					const position_fixed = isPositionFixedTarget();
+					browse.insertBefore(createMenu(position_fixed), sibling);
+					if (position_fixed) {
 						browse.insertBefore(createSpacer(), sibling);
 						const sidebar = browse.querySelector('ytd-playlist-sidebar-renderer');
 						if (sidebar) {
@@ -444,11 +444,11 @@ if (html_lang) {
 			}
 		}
 
-		function createMenu(positionFixed) {
+		function createMenu(position_fixed) {
 			const menu = document.createElement('form');
 			menu.classList.add('filter-menu');
 
-			if (positionFixed) {
+			if (position_fixed) {
 				menu.classList.add('position-fixed');
 			}
 
@@ -708,7 +708,7 @@ if (html_lang) {
 			channels_none: chrome.i18n.getMessage('button_channels_none')
 		};
 
-		const defaultOrder = [
+		const default_order = [
 			'live',
 			'streamed',
 			'live_streamed',
