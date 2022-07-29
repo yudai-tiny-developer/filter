@@ -1,14 +1,16 @@
-const button_live = chrome.i18n.getMessage('button_live');
-const button_streamed = chrome.i18n.getMessage('button_streamed');
-const button_live_streamed = chrome.i18n.getMessage('button_live_streamed');
-const button_video = chrome.i18n.getMessage('button_video');
-const button_streamed_video = chrome.i18n.getMessage('button_streamed_video');
-const button_scheduled = chrome.i18n.getMessage('button_scheduled');
-const button_notification_on = chrome.i18n.getMessage('button_notification_on');
-const button_notification_off = chrome.i18n.getMessage('button_notification_off');
-const button_channels_all = chrome.i18n.getMessage('button_channels_all');
-const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
-const button_channels_none = chrome.i18n.getMessage('button_channels_none');
+const button = {
+    live: chrome.i18n.getMessage('button_live'),
+    streamed: chrome.i18n.getMessage('button_streamed'),
+    live_streamed: chrome.i18n.getMessage('button_live_streamed'),
+    video: chrome.i18n.getMessage('button_video'),
+    streamed_video: chrome.i18n.getMessage('button_streamed_video'),
+    scheduled: chrome.i18n.getMessage('button_scheduled'),
+    notification_on: chrome.i18n.getMessage('button_notification_on'),
+    notification_off: chrome.i18n.getMessage('button_notification_off'),
+    channels_all: chrome.i18n.getMessage('button_channels_all'),
+    channels_personalized: chrome.i18n.getMessage('button_channels_personalized'),
+    channels_none: chrome.i18n.getMessage('button_channels_none')
+};
 
 const defaultOrder = [
     'live',
@@ -28,8 +30,7 @@ const mode_list = document.querySelector('div#mode_list');
 
 let dragTargetRow;
 let projection;
-let grab_x;
-let grab_y;
+let gap;
 let touchIdentifier;
 
 function createRow(label, mode, setting, deafultValue) {
@@ -57,18 +58,20 @@ function createToggle(mode, setting, deafultValue) {
     return div;
 }
 
-function indexOf(row) {
-    const list = mode_list.children;
-    for (let i = 0; i < list.length; i++) {
-        if (list[i] === row) {
-            return i;
+function isBefore(overTargetRow, dragTargetRow) {
+    for (const child of mode_list.children) {
+        if (child === overTargetRow) {
+            return true;
+        } else if (child === dragTargetRow) {
+            return false;
         }
     }
+    return false;
 }
 
 function contains(node, x, y) {
-    const r = node.getBoundingClientRect();
-    return r.left <= x && x <= r.right && r.top <= y && y <= r.bottom;
+    const rect = node.getBoundingClientRect();
+    return rect.left <= x && x <= rect.right && rect.top <= y && y <= rect.bottom;
 }
 
 function onDragStart(event) {
@@ -80,14 +83,12 @@ function onDragStart(event) {
 }
 
 function onDragOver(event) {
-    const overTarget = event.target.parentNode;
-    if (dragTargetRow && overTarget && overTarget.parentNode === mode_list) {
-        if (overTarget !== dragTargetRow) {
-            if (indexOf(overTarget) < indexOf(dragTargetRow)) {
-                overTarget.before(dragTargetRow);
-            } else {
-                overTarget.after(dragTargetRow);
-            }
+    const overTargetRow = event.target.parentNode;
+    if (dragTargetRow && overTargetRow && overTargetRow.parentNode === mode_list && overTargetRow !== dragTargetRow) {
+        if (isBefore(overTargetRow, dragTargetRow)) {
+            overTargetRow.before(dragTargetRow);
+        } else {
+            overTargetRow.after(dragTargetRow);
         }
     }
     event.preventDefault();
@@ -98,11 +99,11 @@ function onDragEnd(event) {
         dragTargetRow.classList.remove('dragging');
         dragTargetRow = undefined;
 
-        let list = [];
+        let modes = [];
         for (const input of mode_list.querySelectorAll('input')) {
-            list.push(input.id);
+            modes.push(input.id);
         }
-        chrome.storage.local.set({ order: list.join(',') });
+        chrome.storage.local.set({ order: modes.join(',') });
     }
 }
 
@@ -142,39 +143,41 @@ function getTouchTarget(touch) {
     return touch.target;
 }
 
-function updateGrabbingPosition(touch, node) {
-    const rect = node.getBoundingClientRect();
-    grab_x = touch.pageX - window.pageXOffset - rect.left;
-    grab_y = touch.pageY - window.pageYOffset - rect.top;
+function getGap(row, touch) {
+    const rect = row.getBoundingClientRect();
+    return {
+        x: touch.pageX - window.pageXOffset - rect.left,
+        y: touch.pageY - window.pageYOffset - rect.top
+    };
 }
 
-function createProjection(node) {
-    const clone = node.cloneNode(true);
-    clone.classList.add('touching');
-    node.classList.add('touch-dragging');
+function createProjection(row) {
+    const clone = row.cloneNode(true);
+    clone.classList.add('projection');
     return clone;
 }
 
-function fixWidthProjection(node, base) {
-    node.style.width = base.clientWidth + 'px';
+function fixWidthProjection(projection, row) {
+    projection.style.width = row.clientWidth + 'px';
 
-    for (let i = 0; i < node.children.length; i++) {
-        fixWidthProjection(node.children[i], base.children[i]);
+    for (let i = 0; i < projection.children.length; i++) {
+        fixWidthProjection(projection.children[i], row.children[i]);
     }
 }
 
-function moveProjection(node, touch) {
-    node.style.left = (touch.pageX - window.pageXOffset - grab_x) + 'px';
-    node.style.top = (touch.pageY - window.pageYOffset - grab_y) + 'px';
+function moveProjection(projection, x, y, gap_x, gap_y) {
+    projection.style.left = (x - window.pageXOffset - gap_x) + 'px';
+    projection.style.top = (y - window.pageYOffset - gap_y) + 'px';
 }
 
-function showProjection(node) {
-    mode_list.appendChild(node);
+function showProjection(projection) {
+    mode_list.appendChild(projection);
+    row.classList.add('touching');
 }
 
-function hideProjection(node) {
-    mode_list.removeChild(node);
-    dragTargetRow.classList.remove('touch-dragging');
+function hideProjection(projection, row) {
+    row.classList.remove('touching');
+    mode_list.removeChild(projection);
 }
 
 chrome.storage.local.get([
@@ -191,17 +194,17 @@ chrome.storage.local.get([
     'channels_none',
     'order'
 ], (data) => {
-    mode_list.appendChild(createRow(button_live, 'live', data.live, true));
-    mode_list.appendChild(createRow(button_streamed, 'streamed', data.streamed, true));
-    mode_list.appendChild(createRow(button_live_streamed, 'live_streamed', data.live_streamed, false));
-    mode_list.appendChild(createRow(button_video, 'video', data.video, true));
-    mode_list.appendChild(createRow(button_streamed_video, 'streamed_video', data.streamed_video, false));
-    mode_list.appendChild(createRow(button_scheduled, 'scheduled', data.scheduled, true));
-    mode_list.appendChild(createRow(button_notification_on, 'notification_on', data.notification_on, true));
-    mode_list.appendChild(createRow(button_notification_off, 'notification_off', data.notification_off, false));
-    mode_list.appendChild(createRow(button_channels_all, 'channels_all', data.channels_all, true));
-    mode_list.appendChild(createRow(button_channels_personalized, 'channels_personalized', data.channels_personalized, true));
-    mode_list.appendChild(createRow(button_channels_none, 'channels_none', data.channels_none, true));
+    mode_list.appendChild(createRow(button.live, 'live', data.live, true));
+    mode_list.appendChild(createRow(button.streamed, 'streamed', data.streamed, true));
+    mode_list.appendChild(createRow(button.live_streamed, 'live_streamed', data.live_streamed, false));
+    mode_list.appendChild(createRow(button.video, 'video', data.video, true));
+    mode_list.appendChild(createRow(button.streamed_video, 'streamed_video', data.streamed_video, false));
+    mode_list.appendChild(createRow(button.scheduled, 'scheduled', data.scheduled, true));
+    mode_list.appendChild(createRow(button.notification_on, 'notification_on', data.notification_on, true));
+    mode_list.appendChild(createRow(button.notification_off, 'notification_off', data.notification_off, false));
+    mode_list.appendChild(createRow(button.channels_all, 'channels_all', data.channels_all, true));
+    mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true));
+    mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true));
 
     for (const mode of data.order ? data.order.split(',') : defaultOrder) {
         const row = mode_list.querySelector('div.row.' + mode);
@@ -217,23 +220,23 @@ chrome.storage.local.get([
         div.querySelector('div.label').addEventListener('touchstart', (event) => {
             if (touchIdentifier === undefined) {
                 const touch = event.changedTouches[0];
-                updateGrabbingPosition(touch, div);
+
+                gap = getGap(div, touch);
 
                 projection = createProjection(div);
                 fixWidthProjection(projection, div);
-                moveProjection(projection, touch);
+                moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
                 showProjection(projection);
 
-                touchIdentifier = event.changedTouches[0].identifier;
                 div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
+                touchIdentifier = event.changedTouches[0].identifier;
             }
         });
 
         div.addEventListener('touchmove', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
-                moveProjection(projection, touch);
-
+                moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event));
             }
         });
@@ -241,8 +244,7 @@ chrome.storage.local.get([
         div.addEventListener('touchend', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
-                hideProjection(projection);
-
+                hideProjection(projection, dragTargetRow);
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
                 touchIdentifier = undefined;
             }
@@ -251,8 +253,7 @@ chrome.storage.local.get([
         div.addEventListener('touchcancel', (event) => {
             const touch = event.changedTouches[0];
             if (touch.identifier === touchIdentifier) {
-                hideProjection(projection);
-
+                hideProjection(projection, dragTargetRow);
                 getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
                 touchIdentifier = undefined;
             }

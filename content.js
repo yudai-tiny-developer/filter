@@ -185,8 +185,8 @@ if (html_lang) {
 		}
 
 		function updateQueryRegex(node, query) {
-			activeQuery.set(window.location.href, query);
-			activeRegex.set(window.location.href, new RegExp(query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i'));
+			active.query.set(window.location.href, query);
+			active.regex.set(window.location.href, new RegExp(query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i'));
 			node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
 		}
 
@@ -460,19 +460,19 @@ if (html_lang) {
 				updateVisibility(app);
 			});
 
-			menu.appendChild(createButton(button_all, 'all', input));
-			menu.appendChild(createButton(button_live, 'live', input));
-			menu.appendChild(createButton(button_streamed, 'streamed', input));
-			menu.appendChild(createButton(button_live_streamed, 'live_streamed', input));
-			menu.appendChild(createButton(button_video, 'video', input));
-			menu.appendChild(createButton(button_streamed_video, 'streamed_video', input));
-			menu.appendChild(createButton(button_scheduled, 'scheduled', input));
-			menu.appendChild(createButton(button_notification_on, 'notification_on', input));
-			menu.appendChild(createButton(button_notification_off, 'notification_off', input));
+			menu.appendChild(createButton(button.all, 'all', input));
+			menu.appendChild(createButton(button.live, 'live', input));
+			menu.appendChild(createButton(button.streamed, 'streamed', input));
+			menu.appendChild(createButton(button.live_streamed, 'live_streamed', input));
+			menu.appendChild(createButton(button.video, 'video', input));
+			menu.appendChild(createButton(button.streamed_video, 'streamed_video', input));
+			menu.appendChild(createButton(button.scheduled, 'scheduled', input));
+			menu.appendChild(createButton(button.notification_on, 'notification_on', input));
+			menu.appendChild(createButton(button.notification_off, 'notification_off', input));
 
-			menu.appendChild(createButton(button_channels_all, 'channels_all', input));
-			menu.appendChild(createButton(button_channels_personalized, 'channels_personalized', input));
-			menu.appendChild(createButton(button_channels_none, 'channels_none', input));
+			menu.appendChild(createButton(button.channels_all, 'channels_all', input));
+			menu.appendChild(createButton(button.channels_personalized, 'channels_personalized', input));
+			menu.appendChild(createButton(button.channels_none, 'channels_none', input));
 
 			menu.appendChild(createQueryInputArea(input));
 			menu.appendChild(createSearchButton(input));
@@ -664,7 +664,7 @@ if (html_lang) {
 		}
 
 		function getActiveMode() {
-			const mode = activeMode.get(window.location.href);
+			const mode = active.mode.get(window.location.href);
 			if (mode) {
 				return mode;
 			} else {
@@ -674,37 +674,39 @@ if (html_lang) {
 		}
 
 		function setActiveMode(mode) {
-			activeMode.set(window.location.href, mode);
+			active.mode.set(window.location.href, mode);
 		}
 
 		function getActiveQuery() {
-			const query = activeQuery.get(window.location.href);
+			const query = active.query.get(window.location.href);
 			if (query) {
 				return query;
 			} else {
-				activeQuery.set(window.location.href, '');
+				active.query.set(window.location.href, '');
 				return '';
 			}
 		}
 
 		function getActiveRegex() {
-			return activeRegex.get(window.location.href);
+			return active.regex.get(window.location.href);
 		}
 
-		const button_all = chrome.i18n.getMessage('button_all');
-		const button_live = chrome.i18n.getMessage('button_live');
-		const button_streamed = chrome.i18n.getMessage('button_streamed');
-		const button_live_streamed = chrome.i18n.getMessage('button_live_streamed');
-		const button_video = chrome.i18n.getMessage('button_video');
-		const button_streamed_video = chrome.i18n.getMessage('button_streamed_video');
-		const button_scheduled = chrome.i18n.getMessage('button_scheduled');
-		const button_notification_on = chrome.i18n.getMessage('button_notification_on');
-		const button_notification_off = chrome.i18n.getMessage('button_notification_off');
-		const button_clear = chrome.i18n.getMessage('button_clear');
-		const button_search = chrome.i18n.getMessage('button_search');
-		const button_channels_all = chrome.i18n.getMessage('button_channels_all');
-		const button_channels_personalized = chrome.i18n.getMessage('button_channels_personalized');
-		const button_channels_none = chrome.i18n.getMessage('button_channels_none');
+		const button = {
+			all: chrome.i18n.getMessage('button_all'),
+			live: chrome.i18n.getMessage('button_live'),
+			streamed: chrome.i18n.getMessage('button_streamed'),
+			live_streamed: chrome.i18n.getMessage('button_live_streamed'),
+			video: chrome.i18n.getMessage('button_video'),
+			streamed_video: chrome.i18n.getMessage('button_streamed_video'),
+			scheduled: chrome.i18n.getMessage('button_scheduled'),
+			notification_on: chrome.i18n.getMessage('button_notification_on'),
+			notification_off: chrome.i18n.getMessage('button_notification_off'),
+			clear: chrome.i18n.getMessage('button_clear'),
+			search: chrome.i18n.getMessage('button_search'),
+			channels_all: chrome.i18n.getMessage('button_channels_all'),
+			channels_personalized: chrome.i18n.getMessage('button_channels_personalized'),
+			channels_none: chrome.i18n.getMessage('button_channels_none')
+		};
 
 		const defaultOrder = [
 			'live',
@@ -720,9 +722,11 @@ if (html_lang) {
 			'channels_none'
 		];
 
-		const activeMode = new Map();
-		const activeQuery = new Map();
-		const activeRegex = new Map();
+		const active = {
+			mode: new Map(),
+			query: new Map(),
+			regex: new Map()
+		};
 
 		const app = document.querySelector('ytd-app');
 		if (app) {
