@@ -12,7 +12,7 @@ const button = {
     channels_none: chrome.i18n.getMessage('button_channels_none')
 };
 
-const defaultOrder = [
+const default_order = [
     'live',
     'streamed',
     'live_streamed',
@@ -157,11 +157,11 @@ function createProjection(row) {
     return clone;
 }
 
-function fixWidthProjection(projection, row) {
-    projection.style.width = row.clientWidth + 'px';
+function fixWidthProjection(projection, base) {
+    projection.style.width = base.clientWidth + 'px';
 
     for (let i = 0; i < projection.children.length; i++) {
-        fixWidthProjection(projection.children[i], row.children[i]);
+        fixWidthProjection(projection.children[i], base.children[i]);
     }
 }
 
@@ -206,7 +206,7 @@ chrome.storage.local.get([
     mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true));
     mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true));
 
-    for (const mode of data.order ? data.order.split(',') : defaultOrder) {
+    for (const mode of data.order ? data.order.split(',') : default_order) {
         const row = mode_list.querySelector('div.row.' + mode);
         mode_list.appendChild(row);
         row.style.display = '';
@@ -271,7 +271,7 @@ chrome.storage.local.get([
             input.checked = input.getAttribute('default') === 'true';
         }
 
-        for (const mode of defaultOrder) {
+        for (const mode of default_order) {
             mode_list.appendChild(mode_list.querySelector('div.row.' + mode));
         }
 
