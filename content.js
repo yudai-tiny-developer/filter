@@ -488,23 +488,23 @@ if (html_lang) {
 		}
 
 		function createButton(text, mode, input) {
-			const button = document.createElement('span');
-			button.style.display = 'none';
-			button.innerHTML = text;
-			button.classList.add('filter-button');
-			button.classList.add(mode);
+			const span = document.createElement('span');
+			span.style.display = 'none';
+			span.innerHTML = text;
+			span.classList.add('filter-button');
+			span.classList.add(mode);
 
 			if (mode === getActiveMode()) {
-				button.classList.add('selected');
+				span.classList.add('selected');
 			}
 
-			button.addEventListener('click', () => {
+			span.addEventListener('click', () => {
 				changeMode(mode);
 				updateQueryRegex(app, input.value);
 				updateVisibility(app);
 			});
 
-			return button;
+			return span;
 		}
 
 		function createQueryInputArea(input) {
@@ -532,31 +532,31 @@ if (html_lang) {
 		}
 
 		function createClearButton(input) {
-			const button = document.createElement('span');
-			button.innerHTML = button.clear;
-			button.classList.add('filter-clear');
+			const span = document.createElement('span');
+			span.innerHTML = button.clear;
+			span.classList.add('filter-clear');
 
-			button.addEventListener('click', () => {
+			span.addEventListener('click', () => {
 				input.value = '';
 				updateQueryRegex(app, '');
 				updateVisibility(app);
 			});
 
-			return button;
+			return span;
 		}
 
 		function createSearchButton(input) {
-			const button = document.createElement('span');
-			button.innerHTML = button.search;
-			button.classList.add('filter-query');
-			button.classList.add('search');
+			const span = document.createElement('span');
+			span.innerHTML = button.search;
+			span.classList.add('filter-query');
+			span.classList.add('search');
 
-			button.addEventListener('click', () => {
+			span.addEventListener('click', () => {
 				updateQueryRegex(app, input.value);
 				updateVisibility(app);
 			});
 
-			return button;
+			return span;
 		}
 
 		function updateMenuVisibility(node) {
