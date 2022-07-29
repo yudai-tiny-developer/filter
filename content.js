@@ -419,6 +419,13 @@ if (html_lang) {
 				case 'YTD-ITEM-SECTION-RENDERER':
 					updateVisibility(node);
 					break;
+				case 'DIV':
+					switch (node.id) {
+						case 'contents':
+							updateVisibility(node);
+							break;
+					}
+					break;
 
 				// shelf
 				case 'YTD-SHELF-RENDERER':
