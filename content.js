@@ -207,6 +207,9 @@ if (html_lang) {
 			node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
 			node.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateTargetVisibility(n));
 			node.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateTargetVisibility(n));
+
+			// shelf
+			node.querySelectorAll('ytd-shelf-renderer').forEach(n => updateShelfVisibility(n));
 		}
 
 		function classifyStatus(node) {
@@ -416,6 +419,11 @@ if (html_lang) {
 				case 'YTD-ITEM-SECTION-RENDERER':
 					updateVisibility(node);
 					break;
+
+				// shelf
+				case 'YTD-SHELF-RENDERER':
+					updateShelfVisibility(node);
+					break;
 			}
 		}
 
@@ -616,6 +624,44 @@ if (html_lang) {
 			} else {
 				node.style.display = 'none';
 			}
+		}
+
+		function updateShelfVisibility(node) {
+			const title = node.querySelector('h2.ytd-shelf-renderer');
+			if (isVisible(node, 'ytd-video-renderer')) {
+				node.style.display = '';
+				if (title) {
+					title.style.display = '';
+				}
+			} else {
+				if (hasWidth(node, 'div#menu')) {
+					if (title) {
+						title.style.display = 'none';
+					}
+				} else {
+					node.style.display = 'none';
+				}
+			}
+		}
+
+		function hasWidth(node, selector) {
+			for (const n of node.querySelectorAll(selector)) {
+				const rect = n.getBoundingClientRect();
+				if (rect.width > 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		function isVisible(node, selector) {
+			for (const n of node.querySelectorAll(selector)) {
+				const rect = n.getBoundingClientRect();
+				if (n.style.display !== 'none') {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		function updateNodeValue(node) {
