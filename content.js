@@ -249,7 +249,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
 				const playlist_label = node.querySelector('span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]');
 				if (playlist_label) {
-					const t = playlist_label.attributes['aria-label'].value;
+					const t = playlist_label.getAttribute('aria-label');
 					if (lang.isLive_status_label(t)) {
 						status += 'live.';
 					} else if (lang.isVideo_status_label(t)) {
@@ -272,7 +272,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-CHANNEL-RENDERER':
 				const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label]');
 				if (channel_notification) {
-					const t = channel_notification.attributes['aria-label'].value;
+					const t = channel_notification.getAttribute('aria-label');
 					if (lang.isChannelsAllNotifications(t)) {
 						status += 'channels_all.';
 					} else if (lang.isChannelsPersonalizedNotifications(t)) {
