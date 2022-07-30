@@ -1,4 +1,4 @@
-const html_lang = document.documentElement.attributes['lang'];
+const html_lang = document.documentElement.getAttribute('lang');
 if (html_lang) {
 	import(chrome.runtime.getURL('lang/' + html_lang.value + '.js')).then(lang => {
 		function updateButtonVisibility(node) {
@@ -244,8 +244,9 @@ if (html_lang) {
 								status += 'video.';
 							}
 						}
+					} else {
+						status += 'loading.'; // lazy load
 					}
-
 					break;
 				case 'YTD-PLAYLIST-VIDEO-RENDERER':
 					const playlist_label = node.querySelector('span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]');
@@ -266,8 +267,9 @@ if (html_lang) {
 						if (lang.isScheduled_metadata(t)) {
 							status += 'scheduled.';
 						}
+					} else {
+						status += 'loading.'; // lazy load
 					}
-
 					break;
 				case 'YTD-CHANNEL-RENDERER':
 					const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label]');
@@ -282,8 +284,9 @@ if (html_lang) {
 						} else {
 							console.warn('Unknown channel notification: ' + t);
 						}
+					} else {
+						status += 'loading.'; // lazy load
 					}
-
 					break;
 				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 					status += 'post.';
@@ -641,7 +644,7 @@ if (html_lang) {
 			const node_status = classifyStatus(node);
 
 			if (node_status === '') {
-				console.warn('Unknown status: ' + node.nodeName);
+				console.warn('Unknown status: ' + node.nodeName + ', ' + node.querySelector('div#metadata-line').textContent);
 				return true;
 			}
 
