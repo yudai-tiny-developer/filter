@@ -207,9 +207,6 @@ if (html_lang) {
 			node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
 			node.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateTargetVisibility(n));
 			node.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateTargetVisibility(n));
-
-			// shelf
-			node.querySelectorAll('ytd-shelf-renderer').forEach(n => updateShelfVisibility(n));
 		}
 
 		function classifyStatus(node) {
@@ -420,16 +417,9 @@ if (html_lang) {
 					updateVisibility(node);
 					break;
 				case 'DIV':
-					switch (node.id) {
-						case 'contents':
-							updateVisibility(node);
-							break;
+					if (node.id === 'contents') {
+						updateVisibility(node);
 					}
-					break;
-
-				// shelf
-				case 'YTD-SHELF-RENDERER':
-					updateShelfVisibility(node);
 					break;
 			}
 		}
@@ -631,54 +621,6 @@ if (html_lang) {
 			} else {
 				node.style.display = 'none';
 			}
-		}
-
-		function updateShelfVisibility(node) {
-			const title = node.querySelector('h2.ytd-shelf-renderer');
-			if (hasVisibleNode(node, [
-				'ytd-grid-video-renderer',
-				'ytd-video-renderer:not(.ytd-backstage-post-renderer)',
-				'ytd-playlist-video-renderer',
-				'ytd-channel-renderer',
-				'ytd-backstage-post-thread-renderer',
-				'ytd-grid-playlist-renderer',
-				'ytd-reel-item-renderer'
-			])) {
-				node.style.display = '';
-				if (title) {
-					title.style.display = '';
-				}
-			} else {
-				if (isVisible(node, 'ytd-menu-renderer')) {
-					if (title) {
-						title.style.display = 'none';
-					}
-				} else {
-					node.style.display = 'none';
-				}
-			}
-		}
-
-		function hasVisibleNode(node, selectors) {
-			for (const selector of selectors) {
-				for (const n of node.querySelectorAll(selector)) {
-					if (n.style.display !== 'none') {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-
-		function isVisible(node, selector) {
-			for (const n of node.querySelectorAll(selector)) {
-				const rect = n.getBoundingClientRect();
-				if (rect.width > 0 && rect.height > 0) {
-					return true;
-				}
-			}
-
-			return false;
 		}
 
 		function updateNodeValue(node) {
