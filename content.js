@@ -241,13 +241,14 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 							} else {
 								console.warn('Unknown notification status: ' + t);
 							}
+						} else {
+							console.warn('ytd-toggle-button-renderer yt-formatted-string not found');
 						}
 					} else {
-						const video_badge = node.querySelector('span.ytd-badge-supported-renderer');
-						if (video_badge) { // members only video
-							status += 'video.';
-						}
+						// members only
 					}
+				} else {
+					console.warn('div#metadata-line not found');
 				}
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
@@ -289,7 +290,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		return status;
 	}
 
-	function matchTextContentOrNotTarget(node) {
+	function matchTextContent(node) {
 		switch (node.nodeName) {
 			// subscriptions?flow=1, library, explore, trending
 			case 'YTD-GRID-VIDEO-RENDERER':
@@ -310,6 +311,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else {
 						console.warn('a#video-title not found');
 					}
+				} else {
+					// lazy load
 				}
 				break;
 
@@ -360,7 +363,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				break;
 		}
 
-		// not target
+		// default: visible
 		return true;
 	}
 
@@ -606,7 +609,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				status_or = [''];
 		}
 
-		if (includesStatus(node, status_or) && matchTextContentOrNotTarget(node)) {
+		if (includesStatus(node, status_or) && matchTextContent(node)) {
 			node.style.display = '';
 		} else {
 			node.style.display = 'none';
@@ -755,5 +758,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			updateButtonVisibility(app);
 			updateNodeValue(app);
 		});
+	} else {
+		console.warn('ytd-app not found');
 	}
 }, error => { /* Not supported */ });
