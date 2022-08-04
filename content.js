@@ -186,8 +186,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		active.query.set(window.location.href, query);
 
 		let rs = [];
-		for (const q of query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&').split(/\s+/)) {
-			rs.push(new RegExp(q, 'i'));
+		const qs = query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&').match(/[^\s"]+|"([^"]*)"/g);
+		if (qs) {
+			for (const q of qs) {
+				rs.push(new RegExp(q.replace(/"/g, ''), 'i'));
+			}
 		}
 		active.regex.set(window.location.href, rs);
 
