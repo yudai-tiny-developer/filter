@@ -184,7 +184,16 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function updateQueryRegex(node, query) {
 		active.query.set(window.location.href, query);
-		active.regex.set(window.location.href, new RegExp(query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i'));
+
+		let rs = [];
+		const qs = query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&').match(/[^\s"]+|"([^"]*)"/g);
+		if (qs) {
+			for (const q of qs) {
+				rs.push(new RegExp(q.replace(/"/g, ''), 'i'));
+			}
+		}
+		active.regex.set(window.location.href, rs);
+
 		node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
 	}
 
@@ -235,15 +244,14 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 							} else {
 								console.warn('Unknown notification status: ' + t);
 							}
+						} else {
+							console.warn('ytd-toggle-button-renderer yt-formatted-string not found');
 						}
 					} else {
-						const video_badge = node.querySelector('span.ytd-badge-supported-renderer');
-						if (video_badge) { // members only video
-							status += 'video.';
-						}
+						// members only
 					}
 				} else {
-					status += 'loading.'; // lazy load
+					console.warn('div#metadata-line not found');
 				}
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
@@ -255,8 +263,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else if (lang.isVideo_status_label(t)) {
 						status += 'video.';
 					}
-				} else {
-					status += 'loading.'; // lazy load
 				}
 
 				const playlist_metadata = node.querySelector('div#metadata-line');
@@ -265,8 +271,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					if (lang.isScheduled_metadata(t)) {
 						status += 'scheduled.';
 					}
-				} else {
-					status += 'loading.'; // lazy load
 				}
 				break;
 			case 'YTD-CHANNEL-RENDERER':
@@ -282,31 +286,20 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else {
 						console.warn('Unknown channel notification: ' + t);
 					}
-				} else {
-					status += 'loading.'; // lazy load
 				}
-				break;
-			case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-				status += 'post.';
-				break;
-			case 'YTD-GRID-PLAYLIST-RENDERER':
-				status += 'playlist.';
-				break;
-			case 'YTD-REEL-ITEM-RENDERER':
-				status += 'reel.';
 				break;
 		}
 
 		return status;
 	}
 
-	function matchTextContentOrNotTarget(node) {
+	function matchTextContent(node) {
 		switch (node.nodeName) {
 			// subscriptions?flow=1, library, explore, trending
 			case 'YTD-GRID-VIDEO-RENDERER':
 				const grid_video_title = node.querySelector('a#video-title');
 				if (grid_video_title) {
-					return grid_video_title.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(grid_video_title.textContent);
 				} else {
 					console.warn('a#video-title not found');
 				}
@@ -317,10 +310,12 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				if (!node.classList.contains('ytd-backstage-post-renderer')) {
 					const video_title = node.querySelector('a#video-title');
 					if (video_title) {
-						return video_title.textContent.match(getActiveRegex());
+						return matchAllActiveRegex(video_title.textContent);
 					} else {
 						console.warn('a#video-title not found');
 					}
+				} else {
+					// lazy load
 				}
 				break;
 
@@ -328,7 +323,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
 				const playlist_video_meta = node.querySelector('div#meta');
 				if (playlist_video_meta) {
-					return playlist_video_meta.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(playlist_video_meta.textContent);
 				} else {
 					console.warn('div#meta not found');
 				}
@@ -338,7 +333,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-CHANNEL-RENDERER':
 				const channel_info = node.querySelector('div#info');
 				if (channel_info) {
-					return channel_info.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(channel_info.textContent);
 				} else {
 					console.warn('div#info not found');
 				}
@@ -348,7 +343,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 				const backstage_post_thread_content = node.querySelector('div#content');
 				if (backstage_post_thread_content) {
-					return backstage_post_thread_content.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(backstage_post_thread_content.textContent);
 				} else {
 					console.warn('div#content not found');
 				}
@@ -356,7 +351,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-GRID-PLAYLIST-RENDERER':
 				const grid_playlist_title = node.querySelector('a#video-title');
 				if (grid_playlist_title) {
-					return grid_playlist_title.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(grid_playlist_title.textContent);
 				} else {
 					console.warn('a#video-title not found');
 				}
@@ -364,14 +359,14 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-REEL-ITEM-RENDERER':
 				const reel_item_title = node.querySelector('span#video-title');
 				if (reel_item_title) {
-					return reel_item_title.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(reel_item_title.textContent);
 				} else {
 					console.warn('span#video-title not found');
 				}
 				break;
 		}
 
-		// not target
+		// default: visible
 		return true;
 	}
 
@@ -581,28 +576,28 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				status_or = [''];
 				break;
 			case 'live':
-				status_or = ['live.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['live.'];
 				break;
 			case 'streamed':
-				status_or = ['streamed.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['streamed.'];
 				break;
 			case 'live_streamed':
-				status_or = ['live.', 'streamed.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['live.', 'streamed.'];
 				break;
 			case 'video':
-				status_or = ['video.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['video.'];
 				break;
 			case 'streamed_video':
-				status_or = ['streamed.', 'video.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['streamed.', 'video.'];
 				break;
 			case 'scheduled':
-				status_or = ['scheduled.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['scheduled.'];
 				break;
 			case 'notification_on':
-				status_or = ['notification_on.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['notification_on.'];
 				break;
 			case 'notification_off':
-				status_or = ['notification_off.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['notification_off.'];
 				break;
 			case 'channels_all':
 				status_or = ['channels_all.'];
@@ -617,7 +612,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				status_or = [''];
 		}
 
-		if (includesStatus(node, status_or) && matchTextContentOrNotTarget(node)) {
+		if (includesStatus(node, status_or) && matchTextContent(node)) {
 			node.style.display = '';
 		} else {
 			node.style.display = 'none';
@@ -639,19 +634,21 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function includesStatus(node, status_or) {
-		const node_status = classifyStatus(node);
-
-		if (node_status === '') {
-			console.warn('Unknown status: ' + node.nodeName + ', ' + node.querySelector('div#metadata-line').textContent);
+		if (status_or === '') {
 			return true;
-		}
-
-		for (const status of status_or) {
-			if (node_status.includes(status)) {
+		} else {
+			const node_status = classifyStatus(node);
+			if (node_status === '') {
 				return true;
+			} else {
+				for (const status of status_or) {
+					if (node_status.includes(status)) {
+						return true;
+					}
+				}
+				return false;
 			}
 		}
-		return false;
 	}
 
 	function changeMode(mode) {
@@ -693,8 +690,16 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 	}
 
-	function getActiveRegex() {
-		return active.regex.get(window.location.href);
+	function matchAllActiveRegex(text) {
+		const rs = active.regex.get(window.location.href);
+		if (rs) {
+			for (const r of rs) {
+				if (!text.match(r)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	const button = {
@@ -756,5 +761,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			updateButtonVisibility(app);
 			updateNodeValue(app);
 		});
+	} else {
+		console.warn('ytd-app not found');
 	}
 }, error => { /* Not supported */ });
