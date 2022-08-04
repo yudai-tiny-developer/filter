@@ -184,7 +184,13 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function updateQueryRegex(node, query) {
 		active.query.set(window.location.href, query);
-		active.regex.set(window.location.href, new RegExp(query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'), 'i'));
+
+		let rs = [];
+		for (const q of query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&').split(/\s+/)) {
+			rs.push(new RegExp(q, 'i'));
+		}
+		active.regex.set(window.location.href, rs);
+
 		node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
 	}
 
@@ -306,7 +312,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-GRID-VIDEO-RENDERER':
 				const grid_video_title = node.querySelector('a#video-title');
 				if (grid_video_title) {
-					return grid_video_title.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(grid_video_title.textContent);
 				} else {
 					console.warn('a#video-title not found');
 				}
@@ -317,7 +323,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				if (!node.classList.contains('ytd-backstage-post-renderer')) {
 					const video_title = node.querySelector('a#video-title');
 					if (video_title) {
-						return video_title.textContent.match(getActiveRegex());
+						return matchAllActiveRegex(video_title.textContent);
 					} else {
 						console.warn('a#video-title not found');
 					}
@@ -328,7 +334,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
 				const playlist_video_meta = node.querySelector('div#meta');
 				if (playlist_video_meta) {
-					return playlist_video_meta.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(playlist_video_meta.textContent);
 				} else {
 					console.warn('div#meta not found');
 				}
@@ -338,7 +344,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-CHANNEL-RENDERER':
 				const channel_info = node.querySelector('div#info');
 				if (channel_info) {
-					return channel_info.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(channel_info.textContent);
 				} else {
 					console.warn('div#info not found');
 				}
@@ -348,7 +354,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 				const backstage_post_thread_content = node.querySelector('div#content');
 				if (backstage_post_thread_content) {
-					return backstage_post_thread_content.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(backstage_post_thread_content.textContent);
 				} else {
 					console.warn('div#content not found');
 				}
@@ -356,7 +362,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-GRID-PLAYLIST-RENDERER':
 				const grid_playlist_title = node.querySelector('a#video-title');
 				if (grid_playlist_title) {
-					return grid_playlist_title.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(grid_playlist_title.textContent);
 				} else {
 					console.warn('a#video-title not found');
 				}
@@ -364,7 +370,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-REEL-ITEM-RENDERER':
 				const reel_item_title = node.querySelector('span#video-title');
 				if (reel_item_title) {
-					return reel_item_title.textContent.match(getActiveRegex());
+					return matchAllActiveRegex(reel_item_title.textContent);
 				} else {
 					console.warn('span#video-title not found');
 				}
@@ -693,8 +699,13 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 	}
 
-	function getActiveRegex() {
-		return active.regex.get(window.location.href);
+	function matchAllActiveRegex(text) {
+		for (const r of active.regex.get(window.location.href)) {
+			if (!text.match(r)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	const button = {
