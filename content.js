@@ -248,8 +248,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 							status += 'video.';
 						}
 					}
-				} else {
-					status += 'loading.'; // lazy load
 				}
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
@@ -261,8 +259,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else if (lang.isVideo_status_label(t)) {
 						status += 'video.';
 					}
-				} else {
-					status += 'loading.'; // lazy load
 				}
 
 				const playlist_metadata = node.querySelector('div#metadata-line');
@@ -271,8 +267,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					if (lang.isScheduled_metadata(t)) {
 						status += 'scheduled.';
 					}
-				} else {
-					status += 'loading.'; // lazy load
 				}
 				break;
 			case 'YTD-CHANNEL-RENDERER':
@@ -288,18 +282,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else {
 						console.warn('Unknown channel notification: ' + t);
 					}
-				} else {
-					status += 'loading.'; // lazy load
 				}
-				break;
-			case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-				status += 'post.';
-				break;
-			case 'YTD-GRID-PLAYLIST-RENDERER':
-				status += 'playlist.';
-				break;
-			case 'YTD-REEL-ITEM-RENDERER':
-				status += 'reel.';
 				break;
 		}
 
@@ -587,28 +570,28 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				status_or = [''];
 				break;
 			case 'live':
-				status_or = ['live.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['live.'];
 				break;
 			case 'streamed':
-				status_or = ['streamed.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['streamed.'];
 				break;
 			case 'live_streamed':
-				status_or = ['live.', 'streamed.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['live.', 'streamed.'];
 				break;
 			case 'video':
-				status_or = ['video.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['video.'];
 				break;
 			case 'streamed_video':
-				status_or = ['streamed.', 'video.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['streamed.', 'video.'];
 				break;
 			case 'scheduled':
-				status_or = ['scheduled.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['scheduled.'];
 				break;
 			case 'notification_on':
-				status_or = ['notification_on.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['notification_on.'];
 				break;
 			case 'notification_off':
-				status_or = ['notification_off.', 'playlist.', 'loading.', 'post.', 'reel.'];
+				status_or = ['notification_off.'];
 				break;
 			case 'channels_all':
 				status_or = ['channels_all.'];
@@ -645,19 +628,21 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function includesStatus(node, status_or) {
-		const node_status = classifyStatus(node);
-
-		if (node_status === '') {
-			console.warn('Unknown status: ' + node.nodeName + ', ' + node.querySelector('div#metadata-line').textContent);
+		if (status_or === '') {
 			return true;
-		}
-
-		for (const status of status_or) {
-			if (node_status.includes(status)) {
+		} else {
+			const node_status = classifyStatus(node);
+			if (node_status === '') {
 				return true;
+			} else {
+				for (const status of status_or) {
+					if (node_status.includes(status)) {
+						return true;
+					}
+				}
+				return false;
 			}
 		}
-		return false;
 	}
 
 	function changeMode(mode) {
@@ -700,9 +685,12 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function matchAllActiveRegex(text) {
-		for (const r of active.regex.get(window.location.href)) {
-			if (!text.match(r)) {
-				return false;
+		const rs = active.regex.get(window.location.href);
+		if (rs) {
+			for (const r of rs) {
+				if (!text.match(r)) {
+					return false;
+				}
 			}
 		}
 		return true;
