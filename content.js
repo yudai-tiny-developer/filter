@@ -108,11 +108,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
-				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
-				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
@@ -214,6 +214,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
 		node.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateTargetVisibility(n));
 		node.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateTargetVisibility(n));
+		node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n));
 	}
 
 	function classifyStatus(node) {
@@ -222,6 +223,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		switch (node.nodeName) {
 			case 'YTD-GRID-VIDEO-RENDERER':
 			case 'YTD-VIDEO-RENDERER':
+			case 'YTD-RICH-ITEM-RENDERER':
 				const video_metadata = node.querySelector('div#metadata-line');
 				if (video_metadata) {
 					const t = video_metadata.textContent;
@@ -364,6 +366,14 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					console.warn('span#video-title not found');
 				}
 				break;
+			case 'YTD-RICH-ITEM-RENDERER':
+				const rich_item_title = node.querySelector('a#video-title-link');
+				if (rich_item_title) {
+					return matchAllActiveRegex(rich_item_title.textContent);
+				} else {
+					console.warn('a#video-title-link not found');
+				}
+				break;
 		}
 
 		// default: visible
@@ -405,6 +415,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
 			case 'YTD-GRID-PLAYLIST-RENDERER':
 			case 'YTD-REEL-ITEM-RENDERER':
+			case 'YTD-RICH-ITEM-RENDERER':
 				updateTargetVisibility(node);
 				break;
 
