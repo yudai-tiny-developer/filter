@@ -253,7 +253,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 						// members only
 					}
 				} else {
-					console.warn('div#metadata-line not found');
+					// short
 				}
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
@@ -367,11 +367,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				}
 				break;
 			case 'YTD-RICH-ITEM-RENDERER':
-				const rich_item_title = node.querySelector('a#video-title-link');
+				const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media');
 				if (rich_item_title) {
 					return matchAllActiveRegex(rich_item_title.textContent);
 				} else {
-					console.warn('a#video-title-link not found');
+					// ad
 				}
 				break;
 		}
