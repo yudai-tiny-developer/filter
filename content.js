@@ -236,7 +236,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else if (lang.isScheduled_metadata(t)) {
 						status += 'scheduled.';
 
-						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string');
+						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
 						if (video_button) {
 							const t = video_button.textContent;
 							if (lang.isNotificationOn_button(t)) {
@@ -247,7 +247,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 								console.warn('Unknown notification status: ' + t);
 							}
 						} else {
-							console.warn('ytd-toggle-button-renderer yt-formatted-string not found');
+							console.warn('ytd-toggle-button-renderer not found');
 						}
 					} else {
 						// members only
