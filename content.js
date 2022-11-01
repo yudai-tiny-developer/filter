@@ -440,10 +440,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				browse.insertBefore(createMenu(position_fixed), sibling);
 				if (position_fixed) {
 					browse.insertBefore(createSpacer(), sibling);
-					const sidebar = browse.querySelector('ytd-playlist-sidebar-renderer');
+					const sidebar = browse.querySelector('ytd-playlist-header-renderer');
 					if (sidebar) {
 						sidebar.insertBefore(createSpacer(), sidebar.firstChild);
 						browse.style.alignItems = 'center';
+						browse.style.paddingTop = '0px';
 					}
 				}
 

@@ -4,8 +4,7 @@ span.filter-button {
 	fill: var(--yt-spec-text-primary);
 
 	align-items: center;
-	border: 1px solid var(--yt-spec-10-percent-layer);
-	border-radius: 16px;
+	border-radius: 8px;
 	box-sizing: border-box;
 	cursor: pointer;
 	display: inline-flex;
@@ -37,14 +36,15 @@ svg.filter-button {
 
 span.filter-query {
 	display: inline-flex;
-	height: 34px;
+	height: 32px;
 }
 
 span.filter-query.area {
 	align-items: center;
 	background-color: var(--ytd-searchbox-background);
-	border: 1px solid var(--ytd-searchbox-legacy-border-color);
-	border-radius: 2px 0 0 2px;
+	border: solid var(--ytd-searchbox-legacy-border-color);
+	border-radius: 16px 0 0 16px;
+	border-width: 1px 0px 1px 1px;
 	box-sizing: border-box;
 	margin: 12px 0px 12px 6px;
 	padding: 0px 0px 0px 12px;
@@ -58,7 +58,7 @@ input#filter-query {
 	outline: none;
 	width: 100%;
 
-	box-shadow: var(--ytd-searchbox-background) 0 34px inset !important;
+	box-shadow: var(--ytd-searchbox-background) 0 32px inset !important;
 	-webkit-text-fill-color: var(--ytd-searchbox-text-color);
 }
 
@@ -67,15 +67,14 @@ input#filter-query::placeholder {
 }
 
 span.filter-clear {
-	background-color: var(--ytd-searchbox-background);
 	color: var(--ytd-searchbox-text-color);
 	cursor: pointer;
 	fill: var(--ytd-searchbox-text-color);
-	height: 32px;
+	height: 30px;
 }
 
 svg.filter-clear {
-	margin: 6px;
+	margin: 4px;
 	height: 20px;
 	width: 20px;
 }
@@ -90,25 +89,24 @@ span.filter-query.area:focus-within {
 
 span.filter-query.search {
 	background-color: var(--ytd-searchbox-legacy-button-color);
-	border-radius: 0 2px 2px 0;
+	border: 1px solid var(--ytd-searchbox-legacy-border-color);
+	border-radius: 0 16px 16px 0;
+	box-sizing: border-box;
 	color: var(--yt-spec-text-primary);
 	cursor: pointer;
 	fill: var(--yt-spec-text-primary);
+	height: 32px;
 	margin: 12px 6px 12px 0px;
 }
 
 svg.filter-search {
-	margin: 4px 12px 4px 12px;
-	height: 24px;
-	width: 24px;
+	margin: 4px 15px 4px 10px;
+	height: 20px;
+	width: 20px;
 }
 
 form.filter-menu,
 div.filter-menu {
-	background-color: var(--yt-spec-brand-background-solid);
-	border-color: var(--yt-spec-10-percent-layer);
-	border-style: solid;
-	border-width: 1px;
 	display: flex;
 	height: 56px;
 	justify-content: center;
@@ -116,7 +114,7 @@ div.filter-menu {
 }
 
 form.filter-menu.position-fixed {
-	background-color: var(--yt-spec-brand-background-primary);
+	background-color: var(--yt-spec-base-background);
 	position: fixed;
 	z-index: 2000;
 }
