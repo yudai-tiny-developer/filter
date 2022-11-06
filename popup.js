@@ -38,10 +38,10 @@ let touch_identifier;
 
 function createHeaderRow() {
     const div = document.createElement('div');
-    div.classList.add('row');
-    div.appendChild(createLabel(''));
-    div.appendChild(createLabel(label_visibility));
-    div.appendChild(createLabel(label_default));
+    div.classList.add('header-row');
+    div.appendChild(createHeaderLabel(''));
+    div.appendChild(createHeaderLabel(label_visibility));
+    div.appendChild(createHeaderLabel(label_default));
     return div;
 }
 
@@ -60,6 +60,13 @@ function createRow(label, mode, setting, deafult_value, default_tab, tab_group) 
 function createLabel(label) {
     const div = document.createElement('div');
     div.classList.add('label');
+    div.innerHTML = label;
+    return div;
+}
+
+function createHeaderLabel(label) {
+    const div = document.createElement('div');
+    div.classList.add('header-label');
     div.innerHTML = label;
     return div;
 }

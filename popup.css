@@ -7,6 +7,10 @@ div.row {
     display: table-row;
 }
 
+div.header-row {
+    display: table-row;
+}
+
 div.row.dragging {
     background-color: rgba(255, 0, 0, 0.2);
 }
@@ -24,6 +28,11 @@ div.row.projection {
 div.label {
     display: table-cell;
     cursor: grab;
+    padding: 8px;
+}
+
+div.header-label {
+    display: table-cell;
     padding: 8px;
 }
 
@@ -92,6 +101,11 @@ div#reset_container {
         fill: rgb(3, 3, 3);
     }
 
+    div.header-label {
+        color: rgb(3, 3, 3);
+        fill: rgb(3, 3, 3);
+    }
+
     label.switch {
         background-color: rgb(157, 157, 157);
         border-color: rgb(123, 123, 123);
@@ -125,6 +139,11 @@ div#reset_container {
     }
 
     div.label {
+        color: rgb(255, 255, 255);
+        fill: rgb(255, 255, 255);
+    }
+
+    div.header-label {
         color: rgb(255, 255, 255);
         fill: rgb(255, 255, 255);
     }
