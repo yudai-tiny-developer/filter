@@ -12,6 +12,9 @@ const button = {
     channels_none: chrome.i18n.getMessage('button_channels_none')
 };
 
+const label_visibility = chrome.i18n.getMessage('visibility');
+const label_default = chrome.i18n.getMessage('default');
+
 const default_order = [
     'live',
     'streamed',
@@ -33,7 +36,16 @@ let projection;
 let gap;
 let touch_identifier;
 
-function createRow(label, mode, setting, deafult_value) {
+function createHeaderRow() {
+    const div = document.createElement('div');
+    div.classList.add('header-row');
+    div.appendChild(createHeaderLabel(''));
+    div.appendChild(createHeaderLabel(label_visibility));
+    div.appendChild(createHeaderLabel(label_default));
+    return div;
+}
+
+function createRow(label, mode, setting, deafult_value, default_tab, tab_group) {
     const div = document.createElement('div');
     div.style.display = 'none';
     div.classList.add('row');
@@ -41,6 +53,7 @@ function createRow(label, mode, setting, deafult_value) {
     div.setAttribute('draggable', 'true');
     div.appendChild(createLabel(label));
     div.appendChild(createToggle(mode, setting, deafult_value));
+    div.appendChild(createDefaultToggle(mode, default_tab, tab_group));
     return div;
 }
 
@@ -51,10 +64,24 @@ function createLabel(label) {
     return div;
 }
 
+function createHeaderLabel(label) {
+    const div = document.createElement('div');
+    div.classList.add('header-label');
+    div.innerHTML = label;
+    return div;
+}
+
 function createToggle(mode, setting, deafult_value) {
     const div = document.createElement('div');
     div.classList.add('toggle');
-    div.innerHTML = '<input id="' + mode + '" class="checkbox" type="checkbox" ' + (setting === true ? 'checked' : (setting === undefined && deafult_value ? 'checked' : '')) + ' default="' + deafult_value + '" /><label for="' + mode + '" class="switch" />';
+    div.innerHTML = '<input id="' + mode + '" class="checkbox visibility_checkbox" type="checkbox" ' + (setting === true ? 'checked' : (setting === undefined && deafult_value ? 'checked' : '')) + ' default="' + deafult_value + '" /><label for="' + mode + '" class="switch" />';
+    return div;
+}
+
+function createDefaultToggle(mode, setting, tab_group) {
+    const div = document.createElement('div');
+    div.classList.add('toggle');
+    div.innerHTML = '<input id="default_' + mode + '" class="checkbox default_checkbox ' + tab_group + '" type="checkbox" ' + (setting === true ? 'checked' : '') + ' default="false" /><label for="default_' + mode + '" class="switch" />';
     return div;
 }
 
@@ -100,7 +127,7 @@ function onDragEnd(event) {
         drag_target_row = undefined;
 
         let modes = [];
-        for (const input of mode_list.querySelectorAll('input')) {
+        for (const input of mode_list.querySelectorAll('input.visibility_checkbox')) {
             modes.push(input.id);
         }
         chrome.storage.local.set({ order: modes.join(',') });
@@ -192,24 +219,38 @@ chrome.storage.local.get([
     'channels_all',
     'channels_personalized',
     'channels_none',
-    'order'
+    'order',
+    'default_live',
+    'default_streamed',
+    'default_live_streamed',
+    'default_video',
+    'default_streamed_video',
+    'default_scheduled',
+    'default_notification_on',
+    'default_notification_off',
+    'default_channels_all',
+    'default_channels_personalized',
+    'default_channels_none',
 ], (data) => {
-    mode_list.appendChild(createRow(button.live, 'live', data.live, true));
-    mode_list.appendChild(createRow(button.streamed, 'streamed', data.streamed, true));
-    mode_list.appendChild(createRow(button.live_streamed, 'live_streamed', data.live_streamed, false));
-    mode_list.appendChild(createRow(button.video, 'video', data.video, true));
-    mode_list.appendChild(createRow(button.streamed_video, 'streamed_video', data.streamed_video, false));
-    mode_list.appendChild(createRow(button.scheduled, 'scheduled', data.scheduled, true));
-    mode_list.appendChild(createRow(button.notification_on, 'notification_on', data.notification_on, true));
-    mode_list.appendChild(createRow(button.notification_off, 'notification_off', data.notification_off, false));
-    mode_list.appendChild(createRow(button.channels_all, 'channels_all', data.channels_all, true));
-    mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true));
-    mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true));
+    mode_list.appendChild(createHeaderRow());
+    mode_list.appendChild(createRow(button.live, 'live', data.live, true, data.default_live, 'subscriptions'));
+    mode_list.appendChild(createRow(button.streamed, 'streamed', data.streamed, true, data.default_streamed, 'subscriptions'));
+    mode_list.appendChild(createRow(button.live_streamed, 'live_streamed', data.live_streamed, false, data.default_live_streamed, 'subscriptions'));
+    mode_list.appendChild(createRow(button.video, 'video', data.video, true, data.default_video, 'subscriptions'));
+    mode_list.appendChild(createRow(button.streamed_video, 'streamed_video', data.streamed_video, false, data.default_streamed_video, 'subscriptions'));
+    mode_list.appendChild(createRow(button.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled, 'subscriptions'));
+    mode_list.appendChild(createRow(button.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on, 'subscriptions'));
+    mode_list.appendChild(createRow(button.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off, 'subscriptions'));
+    mode_list.appendChild(createRow(button.channels_all, 'channels_all', data.channels_all, true, data.default_channels_all, 'channels'));
+    mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
+    mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
 
     for (const mode of data.order ? data.order.split(',') : default_order) {
         const row = mode_list.querySelector('div.row.' + mode);
-        mode_list.appendChild(row);
-        row.style.display = '';
+        if (row) {
+            mode_list.appendChild(row);
+            row.style.display = '';
+        }
     }
 
     for (const div of mode_list.querySelectorAll('div.row')) {
@@ -260,10 +301,26 @@ chrome.storage.local.get([
         });
     }
 
-    for (const input of mode_list.querySelectorAll('input.checkbox')) {
+    for (const input of mode_list.querySelectorAll('input.visibility_checkbox')) {
         input.addEventListener('change', () => {
             chrome.storage.local.set({ [input.id]: input.checked });
         });
+    }
+
+    for (const group of ['subscriptions', 'channels']) {
+        for (const input of mode_list.querySelectorAll('input.default_checkbox.' + group)) {
+            input.addEventListener('change', () => {
+                if (input.checked) {
+                    mode_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
+                        if (n !== input) {
+                            n.checked = false;
+                            chrome.storage.local.set({ [n.id]: false });
+                        }
+                    });
+                }
+                chrome.storage.local.set({ [input.id]: input.checked });
+            });
+        }
     }
 
     document.querySelector('input#reset').addEventListener('click', () => {

@@ -12,7 +12,18 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			'channels_all',
 			'channels_personalized',
 			'channels_none',
-			'order'
+			'order',
+			'default_live',
+			'default_streamed',
+			'default_live_streamed',
+			'default_video',
+			'default_streamed_video',
+			'default_scheduled',
+			'default_notification_on',
+			'default_notification_off',
+			'default_channels_all',
+			'default_channels_personalized',
+			'default_channels_none',
 		], (data) => {
 			for (const menu of node.querySelectorAll('form.filter-menu')) {
 				menu.appendChild(menu.querySelector('span.filter-button.all'));
@@ -23,6 +34,18 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					menu.appendChild(query);
 				}
 			}
+
+			default_live = data.default_live;
+			default_streamed = data.default_streamed;
+			default_live_streamed = data.default_live_streamed;
+			default_video = data.default_video;
+			default_streamed_video = data.default_streamed_video;
+			default_scheduled = data.default_scheduled;
+			default_notification_on = data.default_notification_on;
+			default_notification_off = data.default_notification_off;
+			default_channels_all = data.default_channels_all;
+			default_channels_personalized = data.default_channels_personalized;
+			default_channels_none = data.default_channels_none;
 
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
@@ -156,6 +179,12 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 			}
+
+			if (isMenuTarget()) {
+				changeMode(getActiveMode());
+				updateQueryRegex(node, getActiveQuery());
+				updateVisibility(node);
+			}
 		});
 	}
 
@@ -276,7 +305,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				}
 				break;
 			case 'YTD-CHANNEL-RENDERER':
-				const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label]');
+				const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
 				if (channel_notification) {
 					const t = channel_notification.getAttribute('aria-label');
 					if (lang.isChannelsAllNotifications(t)) {
@@ -440,17 +469,21 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				browse.insertBefore(createMenu(position_fixed), sibling);
 				if (position_fixed) {
 					browse.insertBefore(createSpacer(), sibling);
-					const sidebar = browse.querySelector('ytd-playlist-header-renderer');
+
+					const sidebar = browse.querySelector('ytd-playlist-sidebar-renderer');
 					if (sidebar) {
 						sidebar.insertBefore(createSpacer(), sidebar.firstChild);
 						browse.style.alignItems = 'center';
 						browse.style.paddingTop = '0px';
 					}
-				}
 
-				updateMenuVisibility(browse);
-				updateButtonVisibility(browse);
-				updateNodeValue(browse);
+					const header = browse.querySelector('ytd-playlist-header-renderer');
+					if (header) {
+						header.insertBefore(createSpacer(), header.firstChild);
+						browse.style.alignItems = 'center';
+						browse.style.paddingTop = '0px';
+					}
+				}
 			} else {
 				console.warn('ytd-two-column-browse-results-renderer not found');
 			}
@@ -506,11 +539,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		span.innerHTML = text;
 		span.classList.add('filter-button');
 		span.classList.add(mode);
-
-		if (mode === getActiveMode()) {
-			span.classList.add('selected');
-		}
-
 		span.addEventListener('click', () => {
 			changeMode(mode);
 			updateQueryRegex(app, input.value);
@@ -631,18 +659,9 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 	}
 
-	function updateNodeValue(node) {
-		if (isMenuTarget()) {
-			changeMode(getActiveMode());
-			updateQueryRegex(node, getActiveQuery());
-			updateVisibility(node);
-		}
-	}
-
 	function onViewChanged() {
 		updateMenuVisibility(app);
 		updateButtonVisibility(app);
-		updateNodeValue(app);
 	}
 
 	function includesStatus(node, status_or) {
@@ -664,6 +683,27 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function changeMode(mode) {
+		if (!mode) {
+			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
+				if (default_live) mode = 'live';
+				else if (default_streamed) mode = 'streamed';
+				else if (default_live_streamed) mode = 'live_streamed';
+				else if (default_video) mode = 'video';
+				else if (default_streamed_video) mode = 'streamed_video';
+				else if (default_scheduled) mode = 'scheduled';
+				else if (default_notification_on) mode = 'notification_on';
+				else if (default_notification_off) mode = 'notification_off';
+				else mode = 'all';
+			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
+				if (default_channels_all) mode = 'channels_all';
+				else if (default_channels_personalized) mode = 'channels_personalized';
+				else if (default_channels_none) mode = 'channels_none';
+				else mode = 'all';
+			} else {
+				mode = 'all';
+			}
+		}
+
 		setActiveMode(mode);
 
 		app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
@@ -679,13 +719,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function getActiveMode() {
-		const mode = active.mode.get(window.location.href);
-		if (mode) {
-			return mode;
-		} else {
-			setActiveMode('all');
-			return 'all';
-		}
+		return active.mode.get(window.location.href);
 	}
 
 	function setActiveMode(mode) {
@@ -745,6 +779,18 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		'channels_none'
 	];
 
+	let default_live;
+	let default_streamed;
+	let default_live_streamed;
+	let default_video;
+	let default_streamed_video;
+	let default_scheduled;
+	let default_notification_on;
+	let default_notification_off;
+	let default_channels_all;
+	let default_channels_personalized;
+	let default_channels_none;
+
 	const active = {
 		mode: new Map(),
 		query: new Map(),
@@ -771,7 +817,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 		chrome.storage.onChanged.addListener((changes, namespace) => {
 			updateButtonVisibility(app);
-			updateNodeValue(app);
 		});
 	} else {
 		console.warn('ytd-app not found');

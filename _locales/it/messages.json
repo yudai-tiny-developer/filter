@@ -43,5 +43,11 @@
    },
    "appDesc": {
       "message": "Add filters such as Live, Streamed, Video, keyword search, etc to subscriptions, playlist, and so on."
+   },
+   "visibility": {
+      "message": "Visibility"
+   },
+   "default": {
+      "message": "Default"
    }
 }
