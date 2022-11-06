@@ -12,6 +12,9 @@ const button = {
     channels_none: chrome.i18n.getMessage('button_channels_none')
 };
 
+const label_visibility = chrome.i18n.getMessage('visibility');
+const label_default = chrome.i18n.getMessage('default');
+
 const default_order = [
     'live',
     'streamed',
@@ -37,8 +40,8 @@ function createHeaderRow() {
     const div = document.createElement('div');
     div.classList.add('row');
     div.appendChild(createLabel(''));
-    div.appendChild(createLabel(''));
-    div.appendChild(createLabel('Default'));
+    div.appendChild(createLabel(label_visibility));
+    div.appendChild(createLabel(label_default));
     return div;
 }
 
