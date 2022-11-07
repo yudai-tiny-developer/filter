@@ -462,30 +462,36 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function insertMenu(node) {
 		const browse = searchParentNode(node, 'YTD-BROWSE');
-		if (browse && !browse.querySelector('form.filter-menu')) {
-			const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
-			if (sibling) {
-				const position_fixed = isPositionFixedTarget();
-				browse.insertBefore(createMenu(position_fixed), sibling);
-				if (position_fixed) {
-					browse.insertBefore(createSpacer(), sibling);
-
-					const sidebar = browse.querySelector('ytd-playlist-sidebar-renderer');
-					if (sidebar) {
-						sidebar.insertBefore(createSpacer(), sidebar.firstChild);
-						browse.style.alignItems = 'center';
-						browse.style.paddingTop = '0px';
+		if (browse) {
+			if (!browse.querySelector('form.filter-menu')) {
+				const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
+				if (sibling) {
+					const position_fixed = isPositionFixedTarget();
+					browse.insertBefore(createMenu(position_fixed), sibling);
+					if (position_fixed) {
+						browse.insertBefore(createSpacer('browse'), sibling);
 					}
 
-					const header = browse.querySelector('ytd-playlist-header-renderer');
-					if (header) {
-						header.insertBefore(createSpacer(), header.firstChild);
-						browse.style.alignItems = 'center';
-						browse.style.paddingTop = '0px';
-					}
+					updateMenuVisibility(browse);
+					updateButtonVisibility(browse);
 				}
-			} else {
-				console.warn('ytd-two-column-browse-results-renderer not found');
+			}
+
+			browse.style.alignItems = 'center';
+			browse.style.paddingTop = '0px';
+		}
+	}
+
+	function insertPlaylistSpacer() {
+		for (const sidebar of app.querySelectorAll('ytd-playlist-sidebar-renderer')) {
+			if (sidebar.firstChild.id !== 'sidebar-spacer') {
+				sidebar.insertBefore(createSpacer('sidebar-spacer'), sidebar.firstChild);
+			}
+		}
+
+		for (const header of app.querySelectorAll('ytd-playlist-header-renderer')) {
+			if (header.firstChild.id !== 'header-spacer') {
+				header.insertBefore(createSpacer('header-spacer'), header.firstChild);
 			}
 		}
 	}
@@ -526,10 +532,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		return menu;
 	}
 
-	function createSpacer() {
+	function createSpacer(id) {
 		const spacer = document.createElement('div');
 		spacer.classList.add('filter-menu');
 		spacer.classList.add('spacer');
+		spacer.id = id;
 		return spacer;
 	}
 
@@ -660,6 +667,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function onViewChanged() {
+		insertPlaylistSpacer();
 		updateMenuVisibility(app);
 		updateButtonVisibility(app);
 	}
