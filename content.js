@@ -660,10 +660,29 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 
 		if (includesStatus(node, status_or) && matchTextContent(node)) {
+			node.style.visibility = '';
 			node.style.display = '';
 		} else {
-			node.style.display = 'none';
+			node.style.visibility = 'hidden';
+			waitAttribute(node.querySelector('img'), 'src').then(() => {
+				node.style.display = 'none';
+			});
 		}
+	}
+
+	function waitAttribute(node, attribute, func) {
+		return new Promise(resolve => {
+			const observer = new MutationObserver(mutations => {
+				for (const m of mutations) {
+					if (m.attributeName === attribute) {
+						resolve();
+						observer.disconnect();
+						return;
+					}
+				}
+			});
+			observer.observe(node, { attributes: true });
+		});
 	}
 
 	function onViewChanged() {

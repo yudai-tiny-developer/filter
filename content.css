@@ -42,9 +42,8 @@ span.filter-query {
 span.filter-query.area {
 	align-items: center;
 	background-color: var(--ytd-searchbox-background);
-	border: solid var(--ytd-searchbox-legacy-border-color);
+	border: 1px solid var(--ytd-searchbox-legacy-border-color);
 	border-radius: 16px 0 0 16px;
-	border-width: 1px 0px 1px 1px;
 	box-sizing: border-box;
 	margin: 12px 0px 12px 6px;
 	padding: 0px 0px 0px 12px;
@@ -89,8 +88,9 @@ span.filter-query.area:focus-within {
 
 span.filter-query.search {
 	background-color: var(--ytd-searchbox-legacy-button-color);
-	border: 1px solid var(--ytd-searchbox-legacy-border-color);
+	border: solid var(--ytd-searchbox-legacy-border-color);
 	border-radius: 0 16px 16px 0;
+	border-width: 1px 1px 1px 0px;
 	box-sizing: border-box;
 	color: var(--yt-spec-text-primary);
 	cursor: pointer;
