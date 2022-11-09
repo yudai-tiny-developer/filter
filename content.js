@@ -663,10 +663,17 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			node.style.visibility = '';
 			node.style.display = '';
 		} else {
-			node.style.visibility = 'hidden';
-			waitAttribute(node.querySelector('img'), 'src').then(() => {
-				node.style.display = 'none';
-			});
+			const thumbnail = node.querySelector('img');
+			if (thumbnail) {
+				if (thumbnail.getAttribute('src')) { // thumbnail already loaded
+					node.style.display = 'none';
+				} else {
+					node.style.visibility = 'hidden';
+					waitAttribute(thumbnail, 'src').then(() => {
+						node.style.display = 'none';
+					});
+				}
+			}
 		}
 	}
 
