@@ -664,20 +664,18 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			node.style.display = '';
 		} else {
 			const thumbnail = node.querySelector('img');
-			if (thumbnail) {
-				if (thumbnail.getAttribute('src')) { // thumbnail already loaded
+			if (!thumbnail || thumbnail.getAttribute('src')) { // no thumbnail or thumbnail already loaded
+				node.style.display = 'none';
+			} else {
+				node.style.visibility = 'hidden';
+				waitAttribute(thumbnail, 'src').then(() => { // wait for thumbnail loaded
 					node.style.display = 'none';
-				} else {
-					node.style.visibility = 'hidden';
-					waitAttribute(thumbnail, 'src').then(() => {
-						node.style.display = 'none';
-					});
-				}
+				});
 			}
 		}
 	}
 
-	function waitAttribute(node, attribute, func) {
+	function waitAttribute(node, attribute) {
 		return new Promise(resolve => {
 			const observer = new MutationObserver(mutations => {
 				for (const m of mutations) {
