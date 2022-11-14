@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "Emitido"
    },
-   "button_live_streamed": {
-      "message": "En directo / Emitido"
-   },
    "button_video": {
       "message": "Vídeo"
    },
-   "button_streamed_video": {
-      "message": "Emitido / Vídeo"
+   "button_short": {
+      "message": "Short"
    },
    "button_scheduled": {
       "message": "Programado"

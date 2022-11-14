@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "封存"
    },
-   "button_live_streamed": {
-      "message": "直播中 / 封存"
-   },
    "button_video": {
       "message": "影片"
    },
-   "button_streamed_video": {
-      "message": "封存 / 影片"
+   "button_short": {
+      "message": "Short"
    },
    "button_scheduled": {
       "message": "預定"

@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "Gestroom"
    },
-   "button_live_streamed": {
-      "message": "Regstreeks / Gestroom"
-   },
    "button_video": {
       "message": "Video"
    },
-   "button_streamed_video": {
-      "message": "Gestroom / Video"
+   "button_short": {
+      "message": "Short"
    },
    "button_scheduled": {
       "message": "Geskeduleer"

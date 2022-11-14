@@ -3,9 +3,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		chrome.storage.local.get([
 			'live',
 			'streamed',
-			'live_streamed',
 			'video',
-			'streamed_video',
+			'short',
 			'scheduled',
 			'notification_on',
 			'notification_off',
@@ -15,9 +14,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			'order',
 			'default_live',
 			'default_streamed',
-			'default_live_streamed',
 			'default_video',
-			'default_streamed_video',
+			'default_short',
 			'default_scheduled',
 			'default_notification_on',
 			'default_notification_off',
@@ -37,9 +35,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 			default_live = data.default_live;
 			default_streamed = data.default_streamed;
-			default_live_streamed = data.default_live_streamed;
 			default_video = data.default_video;
-			default_streamed_video = data.default_streamed_video;
+			default_short = data.default_short;
 			default_scheduled = data.default_scheduled;
 			default_notification_on = data.default_notification_on;
 			default_notification_off = data.default_notification_off;
@@ -53,9 +50,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
@@ -69,9 +65,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
@@ -85,9 +80,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
@@ -101,9 +95,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
@@ -117,9 +110,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
@@ -133,12 +125,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
@@ -149,9 +140,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
@@ -165,9 +155,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.live_streamed').forEach(n => n.style.display = data.live_streamed === true ? '' : 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.streamed_video').forEach(n => n.style.display = data.streamed_video === true ? '' : 'none');
+				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
@@ -261,7 +250,23 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else if (lang.isStreamed_metadata(t)) {
 						status += 'streamed.';
 					} else if (lang.isVideo_metadata(t)) {
-						status += 'video.';
+						const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
+						if (thumbnail_overlay) {
+							const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
+							if (overlay_style) {
+								if (overlay_style === 'DEFAULT') {
+									status += 'video.';
+								} else if (overlay_style === 'SHORTS') {
+									status += 'short.';
+								} else {
+									console.warn('Unknown overlay-style');
+								}
+							} else {
+								console.warn('overlay-style not found');
+							}
+						} else {
+							// lazy load
+						}
 					} else if (lang.isScheduled_metadata(t)) {
 						status += 'scheduled.';
 
@@ -281,8 +286,6 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 					} else {
 						// members only
 					}
-				} else {
-					// short
 				}
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
@@ -515,9 +518,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		menu.appendChild(createButton(button.all, 'all', input));
 		menu.appendChild(createButton(button.live, 'live', input));
 		menu.appendChild(createButton(button.streamed, 'streamed', input));
-		menu.appendChild(createButton(button.live_streamed, 'live_streamed', input));
 		menu.appendChild(createButton(button.video, 'video', input));
-		menu.appendChild(createButton(button.streamed_video, 'streamed_video', input));
+		menu.appendChild(createButton(button.short, 'short', input));
 		menu.appendChild(createButton(button.scheduled, 'scheduled', input));
 		menu.appendChild(createButton(button.notification_on, 'notification_on', input));
 		menu.appendChild(createButton(button.notification_off, 'notification_off', input));
@@ -628,14 +630,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			case 'streamed':
 				status_or = ['streamed.'];
 				break;
-			case 'live_streamed':
-				status_or = ['live.', 'streamed.'];
-				break;
 			case 'video':
 				status_or = ['video.'];
 				break;
-			case 'streamed_video':
-				status_or = ['streamed.', 'video.'];
+			case 'short':
+				status_or = ['short.'];
 				break;
 			case 'scheduled':
 				status_or = ['scheduled.'];
@@ -701,16 +700,12 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			return true;
 		} else {
 			const node_status = classifyStatus(node);
-			if (node_status === '') {
-				return true;
-			} else {
-				for (const status of status_or) {
-					if (node_status.includes(status)) {
-						return true;
-					}
+			for (const status of status_or) {
+				if (node_status.includes(status)) {
+					return true;
 				}
-				return false;
 			}
+			return false;
 		}
 	}
 
@@ -719,9 +714,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 				if (default_live) mode = 'live';
 				else if (default_streamed) mode = 'streamed';
-				else if (default_live_streamed) mode = 'live_streamed';
 				else if (default_video) mode = 'video';
-				else if (default_streamed_video) mode = 'streamed_video';
+				else if (default_short) mode = 'short';
 				else if (default_scheduled) mode = 'scheduled';
 				else if (default_notification_on) mode = 'notification_on';
 				else if (default_notification_off) mode = 'notification_off';
@@ -784,9 +778,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		all: chrome.i18n.getMessage('button_all'),
 		live: chrome.i18n.getMessage('button_live'),
 		streamed: chrome.i18n.getMessage('button_streamed'),
-		live_streamed: chrome.i18n.getMessage('button_live_streamed'),
 		video: chrome.i18n.getMessage('button_video'),
-		streamed_video: chrome.i18n.getMessage('button_streamed_video'),
+		short: chrome.i18n.getMessage('button_short'),
 		scheduled: chrome.i18n.getMessage('button_scheduled'),
 		notification_on: chrome.i18n.getMessage('button_notification_on'),
 		notification_off: chrome.i18n.getMessage('button_notification_off'),
@@ -800,9 +793,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	const default_order = [
 		'live',
 		'streamed',
-		'live_streamed',
 		'video',
-		'streamed_video',
+		'short',
 		'scheduled',
 		'notification_on',
 		'notification_off',
@@ -813,9 +805,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	let default_live;
 	let default_streamed;
-	let default_live_streamed;
 	let default_video;
-	let default_streamed_video;
+	let default_short;
 	let default_scheduled;
 	let default_notification_on;
 	let default_notification_off;

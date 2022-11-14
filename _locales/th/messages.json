@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "สตรีมแล้วเมื่อ"
    },
-   "button_live_streamed": {
-      "message": "สด / สตรีมแล้วเมื่อ"
-   },
    "button_video": {
       "message": "วีดีโอ"
    },
-   "button_streamed_video": {
-      "message": "สตรีมแล้วเมื่อ / วีดีโอ"
+   "button_short": {
+      "message": "Short"
    },
    "button_scheduled": {
       "message": "กำหนดการ"
