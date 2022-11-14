@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "Gestreamt"
    },
-   "button_live_streamed": {
-      "message": "Live / Gestreamt"
-   },
    "button_video": {
       "message": "Video"
    },
-   "button_streamed_video": {
-      "message": "Gestreamt / Video"
+   "button_short": {
+      "message": "Shorts"
    },
    "button_scheduled": {
       "message": "Geplant"

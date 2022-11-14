@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "Nai-stream"
    },
-   "button_live_streamed": {
-      "message": "Live / Nai-stream"
-   },
    "button_video": {
       "message": "Video"
    },
-   "button_streamed_video": {
-      "message": "Nai-stream / Video"
+   "button_short": {
+      "message": "Shorts"
    },
    "button_scheduled": {
       "message": "Naka-iskedyul"

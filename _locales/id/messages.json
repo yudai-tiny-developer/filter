@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "Mengarsipkan"
    },
-   "button_live_streamed": {
-      "message": "Live / Mengarsipkan"
-   },
    "button_video": {
       "message": "Video"
    },
-   "button_streamed_video": {
-      "message": "Mengarsipkan / Video"
+   "button_short": {
+      "message": "Shorts"
    },
    "button_scheduled": {
       "message": "Mendatang"

@@ -1,9 +1,8 @@
 const button = {
     live: chrome.i18n.getMessage('button_live'),
     streamed: chrome.i18n.getMessage('button_streamed'),
-    live_streamed: chrome.i18n.getMessage('button_live_streamed'),
     video: chrome.i18n.getMessage('button_video'),
-    streamed_video: chrome.i18n.getMessage('button_streamed_video'),
+    short: chrome.i18n.getMessage('button_short'),
     scheduled: chrome.i18n.getMessage('button_scheduled'),
     notification_on: chrome.i18n.getMessage('button_notification_on'),
     notification_off: chrome.i18n.getMessage('button_notification_off'),
@@ -18,9 +17,8 @@ const label_default = chrome.i18n.getMessage('default');
 const default_order = [
     'live',
     'streamed',
-    'live_streamed',
     'video',
-    'streamed_video',
+    'short',
     'scheduled',
     'notification_on',
     'notification_off',
@@ -207,12 +205,20 @@ function hideProjection(projection, base) {
     mode_list.removeChild(projection);
 }
 
+function order(order) {
+    if (order) {
+        const dataOrder = order.split(',');
+        return dataOrder.filter(i => default_order.indexOf(i) !== -1).concat(default_order.filter(i => dataOrder.indexOf(i) === -1));
+    } else {
+        return default_order;
+    }
+}
+
 chrome.storage.local.get([
     'live',
     'streamed',
-    'live_streamed',
     'video',
-    'streamed_video',
+    'short',
     'scheduled',
     'notification_on',
     'notification_off',
@@ -222,9 +228,8 @@ chrome.storage.local.get([
     'order',
     'default_live',
     'default_streamed',
-    'default_live_streamed',
     'default_video',
-    'default_streamed_video',
+    'default_short',
     'default_scheduled',
     'default_notification_on',
     'default_notification_off',
@@ -235,9 +240,8 @@ chrome.storage.local.get([
     mode_list.appendChild(createHeaderRow());
     mode_list.appendChild(createRow(button.live, 'live', data.live, true, data.default_live, 'subscriptions'));
     mode_list.appendChild(createRow(button.streamed, 'streamed', data.streamed, true, data.default_streamed, 'subscriptions'));
-    mode_list.appendChild(createRow(button.live_streamed, 'live_streamed', data.live_streamed, false, data.default_live_streamed, 'subscriptions'));
     mode_list.appendChild(createRow(button.video, 'video', data.video, true, data.default_video, 'subscriptions'));
-    mode_list.appendChild(createRow(button.streamed_video, 'streamed_video', data.streamed_video, false, data.default_streamed_video, 'subscriptions'));
+    mode_list.appendChild(createRow(button.short, 'short', data.short, true, data.default_short, 'subscriptions'));
     mode_list.appendChild(createRow(button.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled, 'subscriptions'));
     mode_list.appendChild(createRow(button.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on, 'subscriptions'));
     mode_list.appendChild(createRow(button.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off, 'subscriptions'));
@@ -245,7 +249,7 @@ chrome.storage.local.get([
     mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
     mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
 
-    for (const mode of data.order ? data.order.split(',') : default_order) {
+    for (const mode of order(data.order)) {
         const row = mode_list.querySelector('div.row.' + mode);
         if (row) {
             mode_list.appendChild(row);

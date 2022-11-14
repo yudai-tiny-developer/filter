@@ -8,14 +8,11 @@
    "button_streamed": {
       "message": "配信済み"
    },
-   "button_live_streamed": {
-      "message": "ライブ / 配信済み"
-   },
    "button_video": {
       "message": "動画"
    },
-   "button_streamed_video": {
-      "message": "配信済み / 動画"
+   "button_short": {
+      "message": "ショート"
    },
    "button_scheduled": {
       "message": "予定"
