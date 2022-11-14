@@ -64,11 +64,12 @@ label.switch {
 
 label.switch:after {
     left: -4px;
-    content: "\2715";
+    content: "\2716";
 
     top: -5px;
     width: 20px;
     height: 20px;
+    line-height: 20px;
     border-radius: 100%;
     border-style: solid;
     border-width: 1px;
@@ -82,7 +83,7 @@ label.switch:after {
 
 input.checkbox:checked+label.switch:after {
     left: 24px;
-    content: "\2713";
+    content: "\2714";
 }
 
 div#reset_container {
