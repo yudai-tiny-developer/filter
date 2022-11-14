@@ -660,16 +660,15 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 
 		if (includesStatus(node, status_or) && matchTextContent(node)) {
-			node.style.visibility = '';
-			node.style.display = '';
+			node.classList.remove('filter-none', 'filter-hidden');
 		} else {
 			const thumbnail = node.querySelector('img');
-			if (!thumbnail || thumbnail.getAttribute('src')) { // no thumbnail or thumbnail already loaded
-				node.style.display = 'none';
+			if (!thumbnail || thumbnail.hasAttribute('src')) { // no thumbnail or thumbnail already loaded
+				node.classList.add('filter-none');
 			} else {
-				node.style.visibility = 'hidden';
+				node.classList.add('filter-hidden');
 				waitAttribute(thumbnail, 'src').then(() => { // wait for thumbnail loaded
-					node.style.display = 'none';
+					node.classList.add('filter-none');
 				});
 			}
 		}
