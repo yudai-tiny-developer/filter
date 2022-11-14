@@ -552,7 +552,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			changeMode(mode);
 			updateQueryRegex(app, input.value);
 			updateVisibility(app);
-			window.scrollTo({ top: 0 });
+			window.scroll({ top: 0, behavior: 'instant' });
 		});
 
 		return span;
