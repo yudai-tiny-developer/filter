@@ -25,7 +25,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		], (data) => {
 			for (const menu of node.querySelectorAll('form.filter-menu')) {
 				menu.appendChild(menu.querySelector('span.filter-button.all'));
-				for (const mode of data.order ? data.order.split(',') : default_order) {
+				for (const mode of order(data.order)) {
 					menu.appendChild(menu.querySelector('span.filter-button.' + mode));
 				}
 				for (const query of menu.querySelectorAll('span.filter-query')) {
@@ -773,6 +773,15 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			}
 		}
 		return true;
+	}
+
+	function order(order) {
+		if (order) {
+			const dataOrder = order.split(',');
+			return dataOrder.filter(i => default_order.indexOf(i) !== -1).concat(default_order.filter(i => dataOrder.indexOf(i) === -1));
+		} else {
+			return default_order;
+		}
 	}
 
 	const button = {

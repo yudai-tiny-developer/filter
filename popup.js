@@ -205,6 +205,15 @@ function hideProjection(projection, base) {
     mode_list.removeChild(projection);
 }
 
+function order(order) {
+    if (order) {
+        const dataOrder = order.split(',');
+        return dataOrder.filter(i => default_order.indexOf(i) !== -1).concat(default_order.filter(i => dataOrder.indexOf(i) === -1));
+    } else {
+        return default_order;
+    }
+}
+
 chrome.storage.local.get([
     'live',
     'streamed',
@@ -240,7 +249,7 @@ chrome.storage.local.get([
     mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
     mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
 
-    for (const mode of data.order ? data.order.split(',') : default_order) {
+    for (const mode of order(data.order)) {
         const row = mode_list.querySelector('div.row.' + mode);
         if (row) {
             mode_list.appendChild(row);
