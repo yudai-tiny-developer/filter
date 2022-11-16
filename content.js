@@ -414,6 +414,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function onNodeLoaded(node) {
 		switch (node.nodeName) {
+			case 'YTD-BROWSE':
 			case 'YTD-SECTION-LIST-RENDERER':
 				insertMenu(node);
 				break;
@@ -845,6 +846,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			childList: true,
 		});
 
+		app.querySelectorAll('ytd-browse').forEach(n => insertMenu(n));
 		app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
 
 		chrome.storage.onChanged.addListener((changes, namespace) => {
