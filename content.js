@@ -119,7 +119,9 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = data.channels_all === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = data.channels_personalized === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = data.channels_none === false ? 'none' : '');
-			} else if (window.location.href.startsWith('https://www.youtube.com/channel/') || window.location.href.startsWith('https://www.youtube.com/c/')) {
+			} else if (window.location.href.startsWith('https://www.youtube.com/channel/')
+				|| window.location.href.startsWith('https://www.youtube.com/c/')
+				|| window.location.href.startsWith('https://www.youtube.com/@')) {
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
@@ -185,6 +187,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			|| window.location.href.startsWith('https://www.youtube.com/feed/channels')
 			|| window.location.href.startsWith('https://www.youtube.com/channel/')
 			|| window.location.href.startsWith('https://www.youtube.com/c/')
+			|| window.location.href.startsWith('https://www.youtube.com/@')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/explore')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/trending')
 			;
