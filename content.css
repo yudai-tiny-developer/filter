@@ -2,10 +2,6 @@
 	display: none !important;
 }
 
-.filter-hidden {
-	visibility: hidden !important;
-}
-
 span.filter-button {
 	background-color: var(--yt-spec-badge-chip-background);
 	color: var(--yt-spec-text-primary);

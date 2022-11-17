@@ -664,17 +664,9 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 
 		if (includesStatus(node, status_or) && matchTextContent(node)) {
-			node.classList.remove('filter-none', 'filter-hidden');
+			node.classList.remove('filter-none');
 		} else {
-			const thumbnail = node.querySelector('img');
-			if (!thumbnail || thumbnail.hasAttribute('src')) { // no thumbnail or thumbnail already loaded
-				node.classList.add('filter-none');
-			} else {
-				node.classList.add('filter-hidden');
-				waitAttribute(thumbnail, 'src').then(() => { // wait for thumbnail loaded
-					node.classList.add('filter-none');
-				});
-			}
+			node.classList.add('filter-none');
 		}
 	}
 
