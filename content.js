@@ -382,7 +382,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				if (playlist_metadata) {
 					const t = playlist_metadata.textContent;
 					if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status += 'scheduled.progress_unwatched.progress_watched.';
 					}
 				}
 
