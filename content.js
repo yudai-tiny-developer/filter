@@ -653,6 +653,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function createSelectProgress(input) {
 		const select = document.createElement('select');
+		select.style.display = 'none';
 		select.classList.add('filter-menu');
 		select.addEventListener('change', () => {
 			changeModeProgress(select.value);
