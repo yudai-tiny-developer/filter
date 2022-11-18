@@ -137,9 +137,9 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === false ? 'none' : '');
+				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false && data.notification_on === false && data.notification_off === false ? 'none' : '');
+				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
 				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = data.progress_unwatched === false && data.progress_watched === false ? 'none' : '');
 				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = '');
