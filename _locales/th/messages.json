@@ -46,5 +46,14 @@
    },
    "default": {
       "message": "Default"
+   },
+   "button_progress_all": {
+      "message": "All"
+   },
+   "button_progress_unwatched": {
+      "message": "Unwatched"
+   },
+   "button_progress_watched": {
+      "message": "Watched"
    }
 }
