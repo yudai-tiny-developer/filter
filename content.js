@@ -339,7 +339,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 							// lazy load
 						}
 					} else if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status += 'scheduled.progress_unwatched.progress_watched.';
 
 						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
 						if (video_button) {
