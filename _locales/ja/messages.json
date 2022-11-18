@@ -46,5 +46,14 @@
    },
    "default": {
       "message": "デフォルト"
+   },
+   "button_progress_all": {
+      "message": "すべて"
+   },
+   "button_progress_unwatched": {
+      "message": "未視聴"
+   },
+   "button_progress_watched": {
+      "message": "視聴済み"
    }
 }

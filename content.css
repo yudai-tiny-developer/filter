@@ -126,3 +126,20 @@ form.filter-menu.position-fixed {
 div.filter-menu.spacer {
 	visibility: hidden;
 }
+
+select.filter-menu {
+	background-color: var(--yt-spec-text-primary);
+	color: var(--yt-spec-text-primary-inverse);
+	fill: var(--yt-spec-text-primary-inverse);
+
+	border-radius: 8px;
+	border-width: 0px;
+	cursor: pointer;
+	font-size: var(--ytd-user-comment-font-size);
+	font-weight: var(--ytd-user-comment-font-weight);
+	height: 32px;
+	margin: 12px 6px 12px 6px;
+	outline: none;
+	padding: 0px 12px 0px 12px;
+	word-break: keep-all;
+}

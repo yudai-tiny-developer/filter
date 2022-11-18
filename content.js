@@ -8,10 +8,16 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			'scheduled',
 			'notification_on',
 			'notification_off',
+
+			'progress_unwatched',
+			'progress_watched',
+
 			'channels_all',
 			'channels_personalized',
 			'channels_none',
+
 			'order',
+
 			'default_live',
 			'default_streamed',
 			'default_video',
@@ -19,15 +25,30 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			'default_scheduled',
 			'default_notification_on',
 			'default_notification_off',
+
+			'default_progress_unwatched',
+			'default_progress_watched',
+
 			'default_channels_all',
 			'default_channels_personalized',
 			'default_channels_none',
 		], (data) => {
 			for (const menu of node.querySelectorAll('form.filter-menu')) {
+				const select = menu.querySelector('select.filter-menu');
+
 				menu.appendChild(menu.querySelector('span.filter-button.all'));
+				select.appendChild(select.querySelector('option.filter-button.progress_all'));
+
 				for (const mode of order(data.order)) {
-					menu.appendChild(menu.querySelector('span.filter-button.' + mode));
+					if (mode.startsWith('progress_')) {
+						select.appendChild(select.querySelector('option.filter-button.' + mode));
+					} else {
+						menu.appendChild(menu.querySelector('span.filter-button.' + mode));
+					}
 				}
+
+				menu.appendChild(select);
+
 				for (const query of menu.querySelectorAll('span.filter-query')) {
 					menu.appendChild(query);
 				}
@@ -40,6 +61,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			default_scheduled = data.default_scheduled;
 			default_notification_on = data.default_notification_on;
 			default_notification_off = data.default_notification_off;
+
+			default_progress_unwatched = data.default_progress_unwatched;
+			default_progress_watched = data.default_progress_watched;
+
 			default_channels_all = data.default_channels_all;
 			default_channels_personalized = data.default_channels_personalized;
 			default_channels_none = data.default_channels_none;
@@ -56,6 +81,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
 
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = data.progress_unwatched === false && data.progress_watched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = '');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = data.progress_unwatched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = data.progress_watched === false ? 'none' : '');
+
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
@@ -70,6 +100,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
+
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = data.progress_unwatched === false && data.progress_watched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = '');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = data.progress_unwatched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = data.progress_watched === false ? 'none' : '');
 
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
@@ -86,6 +121,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = 'none');
+
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
@@ -97,9 +137,14 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === false ? 'none' : '');
+				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false && data.notification_on === false && data.notification_off === false ? 'none' : '');
+				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
+
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = data.progress_unwatched === false && data.progress_watched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = '');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = data.progress_unwatched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = data.progress_watched === false ? 'none' : '');
 
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
@@ -116,6 +161,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = 'none');
+
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = data.channels_all === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = data.channels_personalized === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = data.channels_none === false ? 'none' : '');
@@ -131,7 +181,12 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = data.notification_on === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === false ? 'none' : '');
+				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = data.notification_off === true ? '' : 'none');
+
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = data.progress_unwatched === false && data.progress_watched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = '');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = data.progress_unwatched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = data.progress_watched === false ? 'none' : '');
 
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
@@ -148,6 +203,11 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = data.progress_unwatched === false && data.progress_watched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = '');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = data.progress_unwatched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = data.progress_watched === false ? 'none' : '');
+
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
@@ -163,16 +223,24 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = data.progress_unwatched === false && data.progress_watched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_all').forEach(n => n.style.display = '');
+				node.querySelectorAll('option.filter-button.progress_unwatched').forEach(n => n.style.display = data.progress_unwatched === false ? 'none' : '');
+				node.querySelectorAll('option.filter-button.progress_watched').forEach(n => n.style.display = data.progress_watched === false ? 'none' : '');
+
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
 			} else {
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('option.filter-button').forEach(n => n.style.display = 'none');
 			}
 
 			if (isMenuTarget()) {
 				changeMode(getActiveMode());
+				changeModeProgress(getActiveModeProgress());
 				updateQueryRegex(node, getActiveQuery());
 				updateVisibility(node);
 			}
@@ -271,7 +339,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 							// lazy load
 						}
 					} else if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status += 'scheduled.progress_unwatched.progress_watched.';
 
 						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
 						if (video_button) {
@@ -290,6 +358,14 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 						// members only
 					}
 				}
+
+				const video_progress = node.querySelector('div#progress');
+				if (video_progress) {
+					status += 'progress_watched.';
+				} else {
+					status += 'progress_unwatched.';
+				}
+
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
 				const playlist_label = node.querySelector('span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]');
@@ -306,9 +382,17 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				if (playlist_metadata) {
 					const t = playlist_metadata.textContent;
 					if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status += 'scheduled.progress_unwatched.progress_watched.';
 					}
 				}
+
+				const playlist_progress = node.querySelector('div#progress');
+				if (playlist_progress) {
+					status += 'progress_watched.';
+				} else {
+					status += 'progress_unwatched.';
+				}
+
 				break;
 			case 'YTD-CHANNEL-RENDERER':
 				const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
@@ -528,6 +612,12 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		menu.appendChild(createButton(button.notification_on, 'notification_on', input));
 		menu.appendChild(createButton(button.notification_off, 'notification_off', input));
 
+		const progress = createSelectProgress(input);
+		progress.appendChild(createOptionProgress(button.progress_all, 'progress_all'));
+		progress.appendChild(createOptionProgress(button.progress_unwatched, 'progress_unwatched'));
+		progress.appendChild(createOptionProgress(button.progress_watched, 'progress_watched'));
+		menu.appendChild(progress);
+
 		menu.appendChild(createButton(button.channels_all, 'channels_all', input));
 		menu.appendChild(createButton(button.channels_personalized, 'channels_personalized', input));
 		menu.appendChild(createButton(button.channels_none, 'channels_none', input));
@@ -554,12 +644,33 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		span.classList.add(mode);
 		span.addEventListener('click', () => {
 			changeMode(mode);
-			updateQueryRegex(app, input.value);
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
 
 		return span;
+	}
+
+	function createSelectProgress(input) {
+		const select = document.createElement('select');
+		select.style.display = 'none';
+		select.classList.add('filter-menu');
+		select.addEventListener('change', () => {
+			changeModeProgress(select.value);
+			updateVisibility(app);
+			window.scroll({ top: 0, behavior: 'instant' });
+		});
+		return select;
+	}
+
+	function createOptionProgress(text, mode_progress) {
+		const option = document.createElement('option');
+		option.style.display = 'none';
+		option.innerHTML = text;
+		option.classList.add('filter-button');
+		option.classList.add(mode_progress);
+		option.value = mode_progress;
+		return option;
 	}
 
 	function createQueryInputArea(input) {
@@ -623,47 +734,51 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function updateTargetVisibility(node) {
-		let status_or;
+		let status_and = [];
 
 		switch (getActiveMode()) {
-			case 'all':
-				status_or = [''];
-				break;
 			case 'live':
-				status_or = ['live.'];
+				status_and.push('live.');
 				break;
 			case 'streamed':
-				status_or = ['streamed.'];
+				status_and.push('streamed.');
 				break;
 			case 'video':
-				status_or = ['video.'];
+				status_and.push('video.');
 				break;
 			case 'short':
-				status_or = ['short.'];
+				status_and.push('short.');
 				break;
 			case 'scheduled':
-				status_or = ['scheduled.'];
+				status_and.push('scheduled.');
 				break;
 			case 'notification_on':
-				status_or = ['notification_on.'];
+				status_and.push('notification_on.');
 				break;
 			case 'notification_off':
-				status_or = ['notification_off.'];
+				status_and.push('notification_off.');
 				break;
 			case 'channels_all':
-				status_or = ['channels_all.'];
+				status_and.push('channels_all.');
 				break;
 			case 'channels_personalized':
-				status_or = ['channels_personalized.'];
+				status_and.push('channels_personalized.');
 				break;
 			case 'channels_none':
-				status_or = ['channels_none.'];
+				status_and.push('channels_none.');
 				break;
-			default:
-				status_or = [''];
 		}
 
-		if (includesStatus(node, status_or) && matchTextContent(node)) {
+		switch (getActiveModeProgress()) {
+			case 'progress_unwatched':
+				status_and.push('progress_unwatched.');
+				break;
+			case 'progress_watched':
+				status_and.push('progress_watched.');
+				break;
+		}
+
+		if (includesStatus(node, status_and) && matchTextContent(node)) {
 			node.classList.remove('filter-none');
 		} else {
 			node.classList.add('filter-none');
@@ -691,17 +806,17 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		updateButtonVisibility(app);
 	}
 
-	function includesStatus(node, status_or) {
-		if (status_or === '') {
+	function includesStatus(node, status_and) {
+		if (status_and === []) {
 			return true;
 		} else {
 			const node_status = classifyStatus(node);
-			for (const status of status_or) {
-				if (node_status.includes(status)) {
-					return true;
+			for (const status of status_and) {
+				if (!node_status.includes(status)) {
+					return false;
 				}
 			}
-			return false;
+			return true;
 		}
 	}
 
@@ -732,6 +847,23 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
 	}
 
+	function changeModeProgress(mode_progress) {
+		if (!mode_progress) {
+			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
+				if (default_progress_unwatched) mode_progress = 'progress_unwatched';
+				else if (default_progress_watched) mode_progress = 'progress_watched';
+				else mode_progress = 'progress_all';
+			} else {
+				mode_progress = 'progress_all';
+			}
+		}
+
+		setActiveModeProgress(mode_progress);
+
+		app.querySelectorAll('option.filter-button').forEach(n => n.selected = false);
+		app.querySelectorAll('option.filter-button.' + mode_progress).forEach(n => n.selected = true);
+	}
+
 	function searchParentNode(node, nodeName) {
 		for (let n = node; n; n = n.parentNode) {
 			if (n.nodeName === nodeName) {
@@ -744,8 +876,16 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		return active.mode.get(window.location.href);
 	}
 
+	function getActiveModeProgress() {
+		return active.mode_progress.get(window.location.href);
+	}
+
 	function setActiveMode(mode) {
 		active.mode.set(window.location.href, mode);
+	}
+
+	function setActiveModeProgress(mode_progress) {
+		active.mode_progress.set(window.location.href, mode_progress);
 	}
 
 	function getActiveQuery() {
@@ -788,11 +928,17 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		scheduled: chrome.i18n.getMessage('button_scheduled'),
 		notification_on: chrome.i18n.getMessage('button_notification_on'),
 		notification_off: chrome.i18n.getMessage('button_notification_off'),
-		clear: chrome.i18n.getMessage('button_clear'),
-		search: chrome.i18n.getMessage('button_search'),
+
+		progress_all: chrome.i18n.getMessage('button_progress_all'),
+		progress_unwatched: chrome.i18n.getMessage('button_progress_unwatched'),
+		progress_watched: chrome.i18n.getMessage('button_progress_watched'),
+
 		channels_all: chrome.i18n.getMessage('button_channels_all'),
 		channels_personalized: chrome.i18n.getMessage('button_channels_personalized'),
-		channels_none: chrome.i18n.getMessage('button_channels_none')
+		channels_none: chrome.i18n.getMessage('button_channels_none'),
+
+		clear: chrome.i18n.getMessage('button_clear'),
+		search: chrome.i18n.getMessage('button_search'),
 	};
 
 	const default_order = [
@@ -803,6 +949,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		'scheduled',
 		'notification_on',
 		'notification_off',
+
+		'progress_unwatched',
+		'progress_watched',
+
 		'channels_all',
 		'channels_personalized',
 		'channels_none'
@@ -815,12 +965,17 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	let default_scheduled;
 	let default_notification_on;
 	let default_notification_off;
+
+	let default_progress_unwatched;
+	let default_progress_watched;
+
 	let default_channels_all;
 	let default_channels_personalized;
 	let default_channels_none;
 
 	const active = {
 		mode: new Map(),
+		mode_progress: new Map(),
 		query: new Map(),
 		regex: new Map()
 	};

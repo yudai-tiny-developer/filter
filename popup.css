@@ -132,6 +132,18 @@ div#reset_container {
         border-color: rgb(123, 123, 123);
         color: rgb(3, 3, 3);
     }
+
+    div.subscriptions {
+        background-color: rgb(239, 239, 239);
+    }
+
+    div.progress {
+        background-color: rgb(229, 229, 229);
+    }
+
+    div.channels {
+        background-color: rgb(219, 219, 219);
+    }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -173,5 +185,17 @@ div#reset_container {
         background-color: rgb(85, 85, 85);
         border-color: rgb(123, 123, 123);
         color: rgb(255, 255, 255);
+    }
+
+    div.subscriptions {
+        background-color: rgb(36, 36, 36);
+    }
+
+    div.progress {
+        background-color: rgb(46, 46, 46);
+    }
+
+    div.channels {
+        background-color: rgb(56, 56, 56);
     }
 }

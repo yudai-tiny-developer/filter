@@ -6,6 +6,10 @@ const button = {
     scheduled: chrome.i18n.getMessage('button_scheduled'),
     notification_on: chrome.i18n.getMessage('button_notification_on'),
     notification_off: chrome.i18n.getMessage('button_notification_off'),
+
+    progress_unwatched: chrome.i18n.getMessage('button_progress_unwatched'),
+    progress_watched: chrome.i18n.getMessage('button_progress_watched'),
+
     channels_all: chrome.i18n.getMessage('button_channels_all'),
     channels_personalized: chrome.i18n.getMessage('button_channels_personalized'),
     channels_none: chrome.i18n.getMessage('button_channels_none')
@@ -22,6 +26,10 @@ const default_order = [
     'scheduled',
     'notification_on',
     'notification_off',
+
+    'progress_unwatched',
+    'progress_watched',
+
     'channels_all',
     'channels_personalized',
     'channels_none'
@@ -29,7 +37,10 @@ const default_order = [
 
 const mode_list = document.querySelector('div#mode_list');
 
+const groups = ['subscriptions', 'progress', 'channels'];
+
 let drag_target_row;
+let drag_target_group;
 let projection;
 let gap;
 let touch_identifier;
@@ -48,6 +59,7 @@ function createRow(label, mode, setting, deafult_value, default_tab, tab_group) 
     div.style.display = 'none';
     div.classList.add('row');
     div.classList.add(mode);
+    div.classList.add(tab_group);
     div.setAttribute('draggable', 'true');
     div.appendChild(createLabel(label));
     div.appendChild(createToggle(mode, setting, deafult_value));
@@ -99,17 +111,31 @@ function contains(node, x, y) {
     return rect.left <= x && x <= rect.right && rect.top <= y && y <= rect.bottom;
 }
 
+function identifyGroup(target_row) {
+    if (target_row.parentNode === mode_list) {
+        for (const group of groups) {
+            if (target_row.classList.contains(group)) {
+                return group;
+            }
+        }
+    }
+    return undefined;
+}
+
 function onDragStart(event) {
     const dragTarget = event.target;
-    if (!drag_target_row && dragTarget.parentNode === mode_list) {
+    const group = identifyGroup(dragTarget);
+    if (!drag_target_row && group) {
         drag_target_row = dragTarget;
         drag_target_row.classList.add('dragging');
+        drag_target_group = group;
     }
 }
 
 function onDragOver(event) {
     const over_target_row = event.target.parentNode;
-    if (drag_target_row && over_target_row && over_target_row.parentNode === mode_list && over_target_row !== drag_target_row) {
+    const group = identifyGroup(over_target_row);
+    if (drag_target_row && over_target_row && group === drag_target_group && over_target_row !== drag_target_row) {
         if (isBefore(over_target_row, drag_target_row)) {
             over_target_row.before(drag_target_row);
         } else {
@@ -222,10 +248,16 @@ chrome.storage.local.get([
     'scheduled',
     'notification_on',
     'notification_off',
+
+    'progress_unwatched',
+    'progress_watched',
+
     'channels_all',
     'channels_personalized',
     'channels_none',
+
     'order',
+
     'default_live',
     'default_streamed',
     'default_video',
@@ -233,11 +265,16 @@ chrome.storage.local.get([
     'default_scheduled',
     'default_notification_on',
     'default_notification_off',
+
+    'default_progress_unwatched',
+    'default_progress_watched',
+
     'default_channels_all',
     'default_channels_personalized',
     'default_channels_none',
 ], (data) => {
     mode_list.appendChild(createHeaderRow());
+
     mode_list.appendChild(createRow(button.live, 'live', data.live, true, data.default_live, 'subscriptions'));
     mode_list.appendChild(createRow(button.streamed, 'streamed', data.streamed, true, data.default_streamed, 'subscriptions'));
     mode_list.appendChild(createRow(button.video, 'video', data.video, true, data.default_video, 'subscriptions'));
@@ -245,6 +282,10 @@ chrome.storage.local.get([
     mode_list.appendChild(createRow(button.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled, 'subscriptions'));
     mode_list.appendChild(createRow(button.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on, 'subscriptions'));
     mode_list.appendChild(createRow(button.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off, 'subscriptions'));
+
+    mode_list.appendChild(createRow(button.progress_unwatched, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched, 'progress'));
+    mode_list.appendChild(createRow(button.progress_watched, 'progress_watched', data.progress_watched, true, data.default_progress_watched, 'progress'));
+
     mode_list.appendChild(createRow(button.channels_all, 'channels_all', data.channels_all, true, data.default_channels_all, 'channels'));
     mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
     mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
@@ -311,7 +352,7 @@ chrome.storage.local.get([
         });
     }
 
-    for (const group of ['subscriptions', 'channels']) {
+    for (const group of groups) {
         for (const input of mode_list.querySelectorAll('input.default_checkbox.' + group)) {
             input.addEventListener('change', () => {
                 if (input.checked) {
