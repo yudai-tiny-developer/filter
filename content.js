@@ -1,75 +1,49 @@
-import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('lang') + '.js')).then(lang => {
+import(chrome.runtime.getURL('common.js')).then(common =>
+	import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('lang') + '.js')).then(lang =>
+		main(common, lang)
+	)
+);
+
+function main(common, lang) {
 	function updateButtonVisibility(node) {
-		chrome.storage.local.get([
-			'live',
-			'streamed',
-			'video',
-			'short',
-			'scheduled',
-			'notification_on',
-			'notification_off',
+		chrome.storage.local.get(common.storage, (data) => {
+			for (const form of node.querySelectorAll('form.filter-menu')) {
+				const select = form.querySelector('select.filter-menu');
 
-			'progress_unwatched',
-			'progress_watched',
-
-			'channels_all',
-			'channels_personalized',
-			'channels_none',
-
-			'keyword',
-
-			'order',
-
-			'default_live',
-			'default_streamed',
-			'default_video',
-			'default_short',
-			'default_scheduled',
-			'default_notification_on',
-			'default_notification_off',
-
-			'default_progress_unwatched',
-			'default_progress_watched',
-
-			'default_channels_all',
-			'default_channels_personalized',
-			'default_channels_none',
-		], (data) => {
-			for (const menu of node.querySelectorAll('form.filter-menu')) {
-				const select = menu.querySelector('select.filter-menu');
-
-				menu.appendChild(menu.querySelector('span.filter-button.all'));
+				form.appendChild(form.querySelector('span.filter-button.all'));
 				select.appendChild(select.querySelector('option.filter-button.progress_all'));
 
-				for (const mode of order(data.order)) {
-					if (mode.startsWith('progress_')) {
+				for (const mode of common.order(data.order)) {
+					if (mode === 'keyword') {
+						// continue
+					} else if (mode.startsWith('progress_')) {
 						select.appendChild(select.querySelector('option.filter-button.' + mode));
 					} else {
-						menu.appendChild(menu.querySelector('span.filter-button.' + mode));
+						form.appendChild(form.querySelector('span.filter-button.' + mode));
 					}
 				}
 
-				menu.appendChild(select);
+				form.appendChild(select);
 
-				for (const query of menu.querySelectorAll('span.filter-query')) {
-					menu.appendChild(query);
+				for (const span of form.querySelectorAll('span.filter-query')) {
+					form.appendChild(span);
 				}
 			}
 
-			default_live = data.default_live;
-			default_streamed = data.default_streamed;
-			default_video = data.default_video;
-			default_short = data.default_short;
-			default_scheduled = data.default_scheduled;
-			default_notification_on = data.default_notification_on;
-			default_notification_off = data.default_notification_off;
+			default_tab.live = data.default_live;
+			default_tab.streamed = data.default_streamed;
+			default_tab.video = data.default_video;
+			default_tab.short = data.default_short;
+			default_tab.scheduled = data.default_scheduled;
+			default_tab.notification_on = data.default_notification_on;
+			default_tab.notification_off = data.default_notification_off;
 
-			default_progress_unwatched = data.default_progress_unwatched;
-			default_progress_watched = data.default_progress_watched;
+			default_tab.progress_unwatched = data.default_progress_unwatched;
+			default_tab.progress_watched = data.default_progress_watched;
 
-			default_channels_all = data.default_channels_all;
-			default_channels_personalized = data.default_channels_personalized;
-			default_channels_none = data.default_channels_none;
+			default_tab.channels_all = data.default_channels_all;
+			default_tab.channels_personalized = data.default_channels_personalized;
+			default_tab.channels_none = data.default_channels_none;
 
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
@@ -566,8 +540,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 						browse.insertBefore(createSpacer('browse'), sibling);
 					}
 
-					updateMenuVisibility(browse);
 					updateButtonVisibility(browse);
+					updateMenuVisibility(browse);
 				}
 			}
 
@@ -590,60 +564,59 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	}
 
 	function createMenu(position_fixed) {
-		const menu = document.createElement('form');
-		menu.classList.add('filter-menu');
+		const form = document.createElement('form');
+		form.style.display = 'none';
 
 		if (position_fixed) {
-			menu.classList.add('position-fixed');
+			form.classList.add('filter-menu', 'position-fixed');
+		} else {
+			form.classList.add('filter-menu');
 		}
 
-		const input = createQueryInput(menu);
+		form.appendChild(createButton(common.button_label.all, 'all'));
+		form.appendChild(createButton(common.button_label.live, 'live'));
+		form.appendChild(createButton(common.button_label.streamed, 'streamed'));
+		form.appendChild(createButton(common.button_label.video, 'video'));
+		form.appendChild(createButton(common.button_label.short, 'short'));
+		form.appendChild(createButton(common.button_label.scheduled, 'scheduled'));
+		form.appendChild(createButton(common.button_label.notification_on, 'notification_on'));
+		form.appendChild(createButton(common.button_label.notification_off, 'notification_off'));
 
-		menu.addEventListener('submit', (e) => {
+		const progress = createSelectProgress();
+		progress.appendChild(createOptionProgress(common.button_label.progress_all, 'progress_all'));
+		progress.appendChild(createOptionProgress(common.button_label.progress_unwatched, 'progress_unwatched'));
+		progress.appendChild(createOptionProgress(common.button_label.progress_watched, 'progress_watched'));
+		form.appendChild(progress);
+
+		form.appendChild(createButton(common.button_label.channels_all, 'channels_all'));
+		form.appendChild(createButton(common.button_label.channels_personalized, 'channels_personalized'));
+		form.appendChild(createButton(common.button_label.channels_none, 'channels_none'));
+
+		const input = createQueryInput(form);
+		form.appendChild(createQueryInputArea(input));
+		form.appendChild(createSearchButton(input));
+
+		form.addEventListener('submit', (e) => {
 			e.preventDefault();
 			updateQueryRegex(app, input.value);
 			updateVisibility(app);
 		});
 
-		menu.appendChild(createButton(button.all, 'all', input));
-		menu.appendChild(createButton(button.live, 'live', input));
-		menu.appendChild(createButton(button.streamed, 'streamed', input));
-		menu.appendChild(createButton(button.video, 'video', input));
-		menu.appendChild(createButton(button.short, 'short', input));
-		menu.appendChild(createButton(button.scheduled, 'scheduled', input));
-		menu.appendChild(createButton(button.notification_on, 'notification_on', input));
-		menu.appendChild(createButton(button.notification_off, 'notification_off', input));
-
-		const progress = createSelectProgress(input);
-		progress.appendChild(createOptionProgress(button.progress_all, 'progress_all'));
-		progress.appendChild(createOptionProgress(button.progress_unwatched, 'progress_unwatched'));
-		progress.appendChild(createOptionProgress(button.progress_watched, 'progress_watched'));
-		menu.appendChild(progress);
-
-		menu.appendChild(createButton(button.channels_all, 'channels_all', input));
-		menu.appendChild(createButton(button.channels_personalized, 'channels_personalized', input));
-		menu.appendChild(createButton(button.channels_none, 'channels_none', input));
-
-		menu.appendChild(createQueryInputArea(input));
-		menu.appendChild(createSearchButton(input));
-
-		return menu;
+		return form;
 	}
 
 	function createSpacer(id) {
-		const spacer = document.createElement('div');
-		spacer.classList.add('filter-menu');
-		spacer.classList.add('spacer');
-		spacer.id = id;
-		return spacer;
+		const div = document.createElement('div');
+		div.classList.add('filter-menu', 'spacer');
+		div.id = id;
+		return div;
 	}
 
-	function createButton(text, mode, input) {
+	function createButton(text, mode) {
 		const span = document.createElement('span');
 		span.style.display = 'none';
+		span.classList.add('filter-button', mode);
 		span.innerHTML = text;
-		span.classList.add('filter-button');
-		span.classList.add(mode);
 		span.addEventListener('click', () => {
 			changeMode(mode);
 			updateVisibility(app);
@@ -653,7 +626,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		return span;
 	}
 
-	function createSelectProgress(input) {
+	function createSelectProgress() {
 		const select = document.createElement('select');
 		select.style.display = 'none';
 		select.classList.add('filter-menu');
@@ -667,21 +640,19 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function createOptionProgress(text, mode_progress) {
 		const option = document.createElement('option');
-		option.style.display = 'none';
+		option.classList.add('filter-button', mode_progress);
 		option.innerHTML = text;
-		option.classList.add('filter-button');
-		option.classList.add(mode_progress);
 		option.value = mode_progress;
 		return option;
 	}
 
 	function createQueryInputArea(input) {
-		const inputArea = document.createElement('span');
-		inputArea.classList.add('filter-query');
-		inputArea.classList.add('area');
-		inputArea.appendChild(input);
-		inputArea.appendChild(createClearButton(input));
-		return inputArea;
+		const span = document.createElement('span');
+		span.style.display = 'none';
+		span.classList.add('filter-query', 'area');
+		span.appendChild(input);
+		span.appendChild(createClearButton(input));
+		return span;
 	}
 
 	function createQueryInput(menu) {
@@ -701,8 +672,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function createClearButton(input) {
 		const span = document.createElement('span');
-		span.innerHTML = button.clear;
 		span.classList.add('filter-clear');
+		span.innerHTML = common.button_label.clear;
 
 		span.addEventListener('click', () => {
 			input.value = '';
@@ -715,9 +686,9 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 	function createSearchButton(input) {
 		const span = document.createElement('span');
-		span.innerHTML = button.search;
-		span.classList.add('filter-query');
-		span.classList.add('search');
+		span.style.display = 'none';
+		span.classList.add('filter-query', 'search');
+		span.innerHTML = common.button_label.search;
 
 		span.addEventListener('click', () => {
 			updateQueryRegex(app, input.value);
@@ -787,25 +758,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 	}
 
-	function waitAttribute(node, attribute) {
-		return new Promise(resolve => {
-			const observer = new MutationObserver(mutations => {
-				for (const m of mutations) {
-					if (m.attributeName === attribute) {
-						resolve();
-						observer.disconnect();
-						return;
-					}
-				}
-			});
-			observer.observe(node, { attributes: true });
-		});
-	}
-
 	function onViewChanged() {
 		insertPlaylistSpacer();
-		updateMenuVisibility(app);
 		updateButtonVisibility(app);
+		updateMenuVisibility(app);
 	}
 
 	function includesStatus(node, status_and) {
@@ -825,18 +781,18 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	function changeMode(mode) {
 		if (!mode) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_live) mode = 'live';
-				else if (default_streamed) mode = 'streamed';
-				else if (default_video) mode = 'video';
-				else if (default_short) mode = 'short';
-				else if (default_scheduled) mode = 'scheduled';
-				else if (default_notification_on) mode = 'notification_on';
-				else if (default_notification_off) mode = 'notification_off';
+				if (default_tab.live) mode = 'live';
+				else if (default_tab.streamed) mode = 'streamed';
+				else if (default_tab.video) mode = 'video';
+				else if (default_tab.short) mode = 'short';
+				else if (default_tab.scheduled) mode = 'scheduled';
+				else if (default_tab.notification_on) mode = 'notification_on';
+				else if (default_tab.notification_off) mode = 'notification_off';
 				else mode = 'all';
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-				if (default_channels_all) mode = 'channels_all';
-				else if (default_channels_personalized) mode = 'channels_personalized';
-				else if (default_channels_none) mode = 'channels_none';
+				if (default_tab.channels_all) mode = 'channels_all';
+				else if (default_tab.channels_personalized) mode = 'channels_personalized';
+				else if (default_tab.channels_none) mode = 'channels_none';
 				else mode = 'all';
 			} else {
 				mode = 'all';
@@ -852,8 +808,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	function changeModeProgress(mode_progress) {
 		if (!mode_progress) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_progress_unwatched) mode_progress = 'progress_unwatched';
-				else if (default_progress_watched) mode_progress = 'progress_watched';
+				if (default_tab.progress_unwatched) mode_progress = 'progress_unwatched';
+				else if (default_tab.progress_watched) mode_progress = 'progress_watched';
 				else mode_progress = 'progress_all';
 			} else {
 				mode_progress = 'progress_all';
@@ -872,6 +828,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				return n;
 			}
 		}
+		return undefined;
 	}
 
 	function getActiveMode() {
@@ -912,74 +869,28 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		return true;
 	}
 
-	function order(order) {
-		if (order) {
-			const dataOrder = order.split(',');
-			return dataOrder.filter(i => default_order.indexOf(i) !== -1).concat(default_order.filter(i => dataOrder.indexOf(i) === -1));
-		} else {
-			return default_order;
-		}
-	}
+	const default_tab = {
+		live: false,
+		streamed: false,
+		video: false,
+		short: false,
+		scheduled: false,
+		notification_on: false,
+		notification_off: false,
 
-	const button = {
-		all: chrome.i18n.getMessage('button_all'),
-		live: chrome.i18n.getMessage('button_live'),
-		streamed: chrome.i18n.getMessage('button_streamed'),
-		video: chrome.i18n.getMessage('button_video'),
-		short: chrome.i18n.getMessage('button_short'),
-		scheduled: chrome.i18n.getMessage('button_scheduled'),
-		notification_on: chrome.i18n.getMessage('button_notification_on'),
-		notification_off: chrome.i18n.getMessage('button_notification_off'),
+		progress_unwatched: false,
+		progress_watched: false,
 
-		progress_all: chrome.i18n.getMessage('button_progress_all'),
-		progress_unwatched: chrome.i18n.getMessage('button_progress_unwatched'),
-		progress_watched: chrome.i18n.getMessage('button_progress_watched'),
-
-		channels_all: chrome.i18n.getMessage('button_channels_all'),
-		channels_personalized: chrome.i18n.getMessage('button_channels_personalized'),
-		channels_none: chrome.i18n.getMessage('button_channels_none'),
-
-		clear: chrome.i18n.getMessage('button_clear'),
-		search: chrome.i18n.getMessage('button_search'),
+		channels_all: false,
+		channels_personalized: false,
+		channels_none: false,
 	};
-
-	const default_order = [
-		'live',
-		'streamed',
-		'video',
-		'short',
-		'scheduled',
-		'notification_on',
-		'notification_off',
-
-		'progress_unwatched',
-		'progress_watched',
-
-		'channels_all',
-		'channels_personalized',
-		'channels_none',
-	];
-
-	let default_live;
-	let default_streamed;
-	let default_video;
-	let default_short;
-	let default_scheduled;
-	let default_notification_on;
-	let default_notification_off;
-
-	let default_progress_unwatched;
-	let default_progress_watched;
-
-	let default_channels_all;
-	let default_channels_personalized;
-	let default_channels_none;
 
 	const active = {
 		mode: new Map(),
 		mode_progress: new Map(),
 		query: new Map(),
-		regex: new Map()
+		regex: new Map(),
 	};
 
 	const app = document.querySelector('ytd-app');
@@ -998,8 +909,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			childList: true,
 		});
 
-		app.querySelectorAll('ytd-browse').forEach(n => insertMenu(n));
-		app.querySelectorAll('ytd-section-list-renderer').forEach(n => insertMenu(n));
+		app.querySelectorAll('ytd-browse, ytd-section-list-renderer').forEach(n => insertMenu(n));
 
 		chrome.storage.onChanged.addListener((changes, namespace) => {
 			updateButtonVisibility(app);
@@ -1007,4 +917,4 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 	} else {
 		console.warn('ytd-app not found');
 	}
-}, error => { /* Not supported */ });
+}
