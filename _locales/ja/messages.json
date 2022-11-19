@@ -55,5 +55,8 @@
    },
    "button_progress_watched": {
       "message": "視聴済み"
+   },
+   "button_keyword": {
+      "message": "キーワード"
    }
 }

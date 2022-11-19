@@ -144,6 +144,10 @@ div#reset_container {
     div.channels {
         background-color: rgb(219, 219, 219);
     }
+
+    div.keyword {
+        background-color: rgb(209, 209, 209);
+    }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -197,5 +201,9 @@ div#reset_container {
 
     div.channels {
         background-color: rgb(56, 56, 56);
+    }
+
+    div.keyword {
+        background-color: rgb(66, 66, 66);
     }
 }
