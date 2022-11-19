@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Subscription Feed Filter for YouTube",
-	"version": "1.16.2",
+	"version": "1.16.3",
 	"description": "__MSG_appDesc__",
 	"default_locale": "en",
 	"icons": {
@@ -26,7 +26,8 @@
 	"web_accessible_resources": [
 		{
 			"resources": [
-				"lang/*.js"
+				"lang/*.js",
+				"common.js"
 			],
 			"matches": [
 				"*://www.youtube.com/*"
