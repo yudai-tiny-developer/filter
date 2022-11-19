@@ -67,7 +67,7 @@ function createRow(label, mode, setting, deafult_value, default_tab, tab_group) 
     div.setAttribute('draggable', 'true');
     div.appendChild(createLabel(label));
     div.appendChild(createToggle(mode, setting, deafult_value));
-    if (default_tab !== undefined) {
+    if (default_tab !== null) {
         div.appendChild(createDefaultToggle(mode, default_tab, tab_group));
     }
     return div;
@@ -298,7 +298,7 @@ chrome.storage.local.get([
     mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
     mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
 
-    mode_list.appendChild(createRow(button.keyword, 'keyword', data.keyword, true, undefined, 'keyword'));
+    mode_list.appendChild(createRow(button.keyword, 'keyword', data.keyword, true, null, 'keyword'));
 
     for (const mode of order(data.order)) {
         const row = mode_list.querySelector('div.row.' + mode);
