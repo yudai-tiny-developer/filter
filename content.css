@@ -136,7 +136,7 @@ select.filter-menu {
 	height: 32px;
 	margin: 12px 6px 12px 6px;
 	outline: none;
-	padding: 0px 12px 0px 12px;
+	text-align: center;
 	word-break: keep-all;
 }
 
