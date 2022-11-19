@@ -316,7 +316,7 @@ function main(common, lang) {
 							// lazy load
 						}
 					} else if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.progress_unwatched.progress_watched.';
+						status += 'scheduled.';
 
 						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
 						if (video_button) {
@@ -524,6 +524,22 @@ function main(common, lang) {
 				if (node.id === 'contents') {
 					updateVisibility(node);
 				}
+				break;
+
+			// progress
+			case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
+				let progress_video = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
+				if (progress_video) {
+					updateTargetVisibility(progress_video);
+					break;
+				}
+
+				progress_video = searchParentNode(node, 'YTD-VIDEO-RENDERER');
+				if (progress_video) {
+					updateTargetVisibility(progress_video);
+					break;
+				}
+
 				break;
 		}
 	}
