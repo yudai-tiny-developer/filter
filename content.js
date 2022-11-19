@@ -901,7 +901,6 @@ function main(common, lang) {
 					onViewChanged();
 				} else {
 					onNodeLoaded(m.target);
-					m.addedNodes.forEach(n => onNodeLoaded(n));
 				}
 			}
 		}).observe(document, {
