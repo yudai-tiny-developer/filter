@@ -111,7 +111,7 @@ function main(common, lang) {
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.short').forEach(n => n.style.display = data.short === false ? 'none' : '');
-				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false && data.notification_on === false && data.notification_off === false ? 'none' : '');
+				node.querySelectorAll('span.filter-button.scheduled').forEach(n => n.style.display = data.scheduled === false && data.notification_on === false && data.notification_off !== true ? 'none' : '');
 				node.querySelectorAll('span.filter-button.notification_on').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.notification_off').forEach(n => n.style.display = 'none');
 
