@@ -16,6 +16,8 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			'channels_personalized',
 			'channels_none',
 
+			'keyword',
+
 			'order',
 
 			'default_live',
@@ -70,9 +72,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 			default_channels_none = data.default_channels_none;
 
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
-
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
@@ -89,10 +89,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
-
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
@@ -109,10 +109,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
+			} else if (window.location.href.startsWith('https://www.youtube.com/feed/history')) {
+				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
@@ -129,10 +129,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
+			} else if (window.location.href.startsWith('https://www.youtube.com/playlist')) {
+				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
@@ -149,10 +149,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
-			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
-				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
+			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
+				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = 'none');
@@ -169,12 +169,12 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = data.channels_all === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = data.channels_personalized === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = data.channels_none === false ? 'none' : '');
+
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/channel/')
 				|| window.location.href.startsWith('https://www.youtube.com/c/')
 				|| window.location.href.startsWith('https://www.youtube.com/@')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
-
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
@@ -191,10 +191,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/explore')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
-
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
@@ -211,10 +211,10 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/trending')) {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
-
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.video').forEach(n => n.style.display = data.video === false ? 'none' : '');
@@ -231,11 +231,14 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				node.querySelectorAll('span.filter-button.channels_all').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_personalized').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button.channels_none').forEach(n => n.style.display = 'none');
+
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
 			} else {
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
 				node.querySelectorAll('option.filter-button').forEach(n => n.style.display = 'none');
+				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
+
 			}
 
 			if (isMenuTarget()) {
@@ -568,8 +571,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 				}
 			}
 
-			browse.style.alignItems = 'center';
-			browse.style.paddingTop = '0px';
+			browse.classList.add('filter-browse');
 		}
 	}
 
@@ -779,9 +781,9 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 		}
 
 		if (includesStatus(node, status_and) && matchTextContent(node)) {
-			node.classList.remove('filter-none');
+			node.style.display = '';
 		} else {
-			node.classList.add('filter-none');
+			node.style.display = 'none';
 		}
 	}
 
@@ -955,7 +957,7 @@ import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('la
 
 		'channels_all',
 		'channels_personalized',
-		'channels_none'
+		'channels_none',
 	];
 
 	let default_live;

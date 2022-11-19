@@ -12,7 +12,9 @@ const button = {
 
     channels_all: chrome.i18n.getMessage('button_channels_all'),
     channels_personalized: chrome.i18n.getMessage('button_channels_personalized'),
-    channels_none: chrome.i18n.getMessage('button_channels_none')
+    channels_none: chrome.i18n.getMessage('button_channels_none'),
+
+    keyword: chrome.i18n.getMessage('button_keyword'),
 };
 
 const label_visibility = chrome.i18n.getMessage('visibility');
@@ -32,12 +34,14 @@ const default_order = [
 
     'channels_all',
     'channels_personalized',
-    'channels_none'
+    'channels_none',
+
+    'keyword',
 ];
 
 const mode_list = document.querySelector('div#mode_list');
 
-const groups = ['subscriptions', 'progress', 'channels'];
+const groups = ['subscriptions', 'progress', 'channels', 'keyword'];
 
 let drag_target_row;
 let drag_target_group;
@@ -63,7 +67,9 @@ function createRow(label, mode, setting, deafult_value, default_tab, tab_group) 
     div.setAttribute('draggable', 'true');
     div.appendChild(createLabel(label));
     div.appendChild(createToggle(mode, setting, deafult_value));
-    div.appendChild(createDefaultToggle(mode, default_tab, tab_group));
+    if (default_tab !== undefined) {
+        div.appendChild(createDefaultToggle(mode, default_tab, tab_group));
+    }
     return div;
 }
 
@@ -256,6 +262,8 @@ chrome.storage.local.get([
     'channels_personalized',
     'channels_none',
 
+    'keyword',
+
     'order',
 
     'default_live',
@@ -289,6 +297,8 @@ chrome.storage.local.get([
     mode_list.appendChild(createRow(button.channels_all, 'channels_all', data.channels_all, true, data.default_channels_all, 'channels'));
     mode_list.appendChild(createRow(button.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
     mode_list.appendChild(createRow(button.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
+
+    mode_list.appendChild(createRow(button.keyword, 'keyword', data.keyword, true, undefined, 'keyword'));
 
     for (const mode of order(data.order)) {
         const row = mode_list.querySelector('div.row.' + mode);
