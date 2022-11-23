@@ -616,6 +616,7 @@ function main(common, lang) {
 			e.preventDefault();
 			updateQueryRegex(app, input.value);
 			updateVisibility(app);
+			window.scroll({ top: 0, behavior: 'instant' });
 		});
 
 		return form;
@@ -695,6 +696,7 @@ function main(common, lang) {
 			input.value = '';
 			updateQueryRegex(app, '');
 			updateVisibility(app);
+			window.scroll({ top: 0, behavior: 'instant' });
 		});
 
 		return span;
@@ -709,6 +711,7 @@ function main(common, lang) {
 		span.addEventListener('click', () => {
 			updateQueryRegex(app, input.value);
 			updateVisibility(app);
+			window.scroll({ top: 0, behavior: 'instant' });
 		});
 
 		return span;
