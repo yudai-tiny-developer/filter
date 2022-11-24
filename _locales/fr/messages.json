@@ -55,5 +55,8 @@
    },
    "button_progress_watched": {
       "message": "Watched"
+   },
+   "button_keyword": {
+      "message": "Keyword"
    }
 }
