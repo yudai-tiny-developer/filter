@@ -147,7 +147,8 @@ function main(common, lang) {
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
 			} else if (window.location.href.startsWith('https://www.youtube.com/channel/')
 				|| window.location.href.startsWith('https://www.youtube.com/c/')
-				|| window.location.href.startsWith('https://www.youtube.com/@')) {
+				|| window.location.href.startsWith('https://www.youtube.com/@')
+				|| window.location.href.startsWith('https://www.youtube.com/user/')) {
 				node.querySelectorAll('span.filter-button.all').forEach(n => n.style.display = '');
 				node.querySelectorAll('span.filter-button.live').forEach(n => n.style.display = data.live === false ? 'none' : '');
 				node.querySelectorAll('span.filter-button.streamed').forEach(n => n.style.display = data.streamed === false ? 'none' : '');
@@ -208,23 +209,17 @@ function main(common, lang) {
 
 				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = data.keyword === false ? 'none' : '');
 			} else {
-				node.querySelectorAll('span.filter-button').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('option.filter-button').forEach(n => n.style.display = 'none');
-				node.querySelectorAll('span.filter-query').forEach(n => n.style.display = 'none');
-
+				console.warn('Unknown target: ' + window.location.href);
 			}
 
-			if (isMenuTarget()) {
-				changeMode(getActiveMode());
-				changeModeProgress(getActiveModeProgress());
-				updateQueryRegex(node, getActiveQuery());
-				updateVisibility(node);
-			}
+			changeMode(getActiveMode());
+			changeModeProgress(getActiveModeProgress());
+			updateQueryRegex(node, getActiveQuery());
+			updateVisibility(node);
 		});
 	}
 
-	function isMenuTarget() {
+	function isFilterTarget() {
 		return window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/library')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/history')
@@ -233,6 +228,7 @@ function main(common, lang) {
 			|| window.location.href.startsWith('https://www.youtube.com/channel/')
 			|| window.location.href.startsWith('https://www.youtube.com/c/')
 			|| window.location.href.startsWith('https://www.youtube.com/@')
+			|| window.location.href.startsWith('https://www.youtube.com/user/')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/explore')
 			|| window.location.href.startsWith('https://www.youtube.com/feed/trending')
 			;
@@ -476,71 +472,73 @@ function main(common, lang) {
 		return true;
 	}
 
-	function onNodeLoaded(node) {
-		switch (node.nodeName) {
-			case 'YTD-BROWSE':
-			case 'YTD-SECTION-LIST-RENDERER':
-				insertMenu(node);
-				break;
+	function onNodeLoaded(node, isFilterTarget) {
+		if (isFilterTarget) {
+			switch (node.nodeName) {
+				case 'YTD-BROWSE':
+				case 'YTD-SECTION-LIST-RENDERER':
+					insertMenu(node);
+					break;
 
-			// subscriptions?flow=1, library, explore, trending
-			case 'YTD-GRID-VIDEO-RENDERER':
-				updateTargetVisibility(node);
-				break;
-
-			// subscriptions?flow=2, history, explore, trending
-			case 'YTD-VIDEO-RENDERER':
-				if (!node.classList.contains('ytd-backstage-post-renderer')) {
+				// subscriptions?flow=1, library, explore, trending
+				case 'YTD-GRID-VIDEO-RENDERER':
 					updateTargetVisibility(node);
-				}
-				break;
+					break;
 
-			// playlist
-			case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
-				const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-				if (video) {
-					updateTargetVisibility(video);
-				}
-				break;
+				// subscriptions?flow=2, history, explore, trending
+				case 'YTD-VIDEO-RENDERER':
+					if (!node.classList.contains('ytd-backstage-post-renderer')) {
+						updateTargetVisibility(node);
+					}
+					break;
 
-			// channels
-			case 'YTD-CHANNEL-RENDERER':
-				updateTargetVisibility(node);
-				break;
+				// playlist
+				case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
+					const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
+					if (video) {
+						updateTargetVisibility(video);
+					}
+					break;
 
-			// channel
-			case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-			case 'YTD-GRID-PLAYLIST-RENDERER':
-			case 'YTD-REEL-ITEM-RENDERER':
-			case 'YTD-RICH-ITEM-RENDERER':
-				updateTargetVisibility(node);
-				break;
+				// channels
+				case 'YTD-CHANNEL-RENDERER':
+					updateTargetVisibility(node);
+					break;
 
-			// container
-			case 'YTD-ITEM-SECTION-RENDERER':
-				updateVisibility(node);
-				break;
-			case 'DIV':
-				if (node.id === 'contents') {
+				// channel
+				case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+				case 'YTD-GRID-PLAYLIST-RENDERER':
+				case 'YTD-REEL-ITEM-RENDERER':
+				case 'YTD-RICH-ITEM-RENDERER':
+					updateTargetVisibility(node);
+					break;
+
+				// container
+				case 'YTD-ITEM-SECTION-RENDERER':
 					updateVisibility(node);
-				}
-				break;
-
-			// progress
-			case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
-				let progress_video = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
-				if (progress_video) {
-					updateTargetVisibility(progress_video);
 					break;
-				}
-
-				progress_video = searchParentNode(node, 'YTD-VIDEO-RENDERER');
-				if (progress_video) {
-					updateTargetVisibility(progress_video);
+				case 'DIV':
+					if (node.id === 'contents') {
+						updateVisibility(node);
+					}
 					break;
-				}
 
-				break;
+				// progress
+				case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
+					let progress_video = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
+					if (progress_video) {
+						updateTargetVisibility(progress_video);
+						break;
+					}
+
+					progress_video = searchParentNode(node, 'YTD-VIDEO-RENDERER');
+					if (progress_video) {
+						updateTargetVisibility(progress_video);
+						break;
+					}
+
+					break;
+			}
 		}
 	}
 
@@ -717,8 +715,8 @@ function main(common, lang) {
 		return span;
 	}
 
-	function updateMenuVisibility(node) {
-		if (isMenuTarget()) {
+	function updateMenuVisibility(node, isFilterTarget = true) {
+		if (isFilterTarget) {
 			node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = '');
 		} else {
 			node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = 'none');
@@ -777,10 +775,12 @@ function main(common, lang) {
 		}
 	}
 
-	function onViewChanged() {
-		insertPlaylistSpacer();
-		updateButtonVisibility(app);
-		updateMenuVisibility(app);
+	function onViewChanged(isFilterTarget) {
+		if (isFilterTarget) {
+			insertPlaylistSpacer();
+			updateButtonVisibility(app);
+		}
+		updateMenuVisibility(app, isFilterTarget);
 	}
 
 	function includesStatus(node, status_and) {
@@ -915,11 +915,12 @@ function main(common, lang) {
 	const app = document.querySelector('ytd-app');
 	if (app) {
 		new MutationObserver((mutations, observer) => {
+			const f = isFilterTarget();
 			for (const m of mutations) {
 				if (m.target.nodeName === 'TITLE') {
-					onViewChanged();
+					onViewChanged(f);
 				} else {
-					onNodeLoaded(m.target);
+					onNodeLoaded(m.target, f);
 				}
 			}
 		}).observe(document, {
