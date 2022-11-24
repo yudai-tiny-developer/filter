@@ -931,7 +931,9 @@ function main(common, lang) {
 		app.querySelectorAll('ytd-browse, ytd-section-list-renderer').forEach(n => insertMenu(n));
 
 		chrome.storage.onChanged.addListener((changes, namespace) => {
-			updateButtonVisibility(app);
+			if (isFilterTarget()) {
+				updateButtonVisibility(app);
+			}
 		});
 	} else {
 		console.warn('ytd-app not found');
