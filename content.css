@@ -144,3 +144,27 @@ select.filter-menu {
 	align-items: center !important;
 	padding-top: 0px !important;
 }
+
+@media screen and (min-width: 800px) {
+	span.filter-button-subscriptions {
+		display: inline-flex;
+	}
+
+	select.filter-menu-subscriptions {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 800px) {
+	span.filter-button-subscriptions {
+		display: none;
+	}
+
+	select.filter-menu-subscriptions {
+		display: block;
+	}
+}
+
+span.filter-button-channels {
+	display: inline-flex;
+}
