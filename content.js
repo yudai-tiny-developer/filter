@@ -946,11 +946,11 @@ function main(common, lang) {
 
 		setActiveMode(mode);
 
-		app.querySelectorAll('span.filter-button').forEach(n => n.classList.remove('selected'));
-		app.querySelectorAll('span.filter-button.' + mode).forEach(n => n.classList.add('selected'));
+		app.querySelectorAll('span.filter-button-subscriptions').forEach(n => n.classList.remove('selected'));
+		app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
 
-		app.querySelectorAll('option.filter-button').forEach(n => n.selected = false);
-		app.querySelectorAll('option.filter-button.' + mode).forEach(n => n.selected = true);
+		app.querySelectorAll('option.filter-button-subscriptions').forEach(n => n.selected = false);
+		app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.selected = true);
 	}
 
 	function changeModeProgress(mode_progress) {
