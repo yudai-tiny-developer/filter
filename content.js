@@ -946,11 +946,14 @@ function main(common, lang) {
 
 		setActiveMode(mode);
 
-		app.querySelectorAll('span.filter-button-subscriptions').forEach(n => n.classList.remove('selected'));
-		app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-
-		app.querySelectorAll('option.filter-button-subscriptions').forEach(n => n.selected = false);
-		app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.selected = true);
+		app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
+		app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => n.selected = false);
+		if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
+			app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+		} else {
+			app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+			app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.selected = true);
+		}
 	}
 
 	function changeModeProgress(mode_progress) {
