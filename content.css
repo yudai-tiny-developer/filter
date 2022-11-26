@@ -145,7 +145,7 @@ select.filter-menu {
 	padding-top: 0px !important;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 1024px) {
 	span.filter-button-subscriptions {
 		display: inline-flex;
 	}
@@ -155,7 +155,7 @@ select.filter-menu {
 	}
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1024px) {
 	span.filter-button-subscriptions {
 		display: none;
 	}
