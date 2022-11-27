@@ -412,7 +412,7 @@ function main(common, lang) {
 					} else if (lang.isVideo_status_label(t)) {
 						status += 'video.';
 					} else {
-						console.warn('Unknown label: ' + t);
+						// scheduled
 					}
 				}
 
