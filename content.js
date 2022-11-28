@@ -392,7 +392,7 @@ function main(common, lang) {
 						// members only
 					}
 				} else {
-					console.warn('div#metadata-line not found');
+					// playlist
 				}
 
 				const video_progress = node.querySelector('div#progress');
