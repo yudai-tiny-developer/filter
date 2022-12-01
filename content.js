@@ -907,6 +907,7 @@ function main(common, lang) {
 			updateButtonVisibility(app);
 		}
 		updateMenuVisibility(app, isFilterTarget);
+		updateVisibility(app);
 	}
 
 	function includesStatus(node, status_and) {
