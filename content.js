@@ -945,6 +945,9 @@ function main(common, lang) {
 		} else {
 			if (sub) {
 				modes.delete(mode);
+				if (modes.size === 0) {
+					modes.add('all');
+				}
 			} else {
 				if (mode === 'all') {
 					modes.clear();
@@ -989,6 +992,9 @@ function main(common, lang) {
 		} else {
 			if (sub) {
 				modes.delete(mode);
+				if (modes.size === 0) {
+					modes.add('progress_all');
+				}
 			} else {
 				if (mode === 'progress_all') {
 					modes.clear();
