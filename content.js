@@ -923,12 +923,12 @@ function main(common, lang) {
 				if (default_tab.scheduled) modes.add('scheduled');
 				if (default_tab.notification_on) modes.add('notification_on');
 				if (default_tab.notification_off) modes.add('notification_off');
-				if (modes.length === 0) modes.add('all');
+				if (modes.size === 0) modes.add('all');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
 				if (default_tab.channels_all) modes.add('channels_all');
 				if (default_tab.channels_personalized) modes.add('channels_personalized');
 				if (default_tab.channels_none) modes.add('channels_none');
-				if (modes.length === 0) modes.add('all');
+				if (modes.size === 0) modes.add('all');
 			} else {
 				modes.add('all');
 			}
@@ -948,7 +948,10 @@ function main(common, lang) {
 		setActiveMode(modes);
 
 		app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
-		app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => n.selected = false);
+		app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
+			n.selected = false;
+			n.classList.remove('selected');
+		});
 		if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
 			for (const mode of modes) {
 				app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
@@ -956,7 +959,10 @@ function main(common, lang) {
 		} else {
 			for (const mode of modes) {
 				app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.selected = true);
+				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
+					n.selected = true;
+					n.classList.add('selected');
+				});
 			}
 		}
 	}
@@ -968,7 +974,7 @@ function main(common, lang) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 				if (default_tab.progress_unwatched) modes.add('progress_unwatched');
 				if (default_tab.progress_watched) modes.add('progress_watched');
-				if (modes.length === 0) modes.add('progress_all');
+				if (modes.size === 0) modes.add('progress_all');
 			} else {
 				modes.add('progress_all');
 			}
@@ -987,9 +993,15 @@ function main(common, lang) {
 
 		setActiveModeProgress(modes);
 
+		app.querySelectorAll('option.filter-button-progress').forEach(n => {
+			n.selected = false;
+			n.classList.remove('selected');
+		});
 		for (const mode of modes) {
-			app.querySelectorAll('option.filter-button-progress').forEach(n => n.selected = false);
-			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => n.selected = true);
+			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
+				n.selected = true;
+				n.classList.add('selected');
+			});
 		}
 	}
 

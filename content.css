@@ -140,6 +140,18 @@ select.filter-menu {
 	word-break: keep-all;
 }
 
+option.filter-button {
+	background-color: var(--yt-spec-text-primary-inverse);
+	color: var(--yt-spec-text-primary);
+	fill: var(--yt-spec-text-primary);
+}
+
+option.filter-button.selected {
+	background-color: var(--yt-spec-text-primary);
+	color: var(--yt-spec-text-primary-inverse);
+	fill: var(--yt-spec-text-primary-inverse);
+}
+
 .filter-browse {
 	align-items: center !important;
 	padding-top: 0px !important;
