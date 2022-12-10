@@ -690,6 +690,7 @@ function main(common, lang) {
 		menu.appendChild(createButton(common.button_label.notification_off, 'notification_off'));
 
 		const select = createSelect();
+		select.appendChild(createOption(common.button_label.placeholder));
 		select.appendChild(createOption(common.button_label.all, 'all'));
 		select.appendChild(createOption(common.button_label.live, 'live'));
 		select.appendChild(createOption(common.button_label.streamed, 'streamed'));
@@ -701,6 +702,7 @@ function main(common, lang) {
 		menu.appendChild(select);
 
 		const progress = createSelectProgress();
+		progress.appendChild(createOptionProgress(common.button_label.progress_placeholder));
 		progress.appendChild(createOptionProgress(common.button_label.progress_all, 'progress_all'));
 		progress.appendChild(createOptionProgress(common.button_label.progress_unwatched, 'progress_unwatched'));
 		progress.appendChild(createOptionProgress(common.button_label.progress_watched, 'progress_watched'));
@@ -742,7 +744,6 @@ function main(common, lang) {
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
@@ -756,7 +757,6 @@ function main(common, lang) {
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
@@ -765,7 +765,8 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-subscriptions');
 		select.addEventListener('change', () => {
-			changeMode(select.value, multiselection, false);
+			changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value));
+			select.selectedIndex = 0;
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -774,9 +775,15 @@ function main(common, lang) {
 
 	function createOption(text, mode) {
 		const option = document.createElement('option');
-		option.classList.add('filter-button', 'filter-button-subscriptions', mode);
+		option.classList.add('filter-button', 'filter-button-subscriptions');
 		option.innerHTML = text;
-		option.value = mode;
+		if (mode) {
+			option.classList.add(mode);
+			option.value = mode;
+		} else {
+			option.classList.add('placeholder');
+			option.disabled = true;
+		}
 		return option;
 	}
 
@@ -785,18 +792,25 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-progress');
 		select.addEventListener('change', () => {
-			changeModeProgress(select.value, multiselection, false);
+			changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value));
+			select.selectedIndex = 0;
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
 		return select;
 	}
 
-	function createOptionProgress(text, mode_progress) {
+	function createOptionProgress(text, mode) {
 		const option = document.createElement('option');
-		option.classList.add('filter-button', 'filter-button-progress', mode_progress);
+		option.classList.add('filter-button', 'filter-button-progress');
 		option.innerHTML = text;
-		option.value = mode_progress;
+		if (mode) {
+			option.classList.add(mode);
+			option.value = mode;
+		} else {
+			option.classList.add('placeholder');
+			option.disabled = true;
+		}
 		return option;
 	}
 
@@ -815,12 +829,10 @@ function main(common, lang) {
 		input.setAttribute('placeholder', ' ');
 		input.id = 'filter-query';
 		input.value = getActiveQuery();
-
 		input.addEventListener('change', e => {
 			input.blur();
 			menu.requestSubmit();
 		});
-
 		return input;
 	}
 
@@ -828,14 +840,12 @@ function main(common, lang) {
 		const span = document.createElement('span');
 		span.classList.add('filter-clear');
 		span.innerHTML = common.button_label.clear;
-
 		span.addEventListener('click', () => {
 			input.value = '';
 			updateQueryRegex(app, '');
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
@@ -844,13 +854,11 @@ function main(common, lang) {
 		span.style.display = 'none';
 		span.classList.add('filter-query', 'search');
 		span.innerHTML = common.button_label.search;
-
 		span.addEventListener('click', () => {
 			updateQueryRegex(app, input.value);
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
@@ -959,11 +967,9 @@ function main(common, lang) {
 		} else {
 			for (const mode of modes) {
 				app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
-					n.selected = true;
-					n.classList.add('selected');
-				});
+				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
 			}
+			app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
 		}
 	}
 
@@ -998,11 +1004,9 @@ function main(common, lang) {
 			n.classList.remove('selected');
 		});
 		for (const mode of modes) {
-			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
-				n.selected = true;
-				n.classList.add('selected');
-			});
+			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => n.classList.add('selected'));
 		}
+		app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
 	}
 
 	function searchParentNode(node, nodeName) {

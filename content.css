@@ -152,6 +152,12 @@ option.filter-button.selected {
 	fill: var(--yt-spec-text-primary-inverse);
 }
 
+option.filter-button.placeholder {
+	background-color: var(--yt-spec-text-primary-inverse);
+	color: var(--yt-spec-text-disabled);
+	fill: var(--yt-spec-text-disabled);
+}
+
 .filter-browse {
 	align-items: center !important;
 	padding-top: 0px !important;

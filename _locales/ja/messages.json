@@ -58,5 +58,11 @@
    },
    "button_keyword": {
       "message": "キーワード"
+   },
+   "button_placeholder": {
+      "message": "フィード"
+   },
+   "button_progress_placeholder": {
+      "message": "視聴状態"
    }
 }

@@ -87,4 +87,7 @@ export const button_label = {
 
     visibility: chrome.i18n.getMessage('visibility'),
     default: chrome.i18n.getMessage('default'),
+
+    placeholder: chrome.i18n.getMessage('button_placeholder'),
+    progress_placeholder: chrome.i18n.getMessage('button_progress_placeholder'),
 };
