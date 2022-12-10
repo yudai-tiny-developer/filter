@@ -17,7 +17,7 @@ function main(common, lang) {
 				progress.appendChild(progress.querySelector('option.filter-button-progress.progress_all'));
 
 				for (const mode of common.order(data.order)) {
-					if (mode === 'keyword') {
+					if (mode === 'keyword' || mode === 'multiselection') {
 						// continue
 					} else if (mode.startsWith('progress_')) {
 						progress.appendChild(progress.querySelector('option.filter-button-progress.' + mode));
@@ -68,6 +68,8 @@ function main(common, lang) {
 			default_tab.channels_all = data.default_channels_all;
 			default_tab.channels_personalized = data.default_channels_personalized;
 			default_tab.channels_none = data.default_channels_none;
+
+			multiselection = data.multiselection;
 
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 				node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -262,8 +264,8 @@ function main(common, lang) {
 				console.warn('Unknown target: ' + window.location.href);
 			}
 
-			changeMode(getActiveMode());
-			changeModeProgress(getActiveModeProgress());
+			changeMode(getActiveMode().values().next().value, multiselection, false);
+			changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false);
 			updateQueryRegex(node, getActiveQuery());
 			updateVisibility(node);
 		});
@@ -303,7 +305,7 @@ function main(common, lang) {
 	function updateQueryRegex(node, query) {
 		active.query.set(window.location.href, query);
 
-		let rs = [];
+		const rs = [];
 		const qs = query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&').match(/[^\s"]+|"([^"]*)"/g);
 		if (qs) {
 			for (const q of qs) {
@@ -338,7 +340,7 @@ function main(common, lang) {
 	}
 
 	function classifyStatus(node) {
-		let status = '';
+		const status = new Set();
 
 		switch (node.nodeName) {
 			case 'YTD-GRID-VIDEO-RENDERER':
@@ -348,18 +350,18 @@ function main(common, lang) {
 				if (video_metadata) {
 					const t = video_metadata.textContent;
 					if (lang.isLive_metadata(t) || t === '') {
-						status += 'live.';
+						status.add('live');
 					} else if (lang.isStreamed_metadata(t)) {
-						status += 'streamed.';
+						status.add('streamed');
 					} else if (lang.isVideo_metadata(t)) {
 						const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
 						if (thumbnail_overlay) {
 							const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
 							if (overlay_style) {
 								if (overlay_style === 'DEFAULT') {
-									status += 'video.';
+									status.add('video');
 								} else if (overlay_style === 'SHORTS') {
-									status += 'short.';
+									status.add('short');
 								} else {
 									console.warn('Unknown overlay-style');
 								}
@@ -370,18 +372,18 @@ function main(common, lang) {
 
 						const slim_media = node.querySelector('ytd-rich-grid-slim-media');
 						if (slim_media) {
-							status += 'short.';
+							status.add('short');
 						}
 					} else if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status.add('scheduled');
 
 						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
 						if (video_button) {
 							const t = video_button.textContent;
 							if (lang.isNotificationOn_button(t)) {
-								status += 'notification_on.';
+								status.add('notification_on');
 							} else if (lang.isNotificationOff_button(t)) {
-								status += 'notification_off.';
+								status.add('notification_off');
 							} else {
 								console.warn('Unknown notification status: ' + t);
 							}
@@ -395,22 +397,15 @@ function main(common, lang) {
 					// playlist
 				}
 
-				const video_progress = node.querySelector('div#progress');
-				if (video_progress) {
-					status += 'progress_watched.';
-				} else {
-					status += 'progress_unwatched.';
-				}
-
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
 				const playlist_label = node.querySelector('span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]');
 				if (playlist_label) {
 					const t = playlist_label.getAttribute('aria-label');
 					if (lang.isLive_status_label(t)) {
-						status += 'live.';
+						status.add('live');
 					} else if (lang.isVideo_status_label(t)) {
-						status += 'video.';
+						status.add('video');
 					} else {
 						// scheduled
 					}
@@ -420,17 +415,10 @@ function main(common, lang) {
 				if (playlist_metadata) {
 					const t = playlist_metadata.textContent;
 					if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status.add('scheduled');
 					} else {
 						// playlist
 					}
-				}
-
-				const playlist_progress = node.querySelector('div#progress');
-				if (playlist_progress) {
-					status += 'progress_watched.';
-				} else {
-					status += 'progress_unwatched.';
 				}
 
 				break;
@@ -439,18 +427,45 @@ function main(common, lang) {
 				if (channel_notification) {
 					const t = channel_notification.getAttribute('aria-label');
 					if (lang.isChannelsAllNotifications(t)) {
-						status += 'channels_all.';
+						status.add('channels_all');
 					} else if (lang.isChannelsPersonalizedNotifications(t)) {
-						status += 'channels_personalized.';
+						status.add('channels_personalized');
 					} else if (lang.isChannelsNoNotifications(t)) {
-						status += 'channels_none.';
+						status.add('channels_none');
 					} else {
 						console.warn('Unknown channel notification: ' + t);
 					}
 				}
 				break;
 			case 'YTD-REEL-ITEM-RENDERER':
-				status += 'short.';
+				status.add('short');
+				break;
+		}
+
+		return status;
+	}
+
+	function classifyStatusProgress(node) {
+		const status = new Set();
+
+		switch (node.nodeName) {
+			case 'YTD-GRID-VIDEO-RENDERER':
+			case 'YTD-VIDEO-RENDERER':
+			case 'YTD-RICH-ITEM-RENDERER':
+				const video_progress = node.querySelector('div#progress');
+				if (video_progress) {
+					status.add('progress_watched');
+				} else {
+					status.add('progress_unwatched');
+				}
+				break;
+			case 'YTD-PLAYLIST-VIDEO-RENDERER':
+				const playlist_progress = node.querySelector('div#progress');
+				if (playlist_progress) {
+					status.add('progress_watched');
+				} else {
+					status.add('progress_unwatched');
+				}
 				break;
 		}
 
@@ -625,7 +640,7 @@ function main(common, lang) {
 					}
 
 					updateButtonVisibility(browse);
-					updateMenuVisibility(browse);
+					updateMenuVisibility(browse, true);
 				} else {
 					console.warn('ytd-two-column-browse-results-renderer not found');
 				}
@@ -677,6 +692,7 @@ function main(common, lang) {
 		menu.appendChild(createButton(common.button_label.notification_off, 'notification_off'));
 
 		const select = createSelect();
+		select.appendChild(createOption(common.button_label.placeholder));
 		select.appendChild(createOption(common.button_label.all, 'all'));
 		select.appendChild(createOption(common.button_label.live, 'live'));
 		select.appendChild(createOption(common.button_label.streamed, 'streamed'));
@@ -688,6 +704,7 @@ function main(common, lang) {
 		menu.appendChild(select);
 
 		const progress = createSelectProgress();
+		progress.appendChild(createOptionProgress(common.button_label.progress_placeholder));
 		progress.appendChild(createOptionProgress(common.button_label.progress_all, 'progress_all'));
 		progress.appendChild(createOptionProgress(common.button_label.progress_unwatched, 'progress_unwatched'));
 		progress.appendChild(createOptionProgress(common.button_label.progress_watched, 'progress_watched'));
@@ -725,11 +742,10 @@ function main(common, lang) {
 		span.classList.add('filter-button', 'filter-button-subscriptions', mode);
 		span.innerHTML = text;
 		span.addEventListener('click', () => {
-			changeMode(mode);
+			changeMode(mode, multiselection, span.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
@@ -739,11 +755,10 @@ function main(common, lang) {
 		span.classList.add('filter-button', 'filter-button-channels', mode);
 		span.innerHTML = text;
 		span.addEventListener('click', () => {
-			changeMode(mode);
+			changeMode(mode, multiselection, span.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
@@ -752,7 +767,7 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-subscriptions');
 		select.addEventListener('change', () => {
-			changeMode(select.value);
+			changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -761,9 +776,15 @@ function main(common, lang) {
 
 	function createOption(text, mode) {
 		const option = document.createElement('option');
-		option.classList.add('filter-button', 'filter-button-subscriptions', mode);
+		option.classList.add('filter-button', 'filter-button-subscriptions');
 		option.innerHTML = text;
-		option.value = mode;
+		if (mode) {
+			option.classList.add(mode);
+			option.value = mode;
+		} else {
+			option.classList.add('placeholder');
+			option.disabled = true;
+		}
 		return option;
 	}
 
@@ -772,18 +793,24 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-progress');
 		select.addEventListener('change', () => {
-			changeModeProgress(select.value);
+			changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
 		return select;
 	}
 
-	function createOptionProgress(text, mode_progress) {
+	function createOptionProgress(text, mode) {
 		const option = document.createElement('option');
-		option.classList.add('filter-button', 'filter-button-progress', mode_progress);
+		option.classList.add('filter-button', 'filter-button-progress');
 		option.innerHTML = text;
-		option.value = mode_progress;
+		if (mode) {
+			option.classList.add(mode);
+			option.value = mode;
+		} else {
+			option.classList.add('placeholder');
+			option.disabled = true;
+		}
 		return option;
 	}
 
@@ -802,12 +829,10 @@ function main(common, lang) {
 		input.setAttribute('placeholder', ' ');
 		input.id = 'filter-query';
 		input.value = getActiveQuery();
-
 		input.addEventListener('change', e => {
 			input.blur();
 			menu.requestSubmit();
 		});
-
 		return input;
 	}
 
@@ -815,14 +840,12 @@ function main(common, lang) {
 		const span = document.createElement('span');
 		span.classList.add('filter-clear');
 		span.innerHTML = common.button_label.clear;
-
 		span.addEventListener('click', () => {
 			input.value = '';
 			updateQueryRegex(app, '');
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
@@ -831,17 +854,15 @@ function main(common, lang) {
 		span.style.display = 'none';
 		span.classList.add('filter-query', 'search');
 		span.innerHTML = common.button_label.search;
-
 		span.addEventListener('click', () => {
 			updateQueryRegex(app, input.value);
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
-
 		return span;
 	}
 
-	function updateMenuVisibility(node, isFilterTarget = true) {
+	function updateMenuVisibility(node, isFilterTarget) {
 		if (isFilterTarget) {
 			node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = '');
 		} else {
@@ -850,51 +871,7 @@ function main(common, lang) {
 	}
 
 	function updateTargetVisibility(node) {
-		let status_and = [];
-
-		switch (getActiveMode()) {
-			case 'live':
-				status_and.push('live.');
-				break;
-			case 'streamed':
-				status_and.push('streamed.');
-				break;
-			case 'video':
-				status_and.push('video.');
-				break;
-			case 'short':
-				status_and.push('short.');
-				break;
-			case 'scheduled':
-				status_and.push('scheduled.');
-				break;
-			case 'notification_on':
-				status_and.push('notification_on.');
-				break;
-			case 'notification_off':
-				status_and.push('notification_off.');
-				break;
-			case 'channels_all':
-				status_and.push('channels_all.');
-				break;
-			case 'channels_personalized':
-				status_and.push('channels_personalized.');
-				break;
-			case 'channels_none':
-				status_and.push('channels_none.');
-				break;
-		}
-
-		switch (getActiveModeProgress()) {
-			case 'progress_unwatched':
-				status_and.push('progress_unwatched.');
-				break;
-			case 'progress_watched':
-				status_and.push('progress_watched.');
-				break;
-		}
-
-		if (includesStatus(node, status_and) && matchTextContent(node)) {
+		if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
 			node.style.display = '';
 		} else {
 			node.style.display = 'none';
@@ -910,68 +887,140 @@ function main(common, lang) {
 		updateVisibility(app);
 	}
 
-	function includesStatus(node, status_and) {
-		if (status_and === []) {
+	function includesStatus(node, status_mode, status_progress) {
+		return includesStatusMode(node, status_mode) && includesStatusProgress(node, status_progress);
+	}
+
+	function includesStatusMode(node, status) {
+		if (status.size === 0 || status.has('all')) {
 			return true;
 		} else {
-			const node_status = classifyStatus(node);
-			for (const status of status_and) {
-				if (!node_status.includes(status)) {
-					return false;
+			for (const s of status) {
+				const node_status = classifyStatus(node);
+				if (node_status.has(s)) {
+					return true;
 				}
 			}
-			return true;
+			return false;
 		}
 	}
 
-	function changeMode(mode) {
+	function includesStatusProgress(node, status) {
+		if (status.size === 0 || status.has('progress_all')) {
+			return true;
+		} else {
+			for (const s of status) {
+				const node_status = classifyStatusProgress(node);
+				if (node_status.has(s)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	function changeMode(mode, multi, sub) {
+		const modes = multi ? getActiveMode() : new Set();
+
 		if (!mode) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_tab.live) mode = 'live';
-				else if (default_tab.streamed) mode = 'streamed';
-				else if (default_tab.video) mode = 'video';
-				else if (default_tab.short) mode = 'short';
-				else if (default_tab.scheduled) mode = 'scheduled';
-				else if (default_tab.notification_on) mode = 'notification_on';
-				else if (default_tab.notification_off) mode = 'notification_off';
-				else mode = 'all';
+				if (default_tab.live) modes.add('live');
+				if (default_tab.streamed) modes.add('streamed');
+				if (default_tab.video) modes.add('video');
+				if (default_tab.short) modes.add('short');
+				if (default_tab.scheduled) modes.add('scheduled');
+				if (default_tab.notification_on) modes.add('notification_on');
+				if (default_tab.notification_off) modes.add('notification_off');
+				if (modes.size === 0) modes.add('all');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-				if (default_tab.channels_all) mode = 'channels_all';
-				else if (default_tab.channels_personalized) mode = 'channels_personalized';
-				else if (default_tab.channels_none) mode = 'channels_none';
-				else mode = 'all';
+				if (default_tab.channels_all) modes.add('channels_all');
+				if (default_tab.channels_personalized) modes.add('channels_personalized');
+				if (default_tab.channels_none) modes.add('channels_none');
+				if (modes.size === 0) modes.add('all');
 			} else {
-				mode = 'all';
+				modes.add('all');
+			}
+		} else {
+			if (multi && sub) {
+				modes.delete(mode);
+				if (modes.size === 0) {
+					modes.add('all');
+				}
+			} else {
+				if (mode === 'all') {
+					modes.clear();
+				} else {
+					modes.delete('all');
+				}
+				modes.add(mode);
 			}
 		}
 
-		setActiveMode(mode);
+		setActiveMode(modes);
 
 		app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
-		app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => n.selected = false);
+		app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
+			n.selected = false;
+			n.classList.remove('selected');
+		});
 		if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-			app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+			for (const mode of modes) {
+				app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+			}
 		} else {
-			app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-			app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.selected = true);
+			for (const mode of modes) {
+				app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+			}
+			if (multi) {
+				app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
+			} else {
+				app.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
+			}
 		}
 	}
 
-	function changeModeProgress(mode_progress) {
-		if (!mode_progress) {
+	function changeModeProgress(mode, multi, sub) {
+		const modes = multi ? getActiveModeProgress() : new Set();
+
+		if (!mode) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_tab.progress_unwatched) mode_progress = 'progress_unwatched';
-				else if (default_tab.progress_watched) mode_progress = 'progress_watched';
-				else mode_progress = 'progress_all';
+				if (default_tab.progress_unwatched) modes.add('progress_unwatched');
+				if (default_tab.progress_watched) modes.add('progress_watched');
+				if (modes.size === 0) modes.add('progress_all');
 			} else {
-				mode_progress = 'progress_all';
+				modes.add('progress_all');
+			}
+		} else {
+			if (multi && sub) {
+				modes.delete(mode);
+				if (modes.size === 0) {
+					modes.add('progress_all');
+				}
+			} else {
+				if (mode === 'progress_all') {
+					modes.clear();
+				} else {
+					modes.delete('progress_all');
+				}
+				modes.add(mode);
 			}
 		}
 
-		setActiveModeProgress(mode_progress);
+		setActiveModeProgress(modes);
 
-		app.querySelectorAll('option.filter-button-progress').forEach(n => n.selected = false);
-		app.querySelectorAll('option.filter-button-progress.' + mode_progress).forEach(n => n.selected = true);
+		app.querySelectorAll('option.filter-button-progress').forEach(n => {
+			n.selected = false;
+			n.classList.remove('selected');
+		});
+		for (const mode of modes) {
+			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => n.classList.add('selected'));
+		}
+		if (multi) {
+			app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
+		} else {
+			app.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
+		}
 	}
 
 	function searchParentNode(node, nodeName) {
@@ -984,11 +1033,21 @@ function main(common, lang) {
 	}
 
 	function getActiveMode() {
-		return active.mode.get(window.location.href);
+		const mode = active.mode.get(window.location.href);
+		if (mode) {
+			return mode;
+		} else {
+			return new Set();
+		}
 	}
 
 	function getActiveModeProgress() {
-		return active.mode_progress.get(window.location.href);
+		const mode = active.mode_progress.get(window.location.href);
+		if (mode) {
+			return mode;
+		} else {
+			return new Set();
+		}
 	}
 
 	function setActiveMode(mode) {
@@ -1044,6 +1103,8 @@ function main(common, lang) {
 		query: new Map(),
 		regex: new Map()
 	};
+
+	let multiselection;
 
 	const app = document.querySelector('ytd-app');
 	if (app) {

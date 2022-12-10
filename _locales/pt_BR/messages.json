@@ -58,5 +58,14 @@
    },
    "button_keyword": {
       "message": "Keyword"
+   },
+   "button_placeholder": {
+      "message": "Feed Type"
+   },
+   "button_progress_placeholder": {
+      "message": "W./Un. Status"
+   },
+   "multiselection": {
+      "message": "Multiselection"
    }
 }

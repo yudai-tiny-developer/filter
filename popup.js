@@ -18,9 +18,16 @@ function main(common) {
         element.setAttribute('draggable', 'true');
         element.appendChild(createLabel(label));
         element.appendChild(createToggle(mode, setting, deafult_value));
-        if (default_tab !== null) {
-            element.appendChild(createDefaultToggle(mode, default_tab, tab_group));
-        }
+        element.appendChild(createDefaultToggle(mode, default_tab, tab_group));
+        return element;
+    }
+
+    function createRowNoDefault(label, mode, setting, deafult_value, tab_group) {
+        const element = document.createElement('div');
+        element.classList.add('row', mode, tab_group);
+        element.setAttribute('draggable', 'true');
+        element.appendChild(createLabel(label));
+        element.appendChild(createToggle(mode, setting, deafult_value));
         return element;
     }
 
@@ -216,7 +223,9 @@ function main(common) {
         mode_list.appendChild(createRow(common.button_label.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
         mode_list.appendChild(createRow(common.button_label.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
 
-        mode_list.appendChild(createRow(common.button_label.keyword, 'keyword', data.keyword, true, null, 'keyword'));
+        mode_list.appendChild(createRowNoDefault(common.button_label.keyword, 'keyword', data.keyword, true, 'keyword'));
+
+        mode_list.appendChild(createRowNoDefault(common.button_label.multiselection, 'multiselection', data.multiselection, false, 'multiselection'));
 
         for (const mode of common.order(data.order)) {
             const row = mode_list.querySelector('div.row.' + mode);
@@ -276,22 +285,47 @@ function main(common) {
 
         for (const input of mode_list.querySelectorAll('input.visibility_checkbox')) {
             input.addEventListener('change', () => {
-                chrome.storage.local.set({ [input.id]: input.checked });
+                let ids = {};
+
+                if (!input.checked) {
+                    const mode = 'default_' + input.id;
+                    const checkbox = mode_list.querySelector('input#' + mode);
+                    if (checkbox) {
+                        checkbox.checked = false;
+                        ids[mode] = false;
+                    }
+                }
+
+                ids[input.id] = input.checked;
+                chrome.storage.local.set(ids);
             });
         }
 
         for (const group of groups) {
             for (const input of mode_list.querySelectorAll('input.default_checkbox.' + group)) {
                 input.addEventListener('change', () => {
+                    let ids = {};
+
                     if (input.checked) {
+                        const mode = input.id.substring(8);
+                        const checkbox = mode_list.querySelector('input#' + mode);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            ids[mode] = true;
+                        }
+                    }
+
+                    if (input.checked && !multiselection) {
                         mode_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
                             if (n !== input) {
                                 n.checked = false;
-                                chrome.storage.local.set({ [n.id]: false });
+                                ids[n.id] = false;
                             }
                         });
                     }
-                    chrome.storage.local.set({ [input.id]: input.checked });
+
+                    ids[input.id] = input.checked;
+                    chrome.storage.local.set(ids);
                 });
             }
         }
@@ -306,6 +340,30 @@ function main(common) {
             }
 
             chrome.storage.local.clear();
+        });
+    });
+
+    let multiselection;
+
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        chrome.storage.local.get(common.storage, (data) => {
+            multiselection = data.multiselection;
+
+            if (!multiselection) {
+                let ids = {};
+                for (const group of groups) {
+                    let first = true;
+                    mode_list.querySelectorAll('input:checked.default_checkbox.' + group).forEach(n => {
+                        if (first) {
+                            first = false;
+                        } else {
+                            n.checked = false;
+                            ids[n.id] = false;
+                        }
+                    });
+                }
+                chrome.storage.local.set(ids);
+            }
         });
     });
 }
