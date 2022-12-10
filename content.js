@@ -338,7 +338,7 @@ function main(common, lang) {
 	}
 
 	function classifyStatus(node) {
-		const status = [];
+		const status = new Set();
 
 		switch (node.nodeName) {
 			case 'YTD-GRID-VIDEO-RENDERER':
@@ -348,18 +348,18 @@ function main(common, lang) {
 				if (video_metadata) {
 					const t = video_metadata.textContent;
 					if (lang.isLive_metadata(t) || t === '') {
-						status.push('live');
+						status.add('live');
 					} else if (lang.isStreamed_metadata(t)) {
-						status.push('streamed');
+						status.add('streamed');
 					} else if (lang.isVideo_metadata(t)) {
 						const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
 						if (thumbnail_overlay) {
 							const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
 							if (overlay_style) {
 								if (overlay_style === 'DEFAULT') {
-									status.push('video');
+									status.add('video');
 								} else if (overlay_style === 'SHORTS') {
-									status.push('short');
+									status.add('short');
 								} else {
 									console.warn('Unknown overlay-style');
 								}
@@ -370,18 +370,18 @@ function main(common, lang) {
 
 						const slim_media = node.querySelector('ytd-rich-grid-slim-media');
 						if (slim_media) {
-							status.push('short');
+							status.add('short');
 						}
 					} else if (lang.isScheduled_metadata(t)) {
-						status.push('scheduled');
+						status.add('scheduled');
 
 						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
 						if (video_button) {
 							const t = video_button.textContent;
 							if (lang.isNotificationOn_button(t)) {
-								status.push('notification_on');
+								status.add('notification_on');
 							} else if (lang.isNotificationOff_button(t)) {
-								status.push('notification_off');
+								status.add('notification_off');
 							} else {
 								console.warn('Unknown notification status: ' + t);
 							}
@@ -401,9 +401,9 @@ function main(common, lang) {
 				if (playlist_label) {
 					const t = playlist_label.getAttribute('aria-label');
 					if (lang.isLive_status_label(t)) {
-						status.push('live');
+						status.add('live');
 					} else if (lang.isVideo_status_label(t)) {
-						status.push('video');
+						status.add('video');
 					} else {
 						// scheduled
 					}
@@ -413,7 +413,7 @@ function main(common, lang) {
 				if (playlist_metadata) {
 					const t = playlist_metadata.textContent;
 					if (lang.isScheduled_metadata(t)) {
-						status.push('scheduled');
+						status.add('scheduled');
 					} else {
 						// playlist
 					}
@@ -425,18 +425,18 @@ function main(common, lang) {
 				if (channel_notification) {
 					const t = channel_notification.getAttribute('aria-label');
 					if (lang.isChannelsAllNotifications(t)) {
-						status.push('channels_all');
+						status.add('channels_all');
 					} else if (lang.isChannelsPersonalizedNotifications(t)) {
-						status.push('channels_personalized');
+						status.add('channels_personalized');
 					} else if (lang.isChannelsNoNotifications(t)) {
-						status.push('channels_none');
+						status.add('channels_none');
 					} else {
 						console.warn('Unknown channel notification: ' + t);
 					}
 				}
 				break;
 			case 'YTD-REEL-ITEM-RENDERER':
-				status.push('short');
+				status.add('short');
 				break;
 		}
 
@@ -444,7 +444,7 @@ function main(common, lang) {
 	}
 
 	function classifyStatusProgress(node) {
-		const status = [];
+		const status = new Set();
 
 		switch (node.nodeName) {
 			case 'YTD-GRID-VIDEO-RENDERER':
@@ -452,17 +452,17 @@ function main(common, lang) {
 			case 'YTD-RICH-ITEM-RENDERER':
 				const video_progress = node.querySelector('div#progress');
 				if (video_progress) {
-					status.push('progress_watched');
+					status.add('progress_watched');
 				} else {
-					status.push('progress_unwatched');
+					status.add('progress_unwatched');
 				}
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
 				const playlist_progress = node.querySelector('div#progress');
 				if (playlist_progress) {
-					status.push('progress_watched');
+					status.add('progress_watched');
 				} else {
-					status.push('progress_unwatched');
+					status.add('progress_unwatched');
 				}
 				break;
 		}
@@ -738,7 +738,7 @@ function main(common, lang) {
 		span.classList.add('filter-button', 'filter-button-subscriptions', mode);
 		span.innerHTML = text;
 		span.addEventListener('click', () => {
-			changeMode(mode);
+			changeMode(mode, multiselection, span.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -752,7 +752,7 @@ function main(common, lang) {
 		span.classList.add('filter-button', 'filter-button-channels', mode);
 		span.innerHTML = text;
 		span.addEventListener('click', () => {
-			changeMode(mode);
+			changeMode(mode, multiselection, span.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -765,7 +765,7 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-subscriptions');
 		select.addEventListener('change', () => {
-			changeMode(select.value);
+			changeMode(select.value, multiselection, span.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -785,7 +785,7 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-progress');
 		select.addEventListener('change', () => {
-			changeModeProgress(select.value);
+			changeModeProgress(select.value, multiselection, span.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -883,13 +883,13 @@ function main(common, lang) {
 		return includesStatusMode(node, status_mode) && includesStatusProgress(node, status_progress);
 	}
 
-	function includesStatusMode(node, status_mode) {
-		if (!status_mode || status_mode.includes('all')) {
+	function includesStatusMode(node, status) {
+		if (status.size === 0 || status.has('all')) {
 			return true;
 		} else {
-			for (const status of status_mode) {
+			for (const s of status) {
 				const node_status = classifyStatus(node);
-				if (node_status.includes(status)) {
+				if (node_status.has(s)) {
 					return true;
 				}
 			}
@@ -897,13 +897,13 @@ function main(common, lang) {
 		}
 	}
 
-	function includesStatusProgress(node, status_progress) {
-		if (!status_progress || status_progress.includes('progress_all')) {
+	function includesStatusProgress(node, status) {
+		if (status.size === 0 || status.has('progress_all')) {
 			return true;
 		} else {
-			for (const status of status_progress) {
-				const node_status_progress = classifyStatusProgress(node);
-				if (node_status_progress.includes(status)) {
+			for (const s of status) {
+				const node_status = classifyStatusProgress(node);
+				if (node_status.has(s)) {
 					return true;
 				}
 			}
@@ -911,29 +911,33 @@ function main(common, lang) {
 		}
 	}
 
-	function changeMode(mode, append = false) {
-		const modes = append ? getActiveMode() : [];
+	function changeMode(mode, multi, sub = false) {
+		const modes = multi ? getActiveMode() : new Set();
 
 		if (!mode) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_tab.live) modes.push('live');
-				if (default_tab.streamed) modes.push('streamed');
-				if (default_tab.video) modes.push('video');
-				if (default_tab.short) modes.push('short');
-				if (default_tab.scheduled) modes.push('scheduled');
-				if (default_tab.notification_on) modes.push('notification_on');
-				if (default_tab.notification_off) modes.push('notification_off');
-				if (modes.length === 0) modes.push('all');
+				if (default_tab.live) modes.add('live');
+				if (default_tab.streamed) modes.add('streamed');
+				if (default_tab.video) modes.add('video');
+				if (default_tab.short) modes.add('short');
+				if (default_tab.scheduled) modes.add('scheduled');
+				if (default_tab.notification_on) modes.add('notification_on');
+				if (default_tab.notification_off) modes.add('notification_off');
+				if (modes.length === 0) modes.add('all');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-				if (default_tab.channels_all) modes.push('channels_all');
-				if (default_tab.channels_personalized) modes.push('channels_personalized');
-				if (default_tab.channels_none) modes.push('channels_none');
-				if (modes.length === 0) modes.push('all');
+				if (default_tab.channels_all) modes.add('channels_all');
+				if (default_tab.channels_personalized) modes.add('channels_personalized');
+				if (default_tab.channels_none) modes.add('channels_none');
+				if (modes.length === 0) modes.add('all');
 			} else {
-				modes.push('all');
+				modes.add('all');
 			}
 		} else {
-			modes.push(mode);
+			if (sub) {
+				modes.delete(mode);
+			} else {
+				modes.add(mode);
+			}
 		}
 
 		setActiveMode(modes);
@@ -952,26 +956,30 @@ function main(common, lang) {
 		}
 	}
 
-	function changeModeProgress(mode_progress, append = false) {
-		const modes_progress = append ? getActiveModeProgress() : [];
+	function changeModeProgress(mode, multi, sub = false) {
+		const modes = multi ? getActiveModeProgress() : new Set();
 
-		if (!mode_progress) {
+		if (!mode) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_tab.progress_unwatched) modes_progress.push('progress_unwatched');
-				if (default_tab.progress_watched) modes_progress.push('progress_watched');
-				if (modes_progress.length === 0) modes_progress.push('progress_all');
+				if (default_tab.progress_unwatched) modes.add('progress_unwatched');
+				if (default_tab.progress_watched) modes.add('progress_watched');
+				if (modes.length === 0) modes.add('progress_all');
 			} else {
-				modes_progress.push('progress_all');
+				modes.add('progress_all');
 			}
 		} else {
-			modes_progress.push(mode_progress);
+			if (sub) {
+				modes.delete(mode);
+			} else {
+				modes.add(mode);
+			}
 		}
 
-		setActiveModeProgress(modes_progress);
+		setActiveModeProgress(modes);
 
-		for (const mode_progress of modes_progress) {
+		for (const mode of modes) {
 			app.querySelectorAll('option.filter-button-progress').forEach(n => n.selected = false);
-			app.querySelectorAll('option.filter-button-progress.' + mode_progress).forEach(n => n.selected = true);
+			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => n.selected = true);
 		}
 	}
 
@@ -989,7 +997,7 @@ function main(common, lang) {
 		if (mode) {
 			return mode;
 		} else {
-			return [];
+			return new Set();
 		}
 	}
 
@@ -998,7 +1006,7 @@ function main(common, lang) {
 		if (mode) {
 			return mode;
 		} else {
-			return [];
+			return new Set();
 		}
 	}
 
@@ -1055,6 +1063,8 @@ function main(common, lang) {
 		query: new Map(),
 		regex: new Map()
 	};
+
+	const multiselection = true;
 
 	const app = document.querySelector('ytd-app');
 	if (app) {
