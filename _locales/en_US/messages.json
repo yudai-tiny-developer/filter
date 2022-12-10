@@ -64,5 +64,8 @@
    },
    "button_progress_placeholder": {
       "message": "W./Un. Status"
+   },
+   "multiselection": {
+      "message": "Multiselection"
    }
 }

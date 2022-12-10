@@ -18,9 +18,16 @@ function main(common) {
         element.setAttribute('draggable', 'true');
         element.appendChild(createLabel(label));
         element.appendChild(createToggle(mode, setting, deafult_value));
-        if (default_tab !== null) {
-            element.appendChild(createDefaultToggle(mode, default_tab, tab_group));
-        }
+        element.appendChild(createDefaultToggle(mode, default_tab, tab_group));
+        return element;
+    }
+
+    function createRowNoDefault(label, mode, setting, deafult_value, tab_group) {
+        const element = document.createElement('div');
+        element.classList.add('row', mode, tab_group);
+        element.setAttribute('draggable', 'true');
+        element.appendChild(createLabel(label));
+        element.appendChild(createToggle(mode, setting, deafult_value));
         return element;
     }
 
@@ -216,7 +223,9 @@ function main(common) {
         mode_list.appendChild(createRow(common.button_label.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
         mode_list.appendChild(createRow(common.button_label.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
 
-        mode_list.appendChild(createRow(common.button_label.keyword, 'keyword', data.keyword, true, null, 'keyword'));
+        mode_list.appendChild(createRowNoDefault(common.button_label.keyword, 'keyword', data.keyword, true, 'keyword'));
+
+        mode_list.appendChild(createRowNoDefault(common.button_label.multiselection, 'multiselection', data.multiselection, false, 'multiselection'));
 
         for (const mode of common.order(data.order)) {
             const row = mode_list.querySelector('div.row.' + mode);

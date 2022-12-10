@@ -17,7 +17,7 @@ function main(common, lang) {
 				progress.appendChild(progress.querySelector('option.filter-button-progress.progress_all'));
 
 				for (const mode of common.order(data.order)) {
-					if (mode === 'keyword') {
+					if (mode === 'keyword' || mode === 'multiselection') {
 						// continue
 					} else if (mode.startsWith('progress_')) {
 						progress.appendChild(progress.querySelector('option.filter-button-progress.' + mode));
@@ -68,6 +68,8 @@ function main(common, lang) {
 			default_tab.channels_all = data.default_channels_all;
 			default_tab.channels_personalized = data.default_channels_personalized;
 			default_tab.channels_none = data.default_channels_none;
+
+			multiselection = data.multiselection;
 
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
 				node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -1090,7 +1092,7 @@ function main(common, lang) {
 		regex: new Map()
 	};
 
-	const multiselection = true;
+	let multiselection;
 
 	const app = document.querySelector('ytd-app');
 	if (app) {

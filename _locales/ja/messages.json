@@ -64,5 +64,8 @@
    },
    "button_progress_placeholder": {
       "message": "視聴状態"
+   },
+   "multiselection": {
+      "message": "複数選択"
    }
 }
