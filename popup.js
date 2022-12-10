@@ -292,7 +292,7 @@ function main(common) {
         for (const group of groups) {
             for (const input of mode_list.querySelectorAll('input.default_checkbox.' + group)) {
                 input.addEventListener('change', () => {
-                    if (input.checked) {
+                    if (input.checked && !multiselection) {
                         mode_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
                             if (n !== input) {
                                 n.checked = false;
@@ -315,6 +315,14 @@ function main(common) {
             }
 
             chrome.storage.local.clear();
+        });
+    });
+
+    let multiselection;
+
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        chrome.storage.local.get(common.storage, (data) => {
+            multiselection = data.multiselection;
         });
     });
 }

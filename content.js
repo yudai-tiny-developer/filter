@@ -264,8 +264,8 @@ function main(common, lang) {
 				console.warn('Unknown target: ' + window.location.href);
 			}
 
-			changeMode(null, true, false);
-			changeModeProgress(null, true, false);
+			changeMode(getActiveMode().values().next().value, true, false);
+			changeModeProgress(getActiveModeProgress().values().next().value, true, false);
 			updateQueryRegex(node, getActiveQuery());
 			updateVisibility(node);
 		});
