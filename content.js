@@ -262,8 +262,8 @@ function main(common, lang) {
 				console.warn('Unknown target: ' + window.location.href);
 			}
 
-			changeMode(getActiveMode());
-			changeModeProgress(getActiveModeProgress());
+			changeMode(null, true);
+			changeModeProgress(null, true);
 			updateQueryRegex(node, getActiveQuery());
 			updateVisibility(node);
 		});
@@ -303,7 +303,7 @@ function main(common, lang) {
 	function updateQueryRegex(node, query) {
 		active.query.set(window.location.href, query);
 
-		let rs = [];
+		const rs = [];
 		const qs = query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&').match(/[^\s"]+|"([^"]*)"/g);
 		if (qs) {
 			for (const q of qs) {
@@ -338,7 +338,7 @@ function main(common, lang) {
 	}
 
 	function classifyStatus(node) {
-		let status = '';
+		const status = [];
 
 		switch (node.nodeName) {
 			case 'YTD-GRID-VIDEO-RENDERER':
@@ -348,18 +348,18 @@ function main(common, lang) {
 				if (video_metadata) {
 					const t = video_metadata.textContent;
 					if (lang.isLive_metadata(t) || t === '') {
-						status += 'live.';
+						status.push('live');
 					} else if (lang.isStreamed_metadata(t)) {
-						status += 'streamed.';
+						status.push('streamed');
 					} else if (lang.isVideo_metadata(t)) {
 						const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
 						if (thumbnail_overlay) {
 							const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
 							if (overlay_style) {
 								if (overlay_style === 'DEFAULT') {
-									status += 'video.';
+									status.push('video');
 								} else if (overlay_style === 'SHORTS') {
-									status += 'short.';
+									status.push('short');
 								} else {
 									console.warn('Unknown overlay-style');
 								}
@@ -370,18 +370,18 @@ function main(common, lang) {
 
 						const slim_media = node.querySelector('ytd-rich-grid-slim-media');
 						if (slim_media) {
-							status += 'short.';
+							status.push('short');
 						}
 					} else if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status.push('scheduled');
 
 						const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
 						if (video_button) {
 							const t = video_button.textContent;
 							if (lang.isNotificationOn_button(t)) {
-								status += 'notification_on.';
+								status.push('notification_on');
 							} else if (lang.isNotificationOff_button(t)) {
-								status += 'notification_off.';
+								status.push('notification_off');
 							} else {
 								console.warn('Unknown notification status: ' + t);
 							}
@@ -395,22 +395,15 @@ function main(common, lang) {
 					// playlist
 				}
 
-				const video_progress = node.querySelector('div#progress');
-				if (video_progress) {
-					status += 'progress_watched.';
-				} else {
-					status += 'progress_unwatched.';
-				}
-
 				break;
 			case 'YTD-PLAYLIST-VIDEO-RENDERER':
 				const playlist_label = node.querySelector('span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]');
 				if (playlist_label) {
 					const t = playlist_label.getAttribute('aria-label');
 					if (lang.isLive_status_label(t)) {
-						status += 'live.';
+						status.push('live');
 					} else if (lang.isVideo_status_label(t)) {
-						status += 'video.';
+						status.push('video');
 					} else {
 						// scheduled
 					}
@@ -420,17 +413,10 @@ function main(common, lang) {
 				if (playlist_metadata) {
 					const t = playlist_metadata.textContent;
 					if (lang.isScheduled_metadata(t)) {
-						status += 'scheduled.';
+						status.push('scheduled');
 					} else {
 						// playlist
 					}
-				}
-
-				const playlist_progress = node.querySelector('div#progress');
-				if (playlist_progress) {
-					status += 'progress_watched.';
-				} else {
-					status += 'progress_unwatched.';
 				}
 
 				break;
@@ -439,18 +425,45 @@ function main(common, lang) {
 				if (channel_notification) {
 					const t = channel_notification.getAttribute('aria-label');
 					if (lang.isChannelsAllNotifications(t)) {
-						status += 'channels_all.';
+						status.push('channels_all');
 					} else if (lang.isChannelsPersonalizedNotifications(t)) {
-						status += 'channels_personalized.';
+						status.push('channels_personalized');
 					} else if (lang.isChannelsNoNotifications(t)) {
-						status += 'channels_none.';
+						status.push('channels_none');
 					} else {
 						console.warn('Unknown channel notification: ' + t);
 					}
 				}
 				break;
 			case 'YTD-REEL-ITEM-RENDERER':
-				status += 'short.';
+				status.push('short');
+				break;
+		}
+
+		return status;
+	}
+
+	function classifyStatusProgress(node) {
+		const status = [];
+
+		switch (node.nodeName) {
+			case 'YTD-GRID-VIDEO-RENDERER':
+			case 'YTD-VIDEO-RENDERER':
+			case 'YTD-RICH-ITEM-RENDERER':
+				const video_progress = node.querySelector('div#progress');
+				if (video_progress) {
+					status.push('progress_watched');
+				} else {
+					status.push('progress_unwatched');
+				}
+				break;
+			case 'YTD-PLAYLIST-VIDEO-RENDERER':
+				const playlist_progress = node.querySelector('div#progress');
+				if (playlist_progress) {
+					status.push('progress_watched');
+				} else {
+					status.push('progress_unwatched');
+				}
 				break;
 		}
 
@@ -850,51 +863,7 @@ function main(common, lang) {
 	}
 
 	function updateTargetVisibility(node) {
-		let status_and = [];
-
-		switch (getActiveMode()) {
-			case 'live':
-				status_and.push('live.');
-				break;
-			case 'streamed':
-				status_and.push('streamed.');
-				break;
-			case 'video':
-				status_and.push('video.');
-				break;
-			case 'short':
-				status_and.push('short.');
-				break;
-			case 'scheduled':
-				status_and.push('scheduled.');
-				break;
-			case 'notification_on':
-				status_and.push('notification_on.');
-				break;
-			case 'notification_off':
-				status_and.push('notification_off.');
-				break;
-			case 'channels_all':
-				status_and.push('channels_all.');
-				break;
-			case 'channels_personalized':
-				status_and.push('channels_personalized.');
-				break;
-			case 'channels_none':
-				status_and.push('channels_none.');
-				break;
-		}
-
-		switch (getActiveModeProgress()) {
-			case 'progress_unwatched':
-				status_and.push('progress_unwatched.');
-				break;
-			case 'progress_watched':
-				status_and.push('progress_watched.');
-				break;
-		}
-
-		if (includesStatus(node, status_and) && matchTextContent(node)) {
+		if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
 			node.style.display = '';
 		} else {
 			node.style.display = 'none';
@@ -910,68 +879,100 @@ function main(common, lang) {
 		updateVisibility(app);
 	}
 
-	function includesStatus(node, status_and) {
-		if (status_and === []) {
+	function includesStatus(node, status_mode, status_progress) {
+		return includesStatusMode(node, status_mode) && includesStatusProgress(node, status_progress);
+	}
+
+	function includesStatusMode(node, status_mode) {
+		if (!status_mode || status_mode.includes('all')) {
 			return true;
 		} else {
-			const node_status = classifyStatus(node);
-			for (const status of status_and) {
-				if (!node_status.includes(status)) {
-					return false;
+			for (const status of status_mode) {
+				const node_status = classifyStatus(node);
+				if (node_status.includes(status)) {
+					return true;
 				}
 			}
-			return true;
+			return false;
 		}
 	}
 
-	function changeMode(mode) {
+	function includesStatusProgress(node, status_progress) {
+		if (!status_progress || status_progress.includes('progress_all')) {
+			return true;
+		} else {
+			for (const status of status_progress) {
+				const node_status_progress = classifyStatusProgress(node);
+				if (node_status_progress.includes(status)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	function changeMode(mode, append = false) {
+		const modes = append ? getActiveMode() : [];
+
 		if (!mode) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_tab.live) mode = 'live';
-				else if (default_tab.streamed) mode = 'streamed';
-				else if (default_tab.video) mode = 'video';
-				else if (default_tab.short) mode = 'short';
-				else if (default_tab.scheduled) mode = 'scheduled';
-				else if (default_tab.notification_on) mode = 'notification_on';
-				else if (default_tab.notification_off) mode = 'notification_off';
-				else mode = 'all';
+				if (default_tab.live) modes.push('live');
+				if (default_tab.streamed) modes.push('streamed');
+				if (default_tab.video) modes.push('video');
+				if (default_tab.short) modes.push('short');
+				if (default_tab.scheduled) modes.push('scheduled');
+				if (default_tab.notification_on) modes.push('notification_on');
+				if (default_tab.notification_off) modes.push('notification_off');
+				if (modes.length === 0) modes.push('all');
 			} else if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-				if (default_tab.channels_all) mode = 'channels_all';
-				else if (default_tab.channels_personalized) mode = 'channels_personalized';
-				else if (default_tab.channels_none) mode = 'channels_none';
-				else mode = 'all';
+				if (default_tab.channels_all) modes.push('channels_all');
+				if (default_tab.channels_personalized) modes.push('channels_personalized');
+				if (default_tab.channels_none) modes.push('channels_none');
+				if (modes.length === 0) modes.push('all');
 			} else {
-				mode = 'all';
+				modes.push('all');
 			}
+		} else {
+			modes.push(mode);
 		}
 
-		setActiveMode(mode);
+		setActiveMode(modes);
 
 		app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
 		app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => n.selected = false);
 		if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
-			app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+			for (const mode of modes) {
+				app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+			}
 		} else {
-			app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-			app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.selected = true);
+			for (const mode of modes) {
+				app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.selected = true);
+			}
 		}
 	}
 
-	function changeModeProgress(mode_progress) {
+	function changeModeProgress(mode_progress, append = false) {
+		const modes_progress = append ? getActiveModeProgress() : [];
+
 		if (!mode_progress) {
 			if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-				if (default_tab.progress_unwatched) mode_progress = 'progress_unwatched';
-				else if (default_tab.progress_watched) mode_progress = 'progress_watched';
-				else mode_progress = 'progress_all';
+				if (default_tab.progress_unwatched) modes_progress.push('progress_unwatched');
+				if (default_tab.progress_watched) modes_progress.push('progress_watched');
+				if (modes_progress.length === 0) modes_progress.push('progress_all');
 			} else {
-				mode_progress = 'progress_all';
+				modes_progress.push('progress_all');
 			}
+		} else {
+			modes_progress.push(mode_progress);
 		}
 
-		setActiveModeProgress(mode_progress);
+		setActiveModeProgress(modes_progress);
 
-		app.querySelectorAll('option.filter-button-progress').forEach(n => n.selected = false);
-		app.querySelectorAll('option.filter-button-progress.' + mode_progress).forEach(n => n.selected = true);
+		for (const mode_progress of modes_progress) {
+			app.querySelectorAll('option.filter-button-progress').forEach(n => n.selected = false);
+			app.querySelectorAll('option.filter-button-progress.' + mode_progress).forEach(n => n.selected = true);
+		}
 	}
 
 	function searchParentNode(node, nodeName) {
@@ -984,11 +985,21 @@ function main(common, lang) {
 	}
 
 	function getActiveMode() {
-		return active.mode.get(window.location.href);
+		const mode = active.mode.get(window.location.href);
+		if (mode) {
+			return mode;
+		} else {
+			return [];
+		}
 	}
 
 	function getActiveModeProgress() {
-		return active.mode_progress.get(window.location.href);
+		const mode = active.mode_progress.get(window.location.href);
+		if (mode) {
+			return mode;
+		} else {
+			return [];
+		}
 	}
 
 	function setActiveMode(mode) {
