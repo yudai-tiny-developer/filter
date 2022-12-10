@@ -264,8 +264,8 @@ function main(common, lang) {
 				console.warn('Unknown target: ' + window.location.href);
 			}
 
-			changeMode(getActiveMode().values().next().value, true, false);
-			changeModeProgress(getActiveModeProgress().values().next().value, true, false);
+			changeMode(getActiveMode().values().next().value, multiselection, false);
+			changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false);
 			updateQueryRegex(node, getActiveQuery());
 			updateVisibility(node);
 		});
@@ -768,7 +768,6 @@ function main(common, lang) {
 		select.classList.add('filter-menu', 'filter-menu-subscriptions');
 		select.addEventListener('change', () => {
 			changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-			select.selectedIndex = 0;
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -795,7 +794,6 @@ function main(common, lang) {
 		select.classList.add('filter-menu', 'filter-menu-progress');
 		select.addEventListener('change', () => {
 			changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-			select.selectedIndex = 0;
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -974,7 +972,11 @@ function main(common, lang) {
 				app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
 				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
 			}
-			app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
+			if (multi) {
+				app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
+			} else {
+				app.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
+			}
 		}
 	}
 
@@ -1014,7 +1016,11 @@ function main(common, lang) {
 		for (const mode of modes) {
 			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => n.classList.add('selected'));
 		}
-		app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
+		if (multi) {
+			app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
+		} else {
+			app.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
+		}
 	}
 
 	function searchParentNode(node, nodeName) {
