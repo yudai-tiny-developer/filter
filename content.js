@@ -978,9 +978,11 @@ function main(common, lang) {
 				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
 					n.classList.add('selected');
 
-					const i = n.innerHTML.indexOf('✔ ');
-					if (i === -1) {
-						n.innerHTML = '✔ ' + n.innerHTML;
+					if (multi) {
+						const i = n.innerHTML.indexOf('✔ ');
+						if (i === -1) {
+							n.innerHTML = '✔ ' + n.innerHTML;
+						}
 					}
 				});
 			}
@@ -1034,9 +1036,11 @@ function main(common, lang) {
 			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
 				n.classList.add('selected');
 
-				const i = n.innerHTML.indexOf('✔ ');
-				if (i === -1) {
-					n.innerHTML = '✔ ' + n.innerHTML;
+				if (multi) {
+					const i = n.innerHTML.indexOf('✔ ');
+					if (i === -1) {
+						n.innerHTML = '✔ ' + n.innerHTML;
+					}
 				}
 			});
 		}
