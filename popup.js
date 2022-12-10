@@ -285,22 +285,47 @@ function main(common) {
 
         for (const input of mode_list.querySelectorAll('input.visibility_checkbox')) {
             input.addEventListener('change', () => {
-                chrome.storage.local.set({ [input.id]: input.checked });
+                let ids = {};
+
+                if (!input.checked) {
+                    const mode = 'default_' + input.id;
+                    const checkbox = mode_list.querySelector('input#' + mode);
+                    if (checkbox) {
+                        checkbox.checked = false;
+                        ids[mode] = false;
+                    }
+                }
+
+                ids[input.id] = input.checked;
+                chrome.storage.local.set(ids);
             });
         }
 
         for (const group of groups) {
             for (const input of mode_list.querySelectorAll('input.default_checkbox.' + group)) {
                 input.addEventListener('change', () => {
+                    let ids = {};
+
+                    if (input.checked) {
+                        const mode = input.id.substring(8);
+                        const checkbox = mode_list.querySelector('input#' + mode);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            ids[mode] = true;
+                        }
+                    }
+
                     if (input.checked && !multiselection) {
                         mode_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
                             if (n !== input) {
                                 n.checked = false;
-                                chrome.storage.local.set({ [n.id]: false });
+                                ids[n.id] = false;
                             }
                         });
                     }
-                    chrome.storage.local.set({ [input.id]: input.checked });
+
+                    ids[input.id] = input.checked;
+                    chrome.storage.local.set(ids);
                 });
             }
         }
@@ -323,6 +348,22 @@ function main(common) {
     chrome.storage.onChanged.addListener((changes, namespace) => {
         chrome.storage.local.get(common.storage, (data) => {
             multiselection = data.multiselection;
+
+            if (!multiselection) {
+                let ids = {};
+                for (const group of groups) {
+                    let first = true;
+                    mode_list.querySelectorAll('input:checked.default_checkbox.' + group).forEach(n => {
+                        if (first) {
+                            first = false;
+                        } else {
+                            n.checked = false;
+                            ids[n.id] = false;
+                        }
+                    });
+                }
+                chrome.storage.local.set(ids);
+            }
         });
     });
 }

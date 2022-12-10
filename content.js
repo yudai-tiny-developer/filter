@@ -941,7 +941,7 @@ function main(common, lang) {
 				modes.add('all');
 			}
 		} else {
-			if (sub) {
+			if (multi && sub) {
 				modes.delete(mode);
 				if (modes.size === 0) {
 					modes.add('all');
@@ -992,7 +992,7 @@ function main(common, lang) {
 				modes.add('progress_all');
 			}
 		} else {
-			if (sub) {
+			if (multi && sub) {
 				modes.delete(mode);
 				if (modes.size === 0) {
 					modes.add('progress_all');
