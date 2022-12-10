@@ -765,7 +765,7 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-subscriptions');
 		select.addEventListener('change', () => {
-			changeMode(select.value, multiselection, span.classList.contains('selected'));
+			changeMode(select.value, multiselection, select.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
