@@ -962,6 +962,11 @@ function main(common, lang) {
 		app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
 			n.selected = false;
 			n.classList.remove('selected');
+
+			const i = n.innerHTML.indexOf('✔ ');
+			if (i !== -1) {
+				n.innerHTML = n.innerHTML.substring(i + 1);
+			}
 		});
 		if (window.location.href.startsWith('https://www.youtube.com/feed/channels')) {
 			for (const mode of modes) {
@@ -970,7 +975,16 @@ function main(common, lang) {
 		} else {
 			for (const mode of modes) {
 				app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+				app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
+					n.classList.add('selected');
+
+					if (multi) {
+						const i = n.innerHTML.indexOf('✔ ');
+						if (i === -1) {
+							n.innerHTML = '✔ ' + n.innerHTML;
+						}
+					}
+				});
 			}
 			if (multi) {
 				app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
@@ -1012,9 +1026,23 @@ function main(common, lang) {
 		app.querySelectorAll('option.filter-button-progress').forEach(n => {
 			n.selected = false;
 			n.classList.remove('selected');
+
+			const i = n.innerHTML.indexOf('✔ ');
+			if (i !== -1) {
+				n.innerHTML = n.innerHTML.substring(i + 1);
+			}
 		});
 		for (const mode of modes) {
-			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => n.classList.add('selected'));
+			app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
+				n.classList.add('selected');
+
+				if (multi) {
+					const i = n.innerHTML.indexOf('✔ ');
+					if (i === -1) {
+						n.innerHTML = '✔ ' + n.innerHTML;
+					}
+				}
+			});
 		}
 		if (multi) {
 			app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
