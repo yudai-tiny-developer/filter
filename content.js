@@ -262,8 +262,8 @@ function main(common, lang) {
 				console.warn('Unknown target: ' + window.location.href);
 			}
 
-			changeMode(null, true);
-			changeModeProgress(null, true);
+			changeMode(null, true, false);
+			changeModeProgress(null, true, false);
 			updateQueryRegex(node, getActiveQuery());
 			updateVisibility(node);
 		});
@@ -638,7 +638,7 @@ function main(common, lang) {
 					}
 
 					updateButtonVisibility(browse);
-					updateMenuVisibility(browse);
+					updateMenuVisibility(browse, true);
 				} else {
 					console.warn('ytd-two-column-browse-results-renderer not found');
 				}
@@ -785,7 +785,7 @@ function main(common, lang) {
 		select.style.display = 'none';
 		select.classList.add('filter-menu', 'filter-menu-progress');
 		select.addEventListener('change', () => {
-			changeModeProgress(select.value, multiselection, span.classList.contains('selected'));
+			changeModeProgress(select.value, multiselection, select.classList.contains('selected'));
 			updateVisibility(app);
 			window.scroll({ top: 0, behavior: 'instant' });
 		});
@@ -854,7 +854,7 @@ function main(common, lang) {
 		return span;
 	}
 
-	function updateMenuVisibility(node, isFilterTarget = true) {
+	function updateMenuVisibility(node, isFilterTarget) {
 		if (isFilterTarget) {
 			node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = '');
 		} else {
@@ -911,7 +911,7 @@ function main(common, lang) {
 		}
 	}
 
-	function changeMode(mode, multi, sub = false) {
+	function changeMode(mode, multi, sub) {
 		const modes = multi ? getActiveMode() : new Set();
 
 		if (!mode) {
@@ -956,7 +956,7 @@ function main(common, lang) {
 		}
 	}
 
-	function changeModeProgress(mode, multi, sub = false) {
+	function changeModeProgress(mode, multi, sub) {
 		const modes = multi ? getActiveModeProgress() : new Set();
 
 		if (!mode) {
