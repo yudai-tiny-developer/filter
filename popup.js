@@ -203,9 +203,13 @@ function main(common) {
     let gap;
     let touch_identifier;
 
+    let multiselection;
+
     const mode_list = document.querySelector('div#mode_list');
 
     chrome.storage.local.get(common.storage, (data) => {
+        multiselection = data.multiselection;
+
         mode_list.appendChild(createHeaderRow());
 
         mode_list.appendChild(createRow(common.button_label.live, 'live', data.live, true, data.default_live, 'subscriptions'));
@@ -342,8 +346,6 @@ function main(common) {
             chrome.storage.local.clear();
         });
     });
-
-    let multiselection;
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
         chrome.storage.local.get(common.storage, (data) => {
