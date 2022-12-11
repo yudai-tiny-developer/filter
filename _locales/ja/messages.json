@@ -60,10 +60,10 @@
       "message": "キーワード"
    },
    "button_placeholder": {
-      "message": "フィード"
+      "message": "▶"
    },
    "button_progress_placeholder": {
-      "message": "視聴状態"
+      "message": "🕓"
    },
    "multiselection": {
       "message": "複数選択"
