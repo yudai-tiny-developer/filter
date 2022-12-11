@@ -60,10 +60,10 @@
       "message": "Keyword"
    },
    "button_placeholder": {
-      "message": "Feed Type"
+      "message": "▶"
    },
    "button_progress_placeholder": {
-      "message": "W./Un. Status"
+      "message": "🕓"
    },
    "multiselection": {
       "message": "Multiselection"
