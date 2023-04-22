@@ -1173,6 +1173,7 @@ function main(common, lang) {
     };
 
     let multiselection;
+
     let prevWidth = 0;
     let resizeTimer;
     let nodeForCalc;
