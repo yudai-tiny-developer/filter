@@ -1111,23 +1111,27 @@ function main(common, lang) {
     }
 
     function onResize() {
-        const form = app.querySelector('form.filter-menu');
-        if (prevWidth !== form.parentNode.scrollWidth) {
-            const forCalcNode = form.cloneNode(true);
-            forCalcNode.classList.add('filter-forCalc');
-            form.appendChild(forCalcNode);
-            if (forCalcNode.scrollWidth <= form.parentNode.scrollWidth) {
-                document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                document.documentElement.style.setProperty('--filter-menu-display', 'none');
-            } else {
-                document.documentElement.style.setProperty('--filter-button-display', 'none');
-                document.documentElement.style.setProperty('--filter-menu-display', 'block');
-            }
-            forCalcNode.remove();
+        for (const form of app.querySelectorAll('form.filter-menu')) {
+            if (form.parentNode.scrollWidth !== 0 && form.parentNode.scrollWidth !== prevWidth) {
+                const forCalcNode = form.cloneNode(true);
+                forCalcNode.classList.add('filter-forCalc');
+                form.appendChild(forCalcNode);
+                console.log(forCalcNode.scrollWidth + ' <= ' + form.parentNode.scrollWidth);
+                if (forCalcNode.scrollWidth <= form.parentNode.scrollWidth) {
+                    document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                    document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                } else {
+                    document.documentElement.style.setProperty('--filter-button-display', 'none');
+                    document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                }
+                forCalcNode.remove();
 
-            prevWidth = form.parentNode.scrollWidth;
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(onResize, 256);
+                prevWidth = form.parentNode.scrollWidth;
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(onResize, 256);
+
+                return;
+            }
         }
     }
 
