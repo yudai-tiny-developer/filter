@@ -1,186 +1,190 @@
-span.filter-button {
-	background-color: var(--yt-spec-badge-chip-background);
-	color: var(--yt-spec-text-primary);
-	fill: var(--yt-spec-text-primary);
+:root {
+    --filter-button-display: inline-flex;
+    --filter-menu-display: none;
+}
 
-	align-items: center;
-	border-radius: 8px;
-	box-sizing: border-box;
-	cursor: pointer;
-	display: inline-flex;
-	font-size: var(--ytd-user-comment-font-size);
-	font-weight: var(--ytd-user-comment-font-weight);
-	height: 32px;
-	margin: 12px 6px 12px 6px;
-	padding: 0px 12px 0px 12px;
-	transition: background-color 0.5s cubic-bezier(0.05, 0, 0, 1);
-	vertical-align: middle;
-	word-break: keep-all;
+span.filter-button {
+    background-color: var(--yt-spec-badge-chip-background);
+    color: var(--yt-spec-text-primary);
+    fill: var(--yt-spec-text-primary);
+
+    align-items: center;
+    border-radius: 8px;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: var(--ytd-user-comment-font-size);
+    font-weight: var(--ytd-user-comment-font-weight);
+    height: 32px;
+    margin: 12px 6px 12px 6px;
+    padding: 0px 12px 0px 12px;
+    transition: background-color 0.5s cubic-bezier(0.05, 0, 0, 1);
+    vertical-align: middle;
+    word-break: keep-all;
 }
 
 span.filter-button:hover {
-	background-color: var(--yt-spec-button-chip-background-hover);
+    background-color: var(--yt-spec-button-chip-background-hover);
 }
 
 span.filter-button.selected {
-	background-color: var(--yt-spec-text-primary);
-	color: var(--yt-spec-text-primary-inverse);
-	fill: var(--yt-spec-text-primary-inverse);
+    background-color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary-inverse);
+    fill: var(--yt-spec-text-primary-inverse);
 }
 
 svg.filter-button {
-	margin: 4px;
-	height: 24px;
-	width: 24px;
+    margin: 4px;
+    height: 24px;
+    width: 24px;
 }
 
 span.filter-query {
-	display: inline-flex;
-	height: 32px;
+    display: inline-flex;
+    height: 32px;
 }
 
 span.filter-query.area {
-	align-items: center;
-	background-color: var(--ytd-searchbox-background);
-	border: 1px solid var(--ytd-searchbox-legacy-border-color);
-	border-radius: 16px 0 0 16px;
-	box-sizing: border-box;
-	margin: 12px 0px 12px 6px;
-	padding: 0px 0px 0px 12px;
+    align-items: center;
+    background-color: var(--ytd-searchbox-background);
+    border: 1px solid var(--ytd-searchbox-legacy-border-color);
+    border-radius: 16px 0 0 16px;
+    box-sizing: border-box;
+    margin: 12px 0px 12px 6px;
+    padding: 0px 0px 0px 12px;
 }
 
 input#filter-query {
-	background-color: var(--ytd-searchbox-background);
-	border: none;
-	color: var(--ytd-searchbox-text-color);
-	fill: var(--ytd-searchbox-text-color);
-	outline: none;
-	width: 100%;
+    background-color: var(--ytd-searchbox-background);
+    border: none;
+    color: var(--ytd-searchbox-text-color);
+    fill: var(--ytd-searchbox-text-color);
+    outline: none;
+    width: 100%;
 
-	box-shadow: var(--ytd-searchbox-background) 0 32px inset !important;
-	-webkit-text-fill-color: var(--ytd-searchbox-text-color);
+    box-shadow: var(--ytd-searchbox-background) 0 32px inset !important;
+    -webkit-text-fill-color: var(--ytd-searchbox-text-color);
 }
 
 input#filter-query::placeholder {
-	opacity: 0;
+    opacity: 0;
 }
 
 span.filter-clear {
-	color: var(--ytd-searchbox-text-color);
-	cursor: pointer;
-	fill: var(--ytd-searchbox-text-color);
-	height: 30px;
+    color: var(--ytd-searchbox-text-color);
+    cursor: pointer;
+    fill: var(--ytd-searchbox-text-color);
+    height: 30px;
 }
 
 svg.filter-clear {
-	margin: 4px;
-	height: 20px;
-	width: 20px;
+    margin: 4px;
+    height: 20px;
+    width: 20px;
 }
 
 input#filter-query:placeholder-shown+span.filter-clear {
-	visibility: hidden;
+    visibility: hidden;
 }
 
 span.filter-query.area:focus-within {
-	border-color: #1c62b9;
+    border-color: #1c62b9;
 }
 
 span.filter-query.search {
-	background-color: var(--ytd-searchbox-legacy-button-color);
-	border: solid var(--ytd-searchbox-legacy-border-color);
-	border-radius: 0 16px 16px 0;
-	border-width: 1px 1px 1px 0px;
-	box-sizing: border-box;
-	color: var(--yt-spec-text-primary);
-	cursor: pointer;
-	fill: var(--yt-spec-text-primary);
-	height: 32px;
-	margin: 12px 6px 12px 0px;
+    background-color: var(--ytd-searchbox-legacy-button-color);
+    border: solid var(--ytd-searchbox-legacy-border-color);
+    border-radius: 0 16px 16px 0;
+    border-width: 1px 1px 1px 0px;
+    box-sizing: border-box;
+    color: var(--yt-spec-text-primary);
+    cursor: pointer;
+    fill: var(--yt-spec-text-primary);
+    height: 32px;
+    margin: 12px 6px 12px 0px;
 }
 
 svg.filter-search {
-	margin: 4px 15px 4px 10px;
-	height: 20px;
-	width: 20px;
+    margin: 4px 15px 4px 10px;
+    height: 20px;
+    width: 20px;
 }
 
 form.filter-menu,
 div.filter-menu {
-	display: flex;
-	height: 56px;
-	justify-content: center;
-	width: 100%;
+    display: flex;
+    height: 56px;
+    justify-content: center;
 }
 
 form.filter-menu.position-fixed {
-	background-color: var(--yt-spec-base-background);
-	position: fixed;
-	z-index: 2000;
+    background-color: var(--yt-spec-base-background);
+    position: fixed;
+    z-index: 2000;
 }
 
 div.filter-menu.spacer {
-	visibility: hidden;
+    visibility: hidden;
 }
 
 select.filter-menu {
-	background-color: var(--yt-spec-text-primary);
-	color: var(--yt-spec-text-primary-inverse);
-	fill: var(--yt-spec-text-primary-inverse);
+    background-color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary-inverse);
+    fill: var(--yt-spec-text-primary-inverse);
 
-	border-radius: 8px;
-	border-width: 0px;
-	cursor: pointer;
-	font-size: var(--ytd-user-comment-font-size);
-	font-weight: var(--ytd-user-comment-font-weight);
-	height: 32px;
-	margin: 12px 6px 12px 6px;
-	outline: none;
-	text-align: center;
-	word-break: keep-all;
+    border-radius: 8px;
+    border-width: 0px;
+    cursor: pointer;
+    font-size: var(--ytd-user-comment-font-size);
+    font-weight: var(--ytd-user-comment-font-weight);
+    height: 32px;
+    margin: 12px 6px 12px 6px;
+    outline: none;
+    text-align: center;
+    word-break: keep-all;
 }
 
 option.filter-button {
-	background-color: var(--yt-spec-text-primary-inverse);
-	color: var(--yt-spec-text-primary);
-	fill: var(--yt-spec-text-primary);
+    background-color: var(--yt-spec-text-primary-inverse);
+    color: var(--yt-spec-text-primary);
+    fill: var(--yt-spec-text-primary);
 }
 
 option.filter-button.selected {
-	background-color: var(--yt-spec-text-primary);
-	color: var(--yt-spec-text-primary-inverse);
-	fill: var(--yt-spec-text-primary-inverse);
+    background-color: var(--yt-spec-text-primary);
+    color: var(--yt-spec-text-primary-inverse);
+    fill: var(--yt-spec-text-primary-inverse);
 }
 
 option.filter-button.placeholder {
-	display: none;
+    display: none;
 }
 
 .filter-browse {
-	align-items: center !important;
-	padding-top: 0px !important;
+    align-items: center !important;
+    padding-top: 0px !important;
 }
 
-@media screen and (min-width: 972px) {
-	span.filter-button-subscriptions {
-		display: inline-flex;
-	}
-
-	select.filter-menu-subscriptions {
-		display: none;
-	}
+span.filter-button-subscriptions {
+    display: var(--filter-button-display);
 }
 
-@media screen and (max-width: 972px) {
-	span.filter-button-subscriptions {
-		display: none;
-	}
+select.filter-menu-subscriptions {
+    display: var(--filter-menu-display);
+}
 
-	select.filter-menu-subscriptions {
-		display: block;
-	}
+form.filter-forCalc span.filter-button-subscriptions {
+    display: inline-flex;
+}
+
+form.filter-forCalc select.filter-menu-subscriptions {
+    display: none;
+}
+
+form.filter-forCalc {
+    visibility: hidden;
 }
 
 span.filter-button-channels {
-	display: inline-flex;
+    display: inline-flex;
 }
