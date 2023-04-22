@@ -264,7 +264,7 @@ function main(common, lang) {
                 console.warn('Unknown target: ' + window.location.href);
             }
 
-            onResize();
+            onResize(true);
 
             changeMode(getActiveMode().values().next().value, multiselection, false);
             changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false);
@@ -1110,9 +1110,9 @@ function main(common, lang) {
         return true;
     }
 
-    function onResize() {
+    function onResize(force = false) {
         for (const form of app.querySelectorAll('form.filter-menu')) {
-            if (form.parentNode.scrollWidth !== 0 && form.parentNode.scrollWidth !== prevWidth) {
+            if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
                 const forCalcNode = form.cloneNode(true);
                 forCalcNode.classList.add('filter-forCalc');
                 form.appendChild(forCalcNode);
