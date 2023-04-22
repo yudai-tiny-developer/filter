@@ -636,7 +636,7 @@ function main(common, lang) {
                 const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
                 if (sibling) {
                     const position_fixed = isPositionFixedTarget();
-                    browse.insertBefore(createMenu(position_fixed), sibling);
+                    browse.insertBefore(createMenu(position_fixed, browse), sibling);
                     if (position_fixed) {
                         browse.insertBefore(createSpacer('browse'), sibling);
                     }
@@ -674,7 +674,7 @@ function main(common, lang) {
         }
     }
 
-    function createMenu(position_fixed) {
+    function createMenu(position_fixed, browse) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
 
@@ -727,6 +727,8 @@ function main(common, lang) {
             updateVisibility(app);
             window.scroll({ top: 0, behavior: 'instant' });
         });
+
+        createNodeForCalc(menu, browse);
 
         return menu;
     }
@@ -1113,17 +1115,14 @@ function main(common, lang) {
     function onResize(force = false) {
         for (const form of app.querySelectorAll('form.filter-menu')) {
             if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
-                const forCalcNode = form.cloneNode(true);
-                forCalcNode.classList.add('filter-forCalc');
-                form.appendChild(forCalcNode);
-                if (forCalcNode.scrollWidth <= form.parentNode.scrollWidth) {
+                form.parentNode.appendChild(nodeForCalc);
+                if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
                     document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
                     document.documentElement.style.setProperty('--filter-menu-display', 'none');
                 } else {
                     document.documentElement.style.setProperty('--filter-button-display', 'none');
                     document.documentElement.style.setProperty('--filter-menu-display', 'block');
                 }
-                forCalcNode.remove();
 
                 prevWidth = form.parentNode.scrollWidth;
                 clearTimeout(resizeTimer);
@@ -1131,6 +1130,14 @@ function main(common, lang) {
 
                 return;
             }
+        }
+    }
+
+    function createNodeForCalc(menu, browse) {
+        if (!nodeForCalc) {
+            nodeForCalc = menu.cloneNode(true);
+            nodeForCalc.classList.add('filter-forCalc');
+            browse.appendChild(nodeForCalc);
         }
     }
 
@@ -1161,6 +1168,7 @@ function main(common, lang) {
     let multiselection;
     let prevWidth = 0;
     let resizeTimer;
+    let nodeForCalc;
 
     const app = document.querySelector('ytd-app');
     if (app) {
