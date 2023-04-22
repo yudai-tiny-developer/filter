@@ -1116,7 +1116,6 @@ function main(common, lang) {
                 const forCalcNode = form.cloneNode(true);
                 forCalcNode.classList.add('filter-forCalc');
                 form.appendChild(forCalcNode);
-                console.log(forCalcNode.scrollWidth + ' <= ' + form.parentNode.scrollWidth);
                 if (forCalcNode.scrollWidth <= form.parentNode.scrollWidth) {
                     document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
                     document.documentElement.style.setProperty('--filter-menu-display', 'none');
