@@ -17,7 +17,7 @@ function main(common, lang) {
                 progress.appendChild(progress.querySelector('option.filter-button-progress.progress_all'));
 
                 for (const mode of common.order(data.order)) {
-                    if (mode === 'keyword' || mode === 'multiselection') {
+                    if (mode === 'keyword' || mode === 'multiselection' || mode === 'responsive') {
                         // continue
                     } else if (mode.startsWith('progress_')) {
                         progress.appendChild(progress.querySelector('option.filter-button-progress.' + mode));
@@ -70,6 +70,8 @@ function main(common, lang) {
             default_tab.channels_none = data.default_channels_none;
 
             multiselection = data.multiselection;
+
+            responsive = data.responsive;
 
             if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -1113,23 +1115,28 @@ function main(common, lang) {
     }
 
     function onResize(force = false) {
-        for (const form of app.querySelectorAll('form.filter-menu')) {
-            if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
-                form.parentNode.appendChild(nodeForCalc);
-                if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
-                    document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                    document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                } else {
-                    document.documentElement.style.setProperty('--filter-button-display', 'none');
-                    document.documentElement.style.setProperty('--filter-menu-display', 'block');
+        if (responsive) {
+            for (const form of app.querySelectorAll('form.filter-menu')) {
+                if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
+                    form.parentNode.appendChild(nodeForCalc);
+                    if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
+                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                    } else {
+                        document.documentElement.style.setProperty('--filter-button-display', 'none');
+                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                    }
+
+                    prevWidth = form.parentNode.scrollWidth;
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(onResize, 256);
+
+                    return;
                 }
-
-                prevWidth = form.parentNode.scrollWidth;
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(onResize, 256);
-
-                return;
             }
+        } else {
+            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+            document.documentElement.style.setProperty('--filter-menu-display', 'none');
         }
     }
 
@@ -1169,6 +1176,7 @@ function main(common, lang) {
     let prevWidth = 0;
     let resizeTimer;
     let nodeForCalc;
+    let responsive;
 
     const app = document.querySelector('ytd-app');
     if (app) {

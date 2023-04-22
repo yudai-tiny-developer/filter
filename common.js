@@ -34,6 +34,8 @@ export const storage = [
     'default_channels_none',
 
     'multiselection',
+
+    'responsive',
 ];
 
 export const default_order = [
@@ -55,6 +57,8 @@ export const default_order = [
     'keyword',
 
     'multiselection',
+
+    'responsive',
 ];
 
 export function order(order) {
@@ -95,4 +99,6 @@ export const button_label = {
     placeholder: chrome.i18n.getMessage('button_placeholder'),
     progress_placeholder: chrome.i18n.getMessage('button_progress_placeholder'),
     multiselection: chrome.i18n.getMessage('multiselection'),
+
+    responsive: chrome.i18n.getMessage('responsive'),
 };

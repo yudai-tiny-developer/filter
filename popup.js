@@ -231,6 +231,8 @@ function main(common) {
 
         mode_list.appendChild(createRowNoDefault(common.button_label.multiselection, 'multiselection', data.multiselection, false, 'multiselection'));
 
+        mode_list.appendChild(createRowNoDefault(common.button_label.responsive, 'responsive', data.responsive, true, 'responsive'));
+
         for (const mode of common.order(data.order)) {
             const row = mode_list.querySelector('div.row.' + mode);
             if (row) {
