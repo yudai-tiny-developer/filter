@@ -116,6 +116,7 @@ div.filter-menu {
     display: flex;
     height: 56px;
     justify-content: center;
+    width: 100%;
 }
 
 form.filter-menu.position-fixed {
@@ -184,6 +185,7 @@ form.filter-forCalc select.filter-menu-subscriptions {
 
 form.filter-forCalc {
     visibility: hidden;
+    width: max-content;
 }
 
 span.filter-button-channels {
