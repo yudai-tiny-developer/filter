@@ -61,6 +61,7 @@ input#filter-query {
     fill: var(--ytd-searchbox-text-color);
     outline: none;
     width: 100%;
+    min-width: 100px;
 
     box-shadow: var(--ytd-searchbox-background) 0 32px inset !important;
     -webkit-text-fill-color: var(--ytd-searchbox-text-color);
