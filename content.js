@@ -69,9 +69,9 @@ function main(common, lang) {
             default_tab.channels_personalized = data.default_channels_personalized;
             default_tab.channels_none = data.default_channels_none;
 
-            multiselection = data.multiselection;
+            multiselection = data.multiselection === undefined ? false : data.multiselection;
 
-            responsive = data.responsive;
+            responsive = data.responsive === undefined ? true : data.responsive;
 
             if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
