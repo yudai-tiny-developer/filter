@@ -59,6 +59,7 @@ div.draggable-label {
 div.header-label {
     display: table-cell;
     padding: 8px;
+    text-align: center;
 }
 
 div.spacer-label {
