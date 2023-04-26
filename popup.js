@@ -160,7 +160,7 @@ function main(common) {
     function getTouchTarget(touch) {
         for (const node of settings_list_1.querySelectorAll('div.row:not(.touching)')) {
             if (contains(node, touch.clientX, touch.clientY)) {
-                return node.querySelector('div.label');
+                return node.querySelector('div.draggable-label');
             }
         }
         return touch.target;
@@ -254,7 +254,7 @@ function main(common) {
             div.addEventListener('dragover', onDragOver);
             div.addEventListener('dragend', onDragEnd);
 
-            div.querySelector('div.label')?.addEventListener('touchstart', (event) => {
+            div.querySelector('div.draggable-label').addEventListener('touchstart', (event) => {
                 if (touch_identifier === undefined) {
                     const touch = event.changedTouches[0];
 
