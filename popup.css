@@ -1,4 +1,19 @@
-div#mode_list {
+div.settings_table {
+    display: table;
+    width: max-content;
+}
+
+div.settings_row {
+    display: table-row;
+    width: max-content;
+}
+
+div.settings_cell {
+    display: table-cell;
+    width: max-content;
+}
+
+div.settings_list {
     display: table;
     width: max-content;
 }
@@ -26,6 +41,11 @@ div.row.projection {
 }
 
 div.label {
+    display: table-cell;
+    padding: 8px;
+}
+
+div.draggable-label {
     display: table-cell;
     cursor: grab;
     padding: 8px;
@@ -97,7 +117,8 @@ div#reset_container {
         background-color: rgb(249, 249, 249);
     }
 
-    div.label {
+    div.label,
+    div.draggable-label {
         color: rgb(3, 3, 3);
         fill: rgb(3, 3, 3);
     }
@@ -151,7 +172,8 @@ div#reset_container {
         background-color: rgb(26, 26, 26);
     }
 
-    div.label {
+    div.label,
+    div.draggable-label {
         color: rgb(255, 255, 255);
         fill: rgb(255, 255, 255);
     }
