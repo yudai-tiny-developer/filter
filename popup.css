@@ -1,4 +1,20 @@
-div#mode_list {
+div.settings_table {
+    display: table;
+    width: max-content;
+}
+
+div.settings_row {
+    display: table-row;
+    width: max-content;
+}
+
+div.settings_cell {
+    display: table-cell;
+    width: max-content;
+    padding: 0px 8px;
+}
+
+div.settings_list {
     display: table;
     width: max-content;
 }
@@ -8,6 +24,10 @@ div.row {
 }
 
 div.header-row {
+    display: table-row;
+}
+
+div.spacer-row {
     display: table-row;
 }
 
@@ -27,6 +47,11 @@ div.row.projection {
 
 div.label {
     display: table-cell;
+    padding: 8px;
+}
+
+div.draggable-label {
+    display: table-cell;
     cursor: grab;
     padding: 8px;
 }
@@ -34,6 +59,12 @@ div.label {
 div.header-label {
     display: table-cell;
     padding: 8px;
+    text-align: center;
+}
+
+div.spacer-label {
+    display: table-cell;
+    padding: 4px;
 }
 
 div.toggle {
@@ -97,7 +128,8 @@ div#reset_container {
         background-color: rgb(249, 249, 249);
     }
 
-    div.label {
+    div.label,
+    div.draggable-label {
         color: rgb(3, 3, 3);
         fill: rgb(3, 3, 3);
     }
@@ -134,11 +166,11 @@ div#reset_container {
     }
 
     div.subscriptions {
-        background-color: rgb(239, 239, 239);
+        background-color: rgb(219, 219, 219);
     }
 
     div.progress {
-        background-color: rgb(229, 229, 229);
+        background-color: rgb(219, 219, 219);
     }
 
     div.channels {
@@ -151,7 +183,8 @@ div#reset_container {
         background-color: rgb(26, 26, 26);
     }
 
-    div.label {
+    div.label,
+    div.draggable-label {
         color: rgb(255, 255, 255);
         fill: rgb(255, 255, 255);
     }
@@ -188,11 +221,11 @@ div#reset_container {
     }
 
     div.subscriptions {
-        background-color: rgb(36, 36, 36);
+        background-color: rgb(56, 56, 56);
     }
 
     div.progress {
-        background-color: rgb(46, 46, 46);
+        background-color: rgb(56, 56, 56);
     }
 
     div.channels {
