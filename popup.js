@@ -12,26 +12,18 @@ function main(common) {
         return element;
     }
 
-    function createRow(label, draggable, mode, setting, deafult_value, default_tab, tab_group) {
+    function createRow(label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined) {
         const element = document.createElement('div');
-        element.classList.add('row', mode, tab_group);
-        if (draggable) {
+        element.classList.add('row', mode);
+        if (tab_group) {
+            element.classList.add('row', tab_group);
             element.setAttribute('draggable', 'true');
         }
-        element.appendChild(createLabel(label, draggable));
+        element.appendChild(createLabel(label, tab_group));
         element.appendChild(createToggle(mode, setting, deafult_value));
-        element.appendChild(createDefaultToggle(mode, default_tab, tab_group));
-        return element;
-    }
-
-    function createRowNoDefault(label, draggable, mode, setting, deafult_value, tab_group) {
-        const element = document.createElement('div');
-        element.classList.add('row', mode, tab_group);
-        if (draggable) {
-            element.setAttribute('draggable', 'true');
+        if (default_tab !== undefined) {
+            element.appendChild(createDefaultToggle(mode, default_tab, tab_group));
         }
-        element.appendChild(createLabel(label, draggable));
-        element.appendChild(createToggle(mode, setting, deafult_value));
         return element;
     }
 
@@ -63,16 +55,18 @@ function main(common) {
     function createDefaultToggle(mode, setting, tab_group) {
         const div = document.createElement('div');
         div.classList.add('toggle');
-        div.innerHTML = '<input id="default_' + mode + '" class="checkbox default_checkbox ' + tab_group + '" type="checkbox" ' + (setting === true ? 'checked' : '') + ' default="false" /><label for="default_' + mode + '" class="switch" />';
+        div.innerHTML = '<input id="default_' + mode + '" class="checkbox default_checkbox ' + (tab_group ? tab_group : '') + '" type="checkbox" ' + (setting === true ? 'checked' : '') + ' default="false" /><label for="default_' + mode + '" class="switch" />';
         return div;
     }
 
     function isBefore(over_target_row, drag_target_row) {
-        for (const child of settings_list_1.children) {
-            if (child === over_target_row) {
-                return true;
-            } else if (child === drag_target_row) {
-                return false;
+        for (const settings_list of settings_lists) {
+            for (const child of settings_list.children) {
+                if (child === over_target_row) {
+                    return true;
+                } else if (child === drag_target_row) {
+                    return false;
+                }
             }
         }
         return false;
@@ -84,7 +78,7 @@ function main(common) {
     }
 
     function identifyGroup(target_row) {
-        if (target_row.parentNode === settings_list_1 || target_row.parentNode === settings_list_2) {
+        if (settings_lists.includes(target_row.parentNode)) {
             for (const group of groups) {
                 if (target_row.classList.contains(group)) {
                     return group;
@@ -123,8 +117,10 @@ function main(common) {
             drag_target_row = undefined;
 
             let modes = [];
-            for (const input of settings_list_1.querySelectorAll('input.visibility_checkbox')) {
-                modes.push(input.id);
+            for (const settings_list of settings_lists) {
+                for (const input of settings_list.querySelectorAll('input.visibility_checkbox')) {
+                    modes.push(input.id);
+                }
             }
             chrome.storage.local.set({ order: modes.join(',') });
         }
@@ -158,9 +154,14 @@ function main(common) {
     }
 
     function getTouchTarget(touch) {
-        for (const node of settings_list_1.querySelectorAll('div.row:not(.touching)')) {
-            if (contains(node, touch.clientX, touch.clientY)) {
-                return node.querySelector('div.draggable-label');
+        for (const settings_list of settings_lists) {
+            for (const node of settings_list.querySelectorAll('div.row:not(.touching)')) {
+                if (contains(node, touch.clientX, touch.clientY)) {
+                    const draggable_label = node.querySelector('div.draggable-label');
+                    if (draggable_label) {
+                        return draggable_label;
+                    }
+                }
             }
         }
         return touch.target;
@@ -194,16 +195,20 @@ function main(common) {
     }
 
     function showProjection(projection, base) {
-        settings_list_1.appendChild(projection);
-        base.classList.add('touching');
+        if (settings_lists.includes(projection.parentNode)) {
+            projection.parentNode.appendChild(projection);
+            base.classList.add('touching');
+        }
     }
 
     function hideProjection(projection, base) {
-        base.classList.remove('touching');
-        settings_list_1.removeChild(projection);
+        if (settings_lists.includes(projection.parentNode)) {
+            base.classList.remove('touching');
+            projection.parentNode.removeChild(projection);
+        }
     }
 
-    const groups = ['subscriptions', 'progress', 'channels', 'keyword'];
+    const groups = ['subscriptions', 'progress', 'channels'];
 
     let drag_target_row;
     let drag_target_group;
@@ -221,144 +226,147 @@ function main(common) {
         multiselection = data.multiselection;
 
         settings_list_1.appendChild(createHeaderRow());
-        settings_list_1.appendChild(createRow(common.button_label.live, true, 'live', data.live, true, data.default_live, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.streamed, true, 'streamed', data.streamed, true, data.default_streamed, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.video, true, 'video', data.video, true, data.default_video, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.short, true, 'short', data.short, true, data.default_short, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.scheduled, true, 'scheduled', data.scheduled, true, data.default_scheduled, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.notification_on, true, 'notification_on', data.notification_on, true, data.default_notification_on, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.notification_off, true, 'notification_off', data.notification_off, false, data.default_notification_off, 'subscriptions'));
+        settings_list_1.appendChild(createRow(common.button_label.live, 'live', data.live, true, data.default_live ? data.default_live : false, 'subscriptions'));
+        settings_list_1.appendChild(createRow(common.button_label.streamed, 'streamed', data.streamed, true, data.default_streamed ? data.default_streamed : false, 'subscriptions'));
+        settings_list_1.appendChild(createRow(common.button_label.video, 'video', data.video, true, data.default_video ? data.default_video : false, 'subscriptions'));
+        settings_list_1.appendChild(createRow(common.button_label.short, 'short', data.short, true, data.default_short ? data.default_short : false, 'subscriptions'));
+        settings_list_1.appendChild(createRow(common.button_label.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled ? data.default_scheduled : false, 'subscriptions'));
+        settings_list_1.appendChild(createRow(common.button_label.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on ? data.default_notification_on : false, 'subscriptions'));
+        settings_list_1.appendChild(createRow(common.button_label.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off ? data.default_notification_off : false, 'subscriptions'));
 
         settings_list_2.appendChild(createHeaderRow());
-        settings_list_2.appendChild(createRow(common.button_label.progress_unwatched, false, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched, 'progress'));
-        settings_list_2.appendChild(createRow(common.button_label.progress_watched, false, 'progress_watched', data.progress_watched, true, data.default_progress_watched, 'progress'));
-        settings_list_2.appendChild(createRow(common.button_label.channels_all, false, 'channels_all', data.channels_all, true, data.default_channels_all, 'channels'));
-        settings_list_2.appendChild(createRow(common.button_label.channels_personalized, false, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized, 'channels'));
-        settings_list_2.appendChild(createRow(common.button_label.channels_none, false, 'channels_none', data.channels_none, true, data.default_channels_none, 'channels'));
-        settings_list_2.appendChild(createRowNoDefault(common.button_label.keyword, false, 'keyword', data.keyword, true, 'keyword'));
-        settings_list_2.appendChild(createRowNoDefault(common.button_label.multiselection, false, 'multiselection', data.multiselection, false, 'multiselection'));
-        settings_list_2.appendChild(createRowNoDefault(common.button_label.responsive, false, 'responsive', data.responsive, true, 'responsive'));
+        settings_list_2.appendChild(createRow(common.button_label.progress_unwatched, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched ? data.default_progress_unwatched : false, 'progress'));
+        settings_list_2.appendChild(createRow(common.button_label.progress_watched, 'progress_watched', data.progress_watched, true, data.default_progress_watched ? data.default_progress_watched : false, 'progress'));
+        settings_list_2.appendChild(createRow(common.button_label.channels_all, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
+        settings_list_2.appendChild(createRow(common.button_label.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));
+        settings_list_2.appendChild(createRow(common.button_label.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels'));
+        settings_list_2.appendChild(createRow(common.button_label.keyword, 'keyword', data.keyword, true));
+        settings_list_2.appendChild(createRow(common.button_label.multiselection, 'multiselection', data.multiselection, false));
+        settings_list_2.appendChild(createRow(common.button_label.responsive, 'responsive', data.responsive, true));
 
-        for (const mode of common.order(data.order)) {
-            for (const settings_list of settings_lists) {
+        for (const settings_list of settings_lists) {
+            for (const mode of common.order(data.order)) {
                 const row = settings_list.querySelector('div.row.' + mode);
                 if (row) {
                     settings_list.appendChild(row);
                     row.style.display = '';
                 }
             }
-        }
 
-        for (const div of settings_list_1.querySelectorAll('div.row')) {
-            div.addEventListener('dragstart', onDragStart);
-            div.addEventListener('dragover', onDragOver);
-            div.addEventListener('dragend', onDragEnd);
+            for (const div of settings_list.querySelectorAll('div.row')) {
+                const draggable_label = div.querySelector('div.draggable-label');
+                if (draggable_label) {
+                    div.addEventListener('dragstart', onDragStart);
+                    div.addEventListener('dragover', onDragOver);
+                    div.addEventListener('dragend', onDragEnd);
 
-            div.querySelector('div.draggable-label').addEventListener('touchstart', (event) => {
-                if (touch_identifier === undefined) {
-                    const touch = event.changedTouches[0];
+                    draggable_label.addEventListener('touchstart', (event) => {
+                        if (touch_identifier === undefined) {
+                            const touch = event.changedTouches[0];
 
-                    gap = getGap(div, touch);
+                            gap = getGap(div, touch);
 
-                    projection = createProjection(div);
-                    fixWidthProjection(projection, div);
-                    moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
-                    showProjection(projection, div);
+                            projection = createProjection(div);
+                            fixWidthProjection(projection, div);
+                            moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
+                            showProjection(projection, div);
 
-                    div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
-                    touch_identifier = event.changedTouches[0].identifier;
-                }
-            });
-
-            div.addEventListener('touchmove', (event) => {
-                const touch = event.changedTouches[0];
-                if (touch.identifier === touch_identifier) {
-                    moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
-                    getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event));
-                }
-            });
-
-            div.addEventListener('touchend', (event) => {
-                const touch = event.changedTouches[0];
-                if (touch.identifier === touch_identifier) {
-                    hideProjection(projection, drag_target_row);
-                    getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
-                    touch_identifier = undefined;
-                }
-            });
-
-            div.addEventListener('touchcancel', (event) => {
-                const touch = event.changedTouches[0];
-                if (touch.identifier === touch_identifier) {
-                    hideProjection(projection, drag_target_row);
-                    getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
-                    touch_identifier = undefined;
-                }
-            });
-        }
-
-        for (const settings_list of settings_lists) {
-            for (const input of settings_list.querySelectorAll('input.visibility_checkbox')) {
-                input.addEventListener('change', () => {
-                    let ids = {};
-
-                    if (!input.checked) {
-                        const mode = 'default_' + input.id;
-                        const checkbox = settings_list.querySelector('input#' + mode);
-                        if (checkbox) {
-                            checkbox.checked = false;
-                            ids[mode] = false;
+                            div.dispatchEvent(convertTouchEventToDragEvent('dragstart', event));
+                            touch_identifier = event.changedTouches[0].identifier;
                         }
-                    }
+                    });
 
-                    ids[input.id] = input.checked;
-                    chrome.storage.local.set(ids);
-                });
+                    div.addEventListener('touchmove', (event) => {
+                        const touch = event.changedTouches[0];
+                        if (touch.identifier === touch_identifier) {
+                            moveProjection(projection, touch.pageX, touch.pageY, gap.x, gap.y);
+                            getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragover', event));
+                        }
+                    });
+
+                    div.addEventListener('touchend', (event) => {
+                        const touch = event.changedTouches[0];
+                        if (touch.identifier === touch_identifier) {
+                            hideProjection(projection, drag_target_row);
+                            getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
+                            touch_identifier = undefined;
+                        }
+                    });
+
+                    div.addEventListener('touchcancel', (event) => {
+                        const touch = event.changedTouches[0];
+                        if (touch.identifier === touch_identifier) {
+                            hideProjection(projection, drag_target_row);
+                            getTouchTarget(touch).dispatchEvent(convertTouchEventToDragEvent('dragend', event));
+                            touch_identifier = undefined;
+                        }
+                    });
+                }
             }
 
-            for (const group of groups) {
-                for (const input of settings_list.querySelectorAll('input.default_checkbox.' + group)) {
+            for (const settings_list of settings_lists) {
+                for (const input of settings_list.querySelectorAll('input.visibility_checkbox')) {
                     input.addEventListener('change', () => {
                         let ids = {};
 
-                        if (input.checked) {
-                            const mode = input.id.substring(8);
+                        if (!input.checked) {
+                            const mode = 'default_' + input.id;
                             const checkbox = settings_list.querySelector('input#' + mode);
                             if (checkbox) {
-                                checkbox.checked = true;
-                                ids[mode] = true;
+                                checkbox.checked = false;
+                                ids[mode] = false;
                             }
-                        }
-
-                        if (input.checked && !multiselection) {
-                            settings_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
-                                if (n !== input) {
-                                    n.checked = false;
-                                    ids[n.id] = false;
-                                }
-                            });
                         }
 
                         ids[input.id] = input.checked;
                         chrome.storage.local.set(ids);
                     });
                 }
-            }
 
-            document.querySelector('input#reset').addEventListener('click', () => {
-                for (const input of settings_list.querySelectorAll('input.checkbox')) {
-                    input.checked = input.getAttribute('default') === 'true';
-                }
+                for (const group of groups) {
+                    for (const input of settings_list.querySelectorAll('input.default_checkbox.' + group)) {
+                        input.addEventListener('change', () => {
+                            let ids = {};
 
-                for (const mode of common.default_order) {
-                    const row = settings_list.querySelector('div.row.' + mode);
-                    if (row) {
-                        settings_list.appendChild(row);
+                            if (input.checked) {
+                                const mode = input.id.substring(8);
+                                const checkbox = settings_list.querySelector('input#' + mode);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                    ids[mode] = true;
+                                }
+                            }
+
+                            if (input.checked && !multiselection) {
+                                settings_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
+                                    if (n !== input) {
+                                        n.checked = false;
+                                        ids[n.id] = false;
+                                    }
+                                });
+                            }
+
+                            ids[input.id] = input.checked;
+                            chrome.storage.local.set(ids);
+                        });
                     }
                 }
 
-                chrome.storage.local.clear();
-            });
+                document.querySelector('input#reset').addEventListener('click', () => {
+                    for (const input of settings_list.querySelectorAll('input.checkbox')) {
+                        input.checked = input.getAttribute('default') === 'true';
+                    }
+
+                    for (const mode of common.default_order) {
+                        const row = settings_list.querySelector('div.row.' + mode);
+                        if (row) {
+                            settings_list.appendChild(row);
+                        }
+                    }
+
+                    chrome.storage.local.clear();
+                });
+            }
         }
     });
 
