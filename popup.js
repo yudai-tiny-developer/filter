@@ -215,6 +215,7 @@ function main(common) {
 
     const settings_list_1 = document.querySelector('div#settings_list_1');
     const settings_list_2 = document.querySelector('div#settings_list_2');
+    const settings_lists = [settings_list_1, settings_list_2];
 
     chrome.storage.local.get(common.storage, (data) => {
         multiselection = data.multiselection;
@@ -239,7 +240,7 @@ function main(common) {
         settings_list_2.appendChild(createRowNoDefault(common.button_label.responsive, false, 'responsive', data.responsive, true, 'responsive'));
 
         for (const mode of common.order(data.order)) {
-            for (const settings_list of [settings_list_1, settings_list_2]) {
+            for (const settings_list of settings_lists) {
                 const row = settings_list.querySelector('div.row.' + mode);
                 if (row) {
                     settings_list.appendChild(row);
@@ -296,7 +297,7 @@ function main(common) {
             });
         }
 
-        for (const settings_list of [settings_list_1, settings_list_2]) {
+        for (const settings_list of settings_lists) {
             for (const input of settings_list.querySelectorAll('input.visibility_checkbox')) {
                 input.addEventListener('change', () => {
                     let ids = {};
@@ -369,7 +370,7 @@ function main(common) {
                 let ids = {};
                 for (const group of groups) {
                     let first = true;
-                    for (const settings_list of [settings_list_1, settings_list_2]) {
+                    for (const settings_list of settings_lists) {
                         settings_list.querySelectorAll('input:checked.default_checkbox.' + group).forEach(n => {
                             if (first) {
                                 first = false;
