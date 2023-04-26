@@ -12,6 +12,13 @@ function main(common) {
         return element;
     }
 
+    function createSpacerRow() {
+        const element = document.createElement('div');
+        element.classList.add('spacer-row');
+        element.appendChild(createSpacerLabel());
+        return element;
+    }
+
     function createRow(label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined) {
         const element = document.createElement('div');
         element.classList.add('row', mode);
@@ -42,6 +49,12 @@ function main(common) {
         const div = document.createElement('div');
         div.classList.add('header-label');
         div.innerHTML = label;
+        return div;
+    }
+
+    function createSpacerLabel() {
+        const div = document.createElement('div');
+        div.classList.add('spacer-label');
         return div;
     }
 
@@ -245,9 +258,16 @@ function main(common) {
         settings_list_2.appendChild(createRow(common.button_label.responsive, 'responsive', data.responsive, true));
 
         for (const settings_list of settings_lists) {
+            let prevGroup = undefined;
             for (const mode of common.order(data.order)) {
                 const row = settings_list.querySelector('div.row.' + mode);
                 if (row) {
+                    const group = identifyGroup(row);
+                    if (group !== prevGroup) {
+                        settings_list.appendChild(createSpacerRow());
+                        prevGroup = group;
+                    }
+
                     settings_list.appendChild(row);
                     row.style.display = '';
                 }
