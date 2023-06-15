@@ -630,13 +630,6 @@ function main(common, lang) {
 
                 // continuation stopper
                 case 'YTD-CONTINUATION-ITEM-RENDERER':
-                    /*
-                    const div = document.createElement('div');
-                    div.classList.add('filter-separator');
-                    div.style.height;
-                    div.innerHTML = '-----';
-                    node.previousElementSibling.appendChild(div);
-                    */
                     node.previousElementSibling.classList.add('filter-separator');
                     break;
             }
