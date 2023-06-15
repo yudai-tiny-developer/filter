@@ -191,3 +191,13 @@ form.filter-forCalc {
 span.filter-button-channels {
     display: inline-flex;
 }
+
+ytd-rich-grid-row.filter-separator {
+    border-top: 2px solid var(--yt-spec-10-percent-layer);
+    margin-top: 48px;
+    padding-top: 48px;
+}
+
+ytd-ghost-grid-renderer {
+    display: none !important;
+}
