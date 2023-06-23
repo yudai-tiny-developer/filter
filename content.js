@@ -630,7 +630,7 @@ function main(common, lang) {
 
                 // continuation stopper
                 case 'YTD-CONTINUATION-ITEM-RENDERER':
-                    node.previousElementSibling.classList.add('filter-separator');
+                    node.previousElementSibling?.classList.add('filter-separator');
                     break;
             }
         }
