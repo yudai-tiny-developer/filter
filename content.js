@@ -285,7 +285,7 @@ function main(common, lang) {
     }
 
     function isMenuTarget() {
-        return window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')
+        return (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')
             || window.location.href.startsWith('https://www.youtube.com/feed/library')
             || window.location.href.startsWith('https://www.youtube.com/feed/history')
             || window.location.href.startsWith('https://www.youtube.com/playlist')
@@ -294,6 +294,7 @@ function main(common, lang) {
             || window.location.href.startsWith('https://www.youtube.com/c/')
             || window.location.href.startsWith('https://www.youtube.com/@')
             || window.location.href.startsWith('https://www.youtube.com/user/')
+        ) && (!window.location.href.startsWith('https://www.youtube.com/feed/subscriptions/shorts'))
             ;
     }
 
