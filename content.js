@@ -758,15 +758,17 @@ function main(common, lang) {
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
         span.innerHTML = text;
-        span.addEventListener('click', () => {
+        const onclick = () => {
             if (isShorts && window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
-                app.querySelectorAll('ytd-rich-section-renderer:has(button.yt-spec-button-shape-next) a.yt-spec-button-shape-next').forEach(n => n.click());
+                app.querySelectorAll('ytd-rich-section-renderer:has(button.yt-spec-button-shape-next) ytd-button-renderer:has(a.yt-spec-button-shape-next) div.yt-spec-touch-feedback-shape__fill').forEach(n => n.click());
             } else {
                 changeMode(mode, multiselection, span.classList.contains('selected'));
                 updateVisibility(app);
                 window.scroll({ top: 0, behavior: 'instant' });
             }
-        });
+        };
+        span.addEventListener('click', onclick);
+        span.addEventListener('touchstart', onclick);
         return span;
     }
 
