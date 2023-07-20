@@ -325,6 +325,11 @@ function main(common, lang) {
     }
 
     function updateVisibility(node) {
+        //// shorts
+        if (window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
+            node.querySelectorAll('ytd-rich-section-renderer:has(button.yt-spec-button-shape-next)').forEach(n => n.style.display = 'none');
+        }
+
         // subscriptions?flow=1, library
         node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n));
 
@@ -696,7 +701,7 @@ function main(common, lang) {
         menu.appendChild(createButton(common.button_label.live, 'live'));
         menu.appendChild(createButton(common.button_label.streamed, 'streamed'));
         menu.appendChild(createButton(common.button_label.video, 'video'));
-        menu.appendChild(createButton(common.button_label.short, 'short'));
+        menu.appendChild(createButton(common.button_label.short, 'short', true));
         menu.appendChild(createButton(common.button_label.scheduled, 'scheduled'));
         menu.appendChild(createButton(common.button_label.notification_on, 'notification_on'));
         menu.appendChild(createButton(common.button_label.notification_off, 'notification_off'));
@@ -748,16 +753,22 @@ function main(common, lang) {
         return spacer;
     }
 
-    function createButton(text, mode) {
+    function createButton(text, mode, isShorts) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
         span.innerHTML = text;
-        span.addEventListener('click', () => {
-            changeMode(mode, multiselection, span.classList.contains('selected'));
-            updateVisibility(app);
-            window.scroll({ top: 0, behavior: 'instant' });
-        });
+        const onclick = () => {
+            if (isShorts && window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')) {
+                app.querySelectorAll('ytd-rich-section-renderer:has(button.yt-spec-button-shape-next) ytd-button-renderer:has(a.yt-spec-button-shape-next) div.yt-spec-touch-feedback-shape__fill').forEach(n => n.click());
+            } else {
+                changeMode(mode, multiselection, span.classList.contains('selected'));
+                updateVisibility(app);
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
+        };
+        span.addEventListener('click', onclick);
+        span.addEventListener('touchstart', onclick);
         return span;
     }
 
