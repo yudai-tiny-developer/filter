@@ -12,13 +12,6 @@ function main(common) {
         return element;
     }
 
-    function createSpacerRow() {
-        const element = document.createElement('div');
-        element.classList.add('spacer-row');
-        element.appendChild(createSpacerLabel());
-        return element;
-    }
-
     function createRow(label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined) {
         const element = document.createElement('div');
         element.classList.add('row', mode);
@@ -49,12 +42,6 @@ function main(common) {
         const div = document.createElement('div');
         div.classList.add('header-label');
         div.innerHTML = label;
-        return div;
-    }
-
-    function createSpacerLabel() {
-        const div = document.createElement('div');
-        div.classList.add('spacer-label');
         return div;
     }
 
@@ -233,7 +220,9 @@ function main(common) {
 
     const settings_list_1 = document.querySelector('div#settings_list_1');
     const settings_list_2 = document.querySelector('div#settings_list_2');
-    const settings_lists = [settings_list_1, settings_list_2];
+    const settings_list_3 = document.querySelector('div#settings_list_3');
+    const settings_list_4 = document.querySelector('div#settings_list_4');
+    const settings_lists = [settings_list_1, settings_list_2, settings_list_3, settings_list_4];
 
     chrome.storage.local.get(common.storage, (data) => {
         multiselection = data.multiselection;
@@ -250,24 +239,20 @@ function main(common) {
         settings_list_2.appendChild(createHeaderRow());
         settings_list_2.appendChild(createRow(common.button_label.progress_unwatched, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched ? data.default_progress_unwatched : false, 'progress'));
         settings_list_2.appendChild(createRow(common.button_label.progress_watched, 'progress_watched', data.progress_watched, true, data.default_progress_watched ? data.default_progress_watched : false, 'progress'));
-        settings_list_2.appendChild(createRow(common.button_label.channels_all, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
-        settings_list_2.appendChild(createRow(common.button_label.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));
-        settings_list_2.appendChild(createRow(common.button_label.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels'));
-        settings_list_2.appendChild(createRow(common.button_label.keyword, 'keyword', data.keyword, true));
-        settings_list_2.appendChild(createRow(common.button_label.multiselection, 'multiselection', data.multiselection, false));
-        settings_list_2.appendChild(createRow(common.button_label.responsive, 'responsive', data.responsive, true));
+
+        settings_list_3.appendChild(createRow(common.button_label.channels_all, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
+        settings_list_3.appendChild(createRow(common.button_label.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));
+        settings_list_3.appendChild(createRow(common.button_label.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels'));
+
+        settings_list_4.appendChild(createRow(common.button_label.keyword, 'keyword', data.keyword, true));
+        settings_list_4.appendChild(createRow(common.button_label.multiselection, 'multiselection', data.multiselection, false));
+        settings_list_4.appendChild(createRow(common.button_label.responsive, 'responsive', data.responsive, true));
 
         for (const settings_list of settings_lists) {
             let prevGroup = undefined;
             for (const mode of common.order(data.order)) {
                 const row = settings_list.querySelector('div.row.' + mode);
                 if (row) {
-                    const group = identifyGroup(row);
-                    if (group !== prevGroup) {
-                        settings_list.appendChild(createSpacerRow());
-                        prevGroup = group;
-                    }
-
                     settings_list.appendChild(row);
                     row.style.display = '';
                 }
