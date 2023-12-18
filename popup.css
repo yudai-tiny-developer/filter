@@ -15,7 +15,7 @@ div.settings_cell {
 }
 
 div.settings_list {
-    display: table;
+    display: table-row-group;
     width: max-content;
 }
 
