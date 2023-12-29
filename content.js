@@ -1223,7 +1223,5 @@ function main(common, lang) {
         });
 
         window.addEventListener('resize', onResize);
-    } else {
-        console.warn('ytd-app not found');
     }
 }
