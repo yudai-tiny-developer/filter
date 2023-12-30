@@ -229,40 +229,6 @@ function main(common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = channels_none === true ? '' : 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (window.location.href.startsWith('https://www.youtube.com/channel/')
-                || window.location.href.startsWith('https://www.youtube.com/c/')
-                || window.location.href.startsWith('https://www.youtube.com/@')
-                || window.location.href.startsWith('https://www.youtube.com/user/')) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = live === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = streamed === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = video === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = short === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = scheduled === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = notification_on === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = notification_off === true ? '' : 'none');
-
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = live === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = streamed === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = video === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = short === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = scheduled === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = notification_on === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = notification_off === true ? '' : 'none');
-
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = progress_unwatched === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = progress_watched === true ? '' : 'none');
-
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
-
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
             } else {
                 console.warn('Unknown target: ' + window.location.href);
             }
@@ -292,10 +258,6 @@ function main(common, lang) {
             || window.location.href.startsWith('https://www.youtube.com/playlist')
             || window.location.href.startsWith('https://www.youtube.com/feed/channels')
             || window.location.href.startsWith('https://www.youtube.com/feed/you')
-            || window.location.href.startsWith('https://www.youtube.com/channel/')
-            || window.location.href.startsWith('https://www.youtube.com/c/')
-            || window.location.href.startsWith('https://www.youtube.com/@')
-            || window.location.href.startsWith('https://www.youtube.com/user/')
         ) && (!window.location.href.startsWith('https://www.youtube.com/feed/subscriptions/shorts'))
             ;
     }
