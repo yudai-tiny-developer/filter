@@ -104,7 +104,8 @@ function main(common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (window.location.href.startsWith('https://www.youtube.com/feed/library')) {
+            } else if (window.location.href.startsWith('https://www.youtube.com/feed/library')
+                || window.location.href.startsWith('https://www.youtube.com/feed/you')) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
                 node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = live === true ? '' : 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = streamed === true ? '' : 'none');
@@ -290,6 +291,7 @@ function main(common, lang) {
             || window.location.href.startsWith('https://www.youtube.com/feed/history')
             || window.location.href.startsWith('https://www.youtube.com/playlist')
             || window.location.href.startsWith('https://www.youtube.com/feed/channels')
+            || window.location.href.startsWith('https://www.youtube.com/feed/you')
             || window.location.href.startsWith('https://www.youtube.com/channel/')
             || window.location.href.startsWith('https://www.youtube.com/c/')
             || window.location.href.startsWith('https://www.youtube.com/@')
@@ -304,6 +306,7 @@ function main(common, lang) {
             || window.location.href.startsWith('https://www.youtube.com/feed/history')
             || window.location.href.startsWith('https://www.youtube.com/playlist')
             || window.location.href.startsWith('https://www.youtube.com/feed/channels')
+            || window.location.href.startsWith('https://www.youtube.com/feed/you')
             ;
     }
 
@@ -646,19 +649,14 @@ function main(common, lang) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
         if (browse) {
             if (!browse.querySelector('form.filter-menu')) {
-                const sibling = browse.querySelector('ytd-two-column-browse-results-renderer');
-                if (sibling) {
-                    const position_fixed = isPositionFixedTarget();
-                    browse.insertBefore(createMenu(position_fixed, browse), sibling);
-                    if (position_fixed) {
-                        browse.insertBefore(createSpacer('browse'), sibling);
-                    }
-
-                    updateButtonVisibility(browse);
-                    updateMenuVisibility(browse, true);
-                } else {
-                    console.warn('ytd-two-column-browse-results-renderer not found');
+                const position_fixed = isPositionFixedTarget();
+                browse.insertBefore(createMenu(position_fixed, browse), browse.firstChild);
+                if (position_fixed) {
+                    browse.insertBefore(createSpacer('browse'), browse.firstChild);
                 }
+
+                updateButtonVisibility(browse);
+                updateMenuVisibility(browse, true);
             } else {
                 // already exists
             }
@@ -1223,7 +1221,5 @@ function main(common, lang) {
         });
 
         window.addEventListener('resize', onResize);
-    } else {
-        console.warn('ytd-app not found');
     }
 }
