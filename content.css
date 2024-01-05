@@ -201,3 +201,8 @@ ytd-rich-grid-row.filter-separator {
 ytd-ghost-grid-renderer {
     display: none !important;
 }
+
+ytd-item-section-renderer:has(ytd-video-renderer) {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+}
