@@ -259,6 +259,37 @@ function main(common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+            } else if (isShorts()) {
+                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
             } else {
                 console.warn('Unknown target: ' + window.location.href);
             }
@@ -282,8 +313,9 @@ function main(common, lang) {
     }
 
     function isSubscriptions() {
-        return window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')
-            ;
+        return (
+            window.location.href.startsWith('https://www.youtube.com/feed/subscriptions')
+        ) && (!isShorts());
     }
 
     function isLibrary() {
@@ -321,7 +353,7 @@ function main(common, lang) {
     }
 
     function isMenuTarget() {
-        return (isSubscriptions() || isLibrary() || isHistory() || isPlaylist() || isChannels() || isChannel()) && (!isShorts());
+        return isSubscriptions() || isLibrary() || isHistory() || isPlaylist() || isChannels() || isChannel() || isShorts();
     }
 
     function isPositionFixedTarget() {
@@ -781,7 +813,7 @@ function main(common, lang) {
         span.innerHTML = text;
         const onclick = () => {
             if (isShorts && isSubscriptions()) {
-                app.querySelectorAll('ytd-rich-section-renderer:has(button.yt-spec-button-shape-next) ytd-button-renderer:has(a.yt-spec-button-shape-next) div.yt-spec-touch-feedback-shape__fill').forEach(n => n.click());
+                window.location.href = 'https://www.youtube.com/feed/subscriptions/shorts';
             } else {
                 changeMode(mode, multiselection, span.classList.contains('selected'));
                 updateVisibility(app);
@@ -870,7 +902,7 @@ function main(common, lang) {
     function createQueryInput(menu) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
-        input.setAttribute('placeholder', ' ');
+        input.setAttribute('placeholder', 'Subscription Feed Filter');
         input.id = 'filter-query';
         input.value = getActiveQuery();
         input.addEventListener('change', e => {

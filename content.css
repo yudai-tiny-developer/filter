@@ -68,7 +68,7 @@ input#filter-query {
 }
 
 input#filter-query::placeholder {
-    opacity: 0;
+    -webkit-text-fill-color: #888;
 }
 
 span.filter-clear {
