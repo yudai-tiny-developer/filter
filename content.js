@@ -718,7 +718,7 @@ function main(common, lang) {
 
             browse.classList.add('filter-browse');
         } else {
-            console.warn('ytd-browse not found');
+            // not target
         }
     }
 
