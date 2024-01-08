@@ -1,8 +1,9 @@
-import(chrome.runtime.getURL('common.js')).then(common =>
-    import(chrome.runtime.getURL('lang/' + document.documentElement.getAttribute('lang') + '.js')).then(lang =>
-        main(common, lang)
-    )
-);
+import(chrome.runtime.getURL('common.js')).then(common => {
+    const lang = document.documentElement.getAttribute('lang');
+    import(chrome.runtime.getURL('lang/' + (lang ? lang : 'en') + '.js')).then(lang => {
+        main(common, lang);
+    });
+});
 
 function main(common, lang) {
     function updateButtonVisibility(node) {
@@ -718,7 +719,7 @@ function main(common, lang) {
 
             browse.classList.add('filter-browse');
         } else {
-            console.warn('ytd-browse not found');
+            // not target
         }
     }
 
