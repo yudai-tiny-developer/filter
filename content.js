@@ -358,7 +358,7 @@ function main(common, lang) {
     }
 
     function isPositionFixedTarget() {
-        return isSubscriptions() || isLibrary() || isHistory() || isPlaylist() || isChannels();
+        return isSubscriptions() || isLibrary() || isHistory() || isPlaylist() || isChannels() || isShorts();
     }
 
     function forTwoColumnBrowseResultsRenderer() {
