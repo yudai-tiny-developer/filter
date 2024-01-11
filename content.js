@@ -368,16 +368,33 @@ function main(common, lang) {
     function updateQueryRegex(node, query) {
         active.query.set(window.location.href, query);
 
-        const rs = [];
-        const qs = query.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&').match(/[^\s"]+|"([^"]*)"/g);
-        if (qs) {
-            for (const q of qs) {
-                rs.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        const queryList = [];
+        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|"]+|"([^"]*)"|\|/g);
+        let nextOr = false;
+        if (tokenList) {
+            for (const token of tokenList) {
+                if (token === '|') {
+                    nextOr = true;
+                } else {
+                    const t = token.replace(/\|/g, '\\|');
+                    if (nextOr) {
+                        queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
+                        nextOr = false;
+                    } else {
+                        queryList.push(t);
+                    }
+                }
             }
         } else {
             // empty query
         }
-        active.regex.set(window.location.href, rs);
+
+        const regExpList = [];
+        for (const q of queryList) {
+            regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+
+        active.regex.set(window.location.href, regExpList);
 
         node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
     }
