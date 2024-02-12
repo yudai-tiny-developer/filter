@@ -369,17 +369,24 @@ function main(common, lang) {
         active.query.set(window.location.href, query);
 
         const queryList = [];
-        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|"]+|"([^"]*)"|\|/g);
+        const notQueryList = [];
+        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
         let nextOr = false;
+        let nextNot = false;
         if (tokenList) {
             for (const token of tokenList) {
                 if (token === '|') {
                     nextOr = true;
+                } else if (token === '-') {
+                    nextNot = true;
                 } else {
                     const t = token.replace(/\|/g, '\\|');
-                    if (nextOr) {
+                    if (nextOr && queryList.length - 1 > 0) {
                         queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
                         nextOr = false;
+                    } else if (nextNot) {
+                        notQueryList.push(t);
+                        nextNot = false;
                     } else {
                         queryList.push(t);
                     }
@@ -393,8 +400,13 @@ function main(common, lang) {
         for (const q of queryList) {
             regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
         }
-
         active.regex.set(window.location.href, regExpList);
+
+        const notRegExpList = [];
+        for (const q of notQueryList) {
+            notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+        active.notRegex.set(window.location.href, notRegExpList);
 
         node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
     }
@@ -563,7 +575,7 @@ function main(common, lang) {
             case 'YTD-GRID-VIDEO-RENDERER':
                 const grid_video_title = node.querySelector('a#video-title');
                 if (grid_video_title) {
-                    return matchAllActiveRegex(grid_video_title.textContent);
+                    return matchQuery(grid_video_title.textContent);
                 } else {
                     console.warn('a#video-title not found');
                 }
@@ -574,7 +586,7 @@ function main(common, lang) {
                 if (!node.classList.contains('ytd-backstage-post-renderer')) {
                     const video_title = node.querySelector('a#video-title');
                     if (video_title) {
-                        return matchAllActiveRegex(video_title.textContent);
+                        return matchQuery(video_title.textContent);
                     } else {
                         console.warn('a#video-title not found');
                     }
@@ -587,7 +599,7 @@ function main(common, lang) {
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
                 const playlist_video_meta = node.querySelector('div#meta');
                 if (playlist_video_meta) {
-                    return matchAllActiveRegex(playlist_video_meta.textContent);
+                    return matchQuery(playlist_video_meta.textContent);
                 } else {
                     console.warn('div#meta not found');
                 }
@@ -597,7 +609,7 @@ function main(common, lang) {
             case 'YTD-CHANNEL-RENDERER':
                 const channel_info = node.querySelector('div#info');
                 if (channel_info) {
-                    return matchAllActiveRegex(channel_info.textContent);
+                    return matchQuery(channel_info.textContent);
                 } else {
                     console.warn('div#info not found');
                 }
@@ -607,7 +619,7 @@ function main(common, lang) {
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
                 const backstage_post_thread_content = node.querySelector('div#content');
                 if (backstage_post_thread_content) {
-                    return matchAllActiveRegex(backstage_post_thread_content.textContent);
+                    return matchQuery(backstage_post_thread_content.textContent);
                 } else {
                     console.warn('div#content not found');
                 }
@@ -615,7 +627,7 @@ function main(common, lang) {
             case 'YTD-GRID-PLAYLIST-RENDERER':
                 const grid_playlist_title = node.querySelector('a#video-title');
                 if (grid_playlist_title) {
-                    return matchAllActiveRegex(grid_playlist_title.textContent);
+                    return matchQuery(grid_playlist_title.textContent);
                 } else {
                     console.warn('a#video-title not found');
                 }
@@ -623,7 +635,7 @@ function main(common, lang) {
             case 'YTD-REEL-ITEM-RENDERER':
                 const reel_item_title = node.querySelector('span#video-title');
                 if (reel_item_title) {
-                    return matchAllActiveRegex(reel_item_title.textContent);
+                    return matchQuery(reel_item_title.textContent);
                 } else {
                     console.warn('span#video-title not found');
                 }
@@ -631,7 +643,7 @@ function main(common, lang) {
             case 'YTD-RICH-ITEM-RENDERER':
                 const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media');
                 if (rich_item_title) {
-                    return matchAllActiveRegex(rich_item_title.textContent);
+                    return matchQuery(rich_item_title.textContent);
                 } else {
                     // ad
                 }
@@ -1190,11 +1202,27 @@ function main(common, lang) {
         }
     }
 
+    function matchQuery(text) {
+        return matchAllActiveRegex(text) && matchAllActiveNotRegex(text);
+    }
+
     function matchAllActiveRegex(text) {
         const rs = active.regex.get(window.location.href);
         if (rs) {
             for (const r of rs) {
                 if (!text.match(r)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function matchAllActiveNotRegex(text) {
+        const rs = active.notRegex.get(window.location.href);
+        if (rs) {
+            for (const r of rs) {
+                if (!!r && text.match(r)) {
                     return false;
                 }
             }
@@ -1257,7 +1285,8 @@ function main(common, lang) {
         mode: new Map(),
         mode_progress: new Map(),
         query: new Map(),
-        regex: new Map()
+        regex: new Map(),
+        notRegex: new Map(),
     };
 
     let multiselection;
