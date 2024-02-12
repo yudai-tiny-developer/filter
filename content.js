@@ -381,8 +381,12 @@ function main(common, lang) {
                     nextNot = true;
                 } else {
                     const t = token.replace(/\|/g, '\\|');
-                    if (nextOr && queryList.length - 1 > 0) {
-                        queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
+                    if (nextOr) {
+                        if (queryList.length - 1 >= 0) {
+                            queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
+                        } else {
+                            queryList.push(t);
+                        }
                         nextOr = false;
                     } else if (nextNot) {
                         notQueryList.push(t);
