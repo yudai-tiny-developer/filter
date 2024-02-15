@@ -40,7 +40,8 @@ export function isNotificationOn_button(text) {
 
 // ytd-toggle-button-renderer
 export function isNotificationOff_button(text) {
-    return text === '通知する';
+    return text === '通知する'
+        || text === '通知を受け取る';
 }
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
