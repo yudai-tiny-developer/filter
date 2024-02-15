@@ -35,7 +35,8 @@ export function isVideo_status_label(text) {
 
 // ytd-toggle-button-renderer
 export function isNotificationOn_button(text) {
-    return text === '通知オン';
+    return text === '通知オン'
+        || text === '通知がオンです';
 }
 
 // ytd-toggle-button-renderer
