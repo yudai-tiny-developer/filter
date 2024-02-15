@@ -43,7 +43,8 @@ export function isNotificationOn_button(text) {
 
 // ytd-toggle-button-renderer
 export function isNotificationOff_button(text) {
-    return text === 'Receber notificações';
+    return text === 'Receber notificações'
+        || text === 'Receber notificação';
 }
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
