@@ -48,6 +48,12 @@ div.row.projection {
 div.label {
     display: table-cell;
     padding: 8px;
+    vertical-align: middle;
+}
+
+div.svg-label {
+    text-align: center;
+    vertical-align: middle;
 }
 
 div.draggable-label {

@@ -7,7 +7,7 @@ import(chrome.runtime.getURL('common.js')).then(common => {
 
 function main(common, lang) {
     function updateButtonVisibility(node) {
-        chrome.storage.local.get(common.storage, (data) => {
+        chrome.storage.local.get(common.storage, data => {
             for (const menu of node.querySelectorAll('form.filter-menu')) {
                 const select = menu.querySelector('select.filter-menu');
                 const progress = menu.querySelector('select.filter-menu-progress');
@@ -21,12 +21,33 @@ function main(common, lang) {
                     if (mode === 'keyword' || mode === 'multiselection' || mode === 'responsive') {
                         // continue
                     } else if (mode.startsWith('progress_')) {
-                        progress.appendChild(progress.querySelector('option.filter-button-progress.' + mode));
+                        const option = progress.querySelector('option.filter-button-progress.' + mode);
+                        const option_text = data['button_label_' + mode];
+                        if (option_text) {
+                            option.innerHTML = option_text;
+                        }
+                        progress.appendChild(option);
                     } else if (mode.startsWith('channels_')) {
-                        menu.appendChild(menu.querySelector('span.filter-button.' + mode));
+                        const span = menu.querySelector('span.filter-button.' + mode);
+                        const span_text = data['button_label_' + mode];
+                        if (span_text) {
+                            span.innerHTML = span_text;
+                        }
+                        menu.appendChild(span);
                     } else {
-                        menu.appendChild(menu.querySelector('span.filter-button.' + mode));
-                        select.appendChild(select.querySelector('option.filter-button.' + mode));
+                        const span = menu.querySelector('span.filter-button.' + mode);
+                        const span_text = data['button_label_' + mode];
+                        if (span_text) {
+                            span.innerHTML = span_text;
+                        }
+                        menu.appendChild(span);
+
+                        const option = select.querySelector('option.filter-button.' + mode);
+                        const option_text = data['button_label_' + mode];
+                        if (option_text) {
+                            option.innerHTML = option_text;
+                        }
+                        select.appendChild(option);
                     }
                 }
 
@@ -821,7 +842,7 @@ function main(common, lang) {
         menu.appendChild(createQueryInputArea(input));
         menu.appendChild(createSearchButton(input));
 
-        menu.addEventListener('submit', (e) => {
+        menu.addEventListener('submit', e => {
             e.preventDefault();
             updateQueryRegex(app, input.value);
             updateVisibility(app);
