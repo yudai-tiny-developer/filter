@@ -12,14 +12,15 @@ function main(common) {
         return element;
     }
 
-    function createRow(label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined) {
+    function createRow(label, default_label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined, onChange = undefined) {
         const element = document.createElement('div');
         element.classList.add('row', mode);
         if (tab_group) {
             element.classList.add('row', tab_group);
             element.setAttribute('draggable', 'true');
         }
-        element.appendChild(createLabel(label, tab_group));
+        element.appendChild(createDraggableIcon(tab_group));
+        element.appendChild(createLabelInput(label, default_label, onChange, tab_group ? element : undefined));
         element.appendChild(createToggle(mode, setting, deafult_value));
         if (default_tab !== undefined) {
             element.appendChild(createDefaultToggle(mode, default_tab, tab_group));
@@ -27,14 +28,58 @@ function main(common) {
         return element;
     }
 
-    function createLabel(label, draggable) {
+    function createDraggableIcon(draggable) {
         const div = document.createElement('div');
         if (draggable) {
             div.classList.add('draggable-label');
+            div.innerHTML = '<svg width="14" height="24" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M21 10H3V9h18v1Zm0 4H3v1h18v-1Z"></path></svg>';
         } else {
             div.classList.add('label');
         }
-        div.innerHTML = label;
+        return div;
+    }
+
+    function createLabelInput(label, default_label, onChange, row) {
+        const div = document.createElement('div');
+        div.classList.add('label');
+
+        if (default_label) {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'text');
+
+            input.addEventListener('focus', e => {
+                if (row) {
+                    row.setAttribute('draggable', 'false');
+                }
+            });
+
+            input.addEventListener('blur', e => {
+                if (row) {
+                    row.setAttribute('draggable', 'true');
+                }
+            });
+
+            if (label) {
+                input.value = label;
+            } else {
+                input.value = default_label;
+            }
+
+            if (onChange) {
+                input.addEventListener('change', e => {
+                    if (!input.value) {
+                        input.value = default_label;
+                    }
+                    onChange(e);
+                });
+            }
+
+            div.appendChild(input);
+        } else {
+            div.classList.add('svg-label');
+            div.innerHTML = label;
+        }
+
         return div;
     }
 
@@ -228,25 +273,25 @@ function main(common) {
         multiselection = data.multiselection;
 
         settings_list_1.appendChild(createHeaderRow());
-        settings_list_1.appendChild(createRow(common.button_label.live, 'live', data.live, true, data.default_live ? data.default_live : false, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.streamed, 'streamed', data.streamed, true, data.default_streamed ? data.default_streamed : false, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.video, 'video', data.video, true, data.default_video ? data.default_video : false, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.short, 'short', data.short, true, data.default_short ? data.default_short : false, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled ? data.default_scheduled : false, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on ? data.default_notification_on : false, 'subscriptions'));
-        settings_list_1.appendChild(createRow(common.button_label.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off ? data.default_notification_off : false, 'subscriptions'));
+        settings_list_1.appendChild(createRow(data.button_label_live, common.button_label.live, 'live', data.live, true, data.default_live ? data.default_live : false, 'subscriptions', e => chrome.storage.local.set({ button_label_live: e.target.value })));
+        settings_list_1.appendChild(createRow(data.button_label_streamed, common.button_label.streamed, 'streamed', data.streamed, true, data.default_streamed ? data.default_streamed : false, 'subscriptions', e => chrome.storage.local.set({ button_label_streamed: e.target.value })));
+        settings_list_1.appendChild(createRow(data.button_label_video, common.button_label.video, 'video', data.video, true, data.default_video ? data.default_video : false, 'subscriptions', e => chrome.storage.local.set({ button_label_video: e.target.value })));
+        settings_list_1.appendChild(createRow(data.button_label_short, common.button_label.short, 'short', data.short, true, data.default_short ? data.default_short : false, 'subscriptions', e => chrome.storage.local.set({ button_label_short: e.target.value })));
+        settings_list_1.appendChild(createRow(data.button_label_scheduled, common.button_label.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled ? data.default_scheduled : false, 'subscriptions', e => chrome.storage.local.set({ button_label_scheduled: e.target.value })));
+        settings_list_1.appendChild(createRow(data.button_label_notification_on, common.button_label.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on ? data.default_notification_on : false, 'subscriptions', e => chrome.storage.local.set({ button_label_notification_on: e.target.value })));
+        settings_list_1.appendChild(createRow(data.button_label_notification_off, common.button_label.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off ? data.default_notification_off : false, 'subscriptions', e => chrome.storage.local.set({ button_label_notification_off: e.target.value })));
 
         settings_list_2.appendChild(createHeaderRow());
-        settings_list_2.appendChild(createRow(common.button_label.progress_unwatched, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched ? data.default_progress_unwatched : false, 'progress'));
-        settings_list_2.appendChild(createRow(common.button_label.progress_watched, 'progress_watched', data.progress_watched, true, data.default_progress_watched ? data.default_progress_watched : false, 'progress'));
+        settings_list_2.appendChild(createRow(data.button_label_progress_unwatched, common.button_label.progress_unwatched, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched ? data.default_progress_unwatched : false, 'progress', e => chrome.storage.local.set({ button_label_progress_unwatched: e.target.value })));
+        settings_list_2.appendChild(createRow(data.button_label_progress_watched, common.button_label.progress_watched, 'progress_watched', data.progress_watched, true, data.default_progress_watched ? data.default_progress_watched : false, 'progress', e => chrome.storage.local.set({ button_label_progress_watched: e.target.value })));
 
-        settings_list_3.appendChild(createRow(common.button_label.channels_all, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
-        settings_list_3.appendChild(createRow(common.button_label.channels_personalized, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));
-        settings_list_3.appendChild(createRow(common.button_label.channels_none, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels'));
+        settings_list_3.appendChild(createRow(common.button_label.channels_all, undefined, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
+        settings_list_3.appendChild(createRow(common.button_label.channels_personalized, undefined, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));
+        settings_list_3.appendChild(createRow(common.button_label.channels_none, undefined, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels'));
 
-        settings_list_4.appendChild(createRow(common.button_label.keyword, 'keyword', data.keyword, true));
-        settings_list_4.appendChild(createRow(common.button_label.multiselection, 'multiselection', data.multiselection, false));
-        settings_list_4.appendChild(createRow(common.button_label.responsive, 'responsive', data.responsive, true));
+        settings_list_4.appendChild(createRow(common.button_label.keyword, undefined, 'keyword', data.keyword, true));
+        settings_list_4.appendChild(createRow(common.button_label.multiselection, undefined, 'multiselection', data.multiselection, false));
+        settings_list_4.appendChild(createRow(common.button_label.responsive, undefined, 'responsive', data.responsive, true));
 
         for (const settings_list of settings_lists) {
             let prevGroup = undefined;

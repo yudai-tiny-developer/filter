@@ -36,6 +36,16 @@ export const storage = [
     'multiselection',
 
     'responsive',
+
+    'button_label_live',
+    'button_label_streamed',
+    'button_label_video',
+    'button_label_short',
+    'button_label_scheduled',
+    'button_label_notification_on',
+    'button_label_notification_off',
+    'button_label_progress_unwatched',
+    'button_label_progress_watched',
 ];
 
 export const default_order = [
