@@ -46,6 +46,7 @@ function main(common) {
         if (default_label) {
             const input = document.createElement('input');
             input.setAttribute('type', 'text');
+            input.classList.add('label');
 
             input.addEventListener('focus', e => {
                 if (row) {
@@ -73,6 +74,10 @@ function main(common) {
                     onChange(e);
                 });
             }
+
+            input.addEventListener('reset', e => {
+                input.value = default_label;
+            });
 
             div.appendChild(input);
         } else {
@@ -412,6 +417,10 @@ function main(common) {
                         if (row) {
                             settings_list.appendChild(row);
                         }
+                    }
+
+                    for (const input of settings_list.querySelectorAll('input.label')) {
+                        input.dispatchEvent(new Event('reset'));
                     }
 
                     chrome.storage.local.clear();

@@ -25,6 +25,8 @@ function main(common, lang) {
                         const option_text = data['button_label_' + mode];
                         if (option_text) {
                             option.innerHTML = option_text;
+                        } else {
+                            option.innerHTML = common.button_label[mode];
                         }
                         progress.appendChild(option);
                     } else if (mode.startsWith('channels_')) {
@@ -32,6 +34,8 @@ function main(common, lang) {
                         const span_text = data['button_label_' + mode];
                         if (span_text) {
                             span.innerHTML = span_text;
+                        } else {
+                            span.innerHTML = common.button_label[mode];
                         }
                         menu.appendChild(span);
                     } else {
@@ -39,6 +43,8 @@ function main(common, lang) {
                         const span_text = data['button_label_' + mode];
                         if (span_text) {
                             span.innerHTML = span_text;
+                        } else {
+                            span.innerHTML = common.button_label[mode];
                         }
                         menu.appendChild(span);
 
@@ -46,6 +52,8 @@ function main(common, lang) {
                         const option_text = data['button_label_' + mode];
                         if (option_text) {
                             option.innerHTML = option_text;
+                        } else {
+                            option.innerHTML = common.button_label[mode];
                         }
                         select.appendChild(option);
                     }
