@@ -60,12 +60,14 @@ div.draggable-label {
     display: table-cell;
     cursor: grab;
     padding: 8px;
+    vertical-align: middle;
 }
 
 div.header-label {
     display: table-cell;
     padding: 8px;
     text-align: center;
+    vertical-align: middle;
 }
 
 div.spacer-label {
@@ -75,6 +77,8 @@ div.spacer-label {
 
 input.label {
     width: 120px;
+    height: 30px;
+    vertical-align: middle;
 }
 
 span.filter-clear {
@@ -87,12 +91,13 @@ svg.filter-clear {
     margin: 4px;
     height: 20px;
     width: 20px;
+    vertical-align: middle;
 }
 
 div.toggle {
     display: table-cell;
-    vertical-align: middle;
     padding: 8px;
+    vertical-align: middle;
 }
 
 svg.filter-button {
