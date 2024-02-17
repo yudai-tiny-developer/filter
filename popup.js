@@ -44,48 +44,81 @@ function main(common) {
         div.classList.add('label');
 
         if (default_label) {
-            const input = document.createElement('input');
-            input.setAttribute('type', 'text');
-            input.classList.add('label');
-
-            input.addEventListener('focus', e => {
-                if (row) {
-                    row.setAttribute('draggable', 'false');
-                }
-            });
-
-            input.addEventListener('blur', e => {
-                if (row) {
-                    row.setAttribute('draggable', 'true');
-                }
-            });
-
-            if (label) {
-                input.value = label;
-            } else {
-                input.value = default_label;
-            }
-
-            if (onChange) {
-                input.addEventListener('change', e => {
-                    if (!input.value) {
-                        input.value = default_label;
-                    }
-                    onChange(e);
-                });
-            }
-
-            input.addEventListener('reset', e => {
-                input.value = default_label;
-            });
-
+            const input = createInputArea(label, default_label, onChange, row);
+            const clear = createClearButton(input, default_label, onChange);
+            input.dispatchEvent(new Event('check'));
             div.appendChild(input);
+            div.appendChild(clear);
         } else {
             div.classList.add('svg-label');
             div.innerHTML = label;
         }
 
         return div;
+    }
+
+    function createInputArea(label, default_label, onChange, row) {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.classList.add('label');
+
+        input.addEventListener('focus', () => {
+            if (row) {
+                row.setAttribute('draggable', 'false');
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            if (row) {
+                row.setAttribute('draggable', 'true');
+            }
+        });
+
+        if (label) {
+            input.value = label;
+        } else {
+            input.value = default_label;
+        }
+
+        if (onChange) {
+            input.addEventListener('change', () => {
+                if (!input.value) {
+                    input.value = default_label;
+                }
+                onChange(input);
+                input.dispatchEvent(new Event('check'));
+            });
+        }
+
+        input.addEventListener('reset', () => {
+            input.value = default_label;
+            input.dispatchEvent(new Event('check'));
+        });
+
+        return input;
+    }
+
+    function createClearButton(input, default_label, onChange) {
+        const span = document.createElement('span');
+        span.classList.add('filter-clear');
+        span.innerHTML = common.button_label.clear;
+
+        if (onChange) {
+            span.addEventListener('click', () => {
+                input.dispatchEvent(new Event('reset'));
+                onChange(input);
+            });
+        }
+
+        input.addEventListener('check', () => {
+            if (input.value === default_label) {
+                span.style.visibility = 'hidden';
+            } else {
+                span.style.visibility = 'visible';
+            }
+        });
+
+        return span;
     }
 
     function createHeaderLabel(label) {
@@ -278,17 +311,17 @@ function main(common) {
         multiselection = data.multiselection;
 
         settings_list_1.appendChild(createHeaderRow());
-        settings_list_1.appendChild(createRow(data.button_label_live, common.button_label.live, 'live', data.live, true, data.default_live ? data.default_live : false, 'subscriptions', e => chrome.storage.local.set({ button_label_live: e.target.value })));
-        settings_list_1.appendChild(createRow(data.button_label_streamed, common.button_label.streamed, 'streamed', data.streamed, true, data.default_streamed ? data.default_streamed : false, 'subscriptions', e => chrome.storage.local.set({ button_label_streamed: e.target.value })));
-        settings_list_1.appendChild(createRow(data.button_label_video, common.button_label.video, 'video', data.video, true, data.default_video ? data.default_video : false, 'subscriptions', e => chrome.storage.local.set({ button_label_video: e.target.value })));
-        settings_list_1.appendChild(createRow(data.button_label_short, common.button_label.short, 'short', data.short, true, data.default_short ? data.default_short : false, 'subscriptions', e => chrome.storage.local.set({ button_label_short: e.target.value })));
-        settings_list_1.appendChild(createRow(data.button_label_scheduled, common.button_label.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled ? data.default_scheduled : false, 'subscriptions', e => chrome.storage.local.set({ button_label_scheduled: e.target.value })));
-        settings_list_1.appendChild(createRow(data.button_label_notification_on, common.button_label.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on ? data.default_notification_on : false, 'subscriptions', e => chrome.storage.local.set({ button_label_notification_on: e.target.value })));
-        settings_list_1.appendChild(createRow(data.button_label_notification_off, common.button_label.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off ? data.default_notification_off : false, 'subscriptions', e => chrome.storage.local.set({ button_label_notification_off: e.target.value })));
+        settings_list_1.appendChild(createRow(data.button_label_live, common.button_label.live, 'live', data.live, true, data.default_live ? data.default_live : false, 'subscriptions', input => chrome.storage.local.set({ button_label_live: input.value })));
+        settings_list_1.appendChild(createRow(data.button_label_streamed, common.button_label.streamed, 'streamed', data.streamed, true, data.default_streamed ? data.default_streamed : false, 'subscriptions', input => chrome.storage.local.set({ button_label_streamed: input.value })));
+        settings_list_1.appendChild(createRow(data.button_label_video, common.button_label.video, 'video', data.video, true, data.default_video ? data.default_video : false, 'subscriptions', input => chrome.storage.local.set({ button_label_video: input.value })));
+        settings_list_1.appendChild(createRow(data.button_label_short, common.button_label.short, 'short', data.short, true, data.default_short ? data.default_short : false, 'subscriptions', input => chrome.storage.local.set({ button_label_short: input.value })));
+        settings_list_1.appendChild(createRow(data.button_label_scheduled, common.button_label.scheduled, 'scheduled', data.scheduled, true, data.default_scheduled ? data.default_scheduled : false, 'subscriptions', input => chrome.storage.local.set({ button_label_scheduled: input.value })));
+        settings_list_1.appendChild(createRow(data.button_label_notification_on, common.button_label.notification_on, 'notification_on', data.notification_on, true, data.default_notification_on ? data.default_notification_on : false, 'subscriptions', input => chrome.storage.local.set({ button_label_notification_on: input.value })));
+        settings_list_1.appendChild(createRow(data.button_label_notification_off, common.button_label.notification_off, 'notification_off', data.notification_off, false, data.default_notification_off ? data.default_notification_off : false, 'subscriptions', input => chrome.storage.local.set({ button_label_notification_off: input.value })));
 
         settings_list_2.appendChild(createHeaderRow());
-        settings_list_2.appendChild(createRow(data.button_label_progress_unwatched, common.button_label.progress_unwatched, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched ? data.default_progress_unwatched : false, 'progress', e => chrome.storage.local.set({ button_label_progress_unwatched: e.target.value })));
-        settings_list_2.appendChild(createRow(data.button_label_progress_watched, common.button_label.progress_watched, 'progress_watched', data.progress_watched, true, data.default_progress_watched ? data.default_progress_watched : false, 'progress', e => chrome.storage.local.set({ button_label_progress_watched: e.target.value })));
+        settings_list_2.appendChild(createRow(data.button_label_progress_unwatched, common.button_label.progress_unwatched, 'progress_unwatched', data.progress_unwatched, true, data.default_progress_unwatched ? data.default_progress_unwatched : false, 'progress', input => chrome.storage.local.set({ button_label_progress_unwatched: input.value })));
+        settings_list_2.appendChild(createRow(data.button_label_progress_watched, common.button_label.progress_watched, 'progress_watched', data.progress_watched, true, data.default_progress_watched ? data.default_progress_watched : false, 'progress', input => chrome.storage.local.set({ button_label_progress_watched: input.value })));
 
         settings_list_3.appendChild(createRow(common.button_label.channels_all, undefined, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
         settings_list_3.appendChild(createRow(common.button_label.channels_personalized, undefined, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));

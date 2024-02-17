@@ -73,6 +73,22 @@ div.spacer-label {
     padding: 4px;
 }
 
+input.label {
+    width: 120px;
+}
+
+span.filter-clear {
+    cursor: pointer;
+    height: 30px;
+    vertical-align: middle;
+}
+
+svg.filter-clear {
+    margin: 4px;
+    height: 20px;
+    width: 20px;
+}
+
 div.toggle {
     display: table-cell;
     vertical-align: middle;
