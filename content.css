@@ -197,7 +197,6 @@ div.filter-separator {
     width: 100%;
     border-top: 2px solid var(--yt-spec-10-percent-layer);
     padding-top: 48px;
-    padding-bottom: 48px;
 }
 
 ytd-ghost-grid-renderer {
