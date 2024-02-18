@@ -72,7 +72,7 @@ function main(common, lang) {
             const video = data.video === undefined ? true : data.video;
             const short = data.short === undefined ? true : data.short;
             const scheduled = data.scheduled === undefined ? true : data.scheduled;
-            const notification_on = data.notification_on === undefined ? true : data.notification_on;
+            const notification_on = data.notification_on === undefined ? false : data.notification_on;
             const notification_off = data.notification_off === undefined ? false : data.notification_off;
 
             const progress_unwatched = data.progress_unwatched === undefined ? true : data.progress_unwatched;
