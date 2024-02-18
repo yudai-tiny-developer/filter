@@ -192,17 +192,18 @@ span.filter-button-channels {
     display: inline-flex;
 }
 
-ytd-rich-grid-row.filter-separator {
+div.filter-separator {
+    display: flex;
+    width: 100%;
     border-top: 2px solid var(--yt-spec-10-percent-layer);
     margin-top: 48px;
     padding-top: 48px;
 }
 
-ytd-ghost-grid-renderer {
-    display: none !important;
+ytd-rich-grid-row {
+    display: contents !important;
 }
 
-ytd-item-section-renderer:has(ytd-video-renderer) {
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
+ytd-rich-grid-row #contents.ytd-rich-grid-row {
+    display: contents !important;
 }
