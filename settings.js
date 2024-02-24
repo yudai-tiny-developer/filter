@@ -374,7 +374,10 @@ export function registerResetButton(reset_button, progress_div, progress_class, 
     reset_button.addEventListener('touchcancel', () => progress.endProgress(progress_div, progress_class, done_class, state));
 
     reset_button.addEventListener('mouseup', () => progress.endProgress(progress_div, progress_class, done_class, state, resetSettings, default_order));
-    reset_button.addEventListener('touchend', () => progress.endProgress(progress_div, progress_class, done_class, state, resetSettings, default_order));
+    reset_button.addEventListener('touchend', event => {
+        event.preventDefault();
+        progress.endProgress(progress_div, progress_class, done_class, state, resetSettings, default_order);
+    });
 }
 
 function resetSettings(default_order) {
