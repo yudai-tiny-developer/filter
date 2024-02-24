@@ -301,6 +301,9 @@ function main(common) {
 
     let multiselection;
 
+    let hold;
+    let holdTimeout;
+
     const settings_list_1 = document.querySelector('div#settings_list_1');
     const settings_list_2 = document.querySelector('div#settings_list_2');
     const settings_list_3 = document.querySelector('div#settings_list_3');
@@ -439,27 +442,55 @@ function main(common) {
                         });
                     }
                 }
-
-                document.querySelector('input#reset').addEventListener('click', () => {
-                    for (const input of settings_list.querySelectorAll('input.checkbox')) {
-                        input.checked = input.getAttribute('default') === 'true';
-                    }
-
-                    for (const mode of common.default_order) {
-                        const row = settings_list.querySelector('div.row.' + mode);
-                        if (row) {
-                            settings_list.appendChild(row);
-                        }
-                    }
-
-                    for (const input of settings_list.querySelectorAll('input.label')) {
-                        input.dispatchEvent(new Event('reset'));
-                    }
-
-                    chrome.storage.local.clear();
-                });
             }
         }
+    });
+
+    document.querySelector('input#reset').addEventListener('mousedown', () => {
+        clearTimeout(holdTimeout);
+        document.querySelector('div#reset_progress').classList.add('progress');
+        document.querySelector('div#reset_progress').classList.remove('done');
+        hold = false;
+
+        holdTimeout = setTimeout(() => {
+            document.querySelector('div#reset_progress').classList.remove('progress');
+            document.querySelector('div#reset_progress').classList.add('done');
+            hold = true;
+        }, 1000);
+    });
+
+    document.querySelector('input#reset').addEventListener('mouseleave', () => {
+        clearTimeout(holdTimeout);
+        document.querySelector('div#reset_progress').classList.remove('progress', 'done');
+        hold = false;
+    });
+
+    document.querySelector('input#reset').addEventListener('mouseup', () => {
+        clearTimeout(holdTimeout);
+        document.querySelector('div#reset_progress').classList.remove('progress', 'done');
+
+        if (hold) {
+            for (const settings_list of settings_lists) {
+                for (const input of settings_list.querySelectorAll('input.checkbox')) {
+                    input.checked = input.getAttribute('default') === 'true';
+                }
+
+                for (const mode of common.default_order) {
+                    const row = settings_list.querySelector('div.row.' + mode);
+                    if (row) {
+                        settings_list.appendChild(row);
+                    }
+                }
+
+                for (const input of settings_list.querySelectorAll('input.label')) {
+                    input.dispatchEvent(new Event('reset'));
+                }
+            }
+
+            chrome.storage.local.clear();
+        }
+
+        hold = false;
     });
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
