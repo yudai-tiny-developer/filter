@@ -168,13 +168,11 @@ div#reset_progress {
 }
 
 div#reset_progress.progress {
-    background-color: #E53935;
     width: 100%;
     transition: width 1000ms linear;
 }
 
 div#reset_progress.done {
-    background-color: #1E88E5;
     width: 100%;
 }
 
@@ -223,6 +221,14 @@ div#reset_progress.done {
         background-color: rgb(238, 238, 238);
         border-color: rgb(123, 123, 123);
         color: rgb(3, 3, 3);
+    }
+
+    div#reset_progress.progress {
+        background-color: #E53935;
+    }
+
+    div#reset_progress.done {
+        background-color: #1E88E5;
     }
 
     div.subscriptions {
@@ -283,6 +289,14 @@ div#reset_progress.done {
         background-color: rgb(85, 85, 85);
         border-color: rgb(123, 123, 123);
         color: rgb(255, 255, 255);
+    }
+
+    div#reset_progress.progress {
+        background-color: #E53935;
+    }
+
+    div#reset_progress.done {
+        background-color: #1E88E5;
     }
 
     div.subscriptions {
