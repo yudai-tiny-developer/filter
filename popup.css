@@ -1,3 +1,10 @@
+body {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    text-wrap: nowrap;
+}
+
 div.settings_table {
     display: table;
     width: max-content;
@@ -17,6 +24,11 @@ div.settings_cell {
 div.settings_list {
     display: table-row-group;
     width: max-content;
+}
+
+div.settings_footer {
+    display: table-caption;
+    caption-side: bottom;
 }
 
 div.row {
@@ -150,8 +162,27 @@ div#reset_container {
     padding: 8px;
 }
 
+div#reset_progress {
+    height: 4px;
+    width: 0;
+}
+
+div#reset_progress.progress {
+    width: 100%;
+    transition: width 1000ms linear;
+}
+
+div#reset_progress.done {
+    width: 100%;
+}
+
 @media (prefers-color-scheme: light) {
     body {
+        background-color: rgb(255, 255, 255);
+    }
+
+    div.settings_table,
+    div.settings_footer {
         background-color: rgb(249, 249, 249);
     }
 
@@ -192,6 +223,14 @@ div#reset_container {
         color: rgb(3, 3, 3);
     }
 
+    div#reset_progress.progress {
+        background-color: #E53935;
+    }
+
+    div#reset_progress.done {
+        background-color: #1E88E5;
+    }
+
     div.subscriptions {
         background-color: rgb(219, 219, 219);
     }
@@ -207,6 +246,11 @@ div#reset_container {
 
 @media (prefers-color-scheme: dark) {
     body {
+        background-color: rgb(0, 0, 0);
+    }
+
+    div.settings_table,
+    div.settings_footer {
         background-color: rgb(26, 26, 26);
     }
 
@@ -245,6 +289,14 @@ div#reset_container {
         background-color: rgb(85, 85, 85);
         border-color: rgb(123, 123, 123);
         color: rgb(255, 255, 255);
+    }
+
+    div#reset_progress.progress {
+        background-color: #E53935;
+    }
+
+    div#reset_progress.done {
+        background-color: #1E88E5;
     }
 
     div.subscriptions {
