@@ -84,28 +84,30 @@ function main(common, settings, progress, data) {
             for (const group of groups) {
                 for (const input of settings_list.querySelectorAll('input.default_checkbox.' + group)) {
                     input.addEventListener('change', () => {
-                        let ids = {};
+                        chrome.storage.local.get(common.storage, data => {
+                            let ids = {};
 
-                        if (input.checked) {
-                            const mode = input.id.substring(8);
-                            const checkbox = settings_list.querySelector('input#' + mode);
-                            if (checkbox) {
-                                checkbox.checked = true;
-                                ids[mode] = true;
-                            }
-                        }
-
-                        if (input.checked && !multiselection) {
-                            settings_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
-                                if (n !== input) {
-                                    n.checked = false;
-                                    ids[n.id] = false;
+                            if (input.checked) {
+                                const mode = input.id.substring(8);
+                                const checkbox = settings_list.querySelector('input#' + mode);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                    ids[mode] = true;
                                 }
-                            });
-                        }
+                            }
 
-                        ids[input.id] = input.checked;
-                        chrome.storage.local.set(ids);
+                            if (input.checked && !data.multiselection) {
+                                settings_list.querySelectorAll('input.default_checkbox.' + group).forEach(n => {
+                                    if (n !== input) {
+                                        n.checked = false;
+                                        ids[n.id] = false;
+                                    }
+                                });
+                            }
+
+                            ids[input.id] = input.checked;
+                            chrome.storage.local.set(ids);
+                        });
                     });
                 }
             }
