@@ -303,6 +303,8 @@ function main(common, progress) {
 
     let multiselection;
 
+    let state = {};
+
     const settings_list_1 = document.querySelector('div#settings_list_1');
     const settings_list_2 = document.querySelector('div#settings_list_2');
     const settings_list_3 = document.querySelector('div#settings_list_3');
@@ -445,43 +447,47 @@ function main(common, progress) {
         }
     });
 
-    const reset_button = document.querySelector('input#reset');
+    const progress_class = 'progress';
+    const done_class = 'done';
 
-    reset_button.addEventListener('mousedown', () => progress.startProgress());
-    reset_button.addEventListener('touchstart', () => progress.startProgress());
-    reset_button.addEventListener('mouseleave', () => progress.cancelProgress());
+    const reset_button = document.querySelector('input#reset');
+    const progress_div = document.querySelector('div#reset_progress');
+
+    reset_button.addEventListener('mousedown', () => progress.startProgress(progress_div, progress_class, done_class, state));
+    reset_button.addEventListener('touchstart', () => progress.startProgress(progress_div, progress_class, done_class, state));
+
+    reset_button.addEventListener('mouseleave', () => progress.endProgress(progress_div, progress_class, done_class, state));
     reset_button.addEventListener('touchmove', event => {
         const touch = event.touches[0];
         const target = document.elementFromPoint(touch.clientX, touch.clientY);
         if (target !== reset_button) {
-            progress.cancelProgress();
+            progress.endProgress(progress_div, progress_class, done_class, state);
         }
     });
-    reset_button.addEventListener('touchcancel', () => progress.cancelProgress());
-    reset_button.addEventListener('mouseup', () => progress.endProgress(resetSettings));
-    reset_button.addEventListener('touchend', () => progress.endProgress(resetSettings));
+    reset_button.addEventListener('touchcancel', () => progress.endProgress(progress_div, progress_class, done_class, state));
+
+    reset_button.addEventListener('mouseup', () => progress.endProgress(progress_div, progress_class, done_class, state, resetSettings));
+    reset_button.addEventListener('touchend', () => progress.endProgress(progress_div, progress_class, done_class, state, resetSettings));
 
     function resetSettings() {
-        if (progress.isDone()) {
-            for (const settings_list of settings_lists) {
-                for (const input of settings_list.querySelectorAll('input.checkbox')) {
-                    input.checked = input.getAttribute('default') === 'true';
-                }
+        for (const settings_list of settings_lists) {
+            for (const input of settings_list.querySelectorAll('input.checkbox')) {
+                input.checked = input.getAttribute('default') === 'true';
+            }
 
-                for (const mode of common.default_order) {
-                    const row = settings_list.querySelector('div.row.' + mode);
-                    if (row) {
-                        settings_list.appendChild(row);
-                    }
-                }
-
-                for (const input of settings_list.querySelectorAll('input.label')) {
-                    input.dispatchEvent(new Event('reset'));
+            for (const mode of common.default_order) {
+                const row = settings_list.querySelector('div.row.' + mode);
+                if (row) {
+                    settings_list.appendChild(row);
                 }
             }
 
-            chrome.storage.local.clear();
+            for (const input of settings_list.querySelectorAll('input.label')) {
+                input.dispatchEvent(new Event('reset'));
+            }
         }
+
+        chrome.storage.local.clear();
     }
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
