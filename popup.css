@@ -1,3 +1,9 @@
+body {
+    display: flex;
+    justify-content: center;
+    text-wrap: nowrap;
+}
+
 div.settings_table {
     display: table;
     width: max-content;
