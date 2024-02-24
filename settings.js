@@ -17,12 +17,13 @@ export function createHeaderRow(button_label_visibility, button_label_default) {
     const div = document.createElement('div');
     div.classList.add('header-row');
     div.appendChild(createHeaderLabel(''));
+    div.appendChild(createHeaderLabel(''));
     div.appendChild(createHeaderLabel(button_label_visibility));
     div.appendChild(createHeaderLabel(button_label_default));
     return div;
 }
 
-export function createRow(label, default_label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined, onChange = undefined, button_label_clear) {
+export function createRow(label, default_label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined, onChange = undefined, button_label_clear = undefined) {
     const div = document.createElement('div');
     div.classList.add('row', mode);
     if (tab_group) {
@@ -34,6 +35,8 @@ export function createRow(label, default_label, mode, setting, deafult_value, de
     div.appendChild(createToggle(mode, setting, deafult_value));
     if (default_tab !== undefined) {
         div.appendChild(createDefaultToggle(mode, default_tab, tab_group));
+    } else {
+        div.appendChild(createLabel(''));
     }
     return div;
 }
@@ -129,6 +132,13 @@ function createClearButton(button_label_clear, input, default_label, onChange) {
     });
 
     return span;
+}
+
+function createLabel(label) {
+    const div = document.createElement('div');
+    div.classList.add('label');
+    div.innerHTML = label;
+    return div;
 }
 
 function createHeaderLabel(label) {
