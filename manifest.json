@@ -28,6 +28,7 @@
             "resources": [
                 "lang/*.js",
                 "common.js",
+                "settings.js",
                 "progress.js"
             ],
             "matches": [
