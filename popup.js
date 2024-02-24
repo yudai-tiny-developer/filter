@@ -115,22 +115,24 @@ function main(common, settings, progress, data) {
     settings.registerResetButton(reset_button, progress_div, progress_class, done_class, common.default_order, progress);
 
     chrome.storage.onChanged.addListener(() => {
-        if (!data.multiselection) {
-            let ids = {};
-            for (const group of groups) {
-                let first = true;
-                for (const settings_list of settings_lists) {
-                    settings_list.querySelectorAll('input:checked.default_checkbox.' + group).forEach(n => {
-                        if (first) {
-                            first = false;
-                        } else {
-                            n.checked = false;
-                            ids[n.id] = false;
-                        }
-                    });
+        chrome.storage.local.get(common.storage, data => {
+            if (!data.multiselection) {
+                let ids = {};
+                for (const group of groups) {
+                    let first = true;
+                    for (const settings_list of settings_lists) {
+                        settings_list.querySelectorAll('input:checked.default_checkbox.' + group).forEach(n => {
+                            if (first) {
+                                first = false;
+                            } else {
+                                n.checked = false;
+                                ids[n.id] = false;
+                            }
+                        });
+                    }
                 }
+                chrome.storage.local.set(ids);
             }
-            chrome.storage.local.set(ids);
-        }
+        });
     });
 }
