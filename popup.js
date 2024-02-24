@@ -446,7 +446,23 @@ function main(common) {
         }
     });
 
-    document.querySelector('input#reset').addEventListener('mousedown', () => {
+    const reset_button = document.querySelector('input#reset');
+
+    reset_button.addEventListener('mousedown', () => startProgress());
+    reset_button.addEventListener('touchstart', () => startProgress());
+    reset_button.addEventListener('mouseleave', () => cancelProgress());
+    reset_button.addEventListener('touchmove', event => {
+        const touch = event.touches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        if (target !== reset_button) {
+            cancelProgress();
+        }
+    });
+    reset_button.addEventListener('touchcancel', () => cancelProgress());
+    reset_button.addEventListener('mouseup', () => endProgress(resetSettings));
+    reset_button.addEventListener('touchend', () => endProgress(resetSettings));
+
+    function startProgress() {
         clearTimeout(holdTimeout);
         document.querySelector('div#reset_progress').classList.add('progress');
         document.querySelector('div#reset_progress').classList.remove('done');
@@ -457,18 +473,22 @@ function main(common) {
             document.querySelector('div#reset_progress').classList.add('done');
             hold = true;
         }, 1000);
-    });
+    }
 
-    document.querySelector('input#reset').addEventListener('mouseleave', () => {
+    function cancelProgress() {
         clearTimeout(holdTimeout);
         document.querySelector('div#reset_progress').classList.remove('progress', 'done');
         hold = false;
-    });
+    }
 
-    document.querySelector('input#reset').addEventListener('mouseup', () => {
+    function endProgress(callback) {
         clearTimeout(holdTimeout);
         document.querySelector('div#reset_progress').classList.remove('progress', 'done');
+        callback();
+        hold = false;
+    }
 
+    function resetSettings() {
         if (hold) {
             for (const settings_list of settings_lists) {
                 for (const input of settings_list.querySelectorAll('input.checkbox')) {
@@ -489,9 +509,7 @@ function main(common) {
 
             chrome.storage.local.clear();
         }
-
-        hold = false;
-    });
+    }
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
         chrome.storage.local.get(common.storage, (data) => {
