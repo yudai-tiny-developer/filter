@@ -27,7 +27,8 @@
         {
             "resources": [
                 "lang/*.js",
-                "common.js"
+                "common.js",
+                "progress.js"
             ],
             "matches": [
                 "*://www.youtube.com/*"

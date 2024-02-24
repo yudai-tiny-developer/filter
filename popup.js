@@ -1,8 +1,10 @@
 import(chrome.runtime.getURL('common.js')).then(common =>
-    main(common)
+    import(chrome.runtime.getURL('progress.js')).then(progress =>
+        main(common, progress)
+    )
 );
 
-function main(common) {
+function main(common, progress) {
     function createHeaderRow() {
         const element = document.createElement('div');
         element.classList.add('header-row');
@@ -301,9 +303,6 @@ function main(common) {
 
     let multiselection;
 
-    let hold;
-    let holdTimeout;
-
     const settings_list_1 = document.querySelector('div#settings_list_1');
     const settings_list_2 = document.querySelector('div#settings_list_2');
     const settings_list_3 = document.querySelector('div#settings_list_3');
@@ -448,48 +447,22 @@ function main(common) {
 
     const reset_button = document.querySelector('input#reset');
 
-    reset_button.addEventListener('mousedown', () => startProgress());
-    reset_button.addEventListener('touchstart', () => startProgress());
-    reset_button.addEventListener('mouseleave', () => cancelProgress());
+    reset_button.addEventListener('mousedown', () => progress.startProgress());
+    reset_button.addEventListener('touchstart', () => progress.startProgress());
+    reset_button.addEventListener('mouseleave', () => progress.cancelProgress());
     reset_button.addEventListener('touchmove', event => {
         const touch = event.touches[0];
         const target = document.elementFromPoint(touch.clientX, touch.clientY);
         if (target !== reset_button) {
-            cancelProgress();
+            progress.cancelProgress();
         }
     });
-    reset_button.addEventListener('touchcancel', () => cancelProgress());
-    reset_button.addEventListener('mouseup', () => endProgress(resetSettings));
-    reset_button.addEventListener('touchend', () => endProgress(resetSettings));
-
-    function startProgress() {
-        clearTimeout(holdTimeout);
-        document.querySelector('div#reset_progress').classList.add('progress');
-        document.querySelector('div#reset_progress').classList.remove('done');
-        hold = false;
-
-        holdTimeout = setTimeout(() => {
-            document.querySelector('div#reset_progress').classList.remove('progress');
-            document.querySelector('div#reset_progress').classList.add('done');
-            hold = true;
-        }, 1000);
-    }
-
-    function cancelProgress() {
-        clearTimeout(holdTimeout);
-        document.querySelector('div#reset_progress').classList.remove('progress', 'done');
-        hold = false;
-    }
-
-    function endProgress(callback) {
-        clearTimeout(holdTimeout);
-        document.querySelector('div#reset_progress').classList.remove('progress', 'done');
-        callback();
-        hold = false;
-    }
+    reset_button.addEventListener('touchcancel', () => progress.cancelProgress());
+    reset_button.addEventListener('mouseup', () => progress.endProgress(resetSettings));
+    reset_button.addEventListener('touchend', () => progress.endProgress(resetSettings));
 
     function resetSettings() {
-        if (hold) {
+        if (progress.isDone()) {
             for (const settings_list of settings_lists) {
                 for (const input of settings_list.querySelectorAll('input.checkbox')) {
                     input.checked = input.getAttribute('default') === 'true';
