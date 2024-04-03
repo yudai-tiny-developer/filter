@@ -196,7 +196,16 @@ div.filter-separator {
     display: flex;
     width: 100%;
     border-top: 2px solid var(--yt-spec-10-percent-layer);
-    padding-top: 48px;
+    margin-top: 80px;
+    margin-bottom: 120px;
+}
+
+div.filter-separator-channels {
+    display: flex;
+    width: 100%;
+    border-top: 2px solid var(--yt-spec-10-percent-layer);
+    margin-top: 92px;
+    margin-bottom: 108px;
 }
 
 ytd-ghost-grid-renderer {
@@ -209,4 +218,8 @@ ytd-rich-grid-row {
 
 ytd-rich-grid-row #contents.ytd-rich-grid-row {
     display: contents !important;
+}
+
+ytd-item-section-renderer {
+    border-bottom-width: 0px !important;
 }
