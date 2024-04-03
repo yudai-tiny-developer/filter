@@ -672,9 +672,15 @@ function main(common, lang) {
 
                 // continuation stopper
                 case 'YTD-CONTINUATION-ITEM-RENDERER':
-                    const separator = document.createElement('div');
-                    separator.classList.add('filter-separator');
-                    node.previousElementSibling?.appendChild(separator);
+                    if (isSubscriptions()) {
+                        const separator = document.createElement('div');
+                        separator.classList.add('filter-separator');
+                        node.previousElementSibling?.appendChild(separator);
+                    } else if (isChannels()) {
+                        const separator = document.createElement('div');
+                        separator.classList.add('filter-separator-channels');
+                        node.previousElementSibling?.appendChild(separator);
+                    }
                     break;
             }
         }
