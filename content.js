@@ -165,38 +165,7 @@ function main(common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (isChannels()) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
-
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
-
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
-
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = all_visibled([channels_all, channels_personalized, channels_none]));
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = channels_all === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = channels_personalized === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = channels_none === true ? '' : 'none');
-
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (isChannel()) {
+            } else if (isChannel() || isShorts() || isPlaylists()) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
@@ -227,7 +196,7 @@ function main(common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (isShorts()) {
+            } else if (isChannels()) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
@@ -252,10 +221,10 @@ function main(common, lang) {
                 node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = all_visibled([channels_all, channels_personalized, channels_none]));
+                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = channels_all === true ? '' : 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = channels_personalized === true ? '' : 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = channels_none === true ? '' : 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
             } else {
@@ -320,12 +289,17 @@ function main(common, lang) {
             ;
     }
 
+    function isPlaylists() {
+        return window.location.href.startsWith('https://www.youtube.com/feed/playlists')
+            ;
+    }
+
     function isMenuTarget() {
-        return isSubscriptions() || isLibrary() || isHistory() || isPlaylist() || isChannels() || isChannel() || isShorts();
+        return isSubscriptions() || isLibrary() || isPlaylist() || isHistory() || isChannel() || isShorts() || isPlaylists() || isChannels();
     }
 
     function isPositionFixedTarget() {
-        return isSubscriptions() || isLibrary() || isHistory() || isPlaylist() || isChannels() || isShorts();
+        return isSubscriptions() || isLibrary() || isPlaylist() || isHistory() || isShorts() || isPlaylists() || isChannels();
     }
 
     function forTwoColumnBrowseResultsRenderer() {
@@ -554,16 +528,6 @@ function main(common, lang) {
                 }
                 break;
 
-            // channels
-            case 'YTD-CHANNEL-RENDERER':
-                const channel_info = node.querySelector('div#info');
-                if (channel_info) {
-                    return matchQuery(channel_info.textContent);
-                } else {
-                    console.warn('div#info not found');
-                }
-                break;
-
             // channel
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
                 const backstage_post_thread_content = node.querySelector('div#content');
@@ -589,12 +553,24 @@ function main(common, lang) {
                     console.warn('span#video-title not found');
                 }
                 break;
+
+            // channel, shorts, playlists
             case 'YTD-RICH-ITEM-RENDERER':
-                const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media');
+                const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media, .yt-core-attributed-string');
                 if (rich_item_title) {
                     return matchQuery(rich_item_title.textContent);
                 } else {
                     // ad
+                }
+                break;
+
+            // channels
+            case 'YTD-CHANNEL-RENDERER':
+                const channel_info = node.querySelector('div#info');
+                if (channel_info) {
+                    return matchQuery(channel_info.textContent);
+                } else {
+                    console.warn('div#info not found');
                 }
                 break;
         }
