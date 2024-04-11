@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Subscription Feed Filter for YouTube",
-    "version": "1.33.2",
+    "version": "1.33.0",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
     "icons": {
@@ -37,10 +37,10 @@
         }
     ],
     "action": {
-        "default_popup": "popup.html"
+        "default_popup": "popup1.html"
     },
     "options_ui": {
-        "page": "popup.html",
+        "page": "popup1.html",
         "open_in_tab": true
     },
     "permissions": [
