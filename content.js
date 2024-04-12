@@ -649,13 +649,17 @@ function main(common, lang) {
                 // continuation stopper
                 case 'YTD-CONTINUATION-ITEM-RENDERER':
                     if (isSubscriptions()) {
-                        const separator = document.createElement('div');
-                        separator.classList.add('filter-separator');
-                        node.previousElementSibling?.appendChild(separator);
+                        if (node.previousElementSibling && node.previousElementSibling.nodeName === 'YTD-RICH-GRID-ROW') {
+                            const separator = document.createElement('div');
+                            separator.classList.add('filter-separator');
+                            node.previousElementSibling.appendChild(separator);
+                        }
                     } else if (isChannels()) {
-                        const separator = document.createElement('div');
-                        separator.classList.add('filter-separator-channels');
-                        node.previousElementSibling?.appendChild(separator);
+                        if (node.previousElementSibling && node.previousElementSibling.nodeName === 'YTD-ITEM-SECTION-RENDERER') {
+                            const separator = document.createElement('div');
+                            separator.classList.add('filter-separator-channels');
+                            node.previousElementSibling?.appendChild(separator);
+                        }
                     }
                     break;
             }
