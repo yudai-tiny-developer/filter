@@ -1,54 +1,49 @@
 {
-    "manifest_version": 3,
-    "name": "Subscription Feed Filter for YouTube",
-    "version": "1.33.1",
-    "description": "__MSG_appDesc__",
-    "default_locale": "en",
-    "icons": {
-        "16": "icons/16.png",
-        "48": "icons/48.png",
-        "128": "icons/128.png"
-    },
-    "content_scripts": [
-        {
-            "js": [
-                "content.js"
-            ],
-            "css": [
-                "content.css"
-            ],
-            "run_at": "document_end",
-            "matches": [
-                "*://www.youtube.com/*"
-            ]
-        }
-    ],
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "lang/*.js",
-                "common.js",
-                "settings.js",
-                "progress.js"
-            ],
-            "matches": [
-                "*://www.youtube.com/*"
-            ]
-        }
-    ],
-    "action": {
-        "default_popup": "popup.html"
-    },
-    "options_ui": {
-        "page": "popup.html",
-        "open_in_tab": true
-    },
-    "permissions": [
-        "storage"
-    ],
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "{7d37f4c3-c6cf-4b18-a748-ed4a6e7eb281}"
-        }
+  "manifest_version": 3,
+  "name": "Subscription Feed Filter for YouTube",
+  "version": "1.33.2",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_end",
+      "matches": [
+        "*://www.youtube.com/*"
+      ]
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "lang/*.js",
+        "common.js",
+        "settings.js",
+        "progress.js"
+      ],
+      "matches": [
+        "*://www.youtube.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "popup.html",
+    "open_in_tab": true
+  },
+  "permissions": [
+    "storage"
+  ]
 }
