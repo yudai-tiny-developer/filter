@@ -408,7 +408,7 @@ function resetSettings(default_order) {
             }
         }
 
-        for (const input of settings_list.querySelectorAll('input.label')) {
+        for (const input of settings_list.querySelectorAll('input.label, input.step')) {
             input.dispatchEvent(new Event('reset'));
         }
     }
