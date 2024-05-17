@@ -70,5 +70,8 @@
     },
     "responsive": {
         "message": "반응형의"
+    },
+    "margin": {
+        "message": "Margin per section"
     }
 }

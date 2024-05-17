@@ -70,5 +70,8 @@
     },
     "responsive": {
         "message": "Resposive"
+    },
+    "margin": {
+        "message": "Margin per section"
     }
 }

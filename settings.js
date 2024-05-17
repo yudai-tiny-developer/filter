@@ -23,7 +23,7 @@ export function createHeaderRow(button_label_visibility, button_label_default) {
     return div;
 }
 
-export function createRow(label, default_label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined, onChange = undefined, button_label_clear = undefined) {
+export function createRow(label, default_label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined, onChange = undefined, button_label_clear = undefined, input_class = undefined, minRate = undefined, maxRate = undefined, stepRate = undefined, limitRate = undefined) {
     const div = document.createElement('div');
     div.classList.add('row', mode);
     if (tab_group) {
@@ -32,7 +32,13 @@ export function createRow(label, default_label, mode, setting, deafult_value, de
     }
     div.appendChild(createDraggableIcon(tab_group));
     div.appendChild(createLabelInput(label, default_label, onChange, tab_group ? div : undefined, button_label_clear));
-    div.appendChild(createToggle(mode, setting, deafult_value));
+    switch (input_class) {
+        case 'step':
+            div.appendChild(createInputArea(setting, deafult_value, onChange, undefined, input_class, minRate, maxRate, stepRate, limitRate));
+            break;
+        default:
+            div.appendChild(createToggle(mode, setting, deafult_value));
+    }
     if (default_tab !== undefined) {
         div.appendChild(createDefaultToggle(mode, default_tab, tab_group));
     } else {
@@ -70,10 +76,10 @@ function createLabelInput(label, default_label, onChange, row, button_label_clea
     return div;
 }
 
-function createInputArea(label, default_label, onChange, row) {
+function createInputArea(label, default_label, onChange, row, input_class = 'label', minRate = undefined, maxRate = undefined, stepRate = undefined, limitRate = undefined) {
     const input = document.createElement('input');
     input.setAttribute('type', 'text');
-    input.classList.add('label');
+    input.classList.add(input_class);
 
     input.addEventListener('focus', () => {
         if (row) {
@@ -87,10 +93,19 @@ function createInputArea(label, default_label, onChange, row) {
         }
     });
 
-    if (label) {
-        input.value = label;
+    if (input_class === 'step') {
+        input.type = 'number';
+        input.value = limitRate(label, default_label, minRate, maxRate, stepRate);
+        input.setAttribute('defaultValue', default_label);
+        input.min = minRate;
+        input.max = maxRate;
+        input.step = stepRate;
     } else {
-        input.value = default_label;
+        if (label) {
+            input.value = label;
+        } else {
+            input.value = default_label;
+        }
     }
 
     if (onChange) {

@@ -46,6 +46,8 @@ export const storage = [
     'button_label_notification_off',
     'button_label_progress_unwatched',
     'button_label_progress_watched',
+
+    'margin',
 ];
 
 export const default_order = [
@@ -63,12 +65,6 @@ export const default_order = [
     'channels_all',
     'channels_personalized',
     'channels_none',
-
-    'keyword',
-
-    'multiselection',
-
-    'responsive',
 ];
 
 export function order(order) {
@@ -111,4 +107,32 @@ export const button_label = {
     multiselection: chrome.i18n.getMessage('multiselection'),
 
     responsive: chrome.i18n.getMessage('responsive'),
+
+    margin: chrome.i18n.getMessage('margin'),
 };
+
+export const defaultMargin = 100;
+export const minMargin = 20;
+export const maxMargin = 200;
+export const stepMargin = 1;
+
+export function limitMargin(value, defaultValue, minValue, maxValue, stepValue) {
+    return step(range(normalize(value, defaultValue), minValue, maxValue), stepValue);
+}
+
+function isNumber(value) {
+    return Number.isFinite(parseFloat(value));
+}
+
+function normalize(value, defaultValue) {
+    return isNumber(value) ? value : defaultValue;
+}
+
+function range(value, minValue, maxValue) {
+    return Math.min(Math.max(value, minValue), maxValue);
+}
+
+function step(value, stepValue) {
+    const step = 1.0 / stepValue;
+    return Math.round(value * step) / step;
+}

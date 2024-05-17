@@ -93,6 +93,12 @@ input.label {
     vertical-align: middle;
 }
 
+input.step {
+    width: 50px;
+    height: 30px;
+    vertical-align: middle;
+}
+
 span.filter-clear {
     cursor: pointer;
     height: 30px;

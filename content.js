@@ -103,6 +103,8 @@ function main(common, lang) {
 
             responsive = data.responsive === undefined ? true : data.responsive;
 
+            margin = data.margin === undefined ? 100 : data.margin;
+
             if (isSubscriptions() || isLibrary() || isPlaylist()) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
                 node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = live === true ? '' : 'none');
@@ -230,6 +232,8 @@ function main(common, lang) {
             } else {
                 console.warn('Unknown target: ' + window.location.href);
             }
+
+            document.documentElement.style.setProperty('--filter-separator-margin', margin + 'px');
 
             onResize(true);
 
