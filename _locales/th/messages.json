@@ -70,5 +70,8 @@
     },
     "responsive": {
         "message": "ที่ตอบสนองได้"
+    },
+    "margin": {
+        "message": "Margin per section"
     }
 }

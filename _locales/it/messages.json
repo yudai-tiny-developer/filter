@@ -70,5 +70,8 @@
     },
     "responsive": {
         "message": "Reattivo"
+    },
+    "margin": {
+        "message": "Margin per section"
     }
 }

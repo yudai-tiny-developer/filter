@@ -1,6 +1,7 @@
 :root {
     --filter-button-display: inline-flex;
     --filter-menu-display: none;
+    --filter-separator-margin: 100px;
 }
 
 span.filter-button {
@@ -196,16 +197,16 @@ div.filter-separator {
     display: flex;
     width: 100%;
     border-top: 2px solid var(--yt-spec-10-percent-layer);
-    margin-top: 80px;
-    margin-bottom: 120px;
+    margin-top: calc(var(--filter-separator-margin) - 20px);
+    margin-bottom: calc(var(--filter-separator-margin) + 20px);
 }
 
 div.filter-separator-channels {
     display: flex;
     width: 100%;
     border-top: 2px solid var(--yt-spec-10-percent-layer);
-    margin-top: 92px;
-    margin-bottom: 108px;
+    margin-top: calc(var(--filter-separator-margin) - 8px);
+    margin-bottom: calc(var(--filter-separator-margin) + 8px);
 }
 
 ytd-ghost-grid-renderer {
