@@ -11,17 +11,17 @@ import(chrome.runtime.getURL('common.js')).then(common =>
 function main(common, settings, progress, data) {
     const groups = ['subscriptions', 'progress', 'channels'];
 
-    const settings_list_1 = document.querySelector('div#settings_list_1');
-    const settings_list_2 = document.querySelector('div#settings_list_2');
-    const settings_list_3 = document.querySelector('div#settings_list_3');
-    const settings_list_4 = document.querySelector('div#settings_list_4');
+    const settings_list_1 = document.body.querySelector('div#settings_list_1');
+    const settings_list_2 = document.body.querySelector('div#settings_list_2');
+    const settings_list_3 = document.body.querySelector('div#settings_list_3');
+    const settings_list_4 = document.body.querySelector('div#settings_list_4');
     const settings_lists = [settings_list_1, settings_list_2, settings_list_3, settings_list_4];
 
     const progress_class = 'progress';
     const done_class = 'done';
 
-    const reset_button = document.querySelector('input#reset');
-    const progress_div = document.querySelector('div#reset_progress');
+    const reset_button = document.body.querySelector('input#reset');
+    const progress_div = document.body.querySelector('div#reset_progress');
 
     settings.init(groups, settings_lists);
 

@@ -1238,7 +1238,7 @@ function main(common, lang) {
     let nodeForCalc;
     let responsive;
 
-    const app = document.querySelector('ytd-app');
+    const app = document.body.querySelector('ytd-app');
     if (app) {
         new MutationObserver((mutations, observer) => {
             const isFilterTarget = isMenuTarget();
