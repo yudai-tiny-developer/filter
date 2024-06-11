@@ -1,9 +1,12 @@
-import(chrome.runtime.getURL('common.js')).then(common => {
-    const lang = document.documentElement.getAttribute('lang');
-    import(chrome.runtime.getURL('lang/' + (lang ? lang : 'en') + '.js')).then(lang => {
-        main(common, lang);
+const app = document.querySelector('ytd-app');
+if (app) {
+    import(chrome.runtime.getURL('common.js')).then(common => {
+        const lang = document.documentElement.getAttribute('lang');
+        import(chrome.runtime.getURL('lang/' + (lang ? lang : 'en') + '.js')).then(lang => {
+            main(common, lang);
+        });
     });
-});
+}
 
 function main(common, lang) {
     function updateButtonVisibility(node) {
@@ -1238,32 +1241,29 @@ function main(common, lang) {
     let nodeForCalc;
     let responsive;
 
-    const app = document.body.querySelector('ytd-app');
-    if (app) {
-        new MutationObserver((mutations, observer) => {
-            const isFilterTarget = isMenuTarget();
-            for (const m of mutations) {
-                if (m.target.nodeName === 'TITLE') {
-                    onViewChanged(isFilterTarget);
-                } else {
-                    onNodeLoaded(m.target, isFilterTarget);
-                }
+    new MutationObserver((mutations, observer) => {
+        const isFilterTarget = isMenuTarget();
+        for (const m of mutations) {
+            if (m.target.nodeName === 'TITLE') {
+                onViewChanged(isFilterTarget);
+            } else {
+                onNodeLoaded(m.target, isFilterTarget);
             }
-        }).observe(document, {
-            subtree: true,
-            childList: true,
-        });
-
-        if (isMenuTarget()) {
-            app.querySelectorAll('ytd-browse, ytd-section-list-renderer').forEach(n => insertMenu(n));
         }
+    }).observe(document, {
+        subtree: true,
+        childList: true,
+    });
 
-        chrome.storage.onChanged.addListener((changes, namespace) => {
-            if (isMenuTarget()) {
-                updateButtonVisibility(app);
-            }
-        });
-
-        window.addEventListener('resize', onResize);
+    if (isMenuTarget()) {
+        app.querySelectorAll('ytd-browse, ytd-section-list-renderer').forEach(n => insertMenu(n));
     }
+
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (isMenuTarget()) {
+            updateButtonVisibility(app);
+        }
+    });
+
+    window.addEventListener('resize', onResize);
 }
