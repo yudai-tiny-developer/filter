@@ -224,3 +224,7 @@ ytd-rich-grid-row #contents.ytd-rich-grid-row {
 ytd-item-section-renderer {
     border-bottom-width: 0px !important;
 }
+
+ytd-feed-filter-chip-bar-renderer.ytd-item-section-renderer {
+    display: none !important;
+}
