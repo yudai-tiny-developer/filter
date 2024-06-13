@@ -1241,16 +1241,16 @@ function main(common, lang) {
     let nodeForCalc;
     let responsive;
 
+    document.addEventListener('yt-navigate-finish', () => {
+        onViewChanged(isMenuTarget());
+    });
+
     new MutationObserver((mutations, observer) => {
         const isFilterTarget = isMenuTarget();
         for (const m of mutations) {
-            if (m.target.nodeName === 'TITLE') {
-                onViewChanged(isFilterTarget);
-            } else {
-                onNodeLoaded(m.target, isFilterTarget);
-            }
+            onNodeLoaded(m.target, isFilterTarget);
         }
-    }).observe(document, {
+    }).observe(app, {
         subtree: true,
         childList: true,
     });
