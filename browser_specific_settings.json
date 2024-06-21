@@ -1,7 +1,7 @@
 {
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{7d37f4c3-c6cf-4b18-a748-ed4a6e7eb281}"
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{7d37f4c3-c6cf-4b18-a748-ed4a6e7eb281}"
+        }
     }
-  }
 }
