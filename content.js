@@ -1,12 +1,10 @@
-const app = document.querySelector('ytd-app');
-if (app) {
-    import(chrome.runtime.getURL('common.js')).then(common => {
-        const lang = document.documentElement.getAttribute('lang');
-        import(chrome.runtime.getURL('lang/' + (lang ? lang : 'en') + '.js')).then(lang => {
-            main(common, lang);
-        });
+const app = document.querySelector('ytd-app') ?? document.body;
+import(chrome.runtime.getURL('common.js')).then(common => {
+    const lang = document.documentElement.getAttribute('lang');
+    import(chrome.runtime.getURL('lang/' + (lang ? lang : 'en') + '.js')).then(lang => {
+        main(common, lang);
     });
-}
+});
 
 function main(common, lang) {
     function updateButtonVisibility(node) {
