@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Subscription Feed Filter for YouTube",
-    "version": "1.37.0",
+    "version": "1.37.1",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
     "icons": {
@@ -11,11 +11,11 @@
     },
     "content_scripts": [
         {
-            "js": [
-                "content.js"
-            ],
             "css": [
                 "content.css"
+            ],
+            "js": [
+                "content.js"
             ],
             "run_at": "document_end",
             "matches": [
@@ -26,10 +26,8 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "lang/*.js",
                 "common.js",
-                "settings.js",
-                "progress.js"
+                "lang/*.js"
             ],
             "matches": [
                 "https://www.youtube.com/*"
