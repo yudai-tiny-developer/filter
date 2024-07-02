@@ -136,3 +136,47 @@ function step(value, stepValue) {
     const step = 1.0 / stepValue;
     return Math.round(value * step) / step;
 }
+
+export function isSubscriptions(url) {
+    return url.startsWith('https://www.youtube.com/feed/subscriptions') && !url.startsWith('https://www.youtube.com/feed/subscriptions/shorts')
+        ;
+}
+
+export function isShorts(url) {
+    return url.startsWith('https://www.youtube.com/feed/subscriptions/shorts')
+        ;
+}
+
+export function isLibrary(url) {
+    return url.startsWith('https://www.youtube.com/feed/library')
+        || url.startsWith('https://www.youtube.com/feed/you')
+        ;
+}
+
+export function isHistory(url) {
+    return url.startsWith('https://www.youtube.com/feed/history')
+        ;
+}
+
+export function isPlaylists(url) {
+    return url.startsWith('https://www.youtube.com/feed/playlists')
+        ;
+}
+
+export function isPlaylist(url) {
+    return url.startsWith('https://www.youtube.com/playlist?')
+        ;
+}
+
+export function isChannels(url) {
+    return url.startsWith('https://www.youtube.com/feed/channels')
+        ;
+}
+
+export function isChannel(url) {
+    return url.startsWith('https://www.youtube.com/channel/')
+        || url.startsWith('https://www.youtube.com/c/')
+        || url.startsWith('https://www.youtube.com/@')
+        || url.startsWith('https://www.youtube.com/user/')
+        ;
+}
