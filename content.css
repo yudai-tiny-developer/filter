@@ -228,3 +228,16 @@ ytd-item-section-renderer {
 ytd-feed-filter-chip-bar-renderer.ytd-item-section-renderer {
     display: none !important;
 }
+
+ytd-tabbed-page-header.grid-disabled>tp-yt-app-header-layout.ytd-tabbed-page-header>div#wrapper.tp-yt-app-header-layout>tp-yt-app-header#header.ytd-tabbed-page-header {
+    position: relative !important;
+    left: auto !important;
+}
+
+ytd-tabbed-page-header.grid-disabled>tp-yt-app-header-layout.ytd-tabbed-page-header>div#wrapper.tp-yt-app-header-layout>tp-yt-app-header#header.ytd-tabbed-page-header+div#contentContainer.tp-yt-app-header-layout {
+    padding-top: 0px !important;
+}
+
+ytd-tabbed-page-header.grid-disabled>tp-yt-app-header-layout.ytd-tabbed-page-header>div#wrapper.tp-yt-app-header-layout>tp-yt-app-header#header.ytd-tabbed-page-header>div#contentContainer.tp-yt-app-header>tp-yt-app-toolbar.ytd-tabbed-page-header {
+    display: none !important;
+}

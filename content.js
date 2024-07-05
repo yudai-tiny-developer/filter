@@ -136,7 +136,7 @@ function main(app, common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (common.isHistory(location.href)) {
+            } else if (common.isHistory(location.href) || common.isHashTag(location.href)) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, video, short]));
                 node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = live === true ? '' : 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
@@ -262,6 +262,7 @@ function main(app, common, lang) {
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
             || common.isChannel(location.href)
+            || common.isHashTag(location.href)
             ;
     }
 
@@ -273,11 +274,23 @@ function main(app, common, lang) {
             || common.isPlaylists(location.href)
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
+            || common.isHashTag(location.href)
             ;
     }
 
     function forTwoColumnBrowseResultsRenderer() {
         return common.isChannel(location.href);
+    }
+
+    function needSpacer() {
+        return common.isSubscriptions(location.href)
+            || common.isShorts(location.href)
+            || common.isLibrary(location.href)
+            || common.isHistory(location.href)
+            || common.isPlaylists(location.href)
+            || common.isPlaylist(location.href)
+            || common.isChannels(location.href)
+            ;
     }
 
     function updateQueryRegex(node, query) {
@@ -647,7 +660,7 @@ function main(app, common, lang) {
                 const position_fixed = isPositionFixedTarget();
                 const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
                 browse.insertBefore(createMenu(position_fixed, browse), referenceNode);
-                if (position_fixed) {
+                if (needSpacer()) {
                     browse.insertBefore(createSpacer('browse'), referenceNode);
                 }
 

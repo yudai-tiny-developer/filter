@@ -180,3 +180,8 @@ export function isChannel(url) {
         || url.startsWith('https://www.youtube.com/user/')
         ;
 }
+
+export function isHashTag(url) {
+    return url.startsWith('https://www.youtube.com/hashtag/')
+        ;
+}
