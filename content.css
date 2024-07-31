@@ -193,6 +193,10 @@ span.filter-button-channels {
     display: inline-flex;
 }
 
+ytd-rich-item-renderer.filter-separator {
+    width: 100% !important;
+}
+
 div.filter-separator {
     display: flex;
     width: 100%;

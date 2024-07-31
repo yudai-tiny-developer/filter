@@ -640,6 +640,13 @@ function main(app, common, lang) {
                             const separator = document.createElement('div');
                             separator.classList.add('filter-separator');
                             node.previousElementSibling.appendChild(separator);
+                        } else if (node.previousElementSibling && node.previousElementSibling.nodeName === 'YTD-RICH-ITEM-RENDERER') {
+                            const container = document.createElement('YTD-RICH-ITEM-RENDERER');
+                            container.classList.add('filter-separator');
+                            const separator = document.createElement('div');
+                            separator.classList.add('filter-separator');
+                            container.appendChild(separator);
+                            node.parentNode.insertBefore(container, node);
                         }
                     } else if (common.isChannels(location.href)) {
                         if (node.previousElementSibling && node.previousElementSibling.nodeName === 'YTD-ITEM-SECTION-RENDERER') {
@@ -902,7 +909,9 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node) {
-        if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+        if (node.classList.contains('filter-separator')) {
+            node.style.display = '';
+        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
             node.style.display = '';
         } else {
             node.style.display = 'none';
