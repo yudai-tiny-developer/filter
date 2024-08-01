@@ -47,7 +47,7 @@ export const storage = [
     'button_label_progress_unwatched',
     'button_label_progress_watched',
 
-    'margin',
+    'limit',
 ];
 
 export const default_order = [
@@ -108,15 +108,15 @@ export const button_label = {
 
     responsive: chrome.i18n.getMessage('responsive'),
 
-    margin: chrome.i18n.getMessage('margin'),
+    limit: chrome.i18n.getMessage('limit'),
 };
 
-export const defaultMargin = 100;
-export const minMargin = 20;
-export const maxMargin = 200;
-export const stepMargin = 1;
+export const defaultLimit = 1000;
+export const minLimit = 100;
+export const maxLimit = 10000;
+export const stepLimit = 100;
 
-export function limitMargin(value, defaultValue, minValue, maxValue, stepValue) {
+export function limit(value, defaultValue, minValue, maxValue, stepValue) {
     return step(range(normalize(value, defaultValue), minValue, maxValue), stepValue);
 }
 

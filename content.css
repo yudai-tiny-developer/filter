@@ -1,7 +1,6 @@
 :root {
     --filter-button-display: inline-flex;
     --filter-menu-display: none;
-    --filter-separator-margin: 100px;
 }
 
 span.filter-button {
@@ -163,11 +162,6 @@ option.filter-button.placeholder {
     display: none;
 }
 
-.filter-browse {
-    align-items: center !important;
-    padding-top: 0px !important;
-}
-
 span.filter-button-subscriptions {
     display: var(--filter-button-display);
 }
@@ -191,57 +185,4 @@ form.filter-forCalc {
 
 span.filter-button-channels {
     display: inline-flex;
-}
-
-ytd-rich-item-renderer.filter-separator {
-    width: 100% !important;
-}
-
-div.filter-separator {
-    display: flex;
-    width: 100%;
-    border-top: 2px solid var(--yt-spec-10-percent-layer);
-    margin-top: calc(var(--filter-separator-margin) - 20px);
-    margin-bottom: calc(var(--filter-separator-margin) + 20px);
-}
-
-div.filter-separator-channels {
-    display: flex;
-    width: 100%;
-    border-top: 2px solid var(--yt-spec-10-percent-layer);
-    margin-top: calc(var(--filter-separator-margin) - 8px);
-    margin-bottom: calc(var(--filter-separator-margin) + 8px);
-}
-
-ytd-ghost-grid-renderer {
-    display: none !important;
-}
-
-ytd-rich-grid-row {
-    display: contents !important;
-}
-
-ytd-rich-grid-row #contents.ytd-rich-grid-row {
-    display: contents !important;
-}
-
-ytd-item-section-renderer {
-    border-bottom-width: 0px !important;
-}
-
-ytd-feed-filter-chip-bar-renderer.ytd-item-section-renderer {
-    display: none !important;
-}
-
-ytd-tabbed-page-header.grid-disabled>tp-yt-app-header-layout.ytd-tabbed-page-header>div#wrapper.tp-yt-app-header-layout>tp-yt-app-header#header.ytd-tabbed-page-header {
-    position: relative !important;
-    left: auto !important;
-}
-
-ytd-tabbed-page-header.grid-disabled>tp-yt-app-header-layout.ytd-tabbed-page-header>div#wrapper.tp-yt-app-header-layout>tp-yt-app-header#header.ytd-tabbed-page-header+div#contentContainer.tp-yt-app-header-layout {
-    padding-top: 0px !important;
-}
-
-ytd-tabbed-page-header.grid-disabled>tp-yt-app-header-layout.ytd-tabbed-page-header>div#wrapper.tp-yt-app-header-layout>tp-yt-app-header#header.ytd-tabbed-page-header>div#contentContainer.tp-yt-app-header>tp-yt-app-toolbar.ytd-tabbed-page-header {
-    display: none !important;
 }
