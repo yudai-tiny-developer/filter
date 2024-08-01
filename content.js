@@ -100,10 +100,9 @@ function main(app, common, lang) {
             default_tab.channels_none = data.default_channels_none;
 
             multiselection = data.multiselection === undefined ? false : data.multiselection;
-
             responsive = data.responsive === undefined ? true : data.responsive;
-
             margin = data.margin === undefined ? 100 : data.margin;
+            limit = data.limit === undefined ? 1000 : data.limit;
 
             if (common.isSubscriptions(location.href) || common.isLibrary(location.href) || common.isPlaylist(location.href)) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -636,23 +635,8 @@ function main(app, common, lang) {
                 // continuation stopper
                 case 'YTD-CONTINUATION-ITEM-RENDERER':
                     if (common.isSubscriptions(location.href)) {
-                        if (node.previousElementSibling && node.previousElementSibling.nodeName === 'YTD-RICH-GRID-ROW') {
-                            const separator = document.createElement('div');
-                            separator.classList.add('filter-separator');
-                            node.previousElementSibling.appendChild(separator);
-                        } else if (node.previousElementSibling && node.previousElementSibling.nodeName === 'YTD-RICH-ITEM-RENDERER') {
-                            const container = document.createElement('YTD-RICH-ITEM-RENDERER');
-                            container.classList.add('filter-separator');
-                            const separator = document.createElement('div');
-                            separator.classList.add('filter-separator');
-                            container.appendChild(separator);
-                            node.parentNode.insertBefore(container, node);
-                        }
-                    } else if (common.isChannels(location.href)) {
-                        if (node.previousElementSibling && node.previousElementSibling.nodeName === 'YTD-ITEM-SECTION-RENDERER') {
-                            const separator = document.createElement('div');
-                            separator.classList.add('filter-separator-channels');
-                            node.previousElementSibling?.appendChild(separator);
+                        if (node.parentNode.children.length > limit) {
+                            node.style.display = 'none';
                         }
                     }
                     break;
@@ -676,8 +660,6 @@ function main(app, common, lang) {
             } else {
                 // already exists
             }
-
-            browse.classList.add('filter-browse');
         } else {
             // not target
         }
@@ -1229,6 +1211,7 @@ function main(app, common, lang) {
     let resizeTimer;
     let nodeForCalc;
     let responsive;
+    let limit = 1000;
 
     document.addEventListener('yt-navigate-finish', () => {
         onViewChanged(isMenuTarget());
