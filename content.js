@@ -101,8 +101,7 @@ function main(app, common, lang) {
 
             multiselection = data.multiselection === undefined ? false : data.multiselection;
             responsive = data.responsive === undefined ? true : data.responsive;
-            margin = data.margin === undefined ? 100 : data.margin;
-            limit = data.limit === undefined ? 1000 : data.limit;
+            limit = data.limit === undefined ? common.defaultLimit : data.limit;
 
             if (common.isSubscriptions(location.href) || common.isLibrary(location.href) || common.isPlaylist(location.href)) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -231,8 +230,6 @@ function main(app, common, lang) {
             } else {
                 console.warn('Unknown target: ' + location.href);
             }
-
-            document.documentElement.style.setProperty('--filter-separator-margin', margin + 'px');
 
             onResize(true);
 

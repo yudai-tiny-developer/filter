@@ -45,7 +45,7 @@ function main(common, settings, progress, data) {
     settings_list_4.appendChild(settings.createRow(common.button_label.keyword, undefined, 'keyword', data.keyword, true));
     settings_list_4.appendChild(settings.createRow(common.button_label.multiselection, undefined, 'multiselection', data.multiselection, false));
     settings_list_4.appendChild(settings.createRow(common.button_label.responsive, undefined, 'responsive', data.responsive, true));
-    settings_list_4.appendChild(settings.createRow(common.button_label.margin, undefined, 'margin', data.margin, common.defaultMargin, undefined, undefined, input => chrome.storage.local.set({ margin: common.limitMargin(input.value, common.defaultMargin, common.minMargin, common.maxMargin, common.stepMargin) }), undefined, 'step', common.minMargin, common.maxMargin, common.stepMargin, common.limitMargin));
+    settings_list_4.appendChild(settings.createRow(common.button_label.limit, undefined, 'limit', data.limit, common.defaultLimit, undefined, undefined, input => chrome.storage.local.set({ limit: common.limit(input.value, common.defaultLimit, common.minLimit, common.maxLimit, common.stepLimit) }), undefined, 'step', common.minLimit, common.maxLimit, common.stepLimit, common.limit));
 
     for (const settings_list of settings_lists) {
         for (const mode of common.order(data.order)) {

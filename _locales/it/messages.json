@@ -71,7 +71,7 @@
     "responsive": {
         "message": "Reattivo"
     },
-    "margin": {
-        "message": "Margin per section"
+    "limit": {
+        "message": "Limit of grid items"
     }
 }

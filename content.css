@@ -1,7 +1,6 @@
 :root {
     --filter-button-display: inline-flex;
     --filter-menu-display: none;
-    --filter-separator-margin: 100px;
 }
 
 span.filter-button {

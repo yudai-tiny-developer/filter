@@ -71,7 +71,7 @@
     "responsive": {
         "message": "回應靈敏"
     },
-    "margin": {
-        "message": "Margin per section"
+    "limit": {
+        "message": "Limit of grid items"
     }
 }

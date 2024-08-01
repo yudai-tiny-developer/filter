@@ -71,7 +71,7 @@
     "responsive": {
         "message": "レスポンシブ"
     },
-    "margin": {
-        "message": "セクション毎の余白"
+    "limit": {
+        "message": "Limit of grid items"
     }
 }
