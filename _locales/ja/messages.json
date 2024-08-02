@@ -72,6 +72,9 @@
         "message": "レスポンシブ"
     },
     "limit": {
-        "message": "Limit of grid items"
+        "message": "Limit of feeds"
+    },
+    "load": {
+        "message": "次を読み込む"
     }
 }

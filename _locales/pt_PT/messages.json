@@ -72,6 +72,9 @@
         "message": "Responsivo"
     },
     "limit": {
-        "message": "Limit of grid items"
+        "message": "Limit of feeds"
+    },
+    "load": {
+        "message": "Load more feeds"
     }
 }

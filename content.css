@@ -186,3 +186,9 @@ form.filter-forCalc {
 span.filter-button-channels {
     display: inline-flex;
 }
+
+div.filter-button-load {
+    display: grid;
+    justify-content: center;
+    width: 100%;
+}
