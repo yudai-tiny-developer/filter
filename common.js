@@ -109,6 +109,7 @@ export const button_label = {
     responsive: chrome.i18n.getMessage('responsive'),
 
     limit: chrome.i18n.getMessage('limit'),
+    load: chrome.i18n.getMessage('load'),
 };
 
 export const defaultLimit = 1000;

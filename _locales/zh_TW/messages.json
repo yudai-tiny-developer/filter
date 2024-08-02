@@ -72,6 +72,9 @@
         "message": "回應靈敏"
     },
     "limit": {
-        "message": "Limit of grid items"
+        "message": "Limit of feeds"
+    },
+    "load": {
+        "message": "Load more feeds"
     }
 }

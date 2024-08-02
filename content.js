@@ -634,6 +634,19 @@ function main(app, common, lang) {
                     if (common.isSubscriptions(location.href)) {
                         if (node.parentNode.children.length > limit) {
                             node.style.display = 'none';
+
+                            const load_button_container = document.createElement('div');
+                            load_button_container.classList.add('filter-button-load');
+                            const load_button = document.createElement('button');
+                            load_button.innerText = common.button_label.load;
+                            load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
+                            load_button.addEventListener('click', () => {
+                                load_button_container.style.display = 'none';
+                                node.style.display = '';
+                                window.scroll({ top: app.scrollHeight, behavior: 'instant' });
+                            });
+                            load_button_container.appendChild(load_button);
+                            node.parentNode.appendChild(load_button_container);
                         }
                     }
                     break;
