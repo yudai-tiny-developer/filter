@@ -47,6 +47,19 @@ export function createRow(label, default_label, mode, setting, deafult_value, de
     return div;
 }
 
+export function createRowKeyword(label, mode, setting, deafult_value, keyword, onChange = undefined, button_label_clear = undefined) {
+    const div = document.createElement('div');
+    div.classList.add('row', mode);
+    div.appendChild(createDraggableIcon(undefined));
+    div.appendChild(createLabelInput(label, undefined, undefined, undefined, undefined));
+    div.appendChild(createToggle(mode, setting, deafult_value));
+
+    const keyword_input = createLabelInput(keyword, '', onChange, div, button_label_clear, 'keyword_input');
+    div.appendChild(keyword_input);
+
+    return div;
+}
+
 function createDraggableIcon(draggable) {
     const div = document.createElement('div');
     if (draggable) {
@@ -58,12 +71,12 @@ function createDraggableIcon(draggable) {
     return div;
 }
 
-function createLabelInput(label, default_label, onChange, row, button_label_clear) {
+function createLabelInput(label, default_label, onChange, row, button_label_clear, input_class = 'label') {
     const div = document.createElement('div');
     div.classList.add('label');
 
-    if (default_label) {
-        const input = createInputArea(label, default_label, onChange, row);
+    if (default_label !== undefined) {
+        const input = createInputArea(label, default_label, onChange, row, input_class);
         const clear = createClearButton(button_label_clear, input, default_label, onChange);
         input.dispatchEvent(new Event('check'));
         div.appendChild(input);
@@ -408,7 +421,7 @@ function resetSettings(default_order) {
             }
         }
 
-        for (const input of settings_list.querySelectorAll('input.label, input.step')) {
+        for (const input of settings_list.querySelectorAll('input.label, input.step, input.keyword_input')) {
             input.dispatchEvent(new Event('reset'));
         }
     }
