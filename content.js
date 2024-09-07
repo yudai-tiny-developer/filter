@@ -1123,9 +1123,12 @@ function main(app, common, lang) {
         const query = active.query.get(location.href);
         if (query) {
             return query;
-        } else {
+        } else if (common.isSubscriptions(location.href)) {
             active.query.set(location.href, default_keyword);
             return default_keyword;
+        } else {
+            active.query.set(location.href, '');
+            return '';
         }
     }
 
