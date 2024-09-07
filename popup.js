@@ -15,7 +15,8 @@ function main(common, settings, progress, data) {
     const settings_list_2 = document.body.querySelector('div#settings_list_2');
     const settings_list_3 = document.body.querySelector('div#settings_list_3');
     const settings_list_4 = document.body.querySelector('div#settings_list_4');
-    const settings_lists = [settings_list_1, settings_list_2, settings_list_3, settings_list_4];
+    const settings_list_5 = document.body.querySelector('div#settings_list_5');
+    const settings_lists = [settings_list_1, settings_list_2, settings_list_3, settings_list_4, settings_list_5];
 
     const progress_class = 'progress';
     const done_class = 'done';
@@ -42,10 +43,12 @@ function main(common, settings, progress, data) {
     settings_list_3.appendChild(settings.createRow(common.button_label.channels_personalized, undefined, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));
     settings_list_3.appendChild(settings.createRow(common.button_label.channels_none, undefined, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels'));
 
-    settings_list_4.appendChild(settings.createRow(common.button_label.keyword, undefined, 'keyword', data.keyword, true));
     settings_list_4.appendChild(settings.createRow(common.button_label.multiselection, undefined, 'multiselection', data.multiselection, false));
     settings_list_4.appendChild(settings.createRow(common.button_label.responsive, undefined, 'responsive', data.responsive, true));
     settings_list_4.appendChild(settings.createRow(common.button_label.limit, undefined, 'limit', data.limit, common.defaultLimit, undefined, undefined, input => chrome.storage.local.set({ limit: common.limit(input.value, common.defaultLimit, common.minLimit, common.maxLimit, common.stepLimit) }), undefined, 'step', common.minLimit, common.maxLimit, common.stepLimit, common.limit));
+
+    settings_list_5.appendChild(settings.createHeaderRow(common.button_label.visibility, common.button_label.default));
+    settings_list_5.appendChild(settings.createRowKeyword(common.button_label.keyword, 'keyword', data.keyword, true, data.default_keyword, input => chrome.storage.local.set({ default_keyword: input.value }), common.button_label.clear));
 
     for (const settings_list of settings_lists) {
         for (const mode of common.order(data.order)) {

@@ -47,6 +47,8 @@ export const storage = [
     'button_label_progress_unwatched',
     'button_label_progress_watched',
 
+    'default_keyword',
+
     'limit',
 ];
 

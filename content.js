@@ -102,6 +102,7 @@ function main(app, common, lang) {
             multiselection = data.multiselection === undefined ? false : data.multiselection;
             responsive = data.responsive === undefined ? true : data.responsive;
             limit = data.limit === undefined ? common.defaultLimit : data.limit;
+            default_keyword = data.default_keyword === undefined ? '' : data.default_keyword;
 
             if (common.isSubscriptions(location.href) || common.isLibrary(location.href) || common.isPlaylist(location.href)) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -1123,8 +1124,8 @@ function main(app, common, lang) {
         if (query) {
             return query;
         } else {
-            active.query.set(location.href, '');
-            return '';
+            active.query.set(location.href, default_keyword);
+            return default_keyword;
         }
     }
 
@@ -1222,6 +1223,7 @@ function main(app, common, lang) {
     let nodeForCalc;
     let responsive;
     let limit = 1000;
+    let default_keyword = '';
 
     document.addEventListener('yt-navigate-finish', () => {
         onViewChanged(isMenuTarget());
