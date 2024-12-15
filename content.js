@@ -381,7 +381,23 @@ function main(app, common, lang) {
                         status.add('live');
                     } else if (lang.isStreamed_metadata(t)) {
                         status.add('streamed');
-                    } else if (lang.isVideo_metadata(t)) {
+                    } else if (lang.isScheduled_metadata(t)) {
+                        status.add('scheduled');
+
+                        const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
+                        if (video_button) {
+                            const t = video_button.textContent;
+                            if (lang.isNotificationOn_button(t)) {
+                                status.add('notification_on');
+                            } else if (lang.isNotificationOff_button(t)) {
+                                status.add('notification_off');
+                            } else {
+                                console.warn('Unknown notification status: ' + t);
+                            }
+                        } else {
+                            console.warn('ytd-toggle-button-renderer not found');
+                        }
+                    } else /*if (lang.isVideo_metadata(t))*/ {
                         const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
                         if (thumbnail_overlay) {
                             const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
@@ -402,24 +418,6 @@ function main(app, common, lang) {
                         if (slim_media) {
                             status.add('short');
                         }
-                    } else if (lang.isScheduled_metadata(t)) {
-                        status.add('scheduled');
-
-                        const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
-                        if (video_button) {
-                            const t = video_button.textContent;
-                            if (lang.isNotificationOn_button(t)) {
-                                status.add('notification_on');
-                            } else if (lang.isNotificationOff_button(t)) {
-                                status.add('notification_off');
-                            } else {
-                                console.warn('Unknown notification status: ' + t);
-                            }
-                        } else {
-                            console.warn('ytd-toggle-button-renderer not found');
-                        }
-                    } else {
-                        // members only
                     }
                 } else {
                     // playlist
