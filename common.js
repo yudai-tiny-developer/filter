@@ -114,7 +114,7 @@ export const button_label = {
     load: chrome.i18n.getMessage('load'),
 };
 
-export const defaultLimit = 1000;
+export const defaultLimit = 500;
 export const minLimit = 100;
 export const maxLimit = 10000;
 export const stepLimit = 100;
