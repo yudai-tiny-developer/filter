@@ -407,7 +407,8 @@ function main(app, common, lang) {
                                 } else if (overlay_style === 'SHORTS') {
                                     status.add('short');
                                 } else {
-                                    console.warn('Unknown overlay-style');
+                                    // membership only video
+                                    status.add('video');
                                 }
                             } else {
                                 console.warn('overlay-style not found');
