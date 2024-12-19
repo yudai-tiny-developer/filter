@@ -166,7 +166,7 @@ function main(app, common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (common.isShorts(location.href) || common.isPlaylists(location.href) || common.isChannel(location.href)) {
+            } else if (common.isPlaylists(location.href) || common.isChannel(location.href)) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
@@ -190,6 +190,37 @@ function main(app, common, lang) {
                 node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
                 node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = progress_unwatched === true ? '' : 'none');
                 node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = progress_watched === true ? '' : 'none');
+
+                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+            } else if (common.isShorts(location.href)) {
+                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
@@ -350,7 +381,7 @@ function main(app, common, lang) {
         node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n));
 
         // subscriptions?flow=2, history
-        node.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer)').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
 
         // playlist
         node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n));
@@ -359,10 +390,7 @@ function main(app, common, lang) {
         node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n));
 
         // channel
-        node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
-        node.querySelectorAll('ytd-grid-playlist-renderer').forEach(n => updateTargetVisibility(n));
-        node.querySelectorAll('ytd-reel-item-renderer').forEach(n => updateTargetVisibility(n));
-        node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-grid-playlist-renderer, ytd-reel-item-renderer, ytd-rich-item-renderer, ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
     }
 
     function classifyStatus(node) {
@@ -441,6 +469,7 @@ function main(app, common, lang) {
                 }
                 break;
             case 'YTD-REEL-ITEM-RENDERER':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
                 status.add('short');
                 break;
         }
@@ -455,16 +484,10 @@ function main(app, common, lang) {
             case 'YTD-GRID-VIDEO-RENDERER':
             case 'YTD-VIDEO-RENDERER':
             case 'YTD-RICH-ITEM-RENDERER':
-                const video_progress = node.querySelector('div#progress');
-                if (video_progress) {
-                    status.add('progress_watched');
-                } else {
-                    status.add('progress_unwatched');
-                }
-                break;
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const playlist_progress = node.querySelector('div#progress');
-                if (playlist_progress) {
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                const progress = node.querySelector('div#progress');
+                if (progress) {
                     status.add('progress_watched');
                 } else {
                     status.add('progress_unwatched');
@@ -554,6 +577,16 @@ function main(app, common, lang) {
                     return matchQuery(channel_info.textContent);
                 } else {
                     console.warn('div#info not found');
+                }
+                break;
+
+            // shorts
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+                if (shorts_meta) {
+                    return matchQuery(shorts_meta.textContent);
+                } else {
+                    console.warn('h3.shortsLockupViewModelHostMetadataTitle not found');
                 }
                 break;
         }
