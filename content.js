@@ -582,11 +582,11 @@ function main(app, common, lang) {
 
             // shorts
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-                const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+                const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
                 if (shorts_meta) {
                     return matchQuery(shorts_meta.textContent);
                 } else {
-                    console.warn('h3.shortsLockupViewModelHostMetadataTitle not found');
+                    console.warn('h3.shortsLockupViewModelHostMetadataTitle or h3.shortsLockupViewModelHostOutsideMetadataTitle not found');
                 }
                 break;
         }
