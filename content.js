@@ -475,10 +475,6 @@ function main(app, common, lang) {
                 status.add('short');
                 break;
         }
-        if (!status.has('live') && !status.has('streamed') && !status.has('video') && !status.has('scheduled') && !status.has('short')) {
-            console.log(node);
-            console.log(status);
-        }
         return status;
     }
 
