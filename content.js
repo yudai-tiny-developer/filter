@@ -403,9 +403,11 @@ function main(app, common, lang) {
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
                 const metadata_line = node.querySelector('div#metadata-line');
                 const byline_container = node.querySelector('div#byline-container');
-                if (metadata_line || byline_container) {
+                const badge = node.querySelector('p.ytd-badge-supported-renderer');
+                if (metadata_line || byline_container || badge) {
                     const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-                    if (lang.isLive_metadata(t)) {
+                    const l = badge?.textContent ?? '';
+                    if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
                         status.add('live');
                     } else if (lang.isStreamed_metadata(t)) {
                         status.add('streamed');
@@ -473,7 +475,10 @@ function main(app, common, lang) {
                 status.add('short');
                 break;
         }
-
+        if (!status.has('live') && !status.has('streamed') && !status.has('video') && !status.has('scheduled') && !status.has('short')) {
+            console.log(node);
+            console.log(status);
+        }
         return status;
     }
 
