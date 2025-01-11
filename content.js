@@ -667,10 +667,10 @@ function main(app, common, lang) {
                 case 'YTD-CONTINUATION-ITEM-RENDERER':
                     if (common.isSubscriptions(location.href)) {
                         if (node.parentNode.children.length > limit) {
-                            node.style.display = 'none';
-                            node.parentNode.appendChild(load_button_container);
-                            continuation_item = node;
                             load_button_container.style.display = '';
+                            node.style.display = 'none';
+                            node.parentNode.parentNode.appendChild(load_button_container);
+                            continuation_item = node;
                         }
                     }
                     break;
