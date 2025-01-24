@@ -377,20 +377,7 @@ function main(app, common, lang) {
             node.querySelectorAll('ytd-rich-section-renderer:has(button.yt-spec-button-shape-next)').forEach(n => n.style.display = 'none');
         }
 
-        // subscriptions?flow=1, library
-        node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n));
-
-        // subscriptions?flow=2, history
-        node.querySelectorAll('ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
-
-        // playlist
-        node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n));
-
-        // channels
-        node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n));
-
-        // channel
-        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-grid-playlist-renderer, ytd-reel-item-renderer, ytd-rich-item-renderer, ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('yt-lockup-view-model, ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-reel-item-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
     }
 
     function classifyStatus(node) {
@@ -563,6 +550,7 @@ function main(app, common, lang) {
 
             // channel, shorts, playlists
             case 'YTD-RICH-ITEM-RENDERER':
+            case 'YT-LOCKUP-VIEW-MODEL':
                 const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media, .yt-core-attributed-string');
                 if (rich_item_title) {
                     return matchQuery(rich_item_title.textContent);
@@ -634,6 +622,7 @@ function main(app, common, lang) {
                 case 'YTD-GRID-PLAYLIST-RENDERER':
                 case 'YTD-REEL-ITEM-RENDERER':
                 case 'YTD-RICH-ITEM-RENDERER':
+                case 'YT-LOCKUP-VIEW-MODEL':
                     updateTargetVisibility(node);
                     break;
 
