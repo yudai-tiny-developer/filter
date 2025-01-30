@@ -777,7 +777,7 @@ function main(app, common, lang) {
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
         span.innerHTML = text;
-        const onclick = () => {
+        span.addEventListener('click', () => {
             if (isShorts && common.isSubscriptions(location.href)) {
                 location.href = 'https://www.youtube.com/feed/subscriptions/shorts';
             } else {
@@ -785,9 +785,7 @@ function main(app, common, lang) {
                 updateVisibility(app);
                 window.scroll({ top: 0, behavior: 'instant' });
             }
-        };
-        span.addEventListener('click', onclick);
-        span.addEventListener('touchstart', onclick);
+        });
         return span;
     }
 
