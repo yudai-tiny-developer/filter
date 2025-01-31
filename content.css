@@ -192,3 +192,11 @@ div.filter-button-load {
     justify-content: center;
     width: 100%;
 }
+
+div.shortsLockupViewModelHostInlineMetadataShortScrim {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.5) 20%, rgba(0, 0, 0, 0) 40%) !important;
+}
+
+h3.shortsLockupViewModelHostMetadataTitle::after {
+    content: attr(aria-label);
+}
