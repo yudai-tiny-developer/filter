@@ -200,3 +200,7 @@ div.shortsLockupViewModelHostInlineMetadataShortScrim {
 h3.shortsLockupViewModelHostMetadataTitle::after {
     content: attr(aria-label);
 }
+
+div.shortsLockupViewModelHostMetadataSubhead {
+    display: none !important;
+}
