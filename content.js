@@ -745,7 +745,7 @@ function main(app, common, lang) {
 
                 // continuation stopper
                 case 'YTD-CONTINUATION-ITEM-RENDERER':
-                    if (common.isSubscriptions(location.href)) {
+                    if (common.isSubscriptions(location.href) || common.isShorts(location.href)) {
                         if (node.parentNode.children.length > limit) {
                             load_button_container.style.display = '';
                             node.style.display = 'none';
