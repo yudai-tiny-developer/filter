@@ -430,7 +430,15 @@ function main(app, common, lang) {
                     nextNot = true;
                 } else {
                     const t = token.replace(/\|/g, '\\|');
-                    if (nextOr) {
+                    if (nextOr && nextNot) {
+                        if (notQueryList.length - 1 >= 0) {
+                            notQueryList[notQueryList.length - 1] = notQueryList[notQueryList.length - 1] + '|' + t;
+                        } else {
+                            notQueryList.push(t);
+                        }
+                        nextOr = false;
+                        nextNot = false;
+                    } else if (nextOr) {
                         if (queryList.length - 1 >= 0) {
                             queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
                         } else {
@@ -958,7 +966,7 @@ function main(app, common, lang) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
-        input.setAttribute('title', '".." : PHRASE search operator. e.g. "Phrase including spaces"\n| : OR search operator. e.g. Phrase1 | Phrase2\n- : NOT search operator. e.g. -Phrase');
+        input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase');
         input.id = 'filter-query';
         input.value = getActiveQuery();
         input.addEventListener('change', e => {
