@@ -204,3 +204,15 @@ h3.shortsLockupViewModelHostMetadataTitle::after {
 div.shortsLockupViewModelHostMetadataSubhead {
     display: none !important;
 }
+
+ytd-browse[page-subtype="playlist"] {
+    padding-top: 0px !important;
+}
+
+ytd-browse[page-subtype="playlist"] yt-page-header-renderer {
+    padding-top: 56px !important;
+}
+
+ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
+    display: none !important;
+}
