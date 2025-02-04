@@ -228,7 +228,38 @@ function main(app, common, lang) {
                 node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
 
                 node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
-            } else if (common.isPlaylists(location.href) || common.isChannel(location.href)) {
+            } else if (common.isPlaylists(location.href)) {
+                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+
+                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+            } else if (common.isChannel(location.href)) {
                 node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
