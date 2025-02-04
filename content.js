@@ -647,14 +647,16 @@ function main(app, common, lang) {
                 }
                 break;
 
-            // channel, shorts, playlists
+            // channel, playlists, shorts
             case 'YTD-RICH-ITEM-RENDERER':
-            case 'YT-LOCKUP-VIEW-MODEL':
+                const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
+                if (shorts_meta) {
+                    return matchQuery(shorts_meta.getAttribute('aria-label'));
+                }
+
                 const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media, .yt-core-attributed-string');
                 if (rich_item_title) {
                     return matchQuery(rich_item_title.textContent);
-                } else {
-                    // ad
                 }
                 break;
 
@@ -665,16 +667,6 @@ function main(app, common, lang) {
                     return matchQuery(channel_info.textContent);
                 } else {
                     console.warn('div#info not found');
-                }
-                break;
-
-            // shorts
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-                const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
-                if (shorts_meta) {
-                    return matchQuery(shorts_meta.textContent);
-                } else {
-                    console.warn('h3.shortsLockupViewModelHostMetadataTitle or h3.shortsLockupViewModelHostOutsideMetadataTitle not found');
                 }
                 break;
         }
