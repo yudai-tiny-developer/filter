@@ -205,6 +205,10 @@ div.shortsLockupViewModelHostMetadataSubhead {
     display: none !important;
 }
 
+ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer>div#contents {
+    padding-top: 0px !important;
+}
+
 ytd-browse[page-subtype="playlist"] {
     padding-top: 0px !important;
 }
