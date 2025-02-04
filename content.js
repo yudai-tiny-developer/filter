@@ -648,6 +648,7 @@ function main(app, common, lang) {
             // channel, playlists, shorts
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+            case 'YT-LOCKUP-VIEW-MODEL':
                 const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
                 if (shorts_meta) {
                     return matchQuery(shorts_meta.getAttribute('aria-label'));
