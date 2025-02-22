@@ -898,10 +898,15 @@ function main(app, common, lang) {
         const status = new Set();
 
         switch (node.nodeName) {
-            case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTD-VIDEO-RENDERER':
             case 'YTD-RICH-ITEM-RENDERER':
+            case 'YTD-GRID-VIDEO-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
+            case 'YTD-VIDEO-RENDERER':
+                const live_badge = node.querySelector('div.badge-style-type-live-now-alternate, badge-shape.badge-shape-wiz--thumbnail-live');
+                if (live_badge) {
+                    status.add('live');
+                }
+
                 const metadata_line = node.querySelector('div#metadata-line');
                 const byline_container = node.querySelector('div#byline-container');
                 const badge = node.querySelector('p.ytd-badge-supported-renderer');
@@ -936,7 +941,7 @@ function main(app, common, lang) {
                                 } else if (overlay_style === 'SHORTS') {
                                     status.add('short');
                                 } else {
-                                    // membership only video
+                                    // workaround: membership only video
                                     status.add('video');
                                 }
                             } else {
@@ -944,9 +949,9 @@ function main(app, common, lang) {
                             }
                         }
 
-                        const slim_media = node.querySelector('ytd-rich-grid-slim-media');
-                        if (slim_media) {
-                            status.add('short');
+                        const members_only_badge = node.querySelector('div.badge-style-type-members-only');
+                        if (members_only_badge) {
+                            status.add('video');
                         }
                     }
                 } else {
@@ -954,6 +959,7 @@ function main(app, common, lang) {
                 }
 
                 break;
+
             case 'YTD-CHANNEL-RENDERER':
                 const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
                 if (channel_notification) {
@@ -968,9 +974,7 @@ function main(app, common, lang) {
                         console.warn('Unknown channel notification: ' + t);
                     }
                 }
-                break;
-            case 'YTD-REEL-ITEM-RENDERER':
-                status.add('short');
+
                 break;
         }
         return status;
