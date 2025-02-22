@@ -954,14 +954,12 @@ function main(app, common, lang) {
                             status.add('video');
                         }
                     }
-                } else {
-                    // playlist
                 }
 
                 break;
 
             case 'YTD-CHANNEL-RENDERER':
-                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
+                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
                 if (channel_notification) {
                     const t = channel_notification.getAttribute('aria-label');
                     if (lang.isChannelsAllNotifications(t)) {
@@ -998,10 +996,10 @@ function main(app, common, lang) {
         const status = new Set();
 
         switch (node.nodeName) {
-            case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTD-VIDEO-RENDERER':
             case 'YTD-RICH-ITEM-RENDERER':
+            case 'YTD-GRID-VIDEO-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
+            case 'YTD-VIDEO-RENDERER':
                 const progress = node.querySelector('div#progress');
                 if (progress) {
                     status.add('progress_watched');
