@@ -220,3 +220,7 @@ ytd-browse[page-subtype="playlist"] yt-page-header-renderer {
 ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
     display: none !important;
 }
+
+ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(button.yt-spec-button-shape-next) {
+    display: none !important;
+}
