@@ -6,47 +6,6 @@ import(chrome.runtime.getURL('common.js')).then(common => {
 });
 
 function main(app, common, lang) {
-    let live;
-    let streamed;
-    let video;
-    let short;
-    let scheduled;
-    let notification_on;
-    let notification_off;
-
-    let progress_unwatched;
-    let progress_watched;
-
-    let channels_all;
-    let channels_personalized;
-    let channels_none;
-
-    let keyword;
-
-    const default_tab = {
-        live: false,
-        streamed: false,
-        video: false,
-        short: false,
-        scheduled: false,
-        notification_on: false,
-        notification_off: false,
-
-        progress_unwatched: false,
-        progress_watched: false,
-
-        channels_all: false,
-        channels_personalized: false,
-        channels_none: false,
-    };
-
-    let multiselection;
-    let responsive;
-    let limit = common.defaultLimit;
-    let default_keyword;
-
-    let settings;
-
     async function loadSettings() {
         await chrome.storage.local.get(common.storage).then(data => {
             live = common.value(data.live, common.default_value.live);
@@ -90,10 +49,6 @@ function main(app, common, lang) {
         });
     }
 
-    function display(node, query, value) {
-        node.querySelectorAll(query).forEach(n => n.style.display = value);
-    }
-
     function isFilterTarget() {
         return common.isSubscriptions(location.href)
             || common.isShorts(location.href)
@@ -132,166 +87,6 @@ function main(app, common, lang) {
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
             ;
-    }
-
-    function updateQueryRegex(node, query) {
-        active.query.set(location.href, query);
-
-        const queryList = [];
-        const notQueryList = [];
-        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
-        let nextOr = false;
-        let nextNot = false;
-        if (tokenList) {
-            for (const token of tokenList) {
-                if (token === '|') {
-                    nextOr = true;
-                } else if (token === '-') {
-                    nextNot = true;
-                } else {
-                    const t = token.replace(/\|/g, '\\|');
-                    if (nextOr && nextNot) {
-                        if (notQueryList.length - 1 >= 0) {
-                            notQueryList[notQueryList.length - 1] = notQueryList[notQueryList.length - 1] + '|' + t;
-                        } else {
-                            notQueryList.push(t);
-                        }
-                        nextOr = false;
-                        nextNot = false;
-                    } else if (nextOr) {
-                        if (queryList.length - 1 >= 0) {
-                            queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
-                        } else {
-                            queryList.push(t);
-                        }
-                        nextOr = false;
-                    } else if (nextNot) {
-                        notQueryList.push(t);
-                        nextNot = false;
-                    } else {
-                        queryList.push(t);
-                    }
-                }
-            }
-        } else {
-            // empty query
-        }
-
-        const regExpList = [];
-        for (const q of queryList) {
-            regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
-        }
-        active.regex.set(location.href, regExpList);
-
-        const notRegExpList = [];
-        for (const q of notQueryList) {
-            notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
-        }
-        active.notRegex.set(location.href, notRegExpList);
-
-        node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
-    }
-
-    function classifyStatus(node) {
-        const status = new Set();
-
-        switch (node.nodeName) {
-            case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTD-VIDEO-RENDERER':
-            case 'YTD-RICH-ITEM-RENDERER':
-            case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const metadata_line = node.querySelector('div#metadata-line');
-                const byline_container = node.querySelector('div#byline-container');
-                const badge = node.querySelector('p.ytd-badge-supported-renderer');
-                if (metadata_line || byline_container || badge) {
-                    const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-                    const l = badge?.textContent ?? '';
-                    if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
-                        status.add('live');
-                    } else if (lang.isStreamed_metadata(t)) {
-                        status.add('streamed');
-                    } else if (lang.isScheduled_metadata(t)) {
-                        status.add('scheduled');
-
-                        const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
-                        if (video_button) {
-                            const t = video_button.textContent;
-                            if (lang.isNotificationOn_button(t)) {
-                                status.add('notification_on');
-                            } else if (lang.isNotificationOff_button(t)) {
-                                status.add('notification_off');
-                            } else {
-                                console.warn('Unknown notification status: ' + t);
-                            }
-                        }
-                    } else /*if (lang.isVideo_metadata(t))*/ {
-                        const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
-                        if (thumbnail_overlay) {
-                            const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
-                            if (overlay_style) {
-                                if (overlay_style === 'DEFAULT') {
-                                    status.add('video');
-                                } else if (overlay_style === 'SHORTS') {
-                                    status.add('short');
-                                } else {
-                                    // membership only video
-                                    status.add('video');
-                                }
-                            } else {
-                                console.warn('overlay-style not found');
-                            }
-                        }
-
-                        const slim_media = node.querySelector('ytd-rich-grid-slim-media');
-                        if (slim_media) {
-                            status.add('short');
-                        }
-                    }
-                } else {
-                    // playlist
-                }
-
-                break;
-            case 'YTD-CHANNEL-RENDERER':
-                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
-                if (channel_notification) {
-                    const t = channel_notification.getAttribute('aria-label');
-                    if (lang.isChannelsAllNotifications(t)) {
-                        status.add('channels_all');
-                    } else if (lang.isChannelsPersonalizedNotifications(t)) {
-                        status.add('channels_personalized');
-                    } else if (lang.isChannelsNoNotifications(t)) {
-                        status.add('channels_none');
-                    } else {
-                        console.warn('Unknown channel notification: ' + t);
-                    }
-                }
-                break;
-            case 'YTD-REEL-ITEM-RENDERER':
-                status.add('short');
-                break;
-        }
-        return status;
-    }
-
-    function classifyStatusProgress(node) {
-        const status = new Set();
-
-        switch (node.nodeName) {
-            case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTD-VIDEO-RENDERER':
-            case 'YTD-RICH-ITEM-RENDERER':
-            case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const progress = node.querySelector('div#progress');
-                if (progress) {
-                    status.add('progress_watched');
-                } else {
-                    status.add('progress_unwatched');
-                }
-                break;
-        }
-
-        return status;
     }
 
     function onNodeLoaded(node, isFilterTarget) {
@@ -372,11 +167,48 @@ function main(app, common, lang) {
         }
     }
 
-    function createMenu(position_fixed, browse) {
+    function searchParentNode(node, nodeName) {
+        for (let n = node; n; n = n.parentNode) {
+            if (n.nodeName === nodeName) {
+                return n;
+            }
+        }
+        return undefined;
+    }
+
+    function onNavigateFinish() {
+        for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
+            if (isFilterTarget()) {
+                insertMenu(browse);
+                updateMenu(browse);
+                showMenu(browse);
+
+                insertPlaylistSpacer(browse);
+
+                updateVisibility(browse);
+            } else {
+                hideMenu(browse);
+            }
+        }
+    }
+
+    function insertMenu(browse) {
+        if (!browse.querySelector('form.filter-menu')) {
+            const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
+            browse.insertBefore(createMenu(browse), referenceNode);
+            if (needSpacer()) {
+                browse.insertBefore(createSpacer(), referenceNode);
+            }
+        } else {
+            // already exists
+        }
+    }
+
+    function createMenu(browse) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
 
-        if (position_fixed) {
+        if (isPositionFixedTarget()) {
             menu.classList.add('filter-menu', 'position-fixed');
         } else {
             menu.classList.add('filter-menu');
@@ -429,13 +261,6 @@ function main(app, common, lang) {
         createNodeForCalc(menu, browse);
 
         return menu;
-    }
-
-    function createSpacer(id) {
-        const spacer = document.createElement('div');
-        spacer.classList.add('filter-menu', 'spacer');
-        spacer.id = id;
-        return spacer;
     }
 
     function createButton(text, mode, isShorts) {
@@ -569,238 +394,62 @@ function main(app, common, lang) {
         return span;
     }
 
-    function changeMode(mode, multi, sub) {
-        const modes = multi ? getActiveMode() : new Set();
+    function updateQueryRegex(node, query) {
+        active.query.set(location.href, query);
 
-        if (!mode) {
-            if (common.isSubscriptions(location.href)) {
-                if (default_tab.live) modes.add('live');
-                if (default_tab.streamed) modes.add('streamed');
-                if (default_tab.video) modes.add('video');
-                if (default_tab.short) modes.add('short');
-                if (default_tab.scheduled) modes.add('scheduled');
-                if (default_tab.notification_on) modes.add('notification_on');
-                if (default_tab.notification_off) modes.add('notification_off');
-                if (modes.size === 0) modes.add('all');
-            } else if (common.isChannels(location.href)) {
-                if (default_tab.channels_all) modes.add('channels_all');
-                if (default_tab.channels_personalized) modes.add('channels_personalized');
-                if (default_tab.channels_none) modes.add('channels_none');
-                if (modes.size === 0) modes.add('all');
-            } else {
-                modes.add('all');
-            }
-        } else {
-            if (multi && sub) {
-                modes.delete(mode);
-                if (modes.size === 0) {
-                    modes.add('all');
-                }
-            } else {
-                if (mode === 'all') {
-                    modes.clear();
+        const queryList = [];
+        const notQueryList = [];
+        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
+        let nextOr = false;
+        let nextNot = false;
+        if (tokenList) {
+            for (const token of tokenList) {
+                if (token === '|') {
+                    nextOr = true;
+                } else if (token === '-') {
+                    nextNot = true;
                 } else {
-                    modes.delete('all');
-                }
-                modes.add(mode);
-            }
-        }
-
-        setActiveMode(modes);
-
-        app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
-        app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
-            n.selected = false;
-            n.classList.remove('selected');
-
-            const i = n.innerHTML.indexOf('✔ ');
-            if (i !== -1) {
-                n.innerHTML = n.innerHTML.substring(i + 1);
-            }
-        });
-        if (common.isChannels(location.href)) {
-            for (const mode of modes) {
-                app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
-            }
-        } else {
-            for (const mode of modes) {
-                app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-                app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
-                    n.classList.add('selected');
-
-                    if (multi) {
-                        const i = n.innerHTML.indexOf('✔ ');
-                        if (i === -1) {
-                            n.innerHTML = '✔ ' + n.innerHTML;
+                    const t = token.replace(/\|/g, '\\|');
+                    if (nextOr && nextNot) {
+                        if (notQueryList.length - 1 >= 0) {
+                            notQueryList[notQueryList.length - 1] = notQueryList[notQueryList.length - 1] + '|' + t;
+                        } else {
+                            notQueryList.push(t);
                         }
-                    }
-                });
-            }
-            if (multi) {
-                app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
-            } else {
-                app.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
-            }
-        }
-    }
-
-    function changeModeProgress(mode, multi, sub) {
-        const modes = multi ? getActiveModeProgress() : new Set();
-
-        if (!mode) {
-            if (common.isSubscriptions(location.href)) {
-                if (default_tab.progress_unwatched) modes.add('progress_unwatched');
-                if (default_tab.progress_watched) modes.add('progress_watched');
-                if (modes.size === 0) modes.add('progress_all');
-            } else {
-                modes.add('progress_all');
-            }
-        } else {
-            if (multi && sub) {
-                modes.delete(mode);
-                if (modes.size === 0) {
-                    modes.add('progress_all');
-                }
-            } else {
-                if (mode === 'progress_all') {
-                    modes.clear();
-                } else {
-                    modes.delete('progress_all');
-                }
-                modes.add(mode);
-            }
-        }
-
-        setActiveModeProgress(modes);
-
-        app.querySelectorAll('option.filter-button-progress').forEach(n => {
-            n.selected = false;
-            n.classList.remove('selected');
-
-            const i = n.innerHTML.indexOf('✔ ');
-            if (i !== -1) {
-                n.innerHTML = n.innerHTML.substring(i + 1);
-            }
-        });
-        for (const mode of modes) {
-            app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
-                n.classList.add('selected');
-
-                if (multi) {
-                    const i = n.innerHTML.indexOf('✔ ');
-                    if (i === -1) {
-                        n.innerHTML = '✔ ' + n.innerHTML;
-                    }
-                }
-            });
-        }
-        if (multi) {
-            app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
-        } else {
-            app.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
-        }
-    }
-
-    function searchParentNode(node, nodeName) {
-        for (let n = node; n; n = n.parentNode) {
-            if (n.nodeName === nodeName) {
-                return n;
-            }
-        }
-        return undefined;
-    }
-
-    function getActiveMode() {
-        const mode = active.mode.get(location.href);
-        if (mode) {
-            return mode;
-        } else {
-            return new Set();
-        }
-    }
-
-    function getActiveModeProgress() {
-        const mode = active.mode_progress.get(location.href);
-        if (mode) {
-            return mode;
-        } else {
-            return new Set();
-        }
-    }
-
-    function setActiveMode(mode) {
-        active.mode.set(location.href, mode);
-    }
-
-    function setActiveModeProgress(mode_progress) {
-        active.mode_progress.set(location.href, mode_progress);
-    }
-
-    function getActiveQuery() {
-        const query = active.query.get(location.href);
-        if (query) {
-            return query;
-        } else if (common.isSubscriptions(location.href)) {
-            active.query.set(location.href, default_keyword);
-            return default_keyword;
-        } else {
-            active.query.set(location.href, '');
-            return '';
-        }
-    }
-
-    function matchQuery(text) {
-        return matchAllActiveRegex(text) && matchAllActiveNotRegex(text);
-    }
-
-    function matchAllActiveRegex(text) {
-        const rs = active.regex.get(location.href);
-        if (rs) {
-            for (const r of rs) {
-                if (!text.match(r)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    function matchAllActiveNotRegex(text) {
-        const rs = active.notRegex.get(location.href);
-        if (rs) {
-            for (const r of rs) {
-                if (!!r && text.match(r)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    function onResize(force = false) {
-        if (responsive) {
-            for (const form of app.querySelectorAll('form.filter-menu')) {
-                if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
-                    form.parentNode.appendChild(nodeForCalc);
-                    if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
-                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                        nextOr = false;
+                        nextNot = false;
+                    } else if (nextOr) {
+                        if (queryList.length - 1 >= 0) {
+                            queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
+                        } else {
+                            queryList.push(t);
+                        }
+                        nextOr = false;
+                    } else if (nextNot) {
+                        notQueryList.push(t);
+                        nextNot = false;
                     } else {
-                        document.documentElement.style.setProperty('--filter-button-display', 'none');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                        queryList.push(t);
                     }
-
-                    prevWidth = form.parentNode.scrollWidth;
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(onResize, 256);
-
-                    return;
                 }
             }
         } else {
-            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-            document.documentElement.style.setProperty('--filter-menu-display', 'none');
+            // empty query
         }
+
+        const regExpList = [];
+        for (const q of queryList) {
+            regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+        active.regex.set(location.href, regExpList);
+
+        const notRegExpList = [];
+        for (const q of notQueryList) {
+            notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+        active.notRegex.set(location.href, notRegExpList);
+
+        node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
     }
 
     function createNodeForCalc(menu, browse) {
@@ -811,33 +460,10 @@ function main(app, common, lang) {
         }
     }
 
-    function onNavigateFinish() {
-        for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
-            if (isFilterTarget()) {
-                insertMenu(browse);
-                updateMenu(browse);
-                showMenu(browse);
-
-                insertPlaylistSpacer(browse);
-
-                updateVisibility(browse);
-            } else {
-                hideMenu(browse);
-            }
-        }
-    }
-
-    function insertMenu(browse) {
-        if (!browse.querySelector('form.filter-menu')) {
-            const position_fixed = isPositionFixedTarget();
-            const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
-            browse.insertBefore(createMenu(position_fixed, browse), referenceNode);
-            if (needSpacer()) {
-                browse.insertBefore(createSpacer('browse'), referenceNode);
-            }
-        } else {
-            // already exists
-        }
+    function createSpacer() {
+        const spacer = document.createElement('div');
+        spacer.classList.add('filter-menu', 'spacer');
+        return spacer;
     }
 
     function updateMenu(node) {
@@ -1190,6 +816,10 @@ function main(app, common, lang) {
         }
     }
 
+    function display(node, query, value) {
+        node.querySelectorAll(query).forEach(n => n.style.display = value);
+    }
+
     function showMenu(node) {
         display(node, 'form.filter-menu, div.filter-menu', '');
     }
@@ -1264,6 +894,88 @@ function main(app, common, lang) {
         }
     }
 
+    function classifyStatus(node) {
+        const status = new Set();
+
+        switch (node.nodeName) {
+            case 'YTD-GRID-VIDEO-RENDERER':
+            case 'YTD-VIDEO-RENDERER':
+            case 'YTD-RICH-ITEM-RENDERER':
+            case 'YTD-PLAYLIST-VIDEO-RENDERER':
+                const metadata_line = node.querySelector('div#metadata-line');
+                const byline_container = node.querySelector('div#byline-container');
+                const badge = node.querySelector('p.ytd-badge-supported-renderer');
+                if (metadata_line || byline_container || badge) {
+                    const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
+                    const l = badge?.textContent ?? '';
+                    if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+                        status.add('live');
+                    } else if (lang.isStreamed_metadata(t)) {
+                        status.add('streamed');
+                    } else if (lang.isScheduled_metadata(t)) {
+                        status.add('scheduled');
+
+                        const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
+                        if (video_button) {
+                            const t = video_button.textContent;
+                            if (lang.isNotificationOn_button(t)) {
+                                status.add('notification_on');
+                            } else if (lang.isNotificationOff_button(t)) {
+                                status.add('notification_off');
+                            } else {
+                                console.warn('Unknown notification status: ' + t);
+                            }
+                        }
+                    } else /*if (lang.isVideo_metadata(t))*/ {
+                        const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
+                        if (thumbnail_overlay) {
+                            const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
+                            if (overlay_style) {
+                                if (overlay_style === 'DEFAULT') {
+                                    status.add('video');
+                                } else if (overlay_style === 'SHORTS') {
+                                    status.add('short');
+                                } else {
+                                    // membership only video
+                                    status.add('video');
+                                }
+                            } else {
+                                console.warn('overlay-style not found');
+                            }
+                        }
+
+                        const slim_media = node.querySelector('ytd-rich-grid-slim-media');
+                        if (slim_media) {
+                            status.add('short');
+                        }
+                    }
+                } else {
+                    // playlist
+                }
+
+                break;
+            case 'YTD-CHANNEL-RENDERER':
+                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
+                if (channel_notification) {
+                    const t = channel_notification.getAttribute('aria-label');
+                    if (lang.isChannelsAllNotifications(t)) {
+                        status.add('channels_all');
+                    } else if (lang.isChannelsPersonalizedNotifications(t)) {
+                        status.add('channels_personalized');
+                    } else if (lang.isChannelsNoNotifications(t)) {
+                        status.add('channels_none');
+                    } else {
+                        console.warn('Unknown channel notification: ' + t);
+                    }
+                }
+                break;
+            case 'YTD-REEL-ITEM-RENDERER':
+                status.add('short');
+                break;
+        }
+        return status;
+    }
+
     function includesStatusProgress(node, status) {
         if (status.size === 0 || status.has('progress_all')) {
             return true;
@@ -1276,6 +988,26 @@ function main(app, common, lang) {
             }
             return false;
         }
+    }
+
+    function classifyStatusProgress(node) {
+        const status = new Set();
+
+        switch (node.nodeName) {
+            case 'YTD-GRID-VIDEO-RENDERER':
+            case 'YTD-VIDEO-RENDERER':
+            case 'YTD-RICH-ITEM-RENDERER':
+            case 'YTD-PLAYLIST-VIDEO-RENDERER':
+                const progress = node.querySelector('div#progress');
+                if (progress) {
+                    status.add('progress_watched');
+                } else {
+                    status.add('progress_unwatched');
+                }
+                break;
+        }
+
+        return status;
     }
 
     function matchTextContent(node) {
@@ -1320,22 +1052,234 @@ function main(app, common, lang) {
         return true;
     }
 
-    const active = {
-        mode: new Map(),
-        mode_progress: new Map(),
-        query: new Map(),
-        regex: new Map(),
-        notRegex: new Map(),
-    };
+    function matchQuery(text) {
+        return matchAllActiveRegex(text) && matchAllActiveNotRegex(text);
+    }
 
-    let prevWidth = 0;
-    let resizeTimer;
-    let nodeForCalc;
+    function matchAllActiveRegex(text) {
+        const rs = active.regex.get(location.href);
+        if (rs) {
+            for (const r of rs) {
+                if (!text.match(r)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-    let continuation_item;
-    const load_button_container = document.createElement('div');
+    function matchAllActiveNotRegex(text) {
+        const rs = active.notRegex.get(location.href);
+        if (rs) {
+            for (const r of rs) {
+                if (!!r && text.match(r)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-    {
+    function changeMode(mode, multi, sub) {
+        const modes = multi ? getActiveMode() : new Set();
+
+        if (!mode) {
+            if (common.isSubscriptions(location.href)) {
+                if (default_tab.live) modes.add('live');
+                if (default_tab.streamed) modes.add('streamed');
+                if (default_tab.video) modes.add('video');
+                if (default_tab.short) modes.add('short');
+                if (default_tab.scheduled) modes.add('scheduled');
+                if (default_tab.notification_on) modes.add('notification_on');
+                if (default_tab.notification_off) modes.add('notification_off');
+                if (modes.size === 0) modes.add('all');
+            } else if (common.isChannels(location.href)) {
+                if (default_tab.channels_all) modes.add('channels_all');
+                if (default_tab.channels_personalized) modes.add('channels_personalized');
+                if (default_tab.channels_none) modes.add('channels_none');
+                if (modes.size === 0) modes.add('all');
+            } else {
+                modes.add('all');
+            }
+        } else {
+            if (multi && sub) {
+                modes.delete(mode);
+                if (modes.size === 0) {
+                    modes.add('all');
+                }
+            } else {
+                if (mode === 'all') {
+                    modes.clear();
+                } else {
+                    modes.delete('all');
+                }
+                modes.add(mode);
+            }
+        }
+
+        setActiveMode(modes);
+
+        app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
+        app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
+            n.selected = false;
+            n.classList.remove('selected');
+
+            const i = n.innerHTML.indexOf('✔ ');
+            if (i !== -1) {
+                n.innerHTML = n.innerHTML.substring(i + 1);
+            }
+        });
+        if (common.isChannels(location.href)) {
+            for (const mode of modes) {
+                app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+            }
+        } else {
+            for (const mode of modes) {
+                app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+                app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
+                    n.classList.add('selected');
+
+                    if (multi) {
+                        const i = n.innerHTML.indexOf('✔ ');
+                        if (i === -1) {
+                            n.innerHTML = '✔ ' + n.innerHTML;
+                        }
+                    }
+                });
+            }
+            if (multi) {
+                app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
+            } else {
+                app.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
+            }
+        }
+    }
+
+    function changeModeProgress(mode, multi, sub) {
+        const modes = multi ? getActiveModeProgress() : new Set();
+
+        if (!mode) {
+            if (common.isSubscriptions(location.href)) {
+                if (default_tab.progress_unwatched) modes.add('progress_unwatched');
+                if (default_tab.progress_watched) modes.add('progress_watched');
+                if (modes.size === 0) modes.add('progress_all');
+            } else {
+                modes.add('progress_all');
+            }
+        } else {
+            if (multi && sub) {
+                modes.delete(mode);
+                if (modes.size === 0) {
+                    modes.add('progress_all');
+                }
+            } else {
+                if (mode === 'progress_all') {
+                    modes.clear();
+                } else {
+                    modes.delete('progress_all');
+                }
+                modes.add(mode);
+            }
+        }
+
+        setActiveModeProgress(modes);
+
+        app.querySelectorAll('option.filter-button-progress').forEach(n => {
+            n.selected = false;
+            n.classList.remove('selected');
+
+            const i = n.innerHTML.indexOf('✔ ');
+            if (i !== -1) {
+                n.innerHTML = n.innerHTML.substring(i + 1);
+            }
+        });
+        for (const mode of modes) {
+            app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
+                n.classList.add('selected');
+
+                if (multi) {
+                    const i = n.innerHTML.indexOf('✔ ');
+                    if (i === -1) {
+                        n.innerHTML = '✔ ' + n.innerHTML;
+                    }
+                }
+            });
+        }
+        if (multi) {
+            app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
+        } else {
+            app.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
+        }
+    }
+
+    function getActiveMode() {
+        const mode = active.mode.get(location.href);
+        if (mode) {
+            return mode;
+        } else {
+            return new Set();
+        }
+    }
+
+    function getActiveModeProgress() {
+        const mode = active.mode_progress.get(location.href);
+        if (mode) {
+            return mode;
+        } else {
+            return new Set();
+        }
+    }
+
+    function setActiveMode(mode) {
+        active.mode.set(location.href, mode);
+    }
+
+    function setActiveModeProgress(mode_progress) {
+        active.mode_progress.set(location.href, mode_progress);
+    }
+
+    function getActiveQuery() {
+        const query = active.query.get(location.href);
+        if (query) {
+            return query;
+        } else if (common.isSubscriptions(location.href)) {
+            active.query.set(location.href, default_keyword);
+            return default_keyword;
+        } else {
+            active.query.set(location.href, '');
+            return '';
+        }
+    }
+
+    function onResize(force = false) {
+        if (responsive) {
+            for (const form of app.querySelectorAll('form.filter-menu')) {
+                if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
+                    form.parentNode.appendChild(nodeForCalc);
+                    if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
+                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                    } else {
+                        document.documentElement.style.setProperty('--filter-button-display', 'none');
+                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                    }
+
+                    prevWidth = form.parentNode.scrollWidth;
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(onResize, 256);
+
+                    return;
+                }
+            }
+        } else {
+            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+            document.documentElement.style.setProperty('--filter-menu-display', 'none');
+        }
+    }
+
+    async function init() {
+        await loadSettings();
+
         load_button_container.classList.add('filter-button-load');
         const load_button = document.createElement('button');
         load_button.innerText = common.button_label.load;
@@ -1351,6 +1295,62 @@ function main(app, common, lang) {
         });
         load_button_container.appendChild(load_button);
     }
+
+    let live;
+    let streamed;
+    let video;
+    let short;
+    let scheduled;
+    let notification_on;
+    let notification_off;
+
+    let progress_unwatched;
+    let progress_watched;
+
+    let channels_all;
+    let channels_personalized;
+    let channels_none;
+
+    let keyword;
+
+    const default_tab = {
+        live: false,
+        streamed: false,
+        video: false,
+        short: false,
+        scheduled: false,
+        notification_on: false,
+        notification_off: false,
+
+        progress_unwatched: false,
+        progress_watched: false,
+
+        channels_all: false,
+        channels_personalized: false,
+        channels_none: false,
+    };
+
+    let multiselection;
+    let responsive;
+    let limit = common.defaultLimit;
+    let default_keyword;
+
+    let settings;
+
+    const active = {
+        mode: new Map(),
+        mode_progress: new Map(),
+        query: new Map(),
+        regex: new Map(),
+        notRegex: new Map(),
+    };
+
+    let prevWidth = 0;
+    let resizeTimer;
+    let nodeForCalc;
+
+    let continuation_item;
+    const load_button_container = document.createElement('div');
 
     chrome.storage.onChanged.addListener(async () => {
         await loadSettings();
@@ -1373,5 +1373,5 @@ function main(app, common, lang) {
         childList: true,
     });
 
-    loadSettings();
+    init();
 }
