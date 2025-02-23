@@ -1209,7 +1209,58 @@ function main(app, common, lang) {
         }
     }
 
-    function hook(node) {
+    function observe_browse() {
+        new MutationObserver((mutations, observer) => {
+            for (const mutation of mutations) {
+                for (const addedNode of mutation.addedNodes) {
+                    if (addedNode.nodeName === 'YTD-BROWSE') {
+                        on_browse_added(addedNode);
+                    }
+                }
+            }
+        }).observe(app.querySelector('ytd-page-manager'), { childList: true });
+    }
+
+    function on_browse_added(browse) {
+        insertMenu(browse);
+        updateMenu(browse);
+        displayMenu(browse);
+
+        on_observe_target_container_found(browse);
+        observe_observe_target_container(browse, 'ytd-section-list-renderer');
+    }
+
+    function observe_observe_target_container(browse, query) {
+        for (const container of browse.querySelectorAll(query)) {
+            on_observe_target_container_found(container);
+        }
+
+        new MutationObserver((mutations, observer) => {
+            for (const container of browse.querySelectorAll(query)) {
+                on_observe_target_container_found(container);
+            }
+        }).observe(browse, { childList: true });
+    }
+
+    function on_observe_target_container_found(container) {
+        observe_update_target_container(container, 'div#contents');
+        observe_update_target_container(container, 'div#items');
+        observe_update_target_container(container, 'div#grid-container');
+    }
+
+    function observe_update_target_container(container, query) {
+        for (const node of container.querySelectorAll(query)) {
+            on_update_target_container_found(node);
+        }
+
+        new MutationObserver((mutations, observer) => {
+            for (const node of container.querySelectorAll(query)) {
+                on_update_target_container_found(node);
+            }
+        }).observe(container, { childList: true });
+    }
+
+    function on_update_target_container_found(node) {
         if (!hook_set.has(node)) {
             hook_set.add(node);
 
@@ -1224,30 +1275,6 @@ function main(app, common, lang) {
                     }
                 }
             }).observe(node, { childList: true });
-        }
-    }
-
-    function hookAll(container, query) {
-        for (const node of container.querySelectorAll(query)) {
-            hook(node);
-        }
-
-        new MutationObserver((mutations, observer) => {
-            for (const node of container.querySelectorAll(query)) {
-                hook(node);
-            }
-        }).observe(container, { childList: true });
-    }
-
-    function hookContainer(container) {
-        hookAll(container, 'div#contents');
-        hookAll(container, 'div#items');
-        hookAll(container, 'div#grid-container');
-    }
-
-    function hookContainerQuery(container, query) {
-        for (const node of container.querySelectorAll(query)) {
-            hookContainer(node);
         }
     }
 
@@ -1328,28 +1355,9 @@ function main(app, common, lang) {
     });
 
     window.addEventListener('resize', onResize);
-
     document.addEventListener('yt-navigate-start', onNavigateStart);
     document.addEventListener('yt-navigate-finish', onNavigateFinish);
 
-    new MutationObserver((mutations, observer) => {
-        if (isFilterTarget()) {
-            for (const mutation of mutations) {
-                for (const addedNode of mutation.addedNodes) {
-                    if (addedNode.nodeName === 'YTD-BROWSE') {
-                        insertMenu(addedNode);
-                        updateMenu(addedNode);
-                        displayMenu(addedNode);
-
-                        hookContainer(addedNode);
-                        hookContainerQuery(addedNode, 'ytd-section-list-renderer');
-                        hookContainerQuery(addedNode, 'ytd-item-section-renderer');
-                        hookContainerQuery(addedNode, 'ytd-shelf-renderer');
-                    }
-                }
-            }
-        }
-    }).observe(app.querySelector('ytd-page-manager'), { childList: true });
-
     loadSettings();
+    observe_browse();
 }
