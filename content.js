@@ -89,109 +89,6 @@ function main(app, common, lang) {
             ;
     }
 
-    function onNodeLoaded(node, isFilterTarget) {
-        if (isFilterTarget) {
-            switch (node.nodeName) {
-                // subscriptions?flow=1, library
-                case 'YTD-GRID-VIDEO-RENDERER':
-                    updateTargetVisibility(node);
-                    break;
-
-                // subscriptions?flow=2, history
-                case 'YTD-VIDEO-RENDERER':
-                    if (!node.classList.contains('ytd-backstage-post-renderer')) {
-                        updateTargetVisibility(node);
-                    }
-                    break;
-
-                // playlist
-                case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
-                    const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-                    if (video) {
-                        updateTargetVisibility(video);
-                    }
-                    break;
-
-                // channels
-                case 'YTD-CHANNEL-RENDERER':
-                    updateTargetVisibility(node);
-                    break;
-
-                // channel
-                case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-                case 'YTD-GRID-PLAYLIST-RENDERER':
-                case 'YTD-REEL-ITEM-RENDERER':
-                case 'YTD-RICH-ITEM-RENDERER':
-                case 'YT-LOCKUP-VIEW-MODEL':
-                    updateTargetVisibility(node);
-                    break;
-
-                // container
-                case 'YTD-ITEM-SECTION-RENDERER':
-                    updateVisibility(node);
-                    break;
-                case 'DIV':
-                    if (node.id === 'contents') {
-                        updateVisibility(node);
-                    }
-                    break;
-
-                // progress
-                case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
-                    let progress_video = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
-                    if (progress_video) {
-                        updateTargetVisibility(progress_video);
-                        break;
-                    }
-
-                    progress_video = searchParentNode(node, 'YTD-VIDEO-RENDERER');
-                    if (progress_video) {
-                        updateTargetVisibility(progress_video);
-                        break;
-                    }
-
-                    break;
-
-                // continuation stopper
-                case 'YTD-CONTINUATION-ITEM-RENDERER':
-                    if (common.isSubscriptions(location.href) || common.isShorts(location.href)) {
-                        if (node.parentNode.children.length > limit) {
-                            load_button_container.style.display = '';
-                            node.style.display = 'none';
-                            node.parentNode.parentNode.appendChild(load_button_container);
-                            continuation_item = node;
-                        }
-                    }
-                    break;
-            }
-        }
-    }
-
-    function searchParentNode(node, nodeName) {
-        for (let n = node; n; n = n.parentNode) {
-            if (n.nodeName === nodeName) {
-                return n;
-            }
-        }
-        return undefined;
-    }
-
-    function onNavigateFinish() {
-        for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
-            if (isFilterTarget()) {
-                insertMenu(browse);
-                updateMenu(browse);
-                showMenu(browse);
-
-                insertPlaylistSpacer(browse);
-
-                updateVisibility(browse);
-            } else {
-                hideMenu(browse);
-            }
-        }
-    }
-
     function insertMenu(browse) {
         if (!browse.querySelector('form.filter-menu')) {
             const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
@@ -820,30 +717,16 @@ function main(app, common, lang) {
         node.querySelectorAll(query).forEach(n => n.style.display = value);
     }
 
+    function displayMenu(node) {
+        node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.display = '');
+    }
+
     function showMenu(node) {
-        display(node, 'form.filter-menu, div.filter-menu', '');
+        node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = '');
     }
 
     function hideMenu(node) {
-        display(node, 'form.filter-menu, div.filter-menu', 'none');
-    }
-
-    function insertPlaylistSpacer(browse) {
-        for (const sidebar of browse.querySelectorAll('ytd-playlist-sidebar-renderer')) {
-            if (sidebar.firstChild.id !== 'sidebar-spacer') {
-                sidebar.insertBefore(createSpacer('sidebar-spacer'), sidebar.firstChild);
-            } else {
-                // already exists
-            }
-        }
-
-        for (const header of browse.querySelectorAll('ytd-playlist-header-renderer')) {
-            if (header.firstChild.id !== 'header-spacer') {
-                header.insertBefore(createSpacer('header-spacer'), header.firstChild);
-            } else {
-                // already exists
-            }
-        }
+        node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
     }
 
     function updateVisibility(node) {
@@ -869,7 +752,14 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node) {
-        if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+        if (node.nodeName === 'YTD-CONTINUATION-ITEM-RENDERER') {
+            if (node.parentNode.children.length > limit) {
+                load_button_container.style.display = '';
+                node.style.display = 'none';
+                node.parentNode.parentNode.appendChild(load_button_container);
+                continuation_item = node;
+            }
+        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
             node.style.display = '';
         } else {
             node.style.display = 'none';
@@ -1279,23 +1169,65 @@ function main(app, common, lang) {
         }
     }
 
-    async function init() {
-        await loadSettings();
+    function onNavigateStart() {
+        for (const browse of app.querySelectorAll('ytd-browse')) {
+            hideMenu(browse);
+        }
+    }
 
-        load_button_container.classList.add('filter-button-load');
-        const load_button = document.createElement('button');
-        load_button.innerText = common.button_label.load;
-        load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
-        load_button.addEventListener('click', () => {
-            load_button_container.style.display = 'none';
+    function onNavigateFinish() {
+        for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
+            updateMenu(browse);
+            showMenu(browse);
+        }
+    }
 
-            if (continuation_item) {
-                continuation_item.style.display = '';
+    function hookContents(contents) {
+        for (const child of contents.children) {
+            updateTargetVisibility(child);
+        }
+
+        new MutationObserver((mutations, observer) => {
+            if (isFilterTarget()) {
+                for (const mutation of mutations) {
+                    for (const addedNode of mutation.addedNodes) {
+                        updateTargetVisibility(addedNode);
+                    }
+                }
             }
+        }).observe(contents, { childList: true });
+    }
 
-            window.scroll({ top: app.scrollHeight, behavior: 'instant' });
-        });
-        load_button_container.appendChild(load_button);
+    function hookBrowse(browse) {
+        for (const contents of browse.querySelectorAll('div#contents')) {
+            hookContents(contents);
+        }
+
+        for (const primary of browse.querySelectorAll('div#primary')) {
+            new MutationObserver((mutations, observer) => {
+                for (const contents of browse.querySelectorAll('div#contents')) {
+                    hookContents(contents);
+                }
+            }).observe(primary, { childList: true });
+        }
+    }
+
+    function hookPageManager() {
+        new MutationObserver((mutations, observer) => {
+            if (isFilterTarget()) {
+                for (const mutation of mutations) {
+                    for (const addedNode of mutation.addedNodes) {
+                        if (addedNode.nodeName === 'YTD-BROWSE') {
+                            insertMenu(addedNode);
+                            updateMenu(addedNode);
+                            displayMenu(addedNode);
+
+                            hookBrowse(addedNode);
+                        }
+                    }
+                }
+            }
+        }).observe(app.querySelector('ytd-page-manager'), { childList: true });
     }
 
     let live;
@@ -1352,7 +1284,23 @@ function main(app, common, lang) {
     let nodeForCalc;
 
     let continuation_item;
+
     const load_button_container = document.createElement('div');
+    load_button_container.classList.add('filter-button-load');
+
+    const load_button = document.createElement('button');
+    load_button.innerText = common.button_label.load;
+    load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
+    load_button.addEventListener('click', () => {
+        load_button_container.style.display = 'none';
+
+        if (continuation_item) {
+            continuation_item.style.display = '';
+        }
+
+        window.scroll({ top: app.scrollHeight, behavior: 'instant' });
+    });
+    load_button_container.appendChild(load_button);
 
     chrome.storage.onChanged.addListener(async () => {
         await loadSettings();
@@ -1361,19 +1309,11 @@ function main(app, common, lang) {
         }
     });
 
-    document.addEventListener('yt-navigate-finish', onNavigateFinish);
-
     window.addEventListener('resize', onResize);
 
-    new MutationObserver((mutations, observer) => {
-        const t = isFilterTarget();
-        for (const m of mutations) {
-            onNodeLoaded(m.target, t);
-        }
-    }).observe(app, {
-        subtree: true,
-        childList: true,
-    });
+    document.addEventListener('yt-navigate-start', onNavigateStart);
+    document.addEventListener('yt-navigate-finish', onNavigateFinish);
+    hookPageManager();
 
-    init();
+    loadSettings();
 }
