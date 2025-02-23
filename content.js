@@ -740,7 +740,7 @@ async function main(app, common, lang) {
     function updateTargetVisibility(node) {
         switch (node.nodeName) {
             case 'YTD-ITEM-SECTION-RENDERER':
-                if (common.isChannels(location.href)) {
+                if (!common.isSubscriptions(location.href)) {
                     break;
                 }
             case 'YTD-RICH-ITEM-RENDERER':
@@ -1298,10 +1298,6 @@ async function main(app, common, lang) {
 
             for (const child of node.children) {
                 updateTargetVisibility(child);
-
-                if (node.id === 'grid-container') {
-                    console.log(child);
-                }
             }
 
             new MutationObserver((mutations, observer) => {
