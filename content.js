@@ -566,10 +566,10 @@ function main(app, common, lang) {
                 display(menu, 'option.filter-button-subscriptions.notification_on', 'none');
                 display(menu, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                display(menu, 'select.filter-menu-progress', 'none');
-                display(menu, 'option.filter-button-progress.progress_all', 'none');
-                display(menu, 'option.filter-button-progress.progress_unwatched', 'none');
-                display(menu, 'option.filter-button-progress.progress_watched', 'none');
+                display(menu, 'select.filter-menu-progress', common.any([progress_unwatched, progress_watched]));
+                display(menu, 'option.filter-button-progress.progress_all', common.any([progress_unwatched, progress_watched]));
+                display(menu, 'option.filter-button-progress.progress_unwatched', common.display(progress_unwatched));
+                display(menu, 'option.filter-button-progress.progress_watched', common.display(progress_watched));
 
                 display(menu, 'span.filter-button-channels.all', 'none');
                 display(menu, 'span.filter-button-channels.channels_all', 'none');
