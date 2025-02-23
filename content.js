@@ -715,18 +715,6 @@ function main(app, common, lang) {
         node.querySelectorAll(query).forEach(n => n.style.display = value);
     }
 
-    function displayMenu(browse) {
-        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.display = '');
-    }
-
-    function showMenu(browse) {
-        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = '');
-    }
-
-    function hideMenu(browse) {
-        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
-    }
-
     function updateVisibility(browse) {
         if (common.isSubscriptions(location.href)) {
             browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
@@ -1189,6 +1177,14 @@ function main(app, common, lang) {
         show_load_button();
     }
 
+    function showMenu(browse) {
+        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = '');
+    }
+
+    function hideMenu(browse) {
+        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
+    }
+
     function show_load_button() {
         load_button_container.style.visibility = '';
     }
@@ -1223,7 +1219,8 @@ function main(app, common, lang) {
     function on_browse_added(browse) {
         insertMenu(browse);
         updateMenu(browse);
-        displayMenu(browse);
+
+        display(browse, 'form.filter-menu, div.filter-menu', '')
 
         on_observe_target_container_found(browse);
         observe_observe_target_container(browse, 'ytd-section-list-renderer');
@@ -1270,6 +1267,7 @@ function main(app, common, lang) {
             }
 
             new MutationObserver((mutations, observer) => {
+
                 for (const mutation of mutations) {
                     for (const addedNode of mutation.addedNodes) {
                         updateTargetVisibility(addedNode);
