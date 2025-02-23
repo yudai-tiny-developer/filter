@@ -1206,10 +1206,12 @@ function main(app, common, lang) {
 
     function observe_browse() {
         new MutationObserver((mutations, observer) => {
-            for (const mutation of mutations) {
-                for (const addedNode of mutation.addedNodes) {
-                    if (addedNode.nodeName === 'YTD-BROWSE') {
-                        on_browse_added(addedNode);
+            if (isFilterTarget()) {
+                for (const mutation of mutations) {
+                    for (const addedNode of mutation.addedNodes) {
+                        if (addedNode.nodeName === 'YTD-BROWSE') {
+                            on_browse_added(addedNode);
+                        }
                     }
                 }
             }
@@ -1232,8 +1234,10 @@ function main(app, common, lang) {
         }
 
         new MutationObserver((mutations, observer) => {
-            for (const container of browse.querySelectorAll(query)) {
-                on_observe_target_container_found(container);
+            if (isFilterTarget()) {
+                for (const container of browse.querySelectorAll(query)) {
+                    on_observe_target_container_found(container);
+                }
             }
         }).observe(browse, { childList: true });
     }
@@ -1251,8 +1255,10 @@ function main(app, common, lang) {
             }
 
             new MutationObserver((mutations, observer) => {
-                for (const node of container.querySelectorAll(query)) {
-                    on_update_target_container_found(node);
+                if (isFilterTarget()) {
+                    for (const node of container.querySelectorAll(query)) {
+                        on_update_target_container_found(node);
+                    }
                 }
             }).observe(container, { childList: true });
         }
@@ -1267,10 +1273,11 @@ function main(app, common, lang) {
             }
 
             new MutationObserver((mutations, observer) => {
-
-                for (const mutation of mutations) {
-                    for (const addedNode of mutation.addedNodes) {
-                        updateTargetVisibility(addedNode);
+                if (isFilterTarget()) {
+                    for (const mutation of mutations) {
+                        for (const addedNode of mutation.addedNodes) {
+                            updateTargetVisibility(addedNode);
+                        }
                     }
                 }
             }).observe(node, { childList: true });
