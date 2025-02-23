@@ -1169,7 +1169,6 @@ function main(app, common, lang) {
     }
 
     function onNavigateStart() {
-        console.log(`on Navigate Start: ${location.href}`);
         for (const browse of app.querySelectorAll('ytd-browse')) {
             hideMenu(browse);
         }
@@ -1178,7 +1177,6 @@ function main(app, common, lang) {
     }
 
     function onNavigateFinish() {
-        console.log(`on Navigate Finish: ${location.href}`);
         for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
             updateMenu(browse);
             showMenu(browse);
