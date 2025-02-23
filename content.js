@@ -739,11 +739,14 @@ function main(app, common, lang) {
 
     function updateTargetVisibility(node) {
         switch (node.nodeName) {
+            case 'YTD-ITEM-SECTION-RENDERER':
+                if (common.isChannels(location.href)) {
+                    break;
+                }
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTD-GRID-VIDEO-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
             case 'YTD-VIDEO-RENDERER':
-            case 'YTD-ITEM-SECTION-RENDERER':
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
             case 'YT-LOCKUP-VIEW-MODEL':
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
@@ -1291,6 +1294,10 @@ function main(app, common, lang) {
 
             for (const child of node.children) {
                 updateTargetVisibility(child);
+
+                if (node.id === 'grid-container') {
+                    console.log(child);
+                }
             }
 
             new MutationObserver((mutations, observer) => {
