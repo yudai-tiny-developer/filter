@@ -741,23 +741,40 @@ function main(app, common, lang) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-            case 'YT-LOCKUP-VIEW-MODEL':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
             case 'YTD-VIDEO-RENDERER':
+            case 'YTD-ITEM-SECTION-RENDERER':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+            case 'YT-LOCKUP-VIEW-MODEL':
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
             case 'YTD-CHANNEL-RENDERER':
-            case 'YTD-ITEM-SECTION-RENDERER':
                 if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
                     node.style.display = '';
                 } else {
                     node.style.display = 'none';
                 }
                 break;
+            case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
+                const progress_node = searchParentNode(node, ['YTD-RICH-ITEM-RENDERER', 'YTD-GRID-VIDEO-RENDERER', 'YTD-PLAYLIST-VIDEO-RENDERER', 'YTD-VIDEO-RENDERER', 'YTD-ITEM-SECTION-RENDERER']);
+                if (progress_node) {
+                    updateTargetVisibility(progress_node);
+                }
+                break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 update_continuation_item(node);
                 break;
         }
+    }
+
+    function searchParentNode(node, nodeNames) {
+        for (let n = node; n; n = n.parentNode) {
+            for (const nodeName of nodeNames) {
+                if (n.nodeName === nodeName) {
+                    return n;
+                }
+            }
+        }
+        return undefined;
     }
 
     function includesStatus(node, status_mode, status_progress) {
@@ -897,11 +914,11 @@ function main(app, common, lang) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-            case 'YT-LOCKUP-VIEW-MODEL':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
             case 'YTD-VIDEO-RENDERER':
             case 'YTD-ITEM-SECTION-RENDERER':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+            case 'YT-LOCKUP-VIEW-MODEL':
                 text = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
                 if (text) {
                     return matchQuery(text.getAttribute('aria-label'));
@@ -1229,7 +1246,7 @@ function main(app, common, lang) {
         display(browse, 'form.filter-menu, div.filter-menu', '')
 
         on_observe_target_container_found(browse);
-        observe_observe_target_container(browse, 'ytd-section-list-renderer');
+        observe_observe_target_container(browse, 'ytd-section-list-renderer, ytd-playlist-video-list-renderer');
     }
 
     function observe_observe_target_container(browse, query) {
@@ -1247,7 +1264,7 @@ function main(app, common, lang) {
     }
 
     function on_observe_target_container_found(container) {
-        observe_update_target_container(container, 'div#contents, div#items, div#grid-container');
+        observe_update_target_container(container, 'div#contents, div#items, div#grid-container, div#overlays');
     }
 
     function observe_update_target_container(container, query) {
