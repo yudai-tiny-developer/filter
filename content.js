@@ -766,7 +766,7 @@ function main(app, common, lang) {
                 }
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
-                update__load_button_container(node);
+                update_continuation_item(node);
                 break;
         }
     }
@@ -1172,8 +1172,7 @@ function main(app, common, lang) {
         for (const browse of app.querySelectorAll('ytd-browse')) {
             hideMenu(browse);
         }
-
-        hide_load_button_container();
+        hide_load_button();
     }
 
     function onNavigateFinish() {
@@ -1181,31 +1180,31 @@ function main(app, common, lang) {
             updateMenu(browse);
             showMenu(browse);
             updateVisibility(browse);
-        }
 
-        show_load_button_container();
+            const continuation_item = browse.querySelector('ytd-continuation-item-renderer');
+            if (continuation_item) {
+                update_continuation_item(continuation_item);
+            }
+        }
+        show_load_button();
     }
 
-    function show_load_button_container() {
-        const node = app.querySelector('ytd-browse[role="main"] ytd-continuation-item-renderer');
-        if (node) {
-            update__load_button_container(node);
-        }
-
+    function show_load_button() {
         load_button_container.style.visibility = '';
     }
 
-    function hide_load_button_container() {
+    function hide_load_button() {
         load_button_container.style.visibility = 'hidden';
     }
 
-    function update__load_button_container(continuation_item) {
+    function update_continuation_item(continuation_item) {
         continuation_item.parentNode.parentNode.appendChild(load_button_container);
         if (continuation_item.parentNode.children.length > limit) {
             load_button_container.style.display = '';
             continuation_item.style.display = 'none';
         } else {
             load_button_container.style.display = 'none';
+            continuation_item.style.display = '';
         }
     }
 
@@ -1339,14 +1338,12 @@ function main(app, common, lang) {
         load_button.innerText = common.button_label.load;
         load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
         load_button.addEventListener('click', () => {
-            load_button_container.style.display = 'none';
-
             const continuation_item = app.querySelector('ytd-browse[role="main"] ytd-continuation-item-renderer');
             if (continuation_item) {
+                load_button_container.style.display = 'none';
                 continuation_item.style.display = '';
+                window.scroll({ top: app.scrollHeight, behavior: 'instant' });
             }
-
-            window.scroll({ top: app.scrollHeight, behavior: 'instant' });
         });
         load_button_container.appendChild(load_button);
     }
