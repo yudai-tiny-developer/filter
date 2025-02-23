@@ -1247,20 +1247,24 @@ function main(app, common, lang) {
     }
 
     function observe_update_target_container(container, query) {
-        for (const node of container.querySelectorAll(query)) {
-            on_update_target_container_found(node);
-        }
+        if (!observers_observe_update_target_container.has(container)) {
+            observers_observe_update_target_container.add(container);
 
-        new MutationObserver((mutations, observer) => {
             for (const node of container.querySelectorAll(query)) {
                 on_update_target_container_found(node);
             }
-        }).observe(container, { childList: true });
+
+            new MutationObserver((mutations, observer) => {
+                for (const node of container.querySelectorAll(query)) {
+                    on_update_target_container_found(node);
+                }
+            }).observe(container, { childList: true });
+        }
     }
 
     function on_update_target_container_found(node) {
-        if (!hook_set.has(node)) {
-            hook_set.add(node);
+        if (!observers_on_update_target_container_found.has(node)) {
+            observers_on_update_target_container_found.add(node);
 
             for (const child of node.children) {
                 updateTargetVisibility(child);
@@ -1297,7 +1301,9 @@ function main(app, common, lang) {
     let prevWidth = 0;
     let resizeTimer;
     let nodeForCalc;
-    let hook_set = new Set();
+
+    const observers_observe_update_target_container = new Set();
+    const observers_on_update_target_container_found = new Set();
 
     const default_tab = {
         live: false,
