@@ -1186,60 +1186,6 @@ function main(app, common, lang) {
         show_load_button_container();
     }
 
-    function hook(node) {
-        for (const child of node.children) {
-            updateTargetVisibility(child);
-        }
-
-        new MutationObserver((mutations, observer) => {
-            if (isFilterTarget()) {
-                for (const mutation of mutations) {
-                    for (const addedNode of mutation.addedNodes) {
-                        updateTargetVisibility(addedNode);
-                    }
-                }
-            }
-        }).observe(node, { childList: true });
-    }
-
-    function hookAll(container, query) {
-        for (const node of container.querySelectorAll(query)) {
-            hook(node);
-        }
-
-        new MutationObserver((mutations, observer) => {
-            if (isFilterTarget()) {
-                for (const node of container.querySelectorAll(query)) {
-                    hook(node);
-                }
-            }
-        }).observe(container, { childList: true });
-    }
-
-    function hookBrowse(browse) {
-        hookAll(browse, 'div#contents');
-        hookAll(browse, 'div#items');
-        hookAll(browse, 'div#grid-container');
-    }
-
-    function hookPageManager() {
-        new MutationObserver((mutations, observer) => {
-            if (isFilterTarget()) {
-                for (const mutation of mutations) {
-                    for (const addedNode of mutation.addedNodes) {
-                        if (addedNode.nodeName === 'YTD-BROWSE') {
-                            insertMenu(addedNode);
-                            updateMenu(addedNode);
-                            displayMenu(addedNode);
-
-                            hookBrowse(addedNode);
-                        }
-                    }
-                }
-            }
-        }).observe(app.querySelector('ytd-page-manager'), { childList: true });
-    }
-
     function show_load_button_container() {
         const node = app.querySelector('ytd-browse[role="main"] ytd-continuation-item-renderer');
         if (node) {
@@ -1263,6 +1209,48 @@ function main(app, common, lang) {
         }
     }
 
+    function hook(node) {
+        if (!hook_set.has(node)) {
+            hook_set.add(node);
+
+            for (const child of node.children) {
+                updateTargetVisibility(child);
+            }
+
+            new MutationObserver((mutations, observer) => {
+                for (const mutation of mutations) {
+                    for (const addedNode of mutation.addedNodes) {
+                        updateTargetVisibility(addedNode);
+                    }
+                }
+            }).observe(node, { childList: true });
+        }
+    }
+
+    function hookAll(container, query) {
+        for (const node of container.querySelectorAll(query)) {
+            hook(node);
+        }
+
+        new MutationObserver((mutations, observer) => {
+            for (const node of container.querySelectorAll(query)) {
+                hook(node);
+            }
+        }).observe(container, { childList: true });
+    }
+
+    function hookContainer(container) {
+        hookAll(container, 'div#contents');
+        hookAll(container, 'div#items');
+        hookAll(container, 'div#grid-container');
+    }
+
+    function hookContainerQuery(container, query) {
+        for (const node of container.querySelectorAll(query)) {
+            hookContainer(node);
+        }
+    }
+
     let live;
     let streamed;
     let video;
@@ -1270,15 +1258,21 @@ function main(app, common, lang) {
     let scheduled;
     let notification_on;
     let notification_off;
-
     let progress_unwatched;
     let progress_watched;
-
     let channels_all;
     let channels_personalized;
     let channels_none;
-
     let keyword;
+    let multiselection;
+    let responsive;
+    let limit = common.defaultLimit;
+    let default_keyword;
+    let settings;
+    let prevWidth = 0;
+    let resizeTimer;
+    let nodeForCalc;
+    let hook_set = new Set();
 
     const default_tab = {
         live: false,
@@ -1297,13 +1291,6 @@ function main(app, common, lang) {
         channels_none: false,
     };
 
-    let multiselection;
-    let responsive;
-    let limit = common.defaultLimit;
-    let default_keyword;
-
-    let settings;
-
     const active = {
         mode: new Map(),
         mode_progress: new Map(),
@@ -1311,10 +1298,6 @@ function main(app, common, lang) {
         regex: new Map(),
         notRegex: new Map(),
     };
-
-    let prevWidth = 0;
-    let resizeTimer;
-    let nodeForCalc;
 
     const load_button_container = document.createElement('div');
     {
@@ -1348,7 +1331,25 @@ function main(app, common, lang) {
 
     document.addEventListener('yt-navigate-start', onNavigateStart);
     document.addEventListener('yt-navigate-finish', onNavigateFinish);
-    hookPageManager();
+
+    new MutationObserver((mutations, observer) => {
+        if (isFilterTarget()) {
+            for (const mutation of mutations) {
+                for (const addedNode of mutation.addedNodes) {
+                    if (addedNode.nodeName === 'YTD-BROWSE') {
+                        insertMenu(addedNode);
+                        updateMenu(addedNode);
+                        displayMenu(addedNode);
+
+                        hookContainer(addedNode);
+                        hookContainerQuery(addedNode, 'ytd-section-list-renderer');
+                        hookContainerQuery(addedNode, 'ytd-item-section-renderer');
+                        hookContainerQuery(addedNode, 'ytd-shelf-renderer');
+                    }
+                }
+            }
+        }
+    }).observe(app.querySelector('ytd-page-manager'), { childList: true });
 
     loadSettings();
 }
