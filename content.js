@@ -727,25 +727,25 @@ function main(app, common, lang) {
         browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
     }
 
-    function updateVisibility(node) {
+    function updateVisibility(browse) {
         if (common.isSubscriptions(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
         } else if (common.isLibrary(location.href)) {
-            node.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model').forEach(node => updateTargetVisibility(node));
         } else if (common.isPlaylist(location.href)) {
-            node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-playlist-video-renderer').forEach(node => updateTargetVisibility(node));
         } else if (common.isHistory(location.href)) {
-            node.querySelectorAll('ytd-video-renderer, ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-video-renderer, ytm-shorts-lockup-view-model-v2').forEach(node => updateTargetVisibility(node));
         } else if (common.isHashTag(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
         } else if (common.isPlaylists(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
         } else if (common.isChannel(location.href)) {
-            node.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model, ytm-shorts-lockup-view-model-v2, ytd-rich-item-renderer, ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model, ytm-shorts-lockup-view-model-v2, ytd-rich-item-renderer, ytd-backstage-post-thread-renderer').forEach(node => updateTargetVisibility(node));
         } else if (common.isShorts(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
         } else if (common.isChannels(location.href)) {
-            node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n));
+            browse.querySelectorAll('ytd-channel-renderer').forEach(node => updateTargetVisibility(node));
         }
     }
 
