@@ -701,8 +701,6 @@ function main(app, common, lang) {
                 display(menu, 'span.filter-button-channels.channels_none', common.display(channels_none));
 
                 display(menu, 'span.filter-query', common.display(keyword));
-            } else {
-                console.warn('Unknown target: ' + location.href);
             }
 
             onResize(true);
@@ -824,8 +822,6 @@ function main(app, common, lang) {
                                 status.add('notification_on');
                             } else if (lang.isNotificationOff_button(t)) {
                                 status.add('notification_off');
-                            } else {
-                                console.warn('Unknown notification status: ' + t);
                             }
                         }
                     } else /*if (lang.isVideo_metadata(t))*/ {
@@ -841,8 +837,6 @@ function main(app, common, lang) {
                                     // workaround: membership only video
                                     status.add('video');
                                 }
-                            } else {
-                                console.warn('overlay-style not found');
                             }
                         }
 
@@ -865,8 +859,6 @@ function main(app, common, lang) {
                         status.add('channels_personalized');
                     } else if (lang.isChannelsNoNotifications(t)) {
                         status.add('channels_none');
-                    } else {
-                        console.warn('Unknown channel notification: ' + t);
                     }
                 }
 
@@ -1188,6 +1180,7 @@ function main(app, common, lang) {
         for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
             updateMenu(browse);
             showMenu(browse);
+            updateVisibility(browse);
         }
 
         show_load_button_container();
