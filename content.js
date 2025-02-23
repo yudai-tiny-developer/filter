@@ -272,7 +272,7 @@ function main(app, common, lang) {
         span.addEventListener('click', () => {
             input.value = '';
             updateQueryRegex(browse, '');
-            updateVisibility(abrowsepp);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
