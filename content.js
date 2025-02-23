@@ -717,7 +717,7 @@ function main(app, common, lang) {
 
     function updateVisibility(browse) {
         if (common.isSubscriptions(location.href)) {
-            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
+            browse.querySelectorAll('ytd-rich-item-renderer, ytd-item-section-renderer').forEach(node => updateTargetVisibility(node));
         } else if (common.isLibrary(location.href)) {
             browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model').forEach(node => updateTargetVisibility(node));
         } else if (common.isPlaylist(location.href)) {
@@ -747,6 +747,7 @@ function main(app, common, lang) {
             case 'YTD-VIDEO-RENDERER':
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
             case 'YTD-CHANNEL-RENDERER':
+            case 'YTD-ITEM-SECTION-RENDERER':
                 if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
                     node.style.display = '';
                 } else {
@@ -785,6 +786,7 @@ function main(app, common, lang) {
             case 'YTD-GRID-VIDEO-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
             case 'YTD-VIDEO-RENDERER':
+            case 'YTD-ITEM-SECTION-RENDERER':
                 const live_badge = node.querySelector('div.badge-style-type-live-now-alternate, badge-shape.badge-shape-wiz--thumbnail-live');
                 if (live_badge) {
                     status.add('live');
@@ -877,6 +879,7 @@ function main(app, common, lang) {
             case 'YTD-GRID-VIDEO-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
             case 'YTD-VIDEO-RENDERER':
+            case 'YTD-ITEM-SECTION-RENDERER':
                 const progress = node.querySelector('div#progress');
                 if (progress) {
                     status.add('progress_watched');
@@ -898,6 +901,7 @@ function main(app, common, lang) {
             case 'YT-LOCKUP-VIEW-MODEL':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
             case 'YTD-VIDEO-RENDERER':
+            case 'YTD-ITEM-SECTION-RENDERER':
                 text = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
                 if (text) {
                     return matchQuery(text.getAttribute('aria-label'));
