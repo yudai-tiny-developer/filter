@@ -1186,8 +1186,8 @@ function main(app, common, lang) {
         show_load_button_container();
     }
 
-    function hookContents(contents) {
-        for (const child of contents.children) {
+    function hook(node) {
+        for (const child of node.children) {
             updateTargetVisibility(child);
         }
 
@@ -1199,21 +1199,27 @@ function main(app, common, lang) {
                     }
                 }
             }
-        }).observe(contents, { childList: true });
+        }).observe(node, { childList: true });
+    }
+
+    function hookAll(container, query) {
+        for (const node of container.querySelectorAll(query)) {
+            hook(node);
+        }
+
+        new MutationObserver((mutations, observer) => {
+            if (isFilterTarget()) {
+                for (const node of container.querySelectorAll(query)) {
+                    hook(node);
+                }
+            }
+        }).observe(container, { childList: true });
     }
 
     function hookBrowse(browse) {
-        for (const contents of browse.querySelectorAll('div#contents')) {
-            hookContents(contents);
-        }
-
-        for (const primary of browse.querySelectorAll('div#primary')) {
-            new MutationObserver((mutations, observer) => {
-                for (const contents of browse.querySelectorAll('div#contents')) {
-                    hookContents(contents);
-                }
-            }).observe(primary, { childList: true });
-        }
+        hookAll(browse, 'div#contents');
+        hookAll(browse, 'div#items');
+        hookAll(browse, 'div#grid-container');
     }
 
     function hookPageManager() {
