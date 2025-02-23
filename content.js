@@ -111,16 +111,16 @@ function main(app, common, lang) {
             menu.classList.add('filter-menu');
         }
 
-        menu.appendChild(createButton(common.button_label.all, 'all'));
-        menu.appendChild(createButton(common.button_label.live, 'live'));
-        menu.appendChild(createButton(common.button_label.streamed, 'streamed'));
-        menu.appendChild(createButton(common.button_label.video, 'video'));
-        menu.appendChild(createButton(common.button_label.short, 'short', true));
-        menu.appendChild(createButton(common.button_label.scheduled, 'scheduled'));
-        menu.appendChild(createButton(common.button_label.notification_on, 'notification_on'));
-        menu.appendChild(createButton(common.button_label.notification_off, 'notification_off'));
+        menu.appendChild(createButton(browse, common.button_label.all, 'all'));
+        menu.appendChild(createButton(browse, common.button_label.live, 'live'));
+        menu.appendChild(createButton(browse, common.button_label.streamed, 'streamed'));
+        menu.appendChild(createButton(browse, common.button_label.video, 'video'));
+        menu.appendChild(createButton(browse, common.button_label.short, 'short', true));
+        menu.appendChild(createButton(browse, common.button_label.scheduled, 'scheduled'));
+        menu.appendChild(createButton(browse, common.button_label.notification_on, 'notification_on'));
+        menu.appendChild(createButton(browse, common.button_label.notification_off, 'notification_off'));
 
-        const select = createSelect();
+        const select = createSelect(browse);
         select.appendChild(createOption(common.button_label.placeholder));
         select.appendChild(createOption(common.button_label.all, 'all'));
         select.appendChild(createOption(common.button_label.live, 'live'));
@@ -132,26 +132,26 @@ function main(app, common, lang) {
         select.appendChild(createOption(common.button_label.notification_off, 'notification_off'));
         menu.appendChild(select);
 
-        const progress = createSelectProgress();
+        const progress = createSelectProgress(browse);
         progress.appendChild(createOptionProgress(common.button_label.progress_placeholder));
         progress.appendChild(createOptionProgress(common.button_label.progress_all, 'progress_all'));
         progress.appendChild(createOptionProgress(common.button_label.progress_unwatched, 'progress_unwatched'));
         progress.appendChild(createOptionProgress(common.button_label.progress_watched, 'progress_watched'));
         menu.appendChild(progress);
 
-        menu.appendChild(createButtonChannels(common.button_label.all, 'all'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_all, 'channels_all'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none'));
+        menu.appendChild(createButtonChannels(browse, common.button_label.all, 'all'));
+        menu.appendChild(createButtonChannels(browse, common.button_label.channels_all, 'channels_all'));
+        menu.appendChild(createButtonChannels(browse, common.button_label.channels_personalized, 'channels_personalized'));
+        menu.appendChild(createButtonChannels(browse, common.button_label.channels_none, 'channels_none'));
 
         const input = createQueryInput(menu);
-        menu.appendChild(createQueryInputArea(input));
-        menu.appendChild(createSearchButton(input));
+        menu.appendChild(createQueryInputArea(browse, input));
+        menu.appendChild(createSearchButton(browse, input));
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
-            updateQueryRegex(app, input.value);
-            updateVisibility(app);
+            updateQueryRegex(browse, input.value);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
 
@@ -160,7 +160,7 @@ function main(app, common, lang) {
         return menu;
     }
 
-    function createButton(text, mode, isShorts) {
+    function createButton(browse, text, mode, isShorts) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
@@ -169,34 +169,34 @@ function main(app, common, lang) {
             if (isShorts && common.isSubscriptions(location.href)) {
                 location.href = 'https://www.youtube.com/feed/subscriptions/shorts';
             } else {
-                changeMode(mode, multiselection, span.classList.contains('selected'));
-                updateVisibility(app);
+                changeMode(browse, mode, multiselection, span.classList.contains('selected'));
+                updateVisibility(browse);
                 window.scroll({ top: 0, behavior: 'instant' });
             }
         });
         return span;
     }
 
-    function createButtonChannels(text, mode) {
+    function createButtonChannels(browse, text, mode) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-channels', mode);
         span.innerHTML = text;
         span.addEventListener('click', () => {
-            changeMode(mode, multiselection, span.classList.contains('selected'));
-            updateVisibility(app);
+            changeMode(browse, mode, multiselection, span.classList.contains('selected'));
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
 
-    function createSelect() {
+    function createSelect(browse) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-subscriptions');
         select.addEventListener('change', () => {
-            changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-            updateVisibility(app);
+            changeMode(browse, select.value, multiselection, select.querySelector('option.selected.' + select.value));
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return select;
@@ -216,13 +216,13 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createSelectProgress() {
+    function createSelectProgress(browse) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-progress');
         select.addEventListener('change', () => {
-            changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-            updateVisibility(app);
+            changeModeProgress(browse, select.value, multiselection, select.querySelector('option.selected.' + select.value));
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return select;
@@ -242,12 +242,12 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createQueryInputArea(input) {
+    function createQueryInputArea(browse, input) {
         const inputArea = document.createElement('span');
         inputArea.style.display = 'none';
         inputArea.classList.add('filter-query', 'area');
         inputArea.appendChild(input);
-        inputArea.appendChild(createClearButton(input));
+        inputArea.appendChild(createClearButton(browse, input));
         return inputArea;
     }
 
@@ -265,27 +265,27 @@ function main(app, common, lang) {
         return input;
     }
 
-    function createClearButton(input) {
+    function createClearButton(browse, input) {
         const span = document.createElement('span');
         span.classList.add('filter-clear');
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updateQueryRegex(app, '');
-            updateVisibility(app);
+            updateQueryRegex(browse, '');
+            updateVisibility(abrowsepp);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
 
-    function createSearchButton(input) {
+    function createSearchButton(browse, input) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updateQueryRegex(app, input.value);
-            updateVisibility(app);
+            updateQueryRegex(browse, input.value);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
@@ -363,8 +363,8 @@ function main(app, common, lang) {
         return spacer;
     }
 
-    function updateMenu(node) {
-        for (const menu of node.querySelectorAll('form.filter-menu')) {
+    function updateMenu(browse) {
+        for (const menu of browse.querySelectorAll('form.filter-menu')) {
             const select = menu.querySelector('select.filter-menu');
             const progress = menu.querySelector('select.filter-menu-progress');
 
@@ -705,8 +705,8 @@ function main(app, common, lang) {
 
             onResize(true);
 
-            changeMode(getActiveMode().values().next().value, multiselection, false);
-            changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false);
+            changeMode(browse, getActiveMode().values().next().value, multiselection, false);
+            changeModeProgress(browse, getActiveModeProgress().values().next().value, multiselection, false);
             updateQueryRegex(menu, getActiveQuery());
         }
     }
@@ -971,7 +971,7 @@ function main(app, common, lang) {
         return true;
     }
 
-    function changeMode(mode, multi, sub) {
+    function changeMode(browse, mode, multi, sub) {
         const modes = multi ? getActiveMode() : new Set();
 
         if (!mode) {
@@ -1010,8 +1010,8 @@ function main(app, common, lang) {
 
         setActiveMode(modes);
 
-        app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
-        app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
+        browse.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
+        browse.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
             n.selected = false;
             n.classList.remove('selected');
 
@@ -1022,12 +1022,12 @@ function main(app, common, lang) {
         });
         if (common.isChannels(location.href)) {
             for (const mode of modes) {
-                app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+                browse.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
             }
         } else {
             for (const mode of modes) {
-                app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-                app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
+                browse.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+                browse.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
                     n.classList.add('selected');
 
                     if (multi) {
@@ -1039,14 +1039,14 @@ function main(app, common, lang) {
                 });
             }
             if (multi) {
-                app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
+                browse.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
             } else {
-                app.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
+                browse.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
             }
         }
     }
 
-    function changeModeProgress(mode, multi, sub) {
+    function changeModeProgress(browse, mode, multi, sub) {
         const modes = multi ? getActiveModeProgress() : new Set();
 
         if (!mode) {
@@ -1075,7 +1075,7 @@ function main(app, common, lang) {
 
         setActiveModeProgress(modes);
 
-        app.querySelectorAll('option.filter-button-progress').forEach(n => {
+        browse.querySelectorAll('option.filter-button-progress').forEach(n => {
             n.selected = false;
             n.classList.remove('selected');
 
@@ -1085,7 +1085,7 @@ function main(app, common, lang) {
             }
         });
         for (const mode of modes) {
-            app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
+            browse.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
                 n.classList.add('selected');
 
                 if (multi) {
@@ -1097,9 +1097,9 @@ function main(app, common, lang) {
             });
         }
         if (multi) {
-            app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
+            browse.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
         } else {
-            app.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
+            browse.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
         }
     }
 
@@ -1169,6 +1169,7 @@ function main(app, common, lang) {
     }
 
     function onNavigateStart() {
+        console.log(`on Navigate Start: ${location.href}`);
         for (const browse of app.querySelectorAll('ytd-browse')) {
             hideMenu(browse);
         }
@@ -1177,6 +1178,7 @@ function main(app, common, lang) {
     }
 
     function onNavigateFinish() {
+        console.log(`on Navigate Finish: ${location.href}`);
         for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
             updateMenu(browse);
             showMenu(browse);
