@@ -717,16 +717,16 @@ function main(app, common, lang) {
         node.querySelectorAll(query).forEach(n => n.style.display = value);
     }
 
-    function displayMenu(node) {
-        node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.display = '');
+    function displayMenu(browse) {
+        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.display = '');
     }
 
-    function showMenu(node) {
-        node.querySelectorAll('form.filter-menu, div.filter-menu, div.filter-button-load').forEach(menu => menu.style.visibility = '');
+    function showMenu(browse) {
+        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = '');
     }
 
-    function hideMenu(node) {
-        node.querySelectorAll('form.filter-menu, div.filter-menu, div.filter-button-load').forEach(menu => menu.style.visibility = 'hidden');
+    function hideMenu(browse) {
+        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
     }
 
     function updateVisibility(node) {
@@ -752,19 +752,24 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node) {
-        if (node.nodeName === 'YTD-CONTINUATION-ITEM-RENDERER') {
-            if (node.parentNode.children.length > limit) {
-                load_button_container.style.display = '';
-                node.style.display = 'none';
-            } else {
-                load_button_container.style.display = 'none';
-                node.style.display = '';
-            }
-            continuation_item = node;
-        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
-            node.style.display = '';
-        } else {
-            node.style.display = 'none';
+        switch (node.nodeName) {
+            case 'YTD-RICH-ITEM-RENDERER':
+            case 'YTD-GRID-VIDEO-RENDERER':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+            case 'YT-LOCKUP-VIEW-MODEL':
+            case 'YTD-PLAYLIST-VIDEO-RENDERER':
+            case 'YTD-VIDEO-RENDERER':
+            case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+            case 'YTD-CHANNEL-RENDERER':
+                if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                    node.style.display = '';
+                } else {
+                    node.style.display = 'none';
+                }
+                break;
+            case 'YTD-CONTINUATION-ITEM-RENDERER':
+                update__load_button_container(node);
+                break;
         }
     }
 
@@ -1175,14 +1180,17 @@ function main(app, common, lang) {
         for (const browse of app.querySelectorAll('ytd-browse')) {
             hideMenu(browse);
         }
+
+        hide_load_button_container();
     }
 
     function onNavigateFinish() {
         for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
             updateMenu(browse);
-            browse.querySelector('div#primary').appendChild(load_button_container);
             showMenu(browse);
         }
+
+        show_load_button_container();
     }
 
     function hookContents(contents) {
@@ -1231,6 +1239,29 @@ function main(app, common, lang) {
                 }
             }
         }).observe(app.querySelector('ytd-page-manager'), { childList: true });
+    }
+
+    function show_load_button_container() {
+        const node = app.querySelector('ytd-browse[role="main"] ytd-continuation-item-renderer');
+        if (node) {
+            update__load_button_container(node);
+        }
+
+        load_button_container.style.visibility = '';
+    }
+
+    function hide_load_button_container() {
+        load_button_container.style.visibility = 'hidden';
+    }
+
+    function update__load_button_container(continuation_item) {
+        continuation_item.parentNode.parentNode.appendChild(load_button_container);
+        if (continuation_item.parentNode.children.length > limit) {
+            load_button_container.style.display = '';
+            continuation_item.style.display = 'none';
+        } else {
+            load_button_container.style.display = 'none';
+        }
     }
 
     let live;
@@ -1286,25 +1317,26 @@ function main(app, common, lang) {
     let resizeTimer;
     let nodeForCalc;
 
-    let continuation_item;
-
     const load_button_container = document.createElement('div');
-    load_button_container.classList.add('filter-button-load');
-    load_button_container.style.display = 'none';
-
-    const load_button = document.createElement('button');
-    load_button.innerText = common.button_label.load;
-    load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
-    load_button.addEventListener('click', () => {
+    {
         load_button_container.style.display = 'none';
+        load_button_container.classList.add('filter-button-load');
 
-        if (continuation_item) {
-            continuation_item.style.display = '';
-        }
+        const load_button = document.createElement('button');
+        load_button.innerText = common.button_label.load;
+        load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
+        load_button.addEventListener('click', () => {
+            load_button_container.style.display = 'none';
 
-        window.scroll({ top: app.scrollHeight, behavior: 'instant' });
-    });
-    load_button_container.appendChild(load_button);
+            const continuation_item = app.querySelector('ytd-browse[role="main"] ytd-continuation-item-renderer');
+            if (continuation_item) {
+                continuation_item.style.display = '';
+            }
+
+            window.scroll({ top: app.scrollHeight, behavior: 'instant' });
+        });
+        load_button_container.appendChild(load_button);
+    }
 
     chrome.storage.onChanged.addListener(async () => {
         await loadSettings();
