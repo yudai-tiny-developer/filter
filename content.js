@@ -859,6 +859,10 @@ function main(app, common, lang) {
 
                 break;
 
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                status.add('short');
+                break;
+
             case 'YTD-CHANNEL-RENDERER':
                 const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
                 if (channel_notification) {
