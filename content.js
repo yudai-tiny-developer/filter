@@ -5,7 +5,7 @@ import(chrome.runtime.getURL('common.js')).then(common => {
     });
 });
 
-function main(app, common, lang) {
+async function main(app, common, lang) {
     async function loadSettings() {
         await chrome.storage.local.get(common.storage).then(data => {
             live = common.value(data.live, common.default_value.live);
@@ -1396,6 +1396,6 @@ function main(app, common, lang) {
     document.addEventListener('yt-navigate-start', onNavigateStart);
     document.addEventListener('yt-navigate-finish', onNavigateFinish);
 
-    loadSettings();
+    await loadSettings();
     observe_browse();
 }
