@@ -52,6 +52,48 @@ export const storage = [
     'limit',
 ];
 
+export const default_value = {
+    live: true,
+    streamed: true,
+    video: true,
+    short: true,
+    scheduled: true,
+    notification_on: false,
+    notification_off: false,
+
+    progress_unwatched: true,
+    progress_watched: true,
+
+    channels_all: true,
+    channels_personalized: true,
+    channels_none: true,
+
+    keyword: true,
+
+    default_live: false,
+    default_streamed: false,
+    default_video: false,
+    default_short: false,
+    default_scheduled: false,
+    default_notification_on: false,
+    default_notification_off: false,
+
+    default_progress_unwatched: false,
+    default_progress_watched: false,
+
+    default_channels_all: false,
+    default_channels_personalized: false,
+    default_channels_none: false,
+
+    multiselection: false,
+
+    responsive: true,
+
+    default_keyword: '',
+
+    limit: 500,
+};
+
 export const default_order = [
     'live',
     'streamed',
@@ -118,6 +160,18 @@ export const defaultLimit = 500;
 export const minLimit = 100;
 export const maxLimit = 10000;
 export const stepLimit = 100;
+
+export function value(value, defaultValue) {
+    return value === undefined ? defaultValue : value;
+}
+
+export function display(value) {
+    return value ? '' : 'none';
+}
+
+export function any(array) {
+    return display(array.some(e => e));
+}
 
 export function limit(value, defaultValue, minValue, maxValue, stepValue) {
     return step(range(normalize(value, defaultValue), minValue, maxValue), stepValue);
