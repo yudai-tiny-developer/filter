@@ -1243,9 +1243,7 @@ function main(app, common, lang) {
     }
 
     function on_observe_target_container_found(container) {
-        observe_update_target_container(container, 'div#contents');
-        observe_update_target_container(container, 'div#items');
-        observe_update_target_container(container, 'div#grid-container');
+        observe_update_target_container(container, 'div#contents, div#items, div#grid-container');
     }
 
     function observe_update_target_container(container, query) {
