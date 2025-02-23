@@ -722,11 +722,11 @@ function main(app, common, lang) {
     }
 
     function showMenu(node) {
-        node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = '');
+        node.querySelectorAll('form.filter-menu, div.filter-menu, div.filter-button-load').forEach(menu => menu.style.visibility = '');
     }
 
     function hideMenu(node) {
-        node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
+        node.querySelectorAll('form.filter-menu, div.filter-menu, div.filter-button-load').forEach(menu => menu.style.visibility = 'hidden');
     }
 
     function updateVisibility(node) {
@@ -756,9 +756,11 @@ function main(app, common, lang) {
             if (node.parentNode.children.length > limit) {
                 load_button_container.style.display = '';
                 node.style.display = 'none';
-                node.parentNode.parentNode.appendChild(load_button_container);
-                continuation_item = node;
+            } else {
+                load_button_container.style.display = 'none';
+                node.style.display = '';
             }
+            continuation_item = node;
         } else if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
             node.style.display = '';
         } else {
@@ -1178,6 +1180,7 @@ function main(app, common, lang) {
     function onNavigateFinish() {
         for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
             updateMenu(browse);
+            browse.querySelector('div#primary').appendChild(load_button_container);
             showMenu(browse);
         }
     }
@@ -1287,6 +1290,7 @@ function main(app, common, lang) {
 
     const load_button_container = document.createElement('div');
     load_button_container.classList.add('filter-button-load');
+    load_button_container.style.display = 'none';
 
     const load_button = document.createElement('button');
     load_button.innerText = common.button_label.load;
