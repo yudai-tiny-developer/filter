@@ -1191,8 +1191,6 @@ function main(app, common, lang) {
         }
 
         show_load_button_container();
-
-        updateVisibility();
     }
 
     function hookContents(contents) {

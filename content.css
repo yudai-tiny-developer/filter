@@ -213,7 +213,8 @@ ytd-browse[page-subtype="playlist"] {
     padding-top: 0px !important;
 }
 
-ytd-browse[page-subtype="playlist"] ytd-playlist-header-renderer {
+ytd-browse[page-subtype="playlist"] ytd-playlist-header-renderer,
+ytd-browse[page-subtype="playlist"] yt-page-header-renderer {
     padding-top: 56px !important;
 }
 
