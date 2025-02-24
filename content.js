@@ -1281,62 +1281,16 @@ async function main(app, common, lang) {
         display(browse, 'form.filter-menu, div.filter-menu', '')
 
         on_observe_target_container_found(browse);
-        observe_observe_target_container(browse, 'ytd-section-list-renderer, ytd-playlist-video-list-renderer');
     }
 
-    function observe_observe_target_container(browse, query) {
-        for (const container of browse.querySelectorAll(query)) {
-            on_observe_target_container_found(container);
-        }
-
-        new MutationObserver((mutations, observer) => {
-            if (isFilterTarget()) {
-                for (const container of browse.querySelectorAll(query)) {
-                    on_observe_target_container_found(container);
-                }
-            }
-        }).observe(browse, { childList: true });
-    }
-
-    function on_observe_target_container_found(container) {
-        observe_update_target_container(container, 'div#contents, div#items, div#grid-container, div#overlays');
-    }
-
-    function observe_update_target_container(container, query) {
-        if (!observers_observe_update_target_container.has(container)) {
-            observers_observe_update_target_container.add(container);
-
-            for (const node of container.querySelectorAll(query)) {
-                on_update_target_container_found(node);
-            }
-
+    function on_observe_target_container_found(browse) {
+        if (!observers.has(browse)) {
+            observers.add(browse);
             new MutationObserver((mutations, observer) => {
                 if (isFilterTarget()) {
-                    for (const node of container.querySelectorAll(query)) {
-                        on_update_target_container_found(node);
-                    }
+                    updateVisibility(browse);
                 }
-            }).observe(container, { childList: true });
-        }
-    }
-
-    function on_update_target_container_found(node) {
-        if (!observers_on_update_target_container_found.has(node)) {
-            observers_on_update_target_container_found.add(node);
-
-            for (const child of node.children) {
-                updateTargetVisibility(child);
-            }
-
-            new MutationObserver((mutations, observer) => {
-                if (isFilterTarget()) {
-                    for (const mutation of mutations) {
-                        for (const addedNode of mutation.addedNodes) {
-                            updateTargetVisibility(addedNode);
-                        }
-                    }
-                }
-            }).observe(node, { childList: true });
+            }).observe(browse, { childList: true, subtree: true });
         }
     }
 
@@ -1359,9 +1313,7 @@ async function main(app, common, lang) {
     let default_keyword;
     let settings;
     let resize_interval;
-
-    const observers_observe_update_target_container = new Set();
-    const observers_on_update_target_container_found = new Set();
+    const observers = new Set();
 
     const default_tab = {
         live: false,
