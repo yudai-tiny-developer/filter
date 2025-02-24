@@ -733,52 +733,137 @@ async function main(app, common, lang) {
     }
 
     async function updateVisibility(browse) {
-        if (!updating.has(browse)) {
-            console.log('updateVisibility');
-            updating.add(browse);
-            if (common.isSubscriptions(location.href)) {
-                await browse.querySelectorAll('ytd-rich-item-renderer, ytd-item-section-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
-            } else if (common.isLibrary(location.href)) {
-                await browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model').forEach(node => updateTargetVisibility(node));
-            } else if (common.isPlaylist(location.href)) {
-                await browse.querySelectorAll('ytd-playlist-video-renderer').forEach(node => updateTargetVisibility(node));
-            } else if (common.isHistory(location.href)) {
-                await browse.querySelectorAll('ytd-video-renderer, ytm-shorts-lockup-view-model-v2').forEach(node => updateTargetVisibility(node));
-            } else if (common.isHashTag(location.href)) {
-                await browse.querySelectorAll('ytd-rich-item-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
-            } else if (common.isPlaylists(location.href)) {
-                await browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
-            } else if (common.isChannel(location.href)) {
-                await browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model, ytm-shorts-lockup-view-model-v2, ytd-rich-item-renderer, ytd-backstage-post-thread-renderer').forEach(node => updateTargetVisibility(node));
-            } else if (common.isShorts(location.href)) {
-                await browse.querySelectorAll('ytd-rich-item-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
-            } else if (common.isChannels(location.href)) {
-                await browse.querySelectorAll('ytd-channel-renderer').forEach(node => updateTargetVisibility(node));
-            }
-            updating.delete(browse);
+        if (common.isSubscriptions(location.href)) {
+            await browse.querySelectorAll('ytd-rich-item-renderer, ytd-item-section-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
+        } else if (common.isLibrary(location.href)) {
+            await browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model').forEach(node => updateTargetVisibility(node));
+        } else if (common.isPlaylist(location.href)) {
+            await browse.querySelectorAll('ytd-playlist-video-renderer').forEach(node => updateTargetVisibility(node));
+        } else if (common.isHistory(location.href)) {
+            await browse.querySelectorAll('ytd-video-renderer, ytm-shorts-lockup-view-model-v2').forEach(node => updateTargetVisibility(node));
+        } else if (common.isHashTag(location.href)) {
+            await browse.querySelectorAll('ytd-rich-item-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
+        } else if (common.isPlaylists(location.href)) {
+            await browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
+        } else if (common.isChannel(location.href)) {
+            await browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model, ytm-shorts-lockup-view-model-v2, ytd-rich-item-renderer, ytd-backstage-post-thread-renderer').forEach(node => updateTargetVisibility(node));
+        } else if (common.isShorts(location.href)) {
+            await browse.querySelectorAll('ytd-rich-item-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
+        } else if (common.isChannels(location.href)) {
+            await browse.querySelectorAll('ytd-channel-renderer').forEach(node => updateTargetVisibility(node));
         }
     }
 
     function updateTargetVisibility(node) {
-        switch (node.nodeName) {
-            case 'YTD-ITEM-SECTION-RENDERER':
-            case 'YTD-RICH-ITEM-RENDERER':
-            case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTD-PLAYLIST-VIDEO-RENDERER':
-            case 'YTD-VIDEO-RENDERER':
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-            case 'YT-LOCKUP-VIEW-MODEL':
-            case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-            case 'YTD-CHANNEL-RENDERER':
-                if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
-                    node.style.display = '';
-                } else {
-                    node.style.display = 'none';
-                }
-                break;
-            case 'YTD-CONTINUATION-ITEM-RENDERER':
-                update_continuation_item(node);
-                break;
+        if (common.isSubscriptions(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-RICH-ITEM-RENDERER':
+                case 'YTD-ITEM-SECTION-RENDERER':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+                case 'YTD-CONTINUATION-ITEM-RENDERER':
+                    update_continuation_item(node);
+                    break;
+            }
+        } else if (common.isLibrary(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-GRID-VIDEO-RENDERER':
+                case 'YT-LOCKUP-VIEW-MODEL':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+            }
+        } else if (common.isPlaylist(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-PLAYLIST-VIDEO-RENDERER':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+            }
+        } else if (common.isHistory(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-VIDEO-RENDERER':
+                case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+            }
+        } else if (common.isHashTag(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-RICH-ITEM-RENDERER':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+                case 'YTD-CONTINUATION-ITEM-RENDERER':
+                    update_continuation_item(node);
+                    break;
+            }
+        } else if (common.isPlaylists(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-RICH-ITEM-RENDERER':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+            }
+        } else if (common.isChannel(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-GRID-VIDEO-RENDERER':
+                case 'YT-LOCKUP-VIEW-MODEL':
+                case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                case 'YTD-RICH-ITEM-RENDERER':
+                case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+            }
+        } else if (common.isShorts(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-RICH-ITEM-RENDERER':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+                case 'YTD-CONTINUATION-ITEM-RENDERER':
+                    update_continuation_item(node);
+                    break;
+            }
+        } else if (common.isChannels(location.href)) {
+            switch (node.nodeName) {
+                case 'YTD-CHANNEL-RENDERER':
+                    if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+                        node.style.display = '';
+                    } else {
+                        node.style.display = 'none';
+                    }
+                    break;
+                case 'YTD-CONTINUATION-ITEM-RENDERER':
+                    update_continuation_item(node);
+                    break;
+            }
         }
     }
 
@@ -1260,7 +1345,11 @@ async function main(app, common, lang) {
             observers.add(browse);
             new MutationObserver((mutations, observer) => {
                 if (isFilterTarget()) {
-                    updateVisibility(browse);
+                    for (const mutation of mutations) {
+                        for (const addedNode of mutation.addedNodes) {
+                            updateTargetVisibility(addedNode);
+                        }
+                    }
                 }
             }).observe(browse, { childList: true, subtree: true });
         }
