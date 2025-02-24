@@ -75,7 +75,13 @@ async function main(app, common, lang) {
     }
 
     function forTwoColumnBrowseResultsRenderer() {
-        return common.isChannel(location.href);
+        return common.isChannel(location.href)
+            ;
+    }
+
+    function forPageHeaderRenderer() {
+        return common.isHashTag(location.href)
+            ;
     }
 
     function needSpacer() {
@@ -86,6 +92,7 @@ async function main(app, common, lang) {
             || common.isPlaylists(location.href)
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
+            || common.isHashTag(location.href)
             ;
     }
 
@@ -97,13 +104,23 @@ async function main(app, common, lang) {
 
     function insertMenu(browse) {
         if (!browse.querySelector('form.filter-menu')) {
-            const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
-            browse.insertBefore(createMenu(browse), referenceNode);
+            const referenceNode = getReferenceNode(browse);
+            referenceNode.parentNode.insertBefore(createMenu(browse), referenceNode);
             if (needSpacer()) {
-                browse.insertBefore(createSpacer(), referenceNode);
+                referenceNode.parentNode.insertBefore(createSpacer(), referenceNode);
             }
         } else {
             // already exists
+        }
+    }
+
+    function getReferenceNode(browse) {
+        if (forTwoColumnBrowseResultsRenderer()) {
+            return browse.querySelector('ytd-two-column-browse-results-renderer');
+        } else if (forPageHeaderRenderer()) {
+            return browse.querySelector('yt-page-header-renderer');
+        } else {
+            return browse.firstChild;
         }
     }
 
@@ -161,7 +178,7 @@ async function main(app, common, lang) {
             window.scroll({ top: 0, behavior: 'instant' });
         });
 
-        createNodeForCalc(menu, browse);
+        createNodeForCalc(menu);
 
         return menu;
     }
@@ -355,11 +372,10 @@ async function main(app, common, lang) {
         node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
     }
 
-    function createNodeForCalc(menu, browse) {
+    function createNodeForCalc(menu) {
         if (!nodeForCalc) {
             nodeForCalc = menu.cloneNode(true);
             nodeForCalc.classList.add('filter-forCalc');
-            browse.appendChild(nodeForCalc);
         }
     }
 
