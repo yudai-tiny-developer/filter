@@ -89,6 +89,12 @@ async function main(app, common, lang) {
             ;
     }
 
+    function needContinuationItemControl() {
+        return common.isSubscriptions(location.href)
+            || common.isShorts(location.href)
+            ;
+    }
+
     function insertMenu(browse) {
         if (!browse.querySelector('form.filter-menu')) {
             const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
@@ -1222,13 +1228,15 @@ async function main(app, common, lang) {
     }
 
     function update_continuation_item(continuation_item) {
-        continuation_item.parentNode.parentNode.appendChild(load_button_container);
-        if (continuation_item.parentNode.children.length > limit) {
-            load_button_container.style.display = '';
-            continuation_item.style.display = 'none';
-        } else {
-            load_button_container.style.display = 'none';
-            continuation_item.style.display = '';
+        if (needContinuationItemControl()) {
+            continuation_item.parentNode.parentNode.appendChild(load_button_container);
+            if (continuation_item.parentNode.children.length > limit) {
+                load_button_container.style.display = '';
+                continuation_item.style.display = 'none';
+            } else {
+                load_button_container.style.display = 'none';
+                continuation_item.style.display = '';
+            }
         }
     }
 
