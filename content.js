@@ -96,12 +96,6 @@ async function main(app, common, lang) {
             ;
     }
 
-    function needContinuationItemControl() {
-        return common.isSubscriptions(location.href)
-            || common.isShorts(location.href)
-            ;
-    }
-
     function insertMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const referenceNode = getReferenceNode(browse);
@@ -738,34 +732,36 @@ async function main(app, common, lang) {
         node.querySelectorAll(query).forEach(n => n.style.display = value);
     }
 
-    function updateVisibility(browse) {
-        if (common.isSubscriptions(location.href)) {
-            browse.querySelectorAll('ytd-rich-item-renderer, ytd-item-section-renderer').forEach(node => updateTargetVisibility(node));
-        } else if (common.isLibrary(location.href)) {
-            browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model').forEach(node => updateTargetVisibility(node));
-        } else if (common.isPlaylist(location.href)) {
-            browse.querySelectorAll('ytd-playlist-video-renderer').forEach(node => updateTargetVisibility(node));
-        } else if (common.isHistory(location.href)) {
-            browse.querySelectorAll('ytd-video-renderer, ytm-shorts-lockup-view-model-v2').forEach(node => updateTargetVisibility(node));
-        } else if (common.isHashTag(location.href)) {
-            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
-        } else if (common.isPlaylists(location.href)) {
-            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
-        } else if (common.isChannel(location.href)) {
-            browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model, ytm-shorts-lockup-view-model-v2, ytd-rich-item-renderer, ytd-backstage-post-thread-renderer').forEach(node => updateTargetVisibility(node));
-        } else if (common.isShorts(location.href)) {
-            browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
-        } else if (common.isChannels(location.href)) {
-            browse.querySelectorAll('ytd-channel-renderer').forEach(node => updateTargetVisibility(node));
+    async function updateVisibility(browse) {
+        if (!updating.has(browse)) {
+            console.log('updateVisibility');
+            updating.add(browse);
+            if (common.isSubscriptions(location.href)) {
+                await browse.querySelectorAll('ytd-rich-item-renderer, ytd-item-section-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
+            } else if (common.isLibrary(location.href)) {
+                await browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model').forEach(node => updateTargetVisibility(node));
+            } else if (common.isPlaylist(location.href)) {
+                await browse.querySelectorAll('ytd-playlist-video-renderer').forEach(node => updateTargetVisibility(node));
+            } else if (common.isHistory(location.href)) {
+                await browse.querySelectorAll('ytd-video-renderer, ytm-shorts-lockup-view-model-v2').forEach(node => updateTargetVisibility(node));
+            } else if (common.isHashTag(location.href)) {
+                await browse.querySelectorAll('ytd-rich-item-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
+            } else if (common.isPlaylists(location.href)) {
+                await browse.querySelectorAll('ytd-rich-item-renderer').forEach(node => updateTargetVisibility(node));
+            } else if (common.isChannel(location.href)) {
+                await browse.querySelectorAll('ytd-grid-video-renderer, yt-lockup-view-model, ytm-shorts-lockup-view-model-v2, ytd-rich-item-renderer, ytd-backstage-post-thread-renderer').forEach(node => updateTargetVisibility(node));
+            } else if (common.isShorts(location.href)) {
+                await browse.querySelectorAll('ytd-rich-item-renderer, ytd-continuation-item-renderer').forEach(node => updateTargetVisibility(node));
+            } else if (common.isChannels(location.href)) {
+                await browse.querySelectorAll('ytd-channel-renderer').forEach(node => updateTargetVisibility(node));
+            }
+            updating.delete(browse);
         }
     }
 
     function updateTargetVisibility(node) {
         switch (node.nodeName) {
             case 'YTD-ITEM-SECTION-RENDERER':
-                if (!common.isSubscriptions(location.href)) {
-                    break;
-                }
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTD-GRID-VIDEO-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
@@ -780,27 +776,10 @@ async function main(app, common, lang) {
                     node.style.display = 'none';
                 }
                 break;
-            case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
-                const progress_node = searchParentNode(node, ['YTD-RICH-ITEM-RENDERER', 'YTD-GRID-VIDEO-RENDERER', 'YTD-PLAYLIST-VIDEO-RENDERER', 'YTD-VIDEO-RENDERER', 'YTD-ITEM-SECTION-RENDERER']);
-                if (progress_node) {
-                    updateTargetVisibility(progress_node);
-                }
-                break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 update_continuation_item(node);
                 break;
         }
-    }
-
-    function searchParentNode(node, nodeNames) {
-        for (let n = node; n; n = n.parentNode) {
-            for (const nodeName of nodeNames) {
-                if (n.nodeName === nodeName) {
-                    return n;
-                }
-            }
-        }
-        return undefined;
     }
 
     function includesStatus(node, status_mode, status_progress) {
@@ -1222,11 +1201,6 @@ async function main(app, common, lang) {
             updateMenu(browse);
             showMenu(browse);
             updateVisibility(browse);
-
-            const continuation_item = browse.querySelector('ytd-continuation-item-renderer');
-            if (continuation_item) {
-                update_continuation_item(continuation_item);
-            }
         }
         show_load_button();
     }
@@ -1248,15 +1222,13 @@ async function main(app, common, lang) {
     }
 
     function update_continuation_item(continuation_item) {
-        if (needContinuationItemControl()) {
-            continuation_item.parentNode.parentNode.appendChild(load_button_container);
-            if (continuation_item.parentNode.children.length > limit) {
-                load_button_container.style.display = '';
-                continuation_item.style.display = 'none';
-            } else {
-                load_button_container.style.display = 'none';
-                continuation_item.style.display = '';
-            }
+        continuation_item.parentNode.parentNode.appendChild(load_button_container);
+        if (continuation_item.parentNode.children.length > limit) {
+            load_button_container.style.display = '';
+            continuation_item.style.display = 'none';
+        } else {
+            load_button_container.style.display = 'none';
+            continuation_item.style.display = '';
         }
     }
 
@@ -1314,6 +1286,7 @@ async function main(app, common, lang) {
     let settings;
     let resize_interval;
     const observers = new Set();
+    const updating = new Set();
 
     const default_tab = {
         live: false,
