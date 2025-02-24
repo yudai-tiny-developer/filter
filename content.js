@@ -103,7 +103,7 @@ async function main(app, common, lang) {
     }
 
     function insertMenu(browse) {
-        if (!browse.querySelector('form.filter-menu')) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const referenceNode = getReferenceNode(browse);
             referenceNode.parentNode.insertBefore(createMenu(browse), referenceNode);
             if (needSpacer()) {
@@ -178,7 +178,7 @@ async function main(app, common, lang) {
             window.scroll({ top: 0, behavior: 'instant' });
         });
 
-        createNodeForCalc(menu);
+        createNodeForCalc(menu, browse);
 
         return menu;
     }
@@ -372,10 +372,11 @@ async function main(app, common, lang) {
         node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
     }
 
-    function createNodeForCalc(menu) {
-        if (!nodeForCalc) {
-            nodeForCalc = menu.cloneNode(true);
-            nodeForCalc.classList.add('filter-forCalc');
+    function createNodeForCalc(menu, browse) {
+        if (!browse.querySelector('form.filter-forCalc')) {
+            const node = menu.cloneNode(true);
+            node.classList.add('filter-forCalc');
+            browse.appendChild(node);
         }
     }
 
@@ -476,24 +477,24 @@ async function main(app, common, lang) {
 
                 display(menu, 'span.filter-query', common.display(keyword));
             } else if (common.isLibrary(location.href)) {
-                display(menu, 'span.filter-button-subscriptions.all', common.any([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                display(menu, 'span.filter-button-subscriptions.live', common.display(live));
-                display(menu, 'span.filter-button-subscriptions.streamed', common.display(streamed));
-                display(menu, 'span.filter-button-subscriptions.video', common.display(video));
-                display(menu, 'span.filter-button-subscriptions.short', common.display(short));
-                display(menu, 'span.filter-button-subscriptions.scheduled', common.display(scheduled));
-                display(menu, 'span.filter-button-subscriptions.notification_on', common.display(notification_on));
-                display(menu, 'span.filter-button-subscriptions.notification_off', common.display(notification_off));
+                display(menu, 'span.filter-button-subscriptions.all', '');
+                display(menu, 'span.filter-button-subscriptions.live', '');
+                display(menu, 'span.filter-button-subscriptions.streamed', '');
+                display(menu, 'span.filter-button-subscriptions.video', '');
+                display(menu, 'span.filter-button-subscriptions.short', '');
+                display(menu, 'span.filter-button-subscriptions.scheduled', '');
+                display(menu, 'span.filter-button-subscriptions.notification_on', 'none');
+                display(menu, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                display(menu, 'select.filter-menu', common.any([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                display(menu, 'option.filter-button-subscriptions.all', common.any([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                display(menu, 'option.filter-button-subscriptions.live', common.display(live));
-                display(menu, 'option.filter-button-subscriptions.streamed', common.display(streamed));
-                display(menu, 'option.filter-button-subscriptions.video', common.display(video));
-                display(menu, 'option.filter-button-subscriptions.short', common.display(short));
-                display(menu, 'option.filter-button-subscriptions.scheduled', common.display(scheduled));
-                display(menu, 'option.filter-button-subscriptions.notification_on', common.display(notification_on));
-                display(menu, 'option.filter-button-subscriptions.notification_off', common.display(notification_off));
+                display(menu, 'select.filter-menu', '');
+                display(menu, 'option.filter-button-subscriptions.all', '');
+                display(menu, 'option.filter-button-subscriptions.live', '');
+                display(menu, 'option.filter-button-subscriptions.streamed', '');
+                display(menu, 'option.filter-button-subscriptions.video', '');
+                display(menu, 'option.filter-button-subscriptions.short', '');
+                display(menu, 'option.filter-button-subscriptions.scheduled', '');
+                display(menu, 'option.filter-button-subscriptions.notification_on', 'none');
+                display(menu, 'option.filter-button-subscriptions.notification_off', 'none');
 
                 display(menu, 'select.filter-menu-progress', common.any([progress_unwatched, progress_watched]));
                 display(menu, 'option.filter-button-progress.progress_all', common.any([progress_unwatched, progress_watched]));
@@ -725,7 +726,7 @@ async function main(app, common, lang) {
                 display(menu, 'span.filter-query', common.display(keyword));
             }
 
-            onResize(true);
+            onResize();
 
             changeMode(browse, getActiveMode().values().next().value, multiselection, false);
             changeModeProgress(browse, getActiveModeProgress().values().next().value, multiselection, false);
@@ -1180,24 +1181,26 @@ async function main(app, common, lang) {
         }
     }
 
-    function onResize(force = false) {
+    function onResize() {
         if (responsive) {
-            for (const form of app.querySelectorAll('form.filter-menu')) {
-                if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
-                    form.parentNode.appendChild(nodeForCalc);
-                    if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
-                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                    } else {
-                        document.documentElement.style.setProperty('--filter-button-display', 'none');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
-                    }
-
-                    prevWidth = form.parentNode.scrollWidth;
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(onResize, 256);
-
-                    return;
+            const form = app.querySelector('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')
+            if (form && form.parentNode.scrollWidth !== 0) {
+                const calc = form.parentNode.querySelector('form.filter-forCalc');
+                if (calc) {
+                    form.parentNode.insertBefore(calc, form);
+                    clearInterval(resize_interval);
+                    resize_interval = setInterval(() => {
+                        if (calc.scrollWidth !== 0) {
+                            clearInterval(resize_interval);
+                            if (calc.scrollWidth <= form.parentNode.scrollWidth) {
+                                document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                                document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                            } else {
+                                document.documentElement.style.setProperty('--filter-button-display', 'none');
+                                document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                            }
+                        }
+                    }, 100);
                 }
             }
         } else {
@@ -1214,7 +1217,8 @@ async function main(app, common, lang) {
     }
 
     function onNavigateFinish() {
-        for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
+        const browse = app.querySelector('ytd-browse[role="main"]');
+        if (browse) {
             updateMenu(browse);
             showMenu(browse);
             updateVisibility(browse);
@@ -1228,11 +1232,11 @@ async function main(app, common, lang) {
     }
 
     function showMenu(browse) {
-        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = '');
+        browse.querySelectorAll('form.filter-menu:not(.filter-forCalc), div.filter-menu').forEach(menu => menu.style.visibility = '');
     }
 
     function hideMenu(browse) {
-        browse.querySelectorAll('form.filter-menu, div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
+        browse.querySelectorAll('form.filter-menu:not(.filter-forCalc), div.filter-menu').forEach(menu => menu.style.visibility = 'hidden');
     }
 
     function show_load_button() {
@@ -1354,9 +1358,7 @@ async function main(app, common, lang) {
     let limit = common.defaultLimit;
     let default_keyword;
     let settings;
-    let prevWidth = 0;
-    let resizeTimer;
-    let nodeForCalc;
+    let resize_interval;
 
     const observers_observe_update_target_container = new Set();
     const observers_on_update_target_container_found = new Set();
@@ -1407,7 +1409,8 @@ async function main(app, common, lang) {
 
     chrome.storage.onChanged.addListener(async () => {
         await loadSettings();
-        for (const browse of app.querySelectorAll('ytd-browse[role="main"]')) {
+        const browse = app.querySelector('ytd-browse[role="main"]');
+        if (browse) {
             updateMenu(browse);
         }
     });
