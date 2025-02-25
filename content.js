@@ -384,7 +384,7 @@ function main(app, common, lang) {
 
                 display_query(browse, 'span.filter-query', display(keyword));
             } else {
-                console.warn('Unknown target: ' + location.href);
+                // Unknown location.href
             }
 
             onResize();
@@ -534,7 +534,7 @@ function main(app, common, lang) {
                             } else if (lang.isNotificationOff_button(t)) {
                                 status.add('notification_off');
                             } else {
-                                console.warn('Unknown notification status: ' + t);
+                                // Unknown notification status
                             }
                         }
                     } else /*if (lang.isVideo_metadata(t))*/ {
@@ -547,19 +547,14 @@ function main(app, common, lang) {
                                 } else if (overlay_style === 'SHORTS') {
                                     status.add('short');
                                 } else {
-                                    // membership only video
-                                    status.add('video');
+                                    status.add('video'); // membership only video
                                 }
-                            } else {
-                                console.warn('overlay-style not found');
                             }
                         }
 
                         const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                         if (slim_media) {
                             status.add('short');
-                        } else {
-                            // no ytd-rich-grid-slim-media
                         }
                     }
                 } else {
@@ -578,7 +573,7 @@ function main(app, common, lang) {
                     } else if (lang.isChannelsNoNotifications(t)) {
                         status.add('channels_none');
                     } else {
-                        console.warn('Unknown channel notification: ' + t);
+                        // Unknown channel notification
                     }
                 } else {
                     // sponsor
@@ -619,9 +614,9 @@ function main(app, common, lang) {
                 text_node = node.querySelector('a#video-title');
                 if (text_node) {
                     return matchQuery(text_node.textContent);
-                } else {
-                    console.warn('a#video-title not found');
                 }
+
+                console.warn('text node not found');
 
                 break;
 
@@ -631,9 +626,9 @@ function main(app, common, lang) {
                     text_node = node.querySelector('a#video-title');
                     if (text_node) {
                         return matchQuery(text_node.textContent);
-                    } else {
-                        console.warn('a#video-title not found');
                     }
+
+                    console.warn('text node not found');
                 } else {
                     // lazy load
                 }
@@ -645,9 +640,9 @@ function main(app, common, lang) {
                 text_node = node.querySelector('div#meta');
                 if (text_node) {
                     return matchQuery(text_node.textContent);
-                } else {
-                    console.warn('div#meta not found');
                 }
+
+                console.warn('text node not found');
 
                 break;
 
@@ -656,9 +651,9 @@ function main(app, common, lang) {
                 text_node = node.querySelector('div#content');
                 if (text_node) {
                     return matchQuery(text_node.textContent);
-                } else {
-                    console.warn('div#content not found');
                 }
+
+                console.warn('text node not found');
 
                 break;
 
@@ -666,9 +661,9 @@ function main(app, common, lang) {
                 text_node = node.querySelector('a#video-title');
                 if (text_node) {
                     return matchQuery(text_node.textContent);
-                } else {
-                    console.warn('a#video-title not found');
                 }
+
+                console.warn('text node not found');
 
                 break;
 
@@ -695,9 +690,9 @@ function main(app, common, lang) {
                 text_node = node.querySelector('div#info');
                 if (text_node) {
                     return matchQuery(text_node.textContent);
-                } else {
-                    console.warn('div#info not found');
                 }
+
+                console.warn('text node not found');
 
                 break;
         }
@@ -1572,7 +1567,7 @@ function main(app, common, lang) {
                             document.documentElement.style.setProperty('--filter-menu-display', 'block');
                         }
                     } else {
-                        console.warn('calc not found');
+                        console.warn('calc node not found');
                     }
                 } else {
                     // not created yet
