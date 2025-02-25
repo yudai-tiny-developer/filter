@@ -810,16 +810,16 @@ function main(app, common, lang) {
             menu.classList.add('filter-menu');
         }
 
-        menu.appendChild(createButton(common.button_label.all, 'all'));
-        menu.appendChild(createButton(common.button_label.live, 'live'));
-        menu.appendChild(createButton(common.button_label.streamed, 'streamed'));
-        menu.appendChild(createButton(common.button_label.video, 'video'));
-        menu.appendChild(createButton(common.button_label.short, 'short', true));
-        menu.appendChild(createButton(common.button_label.scheduled, 'scheduled'));
-        menu.appendChild(createButton(common.button_label.notification_on, 'notification_on'));
-        menu.appendChild(createButton(common.button_label.notification_off, 'notification_off'));
+        menu.appendChild(createButton(common.button_label.all, 'all', false, browse));
+        menu.appendChild(createButton(common.button_label.live, 'live', false, browse));
+        menu.appendChild(createButton(common.button_label.streamed, 'streamed', false, browse));
+        menu.appendChild(createButton(common.button_label.video, 'video', false, browse));
+        menu.appendChild(createButton(common.button_label.short, 'short', true, browse));
+        menu.appendChild(createButton(common.button_label.scheduled, 'scheduled', false, browse));
+        menu.appendChild(createButton(common.button_label.notification_on, 'notification_on', false, browse));
+        menu.appendChild(createButton(common.button_label.notification_off, 'notification_off', false, browse));
 
-        const select = createSelect();
+        const select = createSelect(browse);
         select.appendChild(createOption(common.button_label.placeholder));
         select.appendChild(createOption(common.button_label.all, 'all'));
         select.appendChild(createOption(common.button_label.live, 'live'));
@@ -831,17 +831,17 @@ function main(app, common, lang) {
         select.appendChild(createOption(common.button_label.notification_off, 'notification_off'));
         menu.appendChild(select);
 
-        const progress = createSelectProgress();
+        const progress = createSelectProgress(browse);
         progress.appendChild(createOptionProgress(common.button_label.progress_placeholder));
         progress.appendChild(createOptionProgress(common.button_label.progress_all, 'progress_all'));
         progress.appendChild(createOptionProgress(common.button_label.progress_unwatched, 'progress_unwatched'));
         progress.appendChild(createOptionProgress(common.button_label.progress_watched, 'progress_watched'));
         menu.appendChild(progress);
 
-        menu.appendChild(createButtonChannels(common.button_label.all, 'all'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_all, 'channels_all'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none'));
+        menu.appendChild(createButtonChannels(common.button_label.all, 'all', browse));
+        menu.appendChild(createButtonChannels(common.button_label.channels_all, 'channels_all', browse));
+        menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse));
+        menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse));
 
         const input = createQueryInput(menu);
         menu.appendChild(createQueryInputArea(input));
@@ -849,8 +849,8 @@ function main(app, common, lang) {
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
-            updateQueryRegex(app, input.value);
-            updateVisibility(app);
+            updateQueryRegex(browse, input.value);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
 
@@ -864,7 +864,7 @@ function main(app, common, lang) {
         return spacer;
     }
 
-    function createButton(text, mode, isShorts) {
+    function createButton(text, mode, isShorts, browse) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
@@ -874,33 +874,33 @@ function main(app, common, lang) {
                 location.href = 'https://www.youtube.com/feed/subscriptions/shorts';
             } else {
                 changeMode(mode, multiselection, span.classList.contains('selected'));
-                updateVisibility(app);
+                updateVisibility(browse);
                 window.scroll({ top: 0, behavior: 'instant' });
             }
         });
         return span;
     }
 
-    function createButtonChannels(text, mode) {
+    function createButtonChannels(text, mode, browse) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-channels', mode);
         span.innerHTML = text;
         span.addEventListener('click', () => {
             changeMode(mode, multiselection, span.classList.contains('selected'));
-            updateVisibility(app);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
 
-    function createSelect() {
+    function createSelect(browse) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-subscriptions');
         select.addEventListener('change', () => {
             changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-            updateVisibility(app);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return select;
@@ -920,13 +920,13 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createSelectProgress() {
+    function createSelectProgress(browse) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-progress');
         select.addEventListener('change', () => {
             changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-            updateVisibility(app);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return select;
@@ -969,27 +969,27 @@ function main(app, common, lang) {
         return input;
     }
 
-    function createClearButton(input) {
+    function createClearButton(input, browse) {
         const span = document.createElement('span');
         span.classList.add('filter-clear');
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updateQueryRegex(app, '');
-            updateVisibility(app);
+            updateQueryRegex(browse, '');
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
 
-    function createSearchButton(input) {
+    function createSearchButton(input, browse) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updateQueryRegex(app, input.value);
-            updateVisibility(app);
+            updateQueryRegex(browse, input.value);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
