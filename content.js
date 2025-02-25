@@ -696,6 +696,7 @@ function main(app, common, lang) {
             switch (node.nodeName) {
                 case 'YTD-BROWSE':
                 case 'YTD-SECTION-LIST-RENDERER':
+                case 'YTD-TABBED-PAGE-HEADER':
                     await insertMenu(node);
                     break;
 
@@ -805,7 +806,7 @@ function main(app, common, lang) {
         if (forTwoColumnBrowseResultsRenderer()) {
             return browse.querySelector('ytd-two-column-browse-results-renderer');
         } else if (forPageHeaderRenderer()) {
-            return browse.querySelector('yt-page-header-renderer'); // FIXME: yt-page-header-renderer not found
+            return browse.querySelector('yt-page-header-renderer');
         } else {
             return browse.firstChild;
         }
@@ -1045,15 +1046,19 @@ function main(app, common, lang) {
     async function onViewChanged(isFilterTarget) {
         const browse = app.querySelector('ytd-browse[role="main"]');
         if (browse) {
-            if (isFilterTarget) {
-                insertPlaylistSpacer();
-                await updateButtonVisibility(browse);
-            }
-            updateMenuVisibility(browse, isFilterTarget);
-            updateVisibility(browse);
+            await onViewChanged_Node(isFilterTarget, browse);
         } else {
-            console.warn('ytd-browse[role="main"] not found');
+            await onViewChanged_Node(isFilterTarget, app);
         }
+    }
+
+    async function onViewChanged_Node(isFilterTarget, node) {
+        if (isFilterTarget) {
+            insertPlaylistSpacer();
+            await updateButtonVisibility(node);
+        }
+        updateMenuVisibility(node, isFilterTarget);
+        updateVisibility(node);
     }
 
     function includesStatus(node, status_mode, status_progress) {
