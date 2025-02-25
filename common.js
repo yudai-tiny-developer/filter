@@ -114,10 +114,35 @@ export const button_label = {
     load: chrome.i18n.getMessage('load'),
 };
 
+export const default_live = true;
+export const default_streamed = true;
+export const default_video = true;
+export const default_short = true;
+export const default_scheduled = true;
+export const default_notification_on = false;
+export const default_notification_off = false;
+
+export const default_progress_unwatched = true;
+export const default_progress_watched = true;
+
+export const default_channels_all = true;
+export const default_channels_personalized = true;
+export const default_channels_none = true;
+
+export const default_keyword = true;
+
+export const default_multiselection = false;
+export const default_responsive = true;
+export const default_default_keyword = '';
+
 export const defaultLimit = 500;
 export const minLimit = 100;
 export const maxLimit = 10000;
 export const stepLimit = 100;
+
+export function value(value, defaultValue) {
+    return value === undefined ? defaultValue : value;
+}
 
 export function limit(value, defaultValue, minValue, maxValue, stepValue) {
     return step(range(normalize(value, defaultValue), minValue, maxValue), stepValue);
