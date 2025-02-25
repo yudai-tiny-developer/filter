@@ -719,6 +719,7 @@ function main(app, common, lang) {
 
             case 'YTD-POPUP-CONTAINER':
             case 'YT-MULTI-PAGE-MENU-SECTION-RENDERER':
+            case 'YTD-GUIDE-SECTION-RENDERER':
                 insertPopupMenu(node);
                 break;
 
@@ -778,7 +779,7 @@ function main(app, common, lang) {
                         updateVisibility(node);
                     }
                 }
-                if (node.id === 'playlists' || node.id === 'items') {
+                if (node.id === 'playlists' || node.id === 'items' || node.id === 'expandable-items') {
                     updatePopupVisibility(node);
                 }
                 break;
@@ -818,6 +819,12 @@ function main(app, common, lang) {
             // notification
             case 'YTD-NOTIFICATION-RENDERER':
                 updatePopupVisibility(node.parentNode);
+                break;
+
+            // sidebar channels
+            case 'YTD-GUIDE-ENTRY-RENDERER':
+                const parent = searchParentNode(node, 'YTD-GUIDE-SECTION-RENDERER');
+                updatePopupVisibility(parent.querySelector('div#items'));
                 break;
 
             // continuation stopper
@@ -1114,6 +1121,19 @@ function main(app, common, lang) {
                 }
             }
         }
+
+        // sidebar channels
+        for (const items of node.querySelectorAll('div#items:has(ytd-guide-entry-renderer#expander-item), div#items:has(ytd-guide-entry-renderer#collapser-item), div#expandable-items:has(ytd-guide-entry-renderer#expander-item), div#expandable-items:has(ytd-guide-entry-renderer#collapser-item)')) {
+            const parent = items.parentNode;
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup');
+                if (existsMenu !== popupMenu.get(items)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(items);
+                    parent.insertBefore(menu, items);
+                }
+            }
+        }
     }
 
     function createPopupMenu(container) {
@@ -1181,7 +1201,7 @@ function main(app, common, lang) {
     }
 
     function updatePopupVisibility(container) {
-        container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer').forEach(target => updatePopupTargetVisibility(container, target));
+        container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
     }
 
     function updatePopupTargetVisibility(container, target) {
@@ -1247,7 +1267,7 @@ function main(app, common, lang) {
     }
 
     function matchPopupQuery(container, target) {
-        const text = target.querySelector('div#checkbox-label, div.ytd-notification-renderer.text')?.textContent ?? '';
+        const text = target.querySelector('div#checkbox-label, div.ytd-notification-renderer.text, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
         return matchPopupAllActiveRegex(container, text) && matchPopupAllActiveNotRegex(container, text);
     }
 
