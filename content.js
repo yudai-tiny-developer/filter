@@ -502,11 +502,6 @@ function main(app, common, lang) {
     }
 
     function updateVisibility(node) {
-        // shorts
-        if (common.isSubscriptions(location.href)) {
-            display_query(node, 'ytd-rich-section-renderer:has(button.yt-spec-button-shape-next)', 'none');
-        }
-
         node.querySelectorAll('yt-lockup-view-model, ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer),ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
     }
 
