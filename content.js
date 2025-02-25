@@ -6,9 +6,9 @@ import(chrome.runtime.getURL('common.js')).then(common => {
 });
 
 function main(app, common, lang) {
-    function updateButtonVisibility(node) {
-        chrome.storage.local.get(common.storage, data => {
-            for (const menu of node.querySelectorAll('form.filter-menu')) {
+    async function updateButtonVisibility(browse) {
+        await chrome.storage.local.get(common.storage).then(data => {
+            for (const menu of browse.querySelectorAll('form.filter-menu')) {
                 const select = menu.querySelector('select.filter-menu');
                 const progress = menu.querySelector('select.filter-menu-progress');
 
@@ -67,22 +67,22 @@ function main(app, common, lang) {
                 }
             }
 
-            const live = data.live === undefined ? true : data.live;
-            const streamed = data.streamed === undefined ? true : data.streamed;
-            const video = data.video === undefined ? true : data.video;
-            const short = data.short === undefined ? true : data.short;
-            const scheduled = data.scheduled === undefined ? true : data.scheduled;
-            const notification_on = data.notification_on === undefined ? false : data.notification_on;
-            const notification_off = data.notification_off === undefined ? false : data.notification_off;
+            const live = common.value(data.live, common.default_live);
+            const streamed = common.value(data.streamed, common.default_streamed);
+            const video = common.value(data.video, common.default_video);
+            const short = common.value(data.short, common.default_short);
+            const scheduled = common.value(data.scheduled, common.default_scheduled);
+            const notification_on = common.value(data.notification_on, common.default_notification_on);
+            const notification_off = common.value(data.notification_off, common.default_notification_off);
 
-            const progress_unwatched = data.progress_unwatched === undefined ? true : data.progress_unwatched;
-            const progress_watched = data.progress_watched === undefined ? true : data.progress_watched;
+            const progress_unwatched = common.value(data.progress_unwatched, common.default_progress_unwatched);
+            const progress_watched = common.value(data.progress_watched, common.default_progress_watched);
 
-            const channels_all = data.channels_all === undefined ? true : data.channels_all;
-            const channels_personalized = data.channels_personalized === undefined ? true : data.channels_personalized;
-            const channels_none = data.channels_none === undefined ? true : data.channels_none;
+            const channels_all = common.value(data.channels_all, common.default_channels_all);
+            const channels_personalized = common.value(data.channels_personalized, common.default_channels_personalized);
+            const channels_none = common.value(data.channels_none, common.default_channels_none);
 
-            const keyword = data.keyword === undefined ? true : data.keyword;
+            keyword = common.value(data.keyword, common.default_keyword);
 
             default_tab.live = data.default_live;
             default_tab.streamed = data.default_streamed;
@@ -99,279 +99,305 @@ function main(app, common, lang) {
             default_tab.channels_personalized = data.default_channels_personalized;
             default_tab.channels_none = data.default_channels_none;
 
-            multiselection = data.multiselection === undefined ? false : data.multiselection;
-            responsive = data.responsive === undefined ? true : data.responsive;
-            limit = data.limit === undefined ? common.defaultLimit : data.limit;
-            default_keyword = data.default_keyword === undefined ? '' : data.default_keyword;
+            multiselection = common.value(data.multiselection, common.default_multiselection);
+            responsive = common.value(data.responsive, common.default_responsive);
+            limit = common.value(data.limit, common.defaultLimit);
+            default_keyword = common.value(data.default_keyword, common.default_default_keyword);
 
-            if (common.isSubscriptions(location.href) || common.isLibrary(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = live === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = streamed === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = video === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = short === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = scheduled === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = notification_on === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = notification_off === true ? '' : 'none');
+            if (common.isSubscriptions(location.href)) {
+                display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                display_query(browse, 'span.filter-button-subscriptions.live', display(live));
+                display_query(browse, 'span.filter-button-subscriptions.streamed', display(streamed));
+                display_query(browse, 'span.filter-button-subscriptions.video', display(video));
+                display_query(browse, 'span.filter-button-subscriptions.short', display(short));
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', display(scheduled));
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', display(notification_on));
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', display(notification_off));
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = all_visibled([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = live === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = streamed === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = video === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = short === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = scheduled === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = notification_on === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = notification_off === true ? '' : 'none');
+                display_query(browse, 'select.filter-menu', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                display_query(browse, 'option.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                display_query(browse, 'option.filter-button-subscriptions.live', display(live));
+                display_query(browse, 'option.filter-button-subscriptions.streamed', display(streamed));
+                display_query(browse, 'option.filter-button-subscriptions.video', display(video));
+                display_query(browse, 'option.filter-button-subscriptions.short', display(short));
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', display(scheduled));
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', display(notification_on));
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', display(notification_off));
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = progress_unwatched === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = progress_watched === true ? '' : 'none');
+                display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', display(progress_unwatched));
+                display_query(browse, 'option.filter-button-progress.progress_watched', display(progress_watched));
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
+            } else if (common.isLibrary(location.href)) {
+                display_query(browse, 'span.filter-button-subscriptions.all', '');
+                display_query(browse, 'span.filter-button-subscriptions.live', '');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', '');
+                display_query(browse, 'span.filter-button-subscriptions.video', '');
+                display_query(browse, 'span.filter-button-subscriptions.short', '');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', '');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+
+                display_query(browse, 'select.filter-menu', '');
+                display_query(browse, 'option.filter-button-subscriptions.all', '');
+                display_query(browse, 'option.filter-button-subscriptions.live', '');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', '');
+                display_query(browse, 'option.filter-button-subscriptions.video', '');
+                display_query(browse, 'option.filter-button-subscriptions.short', '');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', '');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+
+                display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', display(progress_unwatched));
+                display_query(browse, 'option.filter-button-progress.progress_watched', display(progress_watched));
+
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
+
+                display_query(browse, 'span.filter-query', display(keyword));
             } else if (common.isPlaylist(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', '');
+                display_query(browse, 'span.filter-button-subscriptions.live', '');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', '');
+                display_query(browse, 'span.filter-button-subscriptions.video', '');
+                display_query(browse, 'span.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', '');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu', '');
+                display_query(browse, 'option.filter-button-subscriptions.all', '');
+                display_query(browse, 'option.filter-button-subscriptions.live', '');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', '');
+                display_query(browse, 'option.filter-button-subscriptions.video', '');
+                display_query(browse, 'option.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', '');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = progress_unwatched === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = progress_watched === true ? '' : 'none');
+                display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', display(progress_unwatched));
+                display_query(browse, 'option.filter-button-progress.progress_watched', display(progress_watched));
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
             } else if (common.isHistory(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', '');
+                display_query(browse, 'span.filter-button-subscriptions.live', '');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.video', '');
+                display_query(browse, 'span.filter-button-subscriptions.short', '');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu', '');
+                display_query(browse, 'option.filter-button-subscriptions.all', '');
+                display_query(browse, 'option.filter-button-subscriptions.live', '');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.video', '');
+                display_query(browse, 'option.filter-button-subscriptions.short', '');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu-progress', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_all', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_watched', 'none');
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
             } else if (common.isHashTag(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', '');
+                display_query(browse, 'span.filter-button-subscriptions.live', '');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.video', '');
+                display_query(browse, 'span.filter-button-subscriptions.short', '');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', '');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu', '');
+                display_query(browse, 'option.filter-button-subscriptions.all', '');
+                display_query(browse, 'option.filter-button-subscriptions.live', '');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.video', '');
+                display_query(browse, 'option.filter-button-subscriptions.short', '');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', '');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', display(progress_unwatched));
+                display_query(browse, 'option.filter-button-progress.progress_watched', display(progress_watched));
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
             } else if (common.isPlaylists(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu-progress', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_all', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_watched', 'none');
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
             } else if (common.isChannel(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = progress_unwatched === true ? '' : 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = progress_watched === true ? '' : 'none');
+                display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', display(progress_unwatched));
+                display_query(browse, 'option.filter-button-progress.progress_watched', display(progress_watched));
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
             } else if (common.isShorts(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu-progress', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_all', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_watched', 'none');
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
             } else if (common.isChannels(location.href)) {
-                node.querySelectorAll('span.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.live').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.all', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.live', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.streamed', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.video', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+                display_query(browse, 'select.filter-menu-progress', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_all', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', 'none');
+                display_query(browse, 'option.filter-button-progress.progress_watched', 'none');
 
-                node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = all_visibled([channels_all, channels_personalized, channels_none]));
-                node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = channels_all === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_personalized').forEach(n => n.style.display = channels_personalized === true ? '' : 'none');
-                node.querySelectorAll('span.filter-button-channels.channels_none').forEach(n => n.style.display = channels_none === true ? '' : 'none');
+                display_query(browse, 'span.filter-button-channels.all', display_any([channels_all, channels_personalized, channels_none]));
+                display_query(browse, 'span.filter-button-channels.channels_all', display(channels_all));
+                display_query(browse, 'span.filter-button-channels.channels_personalized', display(channels_personalized));
+                display_query(browse, 'span.filter-button-channels.channels_none', display(channels_none));
 
-                node.querySelectorAll('span.filter-query').forEach(n => n.style.display = keyword === true ? '' : 'none');
+                display_query(browse, 'span.filter-query', display(keyword));
             } else {
-                console.warn('Unknown target: ' + location.href);
+                // Unknown location.href
             }
 
-            onResize(true);
+            onResize();
 
-            changeMode(getActiveMode().values().next().value, multiselection, false);
-            changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false);
-            updateQueryRegex(node, getActiveQuery());
-            updateVisibility(node);
+            changeMode(getActiveMode().values().next().value, multiselection, false, browse);
+            changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false, browse);
+            updateQueryRegex(browse, getActiveQuery());
+            updateVisibility(browse);
+
+            for (const menu of app.querySelectorAll('form.filter-popup')) {
+                menu.style.display = display(keyword);
+            }
         });
-    }
-
-    function all_visibled(data_list) {
-        for (const data of data_list) {
-            if (data) {
-                return '';
-            }
-        }
-        return 'none';
     }
 
     function isMenuTarget() {
@@ -400,7 +426,13 @@ function main(app, common, lang) {
     }
 
     function forTwoColumnBrowseResultsRenderer() {
-        return common.isChannel(location.href);
+        return common.isChannel(location.href)
+            ;
+    }
+
+    function forPageHeaderRenderer() {
+        return common.isHashTag(location.href)
+            ;
     }
 
     function needSpacer() {
@@ -411,6 +443,7 @@ function main(app, common, lang) {
             || common.isPlaylists(location.href)
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
+            || common.isHashTag(location.href)
             ;
     }
 
@@ -473,12 +506,7 @@ function main(app, common, lang) {
     }
 
     function updateVisibility(node) {
-        // shorts
-        if (common.isSubscriptions(location.href)) {
-            node.querySelectorAll('ytd-rich-section-renderer:has(button.yt-spec-button-shape-next)').forEach(n => n.style.display = 'none');
-        }
-
-        node.querySelectorAll('yt-lockup-view-model, ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-reel-item-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer),ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('yt-lockup-view-model, ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
     }
 
     function classifyStatus(node) {
@@ -502,7 +530,7 @@ function main(app, common, lang) {
                     } else if (lang.isScheduled_metadata(t)) {
                         status.add('scheduled');
 
-                        const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
+                        const video_button = node.querySelector('yt-button-shape');
                         if (video_button) {
                             const t = video_button.textContent;
                             if (lang.isNotificationOn_button(t)) {
@@ -510,7 +538,7 @@ function main(app, common, lang) {
                             } else if (lang.isNotificationOff_button(t)) {
                                 status.add('notification_off');
                             } else {
-                                console.warn('Unknown notification status: ' + t);
+                                // Unknown notification status
                             }
                         }
                     } else /*if (lang.isVideo_metadata(t))*/ {
@@ -523,11 +551,8 @@ function main(app, common, lang) {
                                 } else if (overlay_style === 'SHORTS') {
                                     status.add('short');
                                 } else {
-                                    // membership only video
-                                    status.add('video');
+                                    status.add('video'); // membership only video
                                 }
-                            } else {
-                                console.warn('overlay-style not found');
                             }
                         }
 
@@ -542,7 +567,7 @@ function main(app, common, lang) {
 
                 break;
             case 'YTD-CHANNEL-RENDERER':
-                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
+                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
                 if (channel_notification) {
                     const t = channel_notification.getAttribute('aria-label');
                     if (lang.isChannelsAllNotifications(t)) {
@@ -552,11 +577,13 @@ function main(app, common, lang) {
                     } else if (lang.isChannelsNoNotifications(t)) {
                         status.add('channels_none');
                     } else {
-                        console.warn('Unknown channel notification: ' + t);
+                        // Unknown channel notification
                     }
+                } else {
+                    // sponsor
                 }
                 break;
-            case 'YTD-REEL-ITEM-RENDERER':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
                 status.add('short');
                 break;
         }
@@ -584,90 +611,93 @@ function main(app, common, lang) {
     }
 
     function matchTextContent(node) {
+        let text_node;
         switch (node.nodeName) {
             // subscriptions?flow=1, library
             case 'YTD-GRID-VIDEO-RENDERER':
-                const grid_video_title = node.querySelector('a#video-title');
-                if (grid_video_title) {
-                    return matchQuery(grid_video_title.textContent);
-                } else {
-                    console.warn('a#video-title not found');
+                text_node = node.querySelector('a#video-title');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 }
+
+                console.warn('text node not found');
+
                 break;
 
             // subscriptions?flow=2, history
             case 'YTD-VIDEO-RENDERER':
                 if (!node.classList.contains('ytd-backstage-post-renderer')) {
-                    const video_title = node.querySelector('a#video-title');
-                    if (video_title) {
-                        return matchQuery(video_title.textContent);
-                    } else {
-                        console.warn('a#video-title not found');
+                    text_node = node.querySelector('a#video-title');
+                    if (text_node) {
+                        return matchQuery(text_node.textContent);
                     }
+
+                    console.warn('text node not found');
                 } else {
                     // lazy load
                 }
+
                 break;
 
             // playlist
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const playlist_video_meta = node.querySelector('div#meta');
-                if (playlist_video_meta) {
-                    return matchQuery(playlist_video_meta.textContent);
-                } else {
-                    console.warn('div#meta not found');
+                text_node = node.querySelector('div#meta');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 }
+
+                console.warn('text node not found');
+
                 break;
 
             // channel
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-                const backstage_post_thread_content = node.querySelector('div#content');
-                if (backstage_post_thread_content) {
-                    return matchQuery(backstage_post_thread_content.textContent);
-                } else {
-                    console.warn('div#content not found');
+                text_node = node.querySelector('div#content');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 }
-                break;
-            case 'YTD-GRID-PLAYLIST-RENDERER':
-                const grid_playlist_title = node.querySelector('a#video-title');
-                if (grid_playlist_title) {
-                    return matchQuery(grid_playlist_title.textContent);
-                } else {
-                    console.warn('a#video-title not found');
-                }
-                break;
-            case 'YTD-REEL-ITEM-RENDERER':
-                const reel_item_title = node.querySelector('span#video-title');
-                if (reel_item_title) {
-                    return matchQuery(reel_item_title.textContent);
-                } else {
-                    console.warn('span#video-title not found');
-                }
+
+                console.warn('text node not found');
+
                 break;
 
-            // channel, playlists, shorts
+            case 'YTD-GRID-PLAYLIST-RENDERER':
+                text_node = node.querySelector('a#video-title');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
+                }
+
+                console.warn('text node not found');
+
+                break;
+
+            // channel, playlists, shorts, library
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
             case 'YT-LOCKUP-VIEW-MODEL':
-                const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
-                if (shorts_meta) {
-                    return matchQuery(shorts_meta.getAttribute('aria-label'));
+                text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
+                if (text_node) {
+                    return matchQuery(text_node.getAttribute('aria-label'));
                 }
 
-                const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media, .yt-core-attributed-string');
-                if (rich_item_title) {
-                    return matchQuery(rich_item_title.textContent);
+                text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 }
+
+                // YT-LOCKUP-VIEW-MODEL content lazy load
+
                 break;
 
             // channels
             case 'YTD-CHANNEL-RENDERER':
-                const channel_info = node.querySelector('div#info');
-                if (channel_info) {
-                    return matchQuery(channel_info.textContent);
-                } else {
-                    console.warn('div#info not found');
+                text_node = node.querySelector('div#info');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 }
+
+                console.warn('text node not found');
+
                 break;
         }
 
@@ -675,102 +705,158 @@ function main(app, common, lang) {
         return true;
     }
 
-    function onNodeLoaded(node, isFilterTarget) {
-        if (isFilterTarget) {
-            switch (node.nodeName) {
-                case 'YTD-BROWSE':
-                case 'YTD-SECTION-LIST-RENDERER':
-                    insertMenu(node);
-                    break;
+    async function onNodeLoaded(node) {
+        const is_menu_target = isMenuTarget();
+        let n;
+        switch (node.nodeName) {
+            case 'YTD-BROWSE':
+            case 'YTD-SECTION-LIST-RENDERER':
+            case 'YTD-TABBED-PAGE-HEADER':
+                if (is_menu_target) {
+                    await insertMenu(node);
+                }
+                break;
 
-                // subscriptions?flow=1, library
-                case 'YTD-GRID-VIDEO-RENDERER':
+            case 'YTD-POPUP-CONTAINER':
+            case 'YT-MULTI-PAGE-MENU-SECTION-RENDERER':
+                insertPopupMenu(node);
+                break;
+
+            // subscriptions?flow=1, library
+            case 'YTD-GRID-VIDEO-RENDERER':
+                if (is_menu_target) {
                     updateTargetVisibility(node);
-                    break;
+                }
+                break;
 
-                // subscriptions?flow=2, history
-                case 'YTD-VIDEO-RENDERER':
+            // subscriptions?flow=2, history
+            case 'YTD-VIDEO-RENDERER':
+                if (is_menu_target) {
                     if (!node.classList.contains('ytd-backstage-post-renderer')) {
                         updateTargetVisibility(node);
                     }
-                    break;
+                }
+                break;
 
-                // playlist
-                case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
-                    const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-                    if (video) {
-                        updateTargetVisibility(video);
+            // playlist
+            case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
+                if (is_menu_target) {
+                    n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
                     }
-                    break;
+                }
+                break;
 
-                // channels
-                case 'YTD-CHANNEL-RENDERER':
+            // channels
+            case 'YTD-CHANNEL-RENDERER':
+                if (is_menu_target) {
                     updateTargetVisibility(node);
-                    break;
+                }
+                break;
 
-                // channel
-                case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-                case 'YTD-GRID-PLAYLIST-RENDERER':
-                case 'YTD-REEL-ITEM-RENDERER':
-                case 'YTD-RICH-ITEM-RENDERER':
-                case 'YT-LOCKUP-VIEW-MODEL':
+            // channel
+            case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+            case 'YTD-GRID-PLAYLIST-RENDERER':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+            case 'YTD-RICH-ITEM-RENDERER':
+            case 'YT-LOCKUP-VIEW-MODEL':
+                if (is_menu_target) {
                     updateTargetVisibility(node);
-                    break;
+                }
+                break;
 
-                // container
-                case 'YTD-ITEM-SECTION-RENDERER':
+            // container
+            case 'YTD-ITEM-SECTION-RENDERER':
+                if (is_menu_target) {
                     updateVisibility(node);
-                    break;
-                case 'DIV':
+                }
+                break;
+            case 'DIV':
+                if (is_menu_target) {
                     if (node.id === 'contents') {
                         updateVisibility(node);
                     }
-                    break;
+                }
+                if (node.id === 'playlists' || node.id === 'items') {
+                    updatePopupVisibility(node);
+                }
+                break;
 
-                // progress
-                case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
-                    let progress_video = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
-                    if (progress_video) {
-                        updateTargetVisibility(progress_video);
+            // progress
+            case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
+                if (is_menu_target) {
+                    n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
                         break;
                     }
 
-                    progress_video = searchParentNode(node, 'YTD-VIDEO-RENDERER');
-                    if (progress_video) {
-                        updateTargetVisibility(progress_video);
+                    n = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
                         break;
                     }
 
-                    break;
-
-                // continuation stopper
-                case 'YTD-CONTINUATION-ITEM-RENDERER':
-                    if (common.isSubscriptions(location.href) || common.isShorts(location.href)) {
-                        if (node.parentNode.children.length > limit) {
-                            load_button_container.style.display = '';
-                            node.style.display = 'none';
-                            node.parentNode.parentNode.appendChild(load_button_container);
-                            continuation_item = node;
-                        }
+                    n = searchParentNode(node, 'YTD-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
+                        break;
                     }
-                    break;
-            }
+
+                    n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
+                        break;
+                    }
+
+                    console.warn('progress not found');
+                }
+
+                break;
+
+            // notification
+            case 'YTD-NOTIFICATION-RENDERER':
+                updatePopupVisibility(node.parentNode);
+                break;
+
+            // continuation stopper
+            case 'YTD-CONTINUATION-ITEM-RENDERER':
+                if (common.isSubscriptions(location.href) || common.isShorts(location.href)) {
+                    if (node.parentNode.children.length > limit) {
+                        load_button_container.style.display = '';
+                        node.style.display = 'none';
+                        node.parentNode.parentNode.appendChild(load_button_container);
+                        continuation_item = node;
+                    } else {
+                        // continuation
+                    }
+                } else {
+                    // continuation
+                }
+                break;
         }
     }
 
-    function insertMenu(node) {
+    async function insertMenu(node) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
         if (browse) {
-            if (!browse.querySelector('form.filter-menu')) {
-                const position_fixed = isPositionFixedTarget();
-                const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
-                browse.insertBefore(createMenu(position_fixed, browse), referenceNode);
-                if (needSpacer()) {
-                    browse.insertBefore(createSpacer('browse'), referenceNode);
-                }
+            if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+                const referenceNode = getReferenceNode(browse);
+                if (referenceNode) {
+                    const menu = createMenu(browse);
+                    referenceNode.parentNode.insertBefore(menu, referenceNode);
 
-                updateButtonVisibility(browse);
-                updateMenuVisibility(browse, true);
+                    const calc = createNodeForCalc(menu, browse);
+                    referenceNode.parentNode.insertBefore(calc, referenceNode);
+
+                    if (needSpacer()) {
+                        referenceNode.parentNode.insertBefore(createSpacer('browse'), referenceNode);
+                    }
+
+                    await updateButtonVisibility(browse);
+                    updateMenuVisibility(browse, true);
+                }
             } else {
                 // already exists
             }
@@ -779,8 +865,18 @@ function main(app, common, lang) {
         }
     }
 
-    function insertPlaylistSpacer() {
-        for (const sidebar of app.querySelectorAll('ytd-playlist-sidebar-renderer')) {
+    function getReferenceNode(browse) {
+        if (forTwoColumnBrowseResultsRenderer()) {
+            return browse.querySelector('ytd-two-column-browse-results-renderer');
+        } else if (forPageHeaderRenderer()) {
+            return browse.querySelector('yt-page-header-renderer');
+        } else {
+            return browse.firstChild;
+        }
+    }
+
+    function insertPlaylistSpacer(browse) {
+        for (const sidebar of browse.querySelectorAll('ytd-playlist-sidebar-renderer')) {
             if (sidebar.firstChild.id !== 'sidebar-spacer') {
                 sidebar.insertBefore(createSpacer('sidebar-spacer'), sidebar.firstChild);
             } else {
@@ -788,7 +884,7 @@ function main(app, common, lang) {
             }
         }
 
-        for (const header of app.querySelectorAll('ytd-playlist-header-renderer')) {
+        for (const header of browse.querySelectorAll('ytd-playlist-header-renderer')) {
             if (header.firstChild.id !== 'header-spacer') {
                 header.insertBefore(createSpacer('header-spacer'), header.firstChild);
             } else {
@@ -797,26 +893,26 @@ function main(app, common, lang) {
         }
     }
 
-    function createMenu(position_fixed, browse) {
+    function createMenu(browse) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
 
-        if (position_fixed) {
+        if (isPositionFixedTarget()) {
             menu.classList.add('filter-menu', 'position-fixed');
         } else {
             menu.classList.add('filter-menu');
         }
 
-        menu.appendChild(createButton(common.button_label.all, 'all'));
-        menu.appendChild(createButton(common.button_label.live, 'live'));
-        menu.appendChild(createButton(common.button_label.streamed, 'streamed'));
-        menu.appendChild(createButton(common.button_label.video, 'video'));
-        menu.appendChild(createButton(common.button_label.short, 'short', true));
-        menu.appendChild(createButton(common.button_label.scheduled, 'scheduled'));
-        menu.appendChild(createButton(common.button_label.notification_on, 'notification_on'));
-        menu.appendChild(createButton(common.button_label.notification_off, 'notification_off'));
+        menu.appendChild(createButton(common.button_label.all, 'all', false, browse));
+        menu.appendChild(createButton(common.button_label.live, 'live', false, browse));
+        menu.appendChild(createButton(common.button_label.streamed, 'streamed', false, browse));
+        menu.appendChild(createButton(common.button_label.video, 'video', false, browse));
+        menu.appendChild(createButton(common.button_label.short, 'short', true, browse));
+        menu.appendChild(createButton(common.button_label.scheduled, 'scheduled', false, browse));
+        menu.appendChild(createButton(common.button_label.notification_on, 'notification_on', false, browse));
+        menu.appendChild(createButton(common.button_label.notification_off, 'notification_off', false, browse));
 
-        const select = createSelect();
+        const select = createSelect(browse);
         select.appendChild(createOption(common.button_label.placeholder));
         select.appendChild(createOption(common.button_label.all, 'all'));
         select.appendChild(createOption(common.button_label.live, 'live'));
@@ -828,30 +924,28 @@ function main(app, common, lang) {
         select.appendChild(createOption(common.button_label.notification_off, 'notification_off'));
         menu.appendChild(select);
 
-        const progress = createSelectProgress();
+        const progress = createSelectProgress(browse);
         progress.appendChild(createOptionProgress(common.button_label.progress_placeholder));
         progress.appendChild(createOptionProgress(common.button_label.progress_all, 'progress_all'));
         progress.appendChild(createOptionProgress(common.button_label.progress_unwatched, 'progress_unwatched'));
         progress.appendChild(createOptionProgress(common.button_label.progress_watched, 'progress_watched'));
         menu.appendChild(progress);
 
-        menu.appendChild(createButtonChannels(common.button_label.all, 'all'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_all, 'channels_all'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized'));
-        menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none'));
+        menu.appendChild(createButtonChannels(common.button_label.all, 'all', browse));
+        menu.appendChild(createButtonChannels(common.button_label.channels_all, 'channels_all', browse));
+        menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse));
+        menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse));
 
         const input = createQueryInput(menu);
-        menu.appendChild(createQueryInputArea(input));
-        menu.appendChild(createSearchButton(input));
+        menu.appendChild(createQueryInputArea(input, browse));
+        menu.appendChild(createSearchButton(input, browse));
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
-            updateQueryRegex(app, input.value);
-            updateVisibility(app);
+            updateQueryRegex(browse, input.value);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
-
-        createNodeForCalc(menu, browse);
 
         return menu;
     }
@@ -863,7 +957,7 @@ function main(app, common, lang) {
         return spacer;
     }
 
-    function createButton(text, mode, isShorts) {
+    function createButton(text, mode, isShorts, browse) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
@@ -872,34 +966,34 @@ function main(app, common, lang) {
             if (isShorts && common.isSubscriptions(location.href)) {
                 location.href = 'https://www.youtube.com/feed/subscriptions/shorts';
             } else {
-                changeMode(mode, multiselection, span.classList.contains('selected'));
-                updateVisibility(app);
+                changeMode(mode, multiselection, span.classList.contains('selected'), browse);
+                updateVisibility(browse);
                 window.scroll({ top: 0, behavior: 'instant' });
             }
         });
         return span;
     }
 
-    function createButtonChannels(text, mode) {
+    function createButtonChannels(text, mode, browse) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-channels', mode);
         span.innerHTML = text;
         span.addEventListener('click', () => {
-            changeMode(mode, multiselection, span.classList.contains('selected'));
-            updateVisibility(app);
+            changeMode(mode, multiselection, span.classList.contains('selected'), browse);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
 
-    function createSelect() {
+    function createSelect(browse) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-subscriptions');
         select.addEventListener('change', () => {
-            changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-            updateVisibility(app);
+            changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value), browse);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return select;
@@ -919,13 +1013,13 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createSelectProgress() {
+    function createSelectProgress(browse) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-progress');
         select.addEventListener('change', () => {
-            changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value));
-            updateVisibility(app);
+            changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value), browse);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return select;
@@ -945,12 +1039,12 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createQueryInputArea(input) {
+    function createQueryInputArea(input, browse) {
         const inputArea = document.createElement('span');
         inputArea.style.display = 'none';
         inputArea.classList.add('filter-query', 'area');
         inputArea.appendChild(input);
-        inputArea.appendChild(createClearButton(input));
+        inputArea.appendChild(createClearButton(input, browse));
         return inputArea;
     }
 
@@ -968,37 +1062,224 @@ function main(app, common, lang) {
         return input;
     }
 
-    function createClearButton(input) {
+    function createClearButton(input, browse) {
         const span = document.createElement('span');
         span.classList.add('filter-clear');
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updateQueryRegex(app, '');
-            updateVisibility(app);
+            updateQueryRegex(browse, '');
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
 
-    function createSearchButton(input) {
+    function createSearchButton(input, browse) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updateQueryRegex(app, input.value);
-            updateVisibility(app);
+            updateQueryRegex(browse, input.value);
+            updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
 
-    function updateMenuVisibility(node, isFilterTarget) {
-        if (isFilterTarget) {
-            node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = '');
+    function insertPopupMenu(node) {
+        // add-to-playlist popup
+        for (const playlists of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists')) {
+            const parent = playlists.parentNode;
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup');
+                if (existsMenu !== popupMenu.get(playlists)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(playlists);
+                    parent.insertBefore(menu, playlists);
+                }
+            }
+        }
+
+        // notification popup
+        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
+            const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup');
+                if (existsMenu !== popupMenu.get(items)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(items);
+                    parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
+                }
+            }
+        }
+    }
+
+    function createPopupMenu(container) {
+        const menu = document.createElement('form');
+        menu.classList.add('filter-popup');
+        menu.style.display = display(keyword);
+
+        const input = createPopupQueryInput(menu);
+        menu.appendChild(createPopupQueryInputArea(input, container));
+        menu.appendChild(createPopupSearchButton(input, container));
+
+        menu.addEventListener('submit', e => {
+            e.preventDefault();
+            updatePopupQueryRegex(container, input.value);
+            updatePopupVisibility(container);
+        });
+
+        popupMenu.set(container, menu);
+
+        return menu;
+    }
+
+    function createPopupQueryInputArea(input, container) {
+        const inputArea = document.createElement('span');
+        inputArea.classList.add('filter-query', 'area');
+        inputArea.appendChild(input);
+        inputArea.appendChild(createPopupClearButton(input, container));
+        return inputArea;
+    }
+
+    function createPopupQueryInput(menu) {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('placeholder', 'Subscription Feed Filter');
+        input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
+        input.id = 'filter-query';
+        input.addEventListener('change', e => {
+            input.blur();
+            menu.requestSubmit();
+        });
+        return input;
+    }
+
+    function createPopupClearButton(input, container) {
+        const span = document.createElement('span');
+        span.classList.add('filter-clear');
+        span.innerHTML = common.button_label.clear;
+        span.addEventListener('click', () => {
+            input.value = '';
+            updatePopupQueryRegex(container, '');
+            updatePopupVisibility(container);
+        });
+        return span;
+    }
+
+    function createPopupSearchButton(input, container) {
+        const span = document.createElement('span');
+        span.classList.add('filter-query', 'search');
+        span.innerHTML = common.button_label.search;
+        span.addEventListener('click', () => {
+            updatePopupQueryRegex(container, input.value);
+            updatePopupVisibility(container);
+        });
+        return span;
+    }
+
+    function updatePopupVisibility(container) {
+        container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer').forEach(target => updatePopupTargetVisibility(container, target));
+    }
+
+    function updatePopupTargetVisibility(container, target) {
+        if (matchPopupQuery(container, target)) {
+            target.style.display = '';
         } else {
-            node.querySelectorAll('form.filter-menu, div.filter-menu').forEach(n => n.style.display = 'none');
+            target.style.display = 'none';
+        }
+    }
+
+    function updatePopupQueryRegex(container, query) {
+        const queryList = [];
+        const notQueryList = [];
+        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
+        let nextOr = false;
+        let nextNot = false;
+        if (tokenList) {
+            for (const token of tokenList) {
+                if (token === '|') {
+                    nextOr = true;
+                } else if (token === '-') {
+                    nextNot = true;
+                } else {
+                    const t = token.replace(/\|/g, '\\|');
+                    if (nextOr && nextNot) {
+                        if (notQueryList.length - 1 >= 0) {
+                            notQueryList[notQueryList.length - 1] = notQueryList[notQueryList.length - 1] + '|' + t;
+                        } else {
+                            notQueryList.push(t);
+                        }
+                        nextOr = false;
+                        nextNot = false;
+                    } else if (nextOr) {
+                        if (queryList.length - 1 >= 0) {
+                            queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
+                        } else {
+                            queryList.push(t);
+                        }
+                        nextOr = false;
+                    } else if (nextNot) {
+                        notQueryList.push(t);
+                        nextNot = false;
+                    } else {
+                        queryList.push(t);
+                    }
+                }
+            }
+        } else {
+            // empty query
+        }
+
+        const regExpList = [];
+        for (const q of queryList) {
+            regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+        active.regex.set(container, regExpList);
+
+        const notRegExpList = [];
+        for (const q of notQueryList) {
+            notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+        active.notRegex.set(container, notRegExpList);
+    }
+
+    function matchPopupQuery(container, target) {
+        const text = target.querySelector('div#checkbox-label, div.ytd-notification-renderer.text')?.textContent ?? '';
+        return matchPopupAllActiveRegex(container, text) && matchPopupAllActiveNotRegex(container, text);
+    }
+
+    function matchPopupAllActiveRegex(container, text) {
+        const rs = active.regex.get(container);
+        if (rs) {
+            for (const r of rs) {
+                if (!text.match(r)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function matchPopupAllActiveNotRegex(container, text) {
+        const rs = active.notRegex.get(container);
+        if (rs) {
+            for (const r of rs) {
+                if (!!r && text.match(r)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function updateMenuVisibility(node) {
+        if (isMenuTarget()) {
+            display_query(node, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            display_query(node, 'form.filter-menu, div.filter-menu', 'none');
         }
     }
 
@@ -1012,13 +1293,22 @@ function main(app, common, lang) {
         }
     }
 
-    function onViewChanged(isFilterTarget) {
-        if (isFilterTarget) {
-            insertPlaylistSpacer();
-            updateButtonVisibility(app);
+    async function onViewChanged() {
+        const browse = app.querySelector('ytd-browse[role="main"]');
+        if (browse) {
+            await onViewChanged_Node(browse);
+        } else {
+            await onViewChanged_Node(app);
         }
-        updateMenuVisibility(app, isFilterTarget);
-        updateVisibility(app);
+    }
+
+    async function onViewChanged_Node(browse) {
+        if (isMenuTarget()) {
+            insertPlaylistSpacer(browse);
+            await updateButtonVisibility(browse);
+        }
+        updateMenuVisibility(browse);
+        updateVisibility(browse);
     }
 
     function includesStatus(node, status_mode, status_progress) {
@@ -1053,7 +1343,7 @@ function main(app, common, lang) {
         }
     }
 
-    function changeMode(mode, multi, sub) {
+    function changeMode(mode, multi, sub, browse) {
         const modes = multi ? getActiveMode() : new Set();
 
         if (!mode) {
@@ -1092,8 +1382,8 @@ function main(app, common, lang) {
 
         setActiveMode(modes);
 
-        app.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
-        app.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
+        browse.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
+        browse.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
             n.selected = false;
             n.classList.remove('selected');
 
@@ -1102,14 +1392,15 @@ function main(app, common, lang) {
                 n.innerHTML = n.innerHTML.substring(i + 1);
             }
         });
+
         if (common.isChannels(location.href)) {
             for (const mode of modes) {
-                app.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
+                browse.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
             }
         } else {
             for (const mode of modes) {
-                app.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
-                app.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
+                browse.querySelectorAll('span.filter-button-subscriptions.' + mode).forEach(n => n.classList.add('selected'));
+                browse.querySelectorAll('option.filter-button-subscriptions.' + mode).forEach(n => {
                     n.classList.add('selected');
 
                     if (multi) {
@@ -1120,15 +1411,16 @@ function main(app, common, lang) {
                     }
                 });
             }
+
             if (multi) {
-                app.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
+                browse.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
             } else {
-                app.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
+                browse.querySelectorAll('option.filter-button-subscriptions.selected').forEach(n => n.selected = true);
             }
         }
     }
 
-    function changeModeProgress(mode, multi, sub) {
+    function changeModeProgress(mode, multi, sub, browse) {
         const modes = multi ? getActiveModeProgress() : new Set();
 
         if (!mode) {
@@ -1157,7 +1449,7 @@ function main(app, common, lang) {
 
         setActiveModeProgress(modes);
 
-        app.querySelectorAll('option.filter-button-progress').forEach(n => {
+        browse.querySelectorAll('option.filter-button-progress').forEach(n => {
             n.selected = false;
             n.classList.remove('selected');
 
@@ -1166,8 +1458,9 @@ function main(app, common, lang) {
                 n.innerHTML = n.innerHTML.substring(i + 1);
             }
         });
+
         for (const mode of modes) {
-            app.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
+            browse.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
                 n.classList.add('selected');
 
                 if (multi) {
@@ -1178,10 +1471,11 @@ function main(app, common, lang) {
                 }
             });
         }
+
         if (multi) {
-            app.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
+            browse.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
         } else {
-            app.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
+            browse.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
         }
     }
 
@@ -1261,38 +1555,55 @@ function main(app, common, lang) {
         return true;
     }
 
-    function onResize(force = false) {
-        if (responsive) {
-            for (const form of app.querySelectorAll('form.filter-menu')) {
-                if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
-                    form.parentNode.appendChild(nodeForCalc);
-                    if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
-                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
+    function onResize() {
+        if (isMenuTarget()) {
+            if (responsive) {
+                const form = app.querySelector('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)');
+                if (form) {
+                    const calc = form.parentNode.querySelector('form.filter-forCalc');
+                    if (calc) {
+                        form.parentNode.insertBefore(calc, form);
+                        if (calc.scrollWidth <= form.parentNode.clientWidth) {
+                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                        } else {
+                            document.documentElement.style.setProperty('--filter-button-display', 'none');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                        }
                     } else {
-                        document.documentElement.style.setProperty('--filter-button-display', 'none');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                        console.warn('calc node not found');
                     }
-
-                    prevWidth = form.parentNode.scrollWidth;
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(onResize, 256);
-
-                    return;
+                } else {
+                    // not created yet
                 }
+            } else {
+                document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                document.documentElement.style.setProperty('--filter-menu-display', 'none');
             }
-        } else {
-            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-            document.documentElement.style.setProperty('--filter-menu-display', 'none');
         }
     }
 
-    function createNodeForCalc(menu, browse) {
-        if (!nodeForCalc) {
-            nodeForCalc = menu.cloneNode(true);
-            nodeForCalc.classList.add('filter-forCalc');
-            browse.appendChild(nodeForCalc);
+    function createNodeForCalc(menu) {
+        const nodeForCalc = menu.cloneNode(true);
+        nodeForCalc.classList.add('filter-forCalc');
+        return nodeForCalc;
+    }
+
+    function display(value) {
+        return value === true ? '' : 'none';
+    }
+
+    function display_any(values) {
+        for (const value of values) {
+            if (value) {
+                return '';
+            }
         }
+        return 'none';
+    }
+
+    function display_query(node, query, display) {
+        node.querySelectorAll(query).forEach(n => n.style.display = display);
     }
 
     const default_tab = {
@@ -1320,14 +1631,14 @@ function main(app, common, lang) {
         notRegex: new Map(),
     };
 
-    let multiselection;
+    let keyword = common.default_keyword;
+    let default_keyword = common.default_default_keyword;
 
-    let prevWidth = 0;
-    let resizeTimer;
-    let nodeForCalc;
-    let responsive;
+    let multiselection = common.default_multiselection;
+    let responsive = common.default_responsive;
     let limit = common.defaultLimit;
-    let default_keyword = '';
+
+    const popupMenu = new Map();
 
     let continuation_item;
     const load_button_container = document.createElement('div');
@@ -1349,29 +1660,25 @@ function main(app, common, lang) {
         load_button_container.appendChild(load_button);
     }
 
-    document.addEventListener('yt-navigate-finish', () => {
-        onViewChanged(isMenuTarget());
-    });
-
-    new MutationObserver((mutations, observer) => {
-        const isFilterTarget = isMenuTarget();
-        for (const m of mutations) {
-            onNodeLoaded(m.target, isFilterTarget);
-        }
-    }).observe(app, {
-        subtree: true,
-        childList: true,
-    });
-
-    if (isMenuTarget()) {
-        app.querySelectorAll('ytd-browse, ytd-section-list-renderer').forEach(n => insertMenu(n));
-    }
-
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (isMenuTarget()) {
-            updateButtonVisibility(app);
-        }
+    document.addEventListener('yt-navigate-finish', async () => {
+        await onViewChanged(isMenuTarget());
+        onResize();
     });
 
     window.addEventListener('resize', onResize);
+
+    chrome.storage.onChanged.addListener(async (changes, namespace) => {
+        if (isMenuTarget()) {
+            const browse = app.querySelector('ytd-browse[role="main"]');
+            if (browse) {
+                await updateButtonVisibility(browse);
+            }
+        }
+    });
+
+    new MutationObserver((mutations, observer) => {
+        for (const m of mutations) {
+            onNodeLoaded(m.target);
+        }
+    }).observe(app, { subtree: true, childList: true });
 }

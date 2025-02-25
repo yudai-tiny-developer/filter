@@ -112,7 +112,8 @@ svg.filter-search {
 }
 
 form.filter-menu,
-div.filter-menu {
+div.filter-menu,
+form.filter-popup {
     display: flex;
     height: 56px;
     justify-content: center;
@@ -181,6 +182,7 @@ form.filter-forCalc select.filter-menu-subscriptions {
 form.filter-forCalc {
     visibility: hidden;
     width: max-content;
+    position: absolute;
 }
 
 span.filter-button-channels {
@@ -207,6 +209,10 @@ div.shortsLockupViewModelHostMetadataSubhead {
 
 ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer>div#contents {
     padding-top: 0px !important;
+}
+
+ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]) {
+    display: none !important;
 }
 
 ytd-browse[page-subtype="playlist"] {
