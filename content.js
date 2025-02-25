@@ -812,8 +812,8 @@ function main(app, common, lang) {
         }
     }
 
-    function insertPlaylistSpacer(node) {
-        for (const sidebar of node.querySelectorAll('ytd-playlist-sidebar-renderer')) {
+    function insertPlaylistSpacer(browse) {
+        for (const sidebar of browse.querySelectorAll('ytd-playlist-sidebar-renderer')) {
             if (sidebar.firstChild.id !== 'sidebar-spacer') {
                 sidebar.insertBefore(createSpacer('sidebar-spacer'), sidebar.firstChild);
             } else {
@@ -821,7 +821,7 @@ function main(app, common, lang) {
             }
         }
 
-        for (const header of node.querySelectorAll('ytd-playlist-header-renderer')) {
+        for (const header of browse.querySelectorAll('ytd-playlist-header-renderer')) {
             if (header.firstChild.id !== 'header-spacer') {
                 header.insertBefore(createSpacer('header-spacer'), header.firstChild);
             } else {
@@ -1142,6 +1142,7 @@ function main(app, common, lang) {
                 n.innerHTML = n.innerHTML.substring(i + 1);
             }
         });
+
         if (common.isChannels(location.href)) {
             for (const mode of modes) {
                 browse.querySelectorAll('span.filter-button-channels.' + mode).forEach(n => n.classList.add('selected'));
@@ -1160,6 +1161,7 @@ function main(app, common, lang) {
                     }
                 });
             }
+
             if (multi) {
                 browse.querySelectorAll('option.filter-button-subscriptions.placeholder').forEach(n => n.selected = true);
             } else {
@@ -1206,6 +1208,7 @@ function main(app, common, lang) {
                 n.innerHTML = n.innerHTML.substring(i + 1);
             }
         });
+
         for (const mode of modes) {
             browse.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
                 n.classList.add('selected');
@@ -1218,6 +1221,7 @@ function main(app, common, lang) {
                 }
             });
         }
+
         if (multi) {
             browse.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
         } else {
