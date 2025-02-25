@@ -1319,9 +1319,6 @@ function main(app, common, lang) {
 
     let multiselection;
 
-    let prevWidth = 0;
-    let resizeTimer;
-    let nodeForCalc = new Set();
     let responsive;
     let limit = common.defaultLimit;
     let default_keyword = '';
