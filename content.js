@@ -706,69 +706,87 @@ function main(app, common, lang) {
         return true;
     }
 
-    async function onNodeLoaded(node, isFilterTarget) {
-        if (isFilterTarget) {
-            let n;
-            switch (node.nodeName) {
-                case 'YTD-BROWSE':
-                case 'YTD-SECTION-LIST-RENDERER':
-                case 'YTD-TABBED-PAGE-HEADER':
+    async function onNodeLoaded(node) {
+        const is_menu_target = isMenuTarget();
+        let n;
+        switch (node.nodeName) {
+            case 'YTD-BROWSE':
+            case 'YTD-SECTION-LIST-RENDERER':
+            case 'YTD-TABBED-PAGE-HEADER':
+                if (is_menu_target) {
                     await insertMenu(node);
-                    break;
+                }
+                break;
 
-                case 'YTD-POPUP-CONTAINER':
-                case 'YT-MULTI-PAGE-MENU-SECTION-RENDERER':
-                    insertPopupMenu(node);
-                    break;
+            case 'YTD-POPUP-CONTAINER':
+            case 'YT-MULTI-PAGE-MENU-SECTION-RENDERER':
+                insertPopupMenu(node);
+                break;
 
-                // subscriptions?flow=1, library
-                case 'YTD-GRID-VIDEO-RENDERER':
+            // subscriptions?flow=1, library
+            case 'YTD-GRID-VIDEO-RENDERER':
+                if (is_menu_target) {
                     updateTargetVisibility(node);
-                    break;
+                }
+                break;
 
-                // subscriptions?flow=2, history
-                case 'YTD-VIDEO-RENDERER':
+            // subscriptions?flow=2, history
+            case 'YTD-VIDEO-RENDERER':
+                if (is_menu_target) {
                     if (!node.classList.contains('ytd-backstage-post-renderer')) {
                         updateTargetVisibility(node);
                     }
-                    break;
+                }
+                break;
 
-                // playlist
-                case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
+            // playlist
+            case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
+                if (is_menu_target) {
                     n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
                     if (n) {
                         updateTargetVisibility(n);
                     }
-                    break;
+                }
+                break;
 
-                // channels
-                case 'YTD-CHANNEL-RENDERER':
+            // channels
+            case 'YTD-CHANNEL-RENDERER':
+                if (is_menu_target) {
                     updateTargetVisibility(node);
-                    break;
+                }
+                break;
 
-                // channel
-                case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-                case 'YTD-GRID-PLAYLIST-RENDERER':
-                case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-                case 'YTD-RICH-ITEM-RENDERER':
-                case 'YT-LOCKUP-VIEW-MODEL':
+            // channel
+            case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
+            case 'YTD-GRID-PLAYLIST-RENDERER':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+            case 'YTD-RICH-ITEM-RENDERER':
+            case 'YT-LOCKUP-VIEW-MODEL':
+                if (is_menu_target) {
                     updateTargetVisibility(node);
-                    break;
+                }
+                break;
 
-                // container
-                case 'YTD-ITEM-SECTION-RENDERER':
+            // container
+            case 'YTD-ITEM-SECTION-RENDERER':
+                if (is_menu_target) {
                     updateVisibility(node);
-                    break;
-                case 'DIV':
+                }
+                break;
+            case 'DIV':
+                if (is_menu_target) {
                     if (node.id === 'contents') {
                         updateVisibility(node);
-                    } else if (node.id === 'playlists' || node.id === 'items') {
-                        updatePopupVisibility(node);
                     }
-                    break;
+                }
+                if (node.id === 'playlists' || node.id === 'items') {
+                    updatePopupVisibility(node);
+                }
+                break;
 
-                // progress
-                case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
+            // progress
+            case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
+                if (is_menu_target) {
                     n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
                     if (n) {
                         updateTargetVisibility(n);
@@ -794,30 +812,30 @@ function main(app, common, lang) {
                     }
 
                     console.warn('progress not found');
+                }
 
-                    break;
+                break;
 
-                // notification
-                case 'YTD-NOTIFICATION-RENDERER':
-                    updatePopupVisibility(node.parentNode);
-                    break;
+            // notification
+            case 'YTD-NOTIFICATION-RENDERER':
+                updatePopupVisibility(node.parentNode);
+                break;
 
-                // continuation stopper
-                case 'YTD-CONTINUATION-ITEM-RENDERER':
-                    if (common.isSubscriptions(location.href) || common.isShorts(location.href)) {
-                        if (node.parentNode.children.length > limit) {
-                            load_button_container.style.display = '';
-                            node.style.display = 'none';
-                            node.parentNode.parentNode.appendChild(load_button_container);
-                            continuation_item = node;
-                        } else {
-                            // continuation
-                        }
+            // continuation stopper
+            case 'YTD-CONTINUATION-ITEM-RENDERER':
+                if (common.isSubscriptions(location.href) || common.isShorts(location.href)) {
+                    if (node.parentNode.children.length > limit) {
+                        load_button_container.style.display = '';
+                        node.style.display = 'none';
+                        node.parentNode.parentNode.appendChild(load_button_container);
+                        continuation_item = node;
                     } else {
                         // continuation
                     }
-                    break;
-            }
+                } else {
+                    // continuation
+                }
+                break;
         }
     }
 
@@ -1240,8 +1258,8 @@ function main(app, common, lang) {
         return true;
     }
 
-    function updateMenuVisibility(node, isFilterTarget) {
-        if (isFilterTarget) {
+    function updateMenuVisibility(node) {
+        if (isMenuTarget()) {
             display_query(node, 'form.filter-menu, div.filter-menu', '');
         } else {
             display_query(node, 'form.filter-menu, div.filter-menu', 'none');
@@ -1258,21 +1276,21 @@ function main(app, common, lang) {
         }
     }
 
-    async function onViewChanged(isFilterTarget) {
+    async function onViewChanged() {
         const browse = app.querySelector('ytd-browse[role="main"]');
         if (browse) {
-            await onViewChanged_Node(isFilterTarget, browse);
+            await onViewChanged_Node(browse);
         } else {
-            await onViewChanged_Node(isFilterTarget, app);
+            await onViewChanged_Node(app);
         }
     }
 
-    async function onViewChanged_Node(isFilterTarget, browse) {
-        if (isFilterTarget) {
+    async function onViewChanged_Node(browse) {
+        if (isMenuTarget()) {
             insertPlaylistSpacer(browse);
             await updateButtonVisibility(browse);
         }
-        updateMenuVisibility(browse, isFilterTarget);
+        updateMenuVisibility(browse);
         updateVisibility(browse);
     }
 
@@ -1639,9 +1657,8 @@ function main(app, common, lang) {
     });
 
     new MutationObserver((mutations, observer) => {
-        const isFilterTarget = isMenuTarget();
         for (const m of mutations) {
-            onNodeLoaded(m.target, isFilterTarget);
+            onNodeLoaded(m.target);
         }
     }).observe(app, { subtree: true, childList: true });
 }
