@@ -1090,13 +1090,21 @@ function main(app, common, lang) {
     }
 
     function insertPopupMenu(node) {
-        for (const container of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists, yt-multi-page-menu-section-renderer div#items')) {
-            if (!container.parentNode.querySelector('form.filter-popup')) {
-                const items = container.parentNode.querySelector('div#playlists, div#items');
-                if (items) {
-                    const menu = createPopupMenu(items);
-                    items.parentNode.insertBefore(menu, items);
-                }
+        // add-to-playlist popup
+        for (const playlists of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists')) {
+            const parent = playlists.parentNode;
+            if (parent && !parent.querySelector('form.filter-popup')) {
+                const menu = createPopupMenu(playlists);
+                parent.insertBefore(menu, playlists);
+            }
+        }
+
+        // notification popup
+        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
+            const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
+            if (parent && !parent.querySelector('form.filter-popup')) {
+                const menu = createPopupMenu(items);
+                parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
             }
         }
     }
