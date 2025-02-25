@@ -1385,11 +1385,11 @@ function main(app, common, lang) {
         notRegex: new Map(),
     };
 
-    let multiselection;
+    let multiselection = common.default_multiselection;
 
-    let responsive;
+    let responsive = common.default_responsive;
     let limit = common.defaultLimit;
-    let default_keyword = '';
+    let default_keyword = common.default_default_keyword;
 
     let continuation_item;
     const load_button_container = document.createElement('div');
