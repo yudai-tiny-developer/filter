@@ -6,8 +6,8 @@ import(chrome.runtime.getURL('common.js')).then(common => {
 });
 
 function main(app, common, lang) {
-    function updateButtonVisibility(node) {
-        chrome.storage.local.get(common.storage, data => {
+    async function updateButtonVisibility(node) {
+        await chrome.storage.local.get(common.storage).then(data => {
             for (const menu of node.querySelectorAll('form.filter-menu')) {
                 const select = menu.querySelector('select.filter-menu');
                 const progress = menu.querySelector('select.filter-menu-progress');
@@ -696,12 +696,12 @@ function main(app, common, lang) {
         return true;
     }
 
-    function onNodeLoaded(node, isFilterTarget) {
+    async function onNodeLoaded(node, isFilterTarget) {
         if (isFilterTarget) {
             switch (node.nodeName) {
                 case 'YTD-BROWSE':
                 case 'YTD-SECTION-LIST-RENDERER':
-                    insertMenu(node);
+                    await insertMenu(node);
                     break;
 
                 // subscriptions?flow=1, library
@@ -779,7 +779,7 @@ function main(app, common, lang) {
         }
     }
 
-    function insertMenu(node) {
+    async function insertMenu(node) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
         if (browse) {
             if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
@@ -795,7 +795,7 @@ function main(app, common, lang) {
                         referenceNode.parentNode.insertBefore(createSpacer('browse'), referenceNode);
                     }
 
-                    updateButtonVisibility(browse);
+                    await updateButtonVisibility(browse);
                     updateMenuVisibility(browse, true);
                 }
             } else {
@@ -1047,12 +1047,12 @@ function main(app, common, lang) {
         }
     }
 
-    function onViewChanged(isFilterTarget) {
+    async function onViewChanged(isFilterTarget) {
         const browse = app.querySelector('ytd-browse[role="main"]');
         if (browse) {
             if (isFilterTarget) {
                 insertPlaylistSpacer();
-                updateButtonVisibility(browse);
+                await updateButtonVisibility(browse);
             }
             updateMenuVisibility(browse, isFilterTarget);
             updateVisibility(browse);
@@ -1348,6 +1348,18 @@ function main(app, common, lang) {
         node.querySelectorAll(query).forEach(n => n.style.display = display);
     }
 
+    function show_menu() {
+        for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')) {
+            form.style.visibility = '';
+        }
+    }
+
+    function hide_menu() {
+        for (const form of app.querySelectorAll('form.filter-menu:not(.filter-forCalc)')) {
+            form.style.visibility = 'hidden';
+        }
+    }
+
     const default_tab = {
         live: false,
         streamed: false,
@@ -1399,8 +1411,13 @@ function main(app, common, lang) {
         load_button_container.appendChild(load_button);
     }
 
-    document.addEventListener('yt-navigate-finish', () => {
-        onViewChanged(isMenuTarget());
+    document.addEventListener('yt-navigate-start', () => {
+        hide_menu();
+    });
+
+    document.addEventListener('yt-navigate-finish', async () => {
+        await onViewChanged(isMenuTarget());
+        show_menu();
     });
 
     new MutationObserver((mutations, observer) => {
@@ -1417,9 +1434,9 @@ function main(app, common, lang) {
         app.querySelectorAll('ytd-browse, ytd-section-list-renderer').forEach(n => insertMenu(n));
     }
 
-    chrome.storage.onChanged.addListener((changes, namespace) => {
+    chrome.storage.onChanged.addListener(async (changes, namespace) => {
         if (isMenuTarget()) {
-            updateButtonVisibility(app);
+            await updateButtonVisibility(app);
         }
     });
 
