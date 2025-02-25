@@ -82,7 +82,7 @@ function main(app, common, lang) {
             const channels_personalized = common.value(data.channels_personalized, common.default_channels_personalized);
             const channels_none = common.value(data.channels_none, common.default_channels_none);
 
-            const keyword = common.value(data.keyword, common.default_keyword);
+            keyword = common.value(data.keyword, common.default_keyword);
 
             default_tab.live = data.default_live;
             default_tab.streamed = data.default_streamed;
@@ -393,6 +393,10 @@ function main(app, common, lang) {
             changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false, browse);
             updateQueryRegex(browse, getActiveQuery());
             updateVisibility(browse);
+
+            for (const menu of app.querySelectorAll('form.filter-popup')) {
+                menu.style.display = display(keyword);
+            }
         });
     }
 
@@ -1115,6 +1119,7 @@ function main(app, common, lang) {
     function createPopupMenu(container) {
         const menu = document.createElement('form');
         menu.classList.add('filter-popup');
+        menu.style.display = display(keyword);
 
         const input = createPopupQueryInput(menu);
         menu.appendChild(createPopupQueryInputArea(input, container));
@@ -1627,11 +1632,12 @@ function main(app, common, lang) {
         notRegex: new Map(),
     };
 
-    let multiselection = common.default_multiselection;
+    let keyword = common.default_keyword;
+    let default_keyword = common.default_default_keyword;
 
+    let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;
     let limit = common.defaultLimit;
-    let default_keyword = common.default_default_keyword;
 
     const popupMenu = new Map();
 
