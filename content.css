@@ -226,3 +226,23 @@ ytd-browse[page-subtype="playlist"] yt-page-header-renderer {
 ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
     display: none !important;
 }
+
+.filter-spinner::before {
+    content: "";
+    display: block;
+    margin: auto;
+    left: 50%;
+    top: 50%;
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 50%;
+    border: 0.25em solid var(--yt-spec-text-primary);
+    border-top-color: var(--yt-spec-text-primary-inverse);
+    animation: spinner 1.25s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
