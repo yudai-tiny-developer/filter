@@ -356,7 +356,7 @@ function main(app, common, lang) {
                 console.warn('Unknown target: ' + location.href);
             }
 
-            onResize(true);
+            onResize();
 
             changeMode(getActiveMode().values().next().value, multiselection, false);
             changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false);
@@ -764,7 +764,10 @@ function main(app, common, lang) {
             if (!browse.querySelector('form.filter-menu')) {
                 const position_fixed = isPositionFixedTarget();
                 const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
-                browse.insertBefore(createMenu(position_fixed, browse), referenceNode);
+                const menu = createMenu(position_fixed, browse);
+                referenceNode.parentNode.insertBefore(menu, referenceNode);
+                const calc = createNodeForCalc(menu, browse);
+                referenceNode.parentNode.insertBefore(calc, referenceNode);
                 if (needSpacer()) {
                     browse.insertBefore(createSpacer('browse'), referenceNode);
                 }
@@ -850,8 +853,6 @@ function main(app, common, lang) {
             updateVisibility(app);
             window.scroll({ top: 0, behavior: 'instant' });
         });
-
-        createNodeForCalc(menu, browse);
 
         return menu;
     }
@@ -1261,24 +1262,22 @@ function main(app, common, lang) {
         return true;
     }
 
-    function onResize(force = false) {
+    function onResize() {
         if (responsive) {
-            for (const form of app.querySelectorAll('form.filter-menu')) {
-                if (form.parentNode.scrollWidth !== 0 && (force || form.parentNode.scrollWidth !== prevWidth)) {
-                    form.parentNode.appendChild(nodeForCalc);
-                    if (nodeForCalc.scrollWidth <= form.parentNode.scrollWidth) {
-                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                    } else {
-                        document.documentElement.style.setProperty('--filter-button-display', 'none');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
-                    }
-
-                    prevWidth = form.parentNode.scrollWidth;
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(onResize, 256);
-
-                    return;
+            const form = app.querySelector('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)');
+            if (form) {
+                const calc = form.parentNode.querySelector('form.filter-forCalc');
+                if (calc) {
+                    form.parentNode.insertBefore(calc, form);
+                    setTimeout(() => {
+                        if (calc.scrollWidth <= form.parentNode.scrollWidth) {
+                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                        } else {
+                            document.documentElement.style.setProperty('--filter-button-display', 'none');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                        }
+                    }, 100);
                 }
             }
         } else {
@@ -1287,12 +1286,10 @@ function main(app, common, lang) {
         }
     }
 
-    function createNodeForCalc(menu, browse) {
-        if (!nodeForCalc) {
-            nodeForCalc = menu.cloneNode(true);
-            nodeForCalc.classList.add('filter-forCalc');
-            browse.appendChild(nodeForCalc);
-        }
+    function createNodeForCalc(menu) {
+        const nodeForCalc = menu.cloneNode(true);
+        nodeForCalc.classList.add('filter-forCalc');
+        return nodeForCalc;
     }
 
     const default_tab = {
@@ -1324,7 +1321,7 @@ function main(app, common, lang) {
 
     let prevWidth = 0;
     let resizeTimer;
-    let nodeForCalc;
+    let nodeForCalc = new Set();
     let responsive;
     let limit = common.defaultLimit;
     let default_keyword = '';
