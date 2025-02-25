@@ -1308,15 +1308,13 @@ function main(app, common, lang) {
                 const calc = form.parentNode.querySelector('form.filter-forCalc');
                 if (calc) {
                     form.parentNode.insertBefore(calc, form);
-                    setTimeout(() => {
-                        if (calc.scrollWidth <= form.parentNode.scrollWidth) {
-                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                        } else {
-                            document.documentElement.style.setProperty('--filter-button-display', 'none');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
-                        }
-                    }, 100);
+                    if (calc.scrollWidth <= form.parentNode.clientWidth) {
+                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                    } else {
+                        document.documentElement.style.setProperty('--filter-button-display', 'none');
+                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                    }
                 }
             }
         } else {
@@ -1418,6 +1416,7 @@ function main(app, common, lang) {
     document.addEventListener('yt-navigate-finish', async () => {
         await onViewChanged(isMenuTarget());
         show_menu();
+        onResize();
     });
 
     window.addEventListener('resize', onResize);
