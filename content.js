@@ -502,7 +502,7 @@ function main(app, common, lang) {
     }
 
     function updateVisibility(node) {
-        node.querySelectorAll('yt-lockup-view-model, ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer),ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('yt-lockup-view-model, ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
     }
 
     function classifyStatus(node) {
@@ -526,7 +526,7 @@ function main(app, common, lang) {
                     } else if (lang.isScheduled_metadata(t)) {
                         status.add('scheduled');
 
-                        const video_button = node.querySelector('ytd-toggle-button-renderer yt-formatted-string,ytd-toggle-button-renderer yt-button-shape');
+                        const video_button = node.querySelector('yt-button-shape');
                         if (video_button) {
                             const t = video_button.textContent;
                             if (lang.isNotificationOn_button(t)) {
@@ -566,7 +566,7 @@ function main(app, common, lang) {
 
                 break;
             case 'YTD-CHANNEL-RENDERER':
-                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer button#button[aria-label],ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
+                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
                 if (channel_notification) {
                     const t = channel_notification.getAttribute('aria-label');
                     if (lang.isChannelsAllNotifications(t)) {
@@ -670,7 +670,7 @@ function main(app, common, lang) {
                     return matchQuery(shorts_meta.getAttribute('aria-label'));
                 }
 
-                const rich_item_title = node.querySelector('h3.ytd-rich-grid-media,.ytd-rich-grid-slim-media, .yt-core-attributed-string');
+                const rich_item_title = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
                 if (rich_item_title) {
                     return matchQuery(rich_item_title.textContent);
                 }
