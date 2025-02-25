@@ -1093,18 +1093,26 @@ function main(app, common, lang) {
         // add-to-playlist popup
         for (const playlists of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists')) {
             const parent = playlists.parentNode;
-            if (parent && !parent.querySelector('form.filter-popup')) {
-                const menu = createPopupMenu(playlists);
-                parent.insertBefore(menu, playlists);
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup');
+                if (existsMenu !== popupMenu.get(playlists)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(playlists);
+                    parent.insertBefore(menu, playlists);
+                }
             }
         }
 
         // notification popup
         for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
             const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
-            if (parent && !parent.querySelector('form.filter-popup')) {
-                const menu = createPopupMenu(items);
-                parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup');
+                if (existsMenu !== popupMenu.get(items)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(items);
+                    parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
+                }
             }
         }
     }
@@ -1122,6 +1130,8 @@ function main(app, common, lang) {
             updatePopupQueryRegex(container, input.value);
             updatePopupVisibility(container);
         });
+
+        popupMenu.set(container, menu);
 
         return menu;
     }
@@ -1627,6 +1637,8 @@ function main(app, common, lang) {
     let responsive = common.default_responsive;
     let limit = common.defaultLimit;
     let default_keyword = common.default_default_keyword;
+
+    const popupMenu = new Map();
 
     let continuation_item;
     const load_button_container = document.createElement('div');
