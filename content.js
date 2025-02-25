@@ -1449,7 +1449,10 @@ function main(app, common, lang) {
 
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
         if (isMenuTarget()) {
-            await updateButtonVisibility(app);
+            const browse = app.querySelector('ytd-browse[role="main"]');
+            if (browse) {
+                await updateButtonVisibility(browse);
+            }
         }
     });
 
