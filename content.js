@@ -827,7 +827,7 @@ function main(app, common, lang) {
         if (forTwoColumnBrowseResultsRenderer()) {
             return browse.querySelector('ytd-two-column-browse-results-renderer');
         } else if (forPageHeaderRenderer()) {
-            return browse.querySelector('yt-page-header-renderer');
+            return browse.querySelector('yt-page-header-renderer'); // FIXME: yt-page-header-renderer not found
         } else {
             return browse.firstChild;
         }
