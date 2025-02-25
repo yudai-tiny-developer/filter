@@ -112,7 +112,8 @@ svg.filter-search {
 }
 
 form.filter-menu,
-div.filter-menu {
+div.filter-menu,
+form.filter-popup {
     display: flex;
     height: 56px;
     justify-content: center;

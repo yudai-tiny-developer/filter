@@ -612,12 +612,13 @@ function main(app, common, lang) {
     }
 
     function matchTextContent(node) {
+        let text_node;
         switch (node.nodeName) {
             // subscriptions?flow=1, library
             case 'YTD-GRID-VIDEO-RENDERER':
-                const grid_video_title = node.querySelector('a#video-title');
-                if (grid_video_title) {
-                    return matchQuery(grid_video_title.textContent);
+                text_node = node.querySelector('a#video-title');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 } else {
                     console.warn('a#video-title not found');
                 }
@@ -627,9 +628,9 @@ function main(app, common, lang) {
             // subscriptions?flow=2, history
             case 'YTD-VIDEO-RENDERER':
                 if (!node.classList.contains('ytd-backstage-post-renderer')) {
-                    const video_title = node.querySelector('a#video-title');
-                    if (video_title) {
-                        return matchQuery(video_title.textContent);
+                    text_node = node.querySelector('a#video-title');
+                    if (text_node) {
+                        return matchQuery(text_node.textContent);
                     } else {
                         console.warn('a#video-title not found');
                     }
@@ -641,9 +642,9 @@ function main(app, common, lang) {
 
             // playlist
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const playlist_video_meta = node.querySelector('div#meta');
-                if (playlist_video_meta) {
-                    return matchQuery(playlist_video_meta.textContent);
+                text_node = node.querySelector('div#meta');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 } else {
                     console.warn('div#meta not found');
                 }
@@ -652,9 +653,9 @@ function main(app, common, lang) {
 
             // channel
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-                const backstage_post_thread_content = node.querySelector('div#content');
-                if (backstage_post_thread_content) {
-                    return matchQuery(backstage_post_thread_content.textContent);
+                text_node = node.querySelector('div#content');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 } else {
                     console.warn('div#content not found');
                 }
@@ -662,9 +663,9 @@ function main(app, common, lang) {
                 break;
 
             case 'YTD-GRID-PLAYLIST-RENDERER':
-                const grid_playlist_title = node.querySelector('a#video-title');
-                if (grid_playlist_title) {
-                    return matchQuery(grid_playlist_title.textContent);
+                text_node = node.querySelector('a#video-title');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 } else {
                     console.warn('a#video-title not found');
                 }
@@ -675,14 +676,14 @@ function main(app, common, lang) {
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
             case 'YT-LOCKUP-VIEW-MODEL':
-                const shorts_meta = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
-                if (shorts_meta) {
-                    return matchQuery(shorts_meta.getAttribute('aria-label'));
+                text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
+                if (text_node) {
+                    return matchQuery(text_node.getAttribute('aria-label'));
                 }
 
-                const rich_item_title = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
-                if (rich_item_title) {
-                    return matchQuery(rich_item_title.textContent);
+                text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 }
 
                 // YT-LOCKUP-VIEW-MODEL content lazy load
@@ -691,9 +692,9 @@ function main(app, common, lang) {
 
             // channels
             case 'YTD-CHANNEL-RENDERER':
-                const channel_info = node.querySelector('div#info');
-                if (channel_info) {
-                    return matchQuery(channel_info.textContent);
+                text_node = node.querySelector('div#info');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
                 } else {
                     console.warn('div#info not found');
                 }
@@ -713,6 +714,11 @@ function main(app, common, lang) {
                 case 'YTD-SECTION-LIST-RENDERER':
                 case 'YTD-TABBED-PAGE-HEADER':
                     await insertMenu(node);
+                    break;
+
+                case 'YTD-POPUP-CONTAINER':
+                case 'YT-MULTI-PAGE-MENU-SECTION-RENDERER':
+                    insertPopupMenu(node);
                     break;
 
                 // subscriptions?flow=1, library
@@ -756,6 +762,8 @@ function main(app, common, lang) {
                 case 'DIV':
                     if (node.id === 'contents') {
                         updateVisibility(node);
+                    } else if (node.id === 'playlists' || node.id === 'items') {
+                        updatePopupVisibility(node);
                     }
                     break;
 
@@ -787,6 +795,11 @@ function main(app, common, lang) {
 
                     console.warn('progress not found');
 
+                    break;
+
+                // notification
+                case 'YTD-NOTIFICATION-RENDERER':
+                    updatePopupVisibility(node.parentNode);
                     break;
 
                 // continuation stopper
@@ -1056,6 +1069,175 @@ function main(app, common, lang) {
             window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
+    }
+
+    function insertPopupMenu(node) {
+        for (const container of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists, yt-multi-page-menu-section-renderer div#items')) {
+            if (!container.parentNode.querySelector('form.filter-popup')) {
+                const items = container.parentNode.querySelector('div#playlists, div#items');
+                if (items) {
+                    const menu = createPopupMenu(items);
+                    items.parentNode.insertBefore(menu, items);
+                }
+            }
+        }
+    }
+
+    function createPopupMenu(container) {
+        const menu = document.createElement('form');
+        menu.classList.add('filter-popup');
+
+        const input = createPopupQueryInput(menu);
+        menu.appendChild(createPopupQueryInputArea(input, container));
+        menu.appendChild(createPopupSearchButton(input, container));
+
+        menu.addEventListener('submit', e => {
+            e.preventDefault();
+            updatePopupQueryRegex(container, input.value);
+            updatePopupVisibility(container);
+        });
+
+        return menu;
+    }
+
+    function createPopupQueryInputArea(input, container) {
+        const inputArea = document.createElement('span');
+        inputArea.classList.add('filter-query', 'area');
+        inputArea.appendChild(input);
+        inputArea.appendChild(createPopupClearButton(input, container));
+        return inputArea;
+    }
+
+    function createPopupQueryInput(menu) {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('placeholder', 'Subscription Feed Filter');
+        input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
+        input.id = 'filter-query';
+        input.value = getActiveQuery();
+        input.addEventListener('change', e => {
+            input.blur();
+            menu.requestSubmit();
+        });
+        return input;
+    }
+
+    function createPopupClearButton(input, container) {
+        const span = document.createElement('span');
+        span.classList.add('filter-clear');
+        span.innerHTML = common.button_label.clear;
+        span.addEventListener('click', () => {
+            input.value = '';
+            updatePopupQueryRegex(container, '');
+            updatePopupVisibility(container);
+        });
+        return span;
+    }
+
+    function createPopupSearchButton(input, container) {
+        const span = document.createElement('span');
+        span.classList.add('filter-query', 'search');
+        span.innerHTML = common.button_label.search;
+        span.addEventListener('click', () => {
+            updatePopupQueryRegex(container, input.value);
+            updatePopupVisibility(container);
+        });
+        return span;
+    }
+
+    function updatePopupVisibility(container) {
+        container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer').forEach(target => updatePopupTargetVisibility(container, target));
+    }
+
+    function updatePopupTargetVisibility(container, target) {
+        if (matchPopupQuery(container, target)) {
+            target.style.display = '';
+        } else {
+            target.style.display = 'none';
+        }
+    }
+
+    function updatePopupQueryRegex(container, query) {
+        const queryList = [];
+        const notQueryList = [];
+        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
+        let nextOr = false;
+        let nextNot = false;
+        if (tokenList) {
+            for (const token of tokenList) {
+                if (token === '|') {
+                    nextOr = true;
+                } else if (token === '-') {
+                    nextNot = true;
+                } else {
+                    const t = token.replace(/\|/g, '\\|');
+                    if (nextOr && nextNot) {
+                        if (notQueryList.length - 1 >= 0) {
+                            notQueryList[notQueryList.length - 1] = notQueryList[notQueryList.length - 1] + '|' + t;
+                        } else {
+                            notQueryList.push(t);
+                        }
+                        nextOr = false;
+                        nextNot = false;
+                    } else if (nextOr) {
+                        if (queryList.length - 1 >= 0) {
+                            queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
+                        } else {
+                            queryList.push(t);
+                        }
+                        nextOr = false;
+                    } else if (nextNot) {
+                        notQueryList.push(t);
+                        nextNot = false;
+                    } else {
+                        queryList.push(t);
+                    }
+                }
+            }
+        } else {
+            // empty query
+        }
+
+        const regExpList = [];
+        for (const q of queryList) {
+            regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+        active.regex.set(container, regExpList);
+
+        const notRegExpList = [];
+        for (const q of notQueryList) {
+            notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+        }
+        active.notRegex.set(container, notRegExpList);
+    }
+
+    function matchPopupQuery(container, target) {
+        const text = target.querySelector('div#checkbox-label, div.ytd-notification-renderer.text')?.textContent ?? '';
+        return matchPopupAllActiveRegex(container, text) && matchPopupAllActiveNotRegex(container, text);
+    }
+
+    function matchPopupAllActiveRegex(container, text) {
+        const rs = active.regex.get(container);
+        if (rs) {
+            for (const r of rs) {
+                if (!text.match(r)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function matchPopupAllActiveNotRegex(container, text) {
+        const rs = active.notRegex.get(container);
+        if (rs) {
+            for (const r of rs) {
+                if (!!r && text.match(r)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     function updateMenuVisibility(node, isFilterTarget) {
