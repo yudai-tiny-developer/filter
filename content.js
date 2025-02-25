@@ -1389,18 +1389,6 @@ function main(app, common, lang) {
         node.querySelectorAll(query).forEach(n => n.style.display = display);
     }
 
-    function show_menu() {
-        for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')) {
-            form.style.visibility = '';
-        }
-    }
-
-    function hide_menu() {
-        for (const form of app.querySelectorAll('form.filter-menu:not(.filter-forCalc)')) {
-            form.style.visibility = 'hidden';
-        }
-    }
-
     const default_tab = {
         live: false,
         streamed: false,
@@ -1452,13 +1440,8 @@ function main(app, common, lang) {
         load_button_container.appendChild(load_button);
     }
 
-    document.addEventListener('yt-navigate-start', () => {
-        hide_menu();
-    });
-
     document.addEventListener('yt-navigate-finish', async () => {
         await onViewChanged(isMenuTarget());
-        show_menu();
         onResize();
     });
 
