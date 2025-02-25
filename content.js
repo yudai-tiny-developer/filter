@@ -234,7 +234,7 @@ function main(app, common, lang) {
                 node.querySelectorAll('span.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.video').forEach(n => n.style.display = '');
                 node.querySelectorAll('span.filter-button-subscriptions.short').forEach(n => n.style.display = '');
-                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('span.filter-button-subscriptions.scheduled').forEach(n => n.style.display = '');
                 node.querySelectorAll('span.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
 
@@ -244,14 +244,14 @@ function main(app, common, lang) {
                 node.querySelectorAll('option.filter-button-subscriptions.streamed').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('option.filter-button-subscriptions.video').forEach(n => n.style.display = '');
                 node.querySelectorAll('option.filter-button-subscriptions.short').forEach(n => n.style.display = '');
-                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('option.filter-button-subscriptions.scheduled').forEach(n => n.style.display = '');
                 node.querySelectorAll('option.filter-button-subscriptions.notification_on').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('option.filter-button-subscriptions.notification_off').forEach(n => n.style.display = 'none');
 
-                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = 'none');
-                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = 'none');
+                node.querySelectorAll('select.filter-menu-progress').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
+                node.querySelectorAll('option.filter-button-progress.progress_all').forEach(n => n.style.display = all_visibled([progress_unwatched, progress_watched]));
+                node.querySelectorAll('option.filter-button-progress.progress_unwatched').forEach(n => n.style.display = progress_unwatched === true ? '' : 'none');
+                node.querySelectorAll('option.filter-button-progress.progress_watched').forEach(n => n.style.display = progress_watched === true ? '' : 'none');
 
                 node.querySelectorAll('span.filter-button-channels.all').forEach(n => n.style.display = 'none');
                 node.querySelectorAll('span.filter-button-channels.channels_all').forEach(n => n.style.display = 'none');
@@ -431,7 +431,13 @@ function main(app, common, lang) {
     }
 
     function forTwoColumnBrowseResultsRenderer() {
-        return common.isChannel(location.href);
+        return common.isChannel(location.href)
+            ;
+    }
+
+    function forPageHeaderRenderer() {
+        return common.isHashTag(location.href)
+            ;
     }
 
     function needSpacer() {
@@ -442,6 +448,7 @@ function main(app, common, lang) {
             || common.isPlaylists(location.href)
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
+            || common.isHashTag(location.href)
             ;
     }
 
@@ -792,24 +799,37 @@ function main(app, common, lang) {
     function insertMenu(node) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
         if (browse) {
-            if (!browse.querySelector('form.filter-menu')) {
-                const position_fixed = isPositionFixedTarget();
-                const referenceNode = forTwoColumnBrowseResultsRenderer() ? browse.querySelector('ytd-two-column-browse-results-renderer') : browse.firstChild;
-                const menu = createMenu(position_fixed, browse);
-                referenceNode.parentNode.insertBefore(menu, referenceNode);
-                const calc = createNodeForCalc(menu, browse);
-                referenceNode.parentNode.insertBefore(calc, referenceNode);
-                if (needSpacer()) {
-                    browse.insertBefore(createSpacer('browse'), referenceNode);
-                }
+            if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+                const referenceNode = getReferenceNode(browse);
+                if (referenceNode) {
+                    const menu = createMenu(browse);
+                    referenceNode.parentNode.insertBefore(menu, referenceNode);
 
-                updateButtonVisibility(browse);
-                updateMenuVisibility(browse, true);
+                    const calc = createNodeForCalc(menu, browse);
+                    referenceNode.parentNode.insertBefore(calc, referenceNode);
+
+                    if (needSpacer()) {
+                        referenceNode.parentNode.insertBefore(createSpacer('browse'), referenceNode);
+                    }
+
+                    updateButtonVisibility(browse);
+                    updateMenuVisibility(browse, true);
+                }
             } else {
                 // already exists
             }
         } else {
             // not target
+        }
+    }
+
+    function getReferenceNode(browse) {
+        if (forTwoColumnBrowseResultsRenderer()) {
+            return browse.querySelector('ytd-two-column-browse-results-renderer');
+        } else if (forPageHeaderRenderer()) {
+            return browse.querySelector('yt-page-header-renderer');
+        } else {
+            return browse.firstChild;
         }
     }
 
@@ -831,11 +851,11 @@ function main(app, common, lang) {
         }
     }
 
-    function createMenu(position_fixed, browse) {
+    function createMenu(browse) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
 
-        if (position_fixed) {
+        if (isPositionFixedTarget()) {
             menu.classList.add('filter-menu', 'position-fixed');
         } else {
             menu.classList.add('filter-menu');
