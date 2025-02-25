@@ -1103,7 +1103,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup');
                 if (existsMenu !== popupMenu.get(playlists)) {
                     existsMenu?.remove();
-                    const menu = createPopupMenu(playlists);
+                    const menu = createPopupMenu(playlists, undefined);
                     parent.insertBefore(menu, playlists);
                 }
             }
@@ -1116,7 +1116,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup');
                 if (existsMenu !== popupMenu.get(items)) {
                     existsMenu?.remove();
-                    const menu = createPopupMenu(items);
+                    const menu = createPopupMenu(items, undefined);
                     parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
                 }
             }
@@ -1129,14 +1129,14 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup');
                 if (existsMenu !== popupMenu.get(items)) {
                     existsMenu?.remove();
-                    const menu = createPopupMenu(items);
+                    const menu = createPopupMenu(items, 'ytd-guide-entry-renderer#expander-item');
                     parent.insertBefore(menu, items);
                 }
             }
         }
     }
 
-    function createPopupMenu(container) {
+    function createPopupMenu(container, expander) {
         const menu = document.createElement('form');
         menu.classList.add('filter-popup');
         menu.style.display = display(keyword);
@@ -1149,6 +1149,10 @@ function main(app, common, lang) {
             e.preventDefault();
             updatePopupQueryRegex(container, input.value);
             updatePopupVisibility(container);
+
+            if (expander) {
+                container.querySelector(expander)?.click();
+            }
         });
 
         popupMenu.set(container, menu);
