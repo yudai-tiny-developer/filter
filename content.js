@@ -1430,10 +1430,6 @@ function main(app, common, lang) {
         childList: true,
     });
 
-    if (isMenuTarget()) {
-        app.querySelectorAll('ytd-browse, ytd-section-list-renderer').forEach(n => insertMenu(n));
-    }
-
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
         if (isMenuTarget()) {
             await updateButtonVisibility(app);
