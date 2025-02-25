@@ -558,6 +558,8 @@ function main(app, common, lang) {
                         const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                         if (slim_media) {
                             status.add('short');
+                        } else {
+                            // no ytd-rich-grid-slim-media
                         }
                     }
                 } else {
@@ -578,6 +580,8 @@ function main(app, common, lang) {
                     } else {
                         console.warn('Unknown channel notification: ' + t);
                     }
+                } else {
+                    // sponsor
                 }
                 break;
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
@@ -617,6 +621,7 @@ function main(app, common, lang) {
                 } else {
                     console.warn('a#video-title not found');
                 }
+
                 break;
 
             // subscriptions?flow=2, history
@@ -631,6 +636,7 @@ function main(app, common, lang) {
                 } else {
                     // lazy load
                 }
+
                 break;
 
             // playlist
@@ -641,6 +647,7 @@ function main(app, common, lang) {
                 } else {
                     console.warn('div#meta not found');
                 }
+
                 break;
 
             // channel
@@ -651,7 +658,9 @@ function main(app, common, lang) {
                 } else {
                     console.warn('div#content not found');
                 }
+
                 break;
+
             case 'YTD-GRID-PLAYLIST-RENDERER':
                 const grid_playlist_title = node.querySelector('a#video-title');
                 if (grid_playlist_title) {
@@ -659,9 +668,10 @@ function main(app, common, lang) {
                 } else {
                     console.warn('a#video-title not found');
                 }
+
                 break;
 
-            // channel, playlists, shorts
+            // channel, playlists, shorts, library
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
             case 'YT-LOCKUP-VIEW-MODEL':
@@ -674,6 +684,9 @@ function main(app, common, lang) {
                 if (rich_item_title) {
                     return matchQuery(rich_item_title.textContent);
                 }
+
+                // YT-LOCKUP-VIEW-MODEL content lazy load
+
                 break;
 
             // channels
@@ -684,6 +697,7 @@ function main(app, common, lang) {
                 } else {
                     console.warn('div#info not found');
                 }
+
                 break;
         }
 
@@ -693,6 +707,7 @@ function main(app, common, lang) {
 
     async function onNodeLoaded(node, isFilterTarget) {
         if (isFilterTarget) {
+            let n;
             switch (node.nodeName) {
                 case 'YTD-BROWSE':
                 case 'YTD-SECTION-LIST-RENDERER':
@@ -714,9 +729,9 @@ function main(app, common, lang) {
 
                 // playlist
                 case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
-                    const video = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-                    if (video) {
-                        updateTargetVisibility(video);
+                    n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
                     }
                     break;
 
@@ -746,17 +761,31 @@ function main(app, common, lang) {
 
                 // progress
                 case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
-                    let progress_video = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
-                    if (progress_video) {
-                        updateTargetVisibility(progress_video);
+                    n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
                         break;
                     }
 
-                    progress_video = searchParentNode(node, 'YTD-VIDEO-RENDERER');
-                    if (progress_video) {
-                        updateTargetVisibility(progress_video);
+                    n = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
                         break;
                     }
+
+                    n = searchParentNode(node, 'YTD-VIDEO-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
+                        break;
+                    }
+
+                    n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n);
+                        break;
+                    }
+
+                    console.warn('progress not found');
 
                     break;
 
@@ -768,7 +797,11 @@ function main(app, common, lang) {
                             node.style.display = 'none';
                             node.parentNode.parentNode.appendChild(load_button_container);
                             continuation_item = node;
+                        } else {
+                            // continuation
                         }
+                    } else {
+                        // continuation
                     }
                     break;
             }
@@ -1306,24 +1339,30 @@ function main(app, common, lang) {
     }
 
     function onResize() {
-        if (responsive) {
-            const form = app.querySelector('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)');
-            if (form) {
-                const calc = form.parentNode.querySelector('form.filter-forCalc');
-                if (calc) {
-                    form.parentNode.insertBefore(calc, form);
-                    if (calc.scrollWidth <= form.parentNode.clientWidth) {
-                        document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'none');
+        if (isMenuTarget()) {
+            if (responsive) {
+                const form = app.querySelector('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)');
+                if (form) {
+                    const calc = form.parentNode.querySelector('form.filter-forCalc');
+                    if (calc) {
+                        form.parentNode.insertBefore(calc, form);
+                        if (calc.scrollWidth <= form.parentNode.clientWidth) {
+                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                        } else {
+                            document.documentElement.style.setProperty('--filter-button-display', 'none');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                        }
                     } else {
-                        document.documentElement.style.setProperty('--filter-button-display', 'none');
-                        document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                        console.warn('calc not found');
                     }
+                } else {
+                    // not created yet
                 }
+            } else {
+                document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                document.documentElement.style.setProperty('--filter-menu-display', 'none');
             }
-        } else {
-            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-            document.documentElement.style.setProperty('--filter-menu-display', 'none');
         }
     }
 
