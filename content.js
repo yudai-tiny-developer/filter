@@ -878,8 +878,8 @@ function main(app, common, lang) {
         menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse));
 
         const input = createQueryInput(menu);
-        menu.appendChild(createQueryInputArea(input));
-        menu.appendChild(createSearchButton(input));
+        menu.appendChild(createQueryInputArea(input, browse));
+        menu.appendChild(createSearchButton(input, browse));
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
@@ -980,12 +980,12 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createQueryInputArea(input) {
+    function createQueryInputArea(input, browse) {
         const inputArea = document.createElement('span');
         inputArea.style.display = 'none';
         inputArea.classList.add('filter-query', 'area');
         inputArea.appendChild(input);
-        inputArea.appendChild(createClearButton(input));
+        inputArea.appendChild(createClearButton(input, browse));
         return inputArea;
     }
 
@@ -1048,12 +1048,17 @@ function main(app, common, lang) {
     }
 
     function onViewChanged(isFilterTarget) {
-        if (isFilterTarget) {
-            insertPlaylistSpacer();
-            updateButtonVisibility(app);
+        const browse = app.querySelector('ytd-browse[role="main"]');
+        if (browse) {
+            if (isFilterTarget) {
+                insertPlaylistSpacer();
+                updateButtonVisibility(browse);
+            }
+            updateMenuVisibility(browse, isFilterTarget);
+            updateVisibility(browse);
+        } else {
+            console.warn('ytd-browse[role="main"] not found');
         }
-        updateMenuVisibility(app, isFilterTarget);
-        updateVisibility(app);
     }
 
     function includesStatus(node, status_mode, status_progress) {
