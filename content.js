@@ -1420,15 +1420,7 @@ function main(app, common, lang) {
         show_menu();
     });
 
-    new MutationObserver((mutations, observer) => {
-        const isFilterTarget = isMenuTarget();
-        for (const m of mutations) {
-            onNodeLoaded(m.target, isFilterTarget);
-        }
-    }).observe(app, {
-        subtree: true,
-        childList: true,
-    });
+    window.addEventListener('resize', onResize);
 
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
         if (isMenuTarget()) {
@@ -1436,5 +1428,10 @@ function main(app, common, lang) {
         }
     });
 
-    window.addEventListener('resize', onResize);
+    new MutationObserver((mutations, observer) => {
+        const isFilterTarget = isMenuTarget();
+        for (const m of mutations) {
+            onNodeLoaded(m.target, isFilterTarget);
+        }
+    }).observe(app, { subtree: true, childList: true });
 }
