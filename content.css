@@ -181,6 +181,7 @@ form.filter-forCalc select.filter-menu-subscriptions {
 form.filter-forCalc {
     visibility: hidden;
     width: max-content;
+    position: absolute;
 }
 
 span.filter-button-channels {
