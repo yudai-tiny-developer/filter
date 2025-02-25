@@ -1151,7 +1151,14 @@ function main(app, common, lang) {
             updatePopupVisibility(container);
 
             if (expander) {
-                container.querySelector(expander)?.click();
+                const expander_node = container.querySelector(expander);
+                if (expander_node) {
+                    expander_node.parentNode.insertBefore(spinner, expander_node);
+                    setTimeout(() => {
+                        expander_node.click();
+                        spinner.remove();
+                    }, 0);
+                }
             }
         });
 
@@ -1666,7 +1673,6 @@ function main(app, common, lang) {
 
     let continuation_item;
     const load_button_container = document.createElement('div');
-
     {
         load_button_container.classList.add('filter-button-load');
         const load_button = document.createElement('button');
@@ -1682,6 +1688,11 @@ function main(app, common, lang) {
             window.scroll({ top: app.scrollHeight, behavior: 'instant' });
         });
         load_button_container.appendChild(load_button);
+    }
+
+    const spinner = document.createElement('div');
+    {
+        spinner.classList.add('filter-spinner');
     }
 
     document.addEventListener('yt-navigate-finish', async () => {
