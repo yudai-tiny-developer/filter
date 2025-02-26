@@ -84,20 +84,20 @@ function main(app, common, lang) {
 
             keyword = common.value(data.keyword, common.default_keyword);
 
-            default_tab.live = data.default_live;
-            default_tab.streamed = data.default_streamed;
-            default_tab.video = data.default_video;
-            default_tab.short = data.default_short;
-            default_tab.scheduled = data.default_scheduled;
-            default_tab.notification_on = data.default_notification_on;
-            default_tab.notification_off = data.default_notification_off;
+            default_tab.live = common.value(data.default_live, common.default_default_live);
+            default_tab.streamed = common.value(data.default_streamed, common.default_default_streamed);
+            default_tab.video = common.value(data.default_video, common.default_default_video);
+            default_tab.short = common.value(data.default_short, common.default_default_short);
+            default_tab.scheduled = common.value(data.default_scheduled, common.default_default_scheduled);
+            default_tab.notification_on = common.value(data.default_notification_on, common.default_default_notification_on);
+            default_tab.notification_off = common.value(data.default_notification_off, common.default_default_notification_off);
 
-            default_tab.progress_unwatched = data.default_progress_unwatched;
-            default_tab.progress_watched = data.default_progress_watched;
+            default_tab.progress_unwatched = common.value(data.default_progress_unwatched, common.default_default_progress_unwatched);
+            default_tab.progress_watched = common.value(data.default_progress_watched, common.default_default_progress_watched);
 
-            default_tab.channels_all = data.default_channels_all;
-            default_tab.channels_personalized = data.default_channels_personalized;
-            default_tab.channels_none = data.default_channels_none;
+            default_tab.channels_all = common.value(data.default_channels_all, common.default_default_channels_all);
+            default_tab.channels_personalized = common.value(data.default_channels_personalized, common.default_default_channels_personalized);
+            default_tab.channels_none = common.value(data.default_channels_none, common.default_default_channels_none);
 
             multiselection = common.value(data.multiselection, common.default_multiselection);
             responsive = common.value(data.responsive, common.default_responsive);
@@ -1658,20 +1658,20 @@ function main(app, common, lang) {
     }
 
     const default_tab = {
-        live: false,
-        streamed: false,
-        video: false,
-        short: false,
-        scheduled: false,
-        notification_on: false,
-        notification_off: false,
+        live: common.default_default_live,
+        streamed: common.default_default_streamed,
+        video: common.default_default_video,
+        short: common.default_default_short,
+        scheduled: common.default_default_scheduled,
+        notification_on: common.default_default_notification_on,
+        notification_off: common.default_default_notification_off,
 
-        progress_unwatched: false,
-        progress_watched: false,
+        progress_unwatched: common.default_default_progress_unwatched,
+        progress_watched: common.default_default_progress_watched,
 
-        channels_all: false,
-        channels_personalized: false,
-        channels_none: false,
+        channels_all: common.default_default_channels_all,
+        channels_personalized: common.default_default_channels_personalized,
+        channels_none: common.default_default_channels_none,
     };
 
     const active = {
@@ -1689,7 +1689,7 @@ function main(app, common, lang) {
     let responsive = common.default_responsive;
     let limit = common.defaultLimit;
     let keyword_add_playlist = common.default_keyword_add_playlist;
-    let keyword_sidebar_channels = common.default_keyword_sidebar_channels;
+    let keyword_sidebar_channels = false; // anti-flicker
     let keyword_notification = common.default_keyword_notification;
 
     const popupMenu = new Map();

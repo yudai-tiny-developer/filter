@@ -141,7 +141,6 @@ export const default_keyword = true;
 
 export const default_multiselection = false;
 export const default_responsive = true;
-export const default_default_keyword = '';
 
 export const default_keyword_add_playlist = true;
 export const default_keyword_sidebar_channels = true;
@@ -151,6 +150,23 @@ export const defaultLimit = 500;
 export const minLimit = 100;
 export const maxLimit = 10000;
 export const stepLimit = 100;
+
+export const default_default_live = false;
+export const default_default_streamed = false;
+export const default_default_video = false;
+export const default_default_short = false;
+export const default_default_scheduled = false;
+export const default_default_notification_on = false;
+export const default_default_notification_off = false;
+
+export const default_default_progress_unwatched = false;
+export const default_default_progress_watched = false;
+
+export const default_default_channels_all = false;
+export const default_default_channels_personalized = false;
+export const default_default_channels_none = false;
+
+export const default_default_keyword = '';
 
 export function value(value, defaultValue) {
     return value === undefined ? defaultValue : value;
