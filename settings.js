@@ -13,13 +13,13 @@ export function init(_groups, _settings_lists) {
     settings_lists = _settings_lists;
 }
 
-export function createHeaderRow(button_label_visibility, button_label_default) {
+export function createHeaderRow(button_label_visibility, button_label_default, header_class) {
     const div = document.createElement('div');
     div.classList.add('header-row');
-    div.appendChild(createHeaderLabel(''));
-    div.appendChild(createHeaderLabel(''));
-    div.appendChild(createHeaderLabel(button_label_visibility));
-    div.appendChild(createHeaderLabel(button_label_default));
+    div.appendChild(createHeaderLabel('', `${header_class}-1`));
+    div.appendChild(createHeaderLabel('', `${header_class}-2`));
+    div.appendChild(createHeaderLabel(button_label_visibility, `${header_class}-3`));
+    div.appendChild(createHeaderLabel(button_label_default, `${header_class}-4`));
     return div;
 }
 
@@ -169,9 +169,9 @@ function createLabel(label) {
     return div;
 }
 
-function createHeaderLabel(label) {
+function createHeaderLabel(label, header_class) {
     const div = document.createElement('div');
-    div.classList.add('header-label');
+    div.classList.add('header-label', header_class);
     div.innerHTML = label;
     return div;
 }

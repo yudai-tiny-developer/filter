@@ -37,6 +37,7 @@ div.row {
 
 div.header-row {
     display: table-row;
+    width: 348px;
 }
 
 div.spacer-row {
@@ -82,6 +83,10 @@ div.header-label {
     vertical-align: middle;
 }
 
+div.header-label.header-keyword-4 {
+    width: 176px;
+}
+
 div.spacer-label {
     display: table-cell;
     padding: 4px;
@@ -94,13 +99,13 @@ input.label {
 }
 
 input.keyword_input {
-    width: 240px;
+    width: 100%;
     height: 30px;
     vertical-align: middle;
 }
 
 input.step {
-    width: 50px;
+    width: 100%;
     height: 30px;
     vertical-align: middle;
 }

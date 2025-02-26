@@ -18,7 +18,7 @@ function main(app, common, lang) {
                 progress.appendChild(progress.querySelector('option.filter-button-progress.progress_all'));
 
                 for (const mode of common.order(data.order)) {
-                    if (mode === 'keyword' || mode === 'multiselection' || mode === 'responsive') {
+                    if (mode === 'keyword' || mode === 'multiselection' || mode === 'responsive' || mode === 'keyword_add_playlist' || mode === 'keyword_sidebar_channels' || mode === 'keyword_notification') {
                         // continue
                     } else if (mode.startsWith('progress_')) {
                         const option = progress.querySelector('option.filter-button-progress.' + mode);
@@ -102,6 +102,9 @@ function main(app, common, lang) {
             multiselection = common.value(data.multiselection, common.default_multiselection);
             responsive = common.value(data.responsive, common.default_responsive);
             limit = common.value(data.limit, common.defaultLimit);
+            keyword_add_playlist = common.value(data.keyword_add_playlist, common.default_keyword_add_playlist);
+            keyword_sidebar_channels = common.value(data.keyword_sidebar_channels, common.default_keyword_sidebar_channels);
+            keyword_notification = common.value(data.keyword_notification, common.default_keyword_notification);
             default_keyword = common.value(data.default_keyword, common.default_default_keyword);
 
             if (common.isSubscriptions(location.href)) {
@@ -394,8 +397,19 @@ function main(app, common, lang) {
             updateQueryRegex(browse, getActiveQuery());
             updateVisibility(browse);
 
-            for (const menu of app.querySelectorAll('form.filter-popup')) {
-                menu.style.display = display(keyword);
+            // add-playlist
+            for (const menu of app.querySelectorAll('form.filter-popup.filter-add-playlist')) {
+                menu.style.display = display(keyword_add_playlist);
+            }
+
+            // sidebar channels
+            for (const menu of app.querySelectorAll('form.filter-popup.filter-sidebar-channels')) {
+                menu.style.display = display(keyword_sidebar_channels);
+            }
+
+            // notification
+            for (const menu of app.querySelectorAll('form.filter-popup.filter-notification')) {
+                menu.style.display = display(keyword_notification);
             }
         });
     }
@@ -1096,50 +1110,56 @@ function main(app, common, lang) {
     }
 
     function insertPopupMenu(node) {
-        // add-to-playlist popup
+        // Save to playlist
         for (const playlists of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists')) {
             const parent = playlists.parentNode;
             if (parent) {
-                const existsMenu = parent.querySelector('form.filter-popup');
+                const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                 if (existsMenu !== popupMenu.get(playlists)) {
                     existsMenu?.remove();
-                    const menu = createPopupMenu(playlists, undefined);
+                    const menu = createPopupMenu(playlists, undefined, 'filter-add-playlist', keyword_add_playlist);
                     parent.insertBefore(menu, playlists);
+                } else {
+                    existsMenu.style.display = display(keyword_add_playlist);
                 }
             }
         }
 
-        // notification popup
-        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
-            const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
-            if (parent) {
-                const existsMenu = parent.querySelector('form.filter-popup');
-                if (existsMenu !== popupMenu.get(items)) {
-                    existsMenu?.remove();
-                    const menu = createPopupMenu(items, undefined);
-                    parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
-                }
-            }
-        }
-
-        // sidebar channels
+        // Sidebar Subscriptions
         for (const items of node.querySelectorAll('div#items:has(ytd-guide-entry-renderer#expander-item), div#items:has(ytd-guide-entry-renderer#collapser-item), div#expandable-items:has(ytd-guide-entry-renderer#expander-item), div#expandable-items:has(ytd-guide-entry-renderer#collapser-item)')) {
             const parent = items.parentNode;
             if (parent) {
-                const existsMenu = parent.querySelector('form.filter-popup');
+                const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
                 if (existsMenu !== popupMenu.get(items)) {
                     existsMenu?.remove();
-                    const menu = createPopupMenu(items, 'ytd-guide-entry-renderer#expander-item');
+                    const menu = createPopupMenu(items, 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels);
                     parent.insertBefore(menu, items);
+                } else {
+                    existsMenu.style.display = display(keyword_sidebar_channels);
+                }
+            }
+        }
+
+        // Notification
+        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
+            const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
+                if (existsMenu !== popupMenu.get(items)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(items, undefined, 'filter-notification', keyword_notification);
+                    parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
+                } else {
+                    existsMenu.style.display = display(keyword_notification);
                 }
             }
         }
     }
 
-    function createPopupMenu(container, expander) {
+    function createPopupMenu(container, expander, menu_class, settings) {
         const menu = document.createElement('form');
-        menu.classList.add('filter-popup');
-        menu.style.display = display(keyword);
+        menu.classList.add('filter-popup', menu_class);
+        menu.style.display = display(settings);
 
         const input = createPopupQueryInput(menu);
         menu.appendChild(createPopupQueryInputArea(input, container));
@@ -1668,6 +1688,9 @@ function main(app, common, lang) {
     let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;
     let limit = common.defaultLimit;
+    let keyword_add_playlist = common.default_keyword_add_playlist;
+    let keyword_sidebar_channels = common.default_keyword_sidebar_channels;
+    let keyword_notification = common.default_keyword_notification;
 
     const popupMenu = new Map();
 

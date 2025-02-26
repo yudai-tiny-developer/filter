@@ -50,6 +50,10 @@ export const storage = [
     'default_keyword',
 
     'limit',
+
+    'keyword_add_playlist',
+    'keyword_sidebar_channels',
+    'keyword_notification',
 ];
 
 export const default_order = [
@@ -112,6 +116,10 @@ export const button_label = {
 
     limit: chrome.i18n.getMessage('limit'),
     load: chrome.i18n.getMessage('load'),
+
+    keyword_add_playlist: chrome.i18n.getMessage('keyword_add_playlist'),
+    keyword_sidebar_channels: chrome.i18n.getMessage('keyword_sidebar_channels'),
+    keyword_notification: chrome.i18n.getMessage('keyword_notification'),
 };
 
 export const default_live = true;
@@ -134,6 +142,10 @@ export const default_keyword = true;
 export const default_multiselection = false;
 export const default_responsive = true;
 export const default_default_keyword = '';
+
+export const default_keyword_add_playlist = true;
+export const default_keyword_sidebar_channels = true;
+export const default_keyword_notification = true;
 
 export const defaultLimit = 500;
 export const minLimit = 100;
