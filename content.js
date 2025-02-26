@@ -1111,55 +1111,55 @@ function main(app, common, lang) {
 
     function insertPopupMenu(node) {
         // Save to playlist
-        if (keyword_add_playlist) {
-            for (const playlists of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists')) {
-                const parent = playlists.parentNode;
-                if (parent) {
-                    const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
-                    if (existsMenu !== popupMenu.get(playlists)) {
-                        existsMenu?.remove();
-                        const menu = createPopupMenu(playlists, undefined, 'filter-add-playlist');
-                        parent.insertBefore(menu, playlists);
-                    }
+        for (const playlists of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists')) {
+            const parent = playlists.parentNode;
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
+                if (existsMenu !== popupMenu.get(playlists)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(playlists, undefined, 'filter-add-playlist', keyword_add_playlist);
+                    parent.insertBefore(menu, playlists);
+                } else {
+                    existsMenu.style.display = display(keyword_add_playlist);
                 }
             }
         }
 
         // Sidebar Subscriptions
-        if (keyword_sidebar_channels) {
-            for (const items of node.querySelectorAll('div#items:has(ytd-guide-entry-renderer#expander-item), div#items:has(ytd-guide-entry-renderer#collapser-item), div#expandable-items:has(ytd-guide-entry-renderer#expander-item), div#expandable-items:has(ytd-guide-entry-renderer#collapser-item)')) {
-                const parent = items.parentNode;
-                if (parent) {
-                    const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
-                    if (existsMenu !== popupMenu.get(items)) {
-                        existsMenu?.remove();
-                        const menu = createPopupMenu(items, 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels');
-                        parent.insertBefore(menu, items);
-                    }
+        for (const items of node.querySelectorAll('div#items:has(ytd-guide-entry-renderer#expander-item), div#items:has(ytd-guide-entry-renderer#collapser-item), div#expandable-items:has(ytd-guide-entry-renderer#expander-item), div#expandable-items:has(ytd-guide-entry-renderer#collapser-item)')) {
+            const parent = items.parentNode;
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
+                if (existsMenu !== popupMenu.get(items)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(items, 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels);
+                    parent.insertBefore(menu, items);
+                } else {
+                    existsMenu.style.display = display(keyword_sidebar_channels);
                 }
             }
         }
 
         // Notification
-        if (keyword_notification) {
-            for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
-                const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
-                if (parent) {
-                    const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
-                    if (existsMenu !== popupMenu.get(items)) {
-                        existsMenu?.remove();
-                        const menu = createPopupMenu(items, undefined, 'filter-notification');
-                        parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
-                    }
+        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
+            const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
+            if (parent) {
+                const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
+                if (existsMenu !== popupMenu.get(items)) {
+                    existsMenu?.remove();
+                    const menu = createPopupMenu(items, undefined, 'filter-notification', keyword_notification);
+                    parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
+                } else {
+                    existsMenu.style.display = display(keyword_notification);
                 }
             }
         }
     }
 
-    function createPopupMenu(container, expander, menu_class) {
+    function createPopupMenu(container, expander, menu_class, settings) {
         const menu = document.createElement('form');
         menu.classList.add('filter-popup', menu_class);
-        menu.style.display = display(keyword);
+        menu.style.display = display(settings);
 
         const input = createPopupQueryInput(menu);
         menu.appendChild(createPopupQueryInputArea(input, container));
