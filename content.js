@@ -85,7 +85,7 @@ function main(app, common, lang) {
             keyword = common.value(data.keyword, common.default_keyword);
 
             default_tab.live = common.value(data.default_live, common.default_default_live);
-            default_tab.streamed = dcommon.value(ata.default_streamed, common.default_default_streamed);
+            default_tab.streamed = common.value(data.default_streamed, common.default_default_streamed);
             default_tab.video = common.value(data.default_video, common.default_default_video);
             default_tab.short = common.value(data.default_short, common.default_default_short);
             default_tab.scheduled = common.value(data.default_scheduled, common.default_default_scheduled);
