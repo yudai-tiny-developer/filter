@@ -719,8 +719,7 @@ function main(app, common, lang) {
         return true;
     }
 
-    async function onNodeLoaded(node) {
-        const is_menu_target = isMenuTarget();
+    async function onNodeLoaded(node, is_menu_target) {
         let n;
         switch (node.nodeName) {
             case 'YTD-BROWSE':
@@ -861,7 +860,7 @@ function main(app, common, lang) {
 
     async function insertMenu(node) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
-        if (browse) {
+        if (browse && browse.getAttribute('role') === 'main') {
             if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
                 const referenceNode = getReferenceNode(browse);
                 if (referenceNode) {
@@ -876,7 +875,7 @@ function main(app, common, lang) {
                     }
 
                     await updateButtonVisibility(browse);
-                    updateMenuVisibility(browse, true);
+                    display_query(browse, 'form.filter-menu, div.filter-menu', '');
                 }
             } else {
                 // already exists
@@ -1327,11 +1326,7 @@ function main(app, common, lang) {
     }
 
     function updateMenuVisibility(node) {
-        if (isMenuTarget()) {
-            display_query(node, 'form.filter-menu, div.filter-menu', '');
-        } else {
-            display_query(node, 'form.filter-menu, div.filter-menu', 'none');
-        }
+
     }
 
     function updateTargetVisibility(node) {
@@ -1354,11 +1349,9 @@ function main(app, common, lang) {
     }
 
     async function onViewChanged_Node(browse) {
-        if (isMenuTarget()) {
-            insertPlaylistSpacer(browse);
-            await updateButtonVisibility(browse);
-        }
-        updateMenuVisibility(browse);
+        insertPlaylistSpacer(browse);
+        await updateButtonVisibility(browse);
+        display_query(browse, 'form.filter-menu, div.filter-menu', display(isMenuTarget()));
         updateVisibility(browse);
     }
 
@@ -1719,24 +1712,23 @@ function main(app, common, lang) {
     }
 
     document.addEventListener('yt-navigate-finish', async () => {
-        await onViewChanged(isMenuTarget());
+        await onViewChanged();
         onResize();
     });
 
     window.addEventListener('resize', onResize);
 
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
-        if (isMenuTarget()) {
-            const browse = app.querySelector('ytd-browse[role="main"]');
-            if (browse) {
-                await updateButtonVisibility(browse);
-            }
+        const browse = app.querySelector('ytd-browse[role="main"]');
+        if (browse) {
+            await updateButtonVisibility(browse);
         }
     });
 
     new MutationObserver((mutations, observer) => {
+        const is_menu_target = isMenuTarget();
         for (const m of mutations) {
-            onNodeLoaded(m.target);
+            onNodeLoaded(m.target, is_menu_target);
         }
     }).observe(app, { subtree: true, childList: true });
 }
