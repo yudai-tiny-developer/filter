@@ -1688,9 +1688,9 @@ function main(app, common, lang) {
     let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;
     let limit = common.defaultLimit;
-    let keyword_add_playlist = common.default_keyword_add_playlist;
-    let keyword_sidebar_channels = common.default_keyword_sidebar_channels;
-    let keyword_notification = common.default_keyword_notification;
+    let keyword_add_playlist = false;
+    let keyword_sidebar_channels = false;
+    let keyword_notification = false;
 
     const popupMenu = new Map();
 
