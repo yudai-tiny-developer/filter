@@ -76,5 +76,14 @@
     },
     "load": {
         "message": "Load more feeds"
+    },
+    "keyword_add_playlist": {
+        "message": "Save to playlist"
+    },
+    "keyword_sidebar_channels": {
+        "message": "Sidebar Subscriptions"
+    },
+    "keyword_notification": {
+        "message": "Notification"
     }
 }

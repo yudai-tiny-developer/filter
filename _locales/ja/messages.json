@@ -76,5 +76,14 @@
     },
     "load": {
         "message": "次を読み込む"
+    },
+    "keyword_add_playlist": {
+        "message": "再生リストに保存"
+    },
+    "keyword_sidebar_channels": {
+        "message": "サイドバーの登録チャンネル"
+    },
+    "keyword_notification": {
+        "message": "通知"
     }
 }
