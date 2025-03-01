@@ -1424,7 +1424,7 @@ function main(app, common, lang) {
             }
         }
 
-        setActiveMode(modes);
+        setActiveMode(modes, browse);
 
         browse.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
         browse.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
@@ -1491,7 +1491,7 @@ function main(app, common, lang) {
             }
         }
 
-        setActiveModeProgress(modes);
+        setActiveModeProgress(modes, browse);
 
         browse.querySelectorAll('option.filter-button-progress').forEach(n => {
             n.selected = false;
@@ -1550,12 +1550,14 @@ function main(app, common, lang) {
         }
     }
 
-    function setActiveMode(mode) {
+    function setActiveMode(mode, browse) {
         active.mode.set(location.href, mode);
+        browse.setAttribute('filter-mode', [...mode].join(' '));
     }
 
-    function setActiveModeProgress(mode_progress) {
+    function setActiveModeProgress(mode_progress, browse) {
         active.mode_progress.set(location.href, mode_progress);
+        browse.setAttribute('filter-mode-progress', [...mode_progress].join(' '));
     }
 
     function getActiveQuery() {

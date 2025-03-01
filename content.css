@@ -227,6 +227,26 @@ ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
     display: none !important;
 }
 
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer {
+    border: none !important;
+}
+
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div.grid-subheader {
+    display: none !important;
+}
+
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div#contents {
+    margin-top: 0px !important;
+}
+
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-expanded-shelf-contents-renderer {
+    margin-bottom: 0px !important;
+}
+
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div#primary div#header-container {
+    margin-bottom: 24px !important;
+}
+
 .filter-spinner::before {
     content: "";
     display: block;
