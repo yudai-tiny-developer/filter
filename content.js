@@ -1326,10 +1326,6 @@ function main(app, common, lang) {
         return true;
     }
 
-    function updateMenuVisibility(node) {
-
-    }
-
     function updateTargetVisibility(node) {
         if (node.classList.contains('filter-separator')) {
             node.style.display = '';
