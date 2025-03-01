@@ -861,7 +861,7 @@ function main(app, common, lang) {
 
     async function insertMenu(node) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
-        if (browse && browse.getAttribute('role') === 'main') {
+        if (browse) {
             if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
                 const referenceNode = getReferenceNode(browse);
                 if (referenceNode) {
