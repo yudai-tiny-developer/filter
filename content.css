@@ -247,6 +247,11 @@ ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div#p
     margin-bottom: 24px !important;
 }
 
+ytd-browse[page-subtype="history"]:not([filter-mode="all"]) ytd-item-section-renderer div#header,
+ytd-browse[page-subtype="history"]:not([filter-query=""]) ytd-item-section-renderer div#header {
+    display: none !important;
+}
+
 .filter-spinner::before {
     content: "";
     display: block;

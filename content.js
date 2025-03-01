@@ -461,8 +461,9 @@ function main(app, common, lang) {
             ;
     }
 
-    function updateQueryRegex(node, query) {
+    function updateQueryRegex(browse, query) {
         active.query.set(location.href, query);
+        browse.setAttribute('filter-query', query);
 
         const queryList = [];
         const notQueryList = [];
@@ -516,7 +517,7 @@ function main(app, common, lang) {
         }
         active.notRegex.set(location.href, notRegExpList);
 
-        node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
+        browse.querySelectorAll('input#filter-query').forEach(e => e.value = query);
     }
 
     function updateVisibility(node) {
