@@ -394,7 +394,7 @@ function main(app, common, lang) {
 
             changeMode(getActiveMode().values().next().value, multiselection, false, browse);
             changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false, browse);
-            updateQueryRegex(browse, getActiveQuery());
+            updateQueryRegex(browse, getActiveQuery(browse));
             updateVisibility(browse);
 
             // add-playlist
@@ -461,8 +461,9 @@ function main(app, common, lang) {
             ;
     }
 
-    function updateQueryRegex(node, query) {
+    function updateQueryRegex(browse, query) {
         active.query.set(location.href, query);
+        browse.setAttribute('filter-query', query);
 
         const queryList = [];
         const notQueryList = [];
@@ -516,7 +517,7 @@ function main(app, common, lang) {
         }
         active.notRegex.set(location.href, notRegExpList);
 
-        node.querySelectorAll('input#filter-query').forEach(e => e.value = query);
+        browse.querySelectorAll('input#filter-query').forEach(e => e.value = query);
     }
 
     function updateVisibility(node) {
@@ -860,7 +861,7 @@ function main(app, common, lang) {
 
     async function insertMenu(node) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
-        if (browse && browse.getAttribute('role') === 'main') {
+        if (browse) {
             if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
                 const referenceNode = getReferenceNode(browse);
                 if (referenceNode) {
@@ -956,7 +957,7 @@ function main(app, common, lang) {
         menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse));
         menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse));
 
-        const input = createQueryInput(menu);
+        const input = createQueryInput(menu, browse);
         menu.appendChild(createQueryInputArea(input, browse));
         menu.appendChild(createSearchButton(input, browse));
 
@@ -1068,13 +1069,13 @@ function main(app, common, lang) {
         return inputArea;
     }
 
-    function createQueryInput(menu) {
+    function createQueryInput(menu, browse) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
         input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
         input.id = 'filter-query';
-        input.value = getActiveQuery();
+        input.value = getActiveQuery(browse);
         input.addEventListener('change', e => {
             input.blur();
             menu.requestSubmit();
@@ -1325,10 +1326,6 @@ function main(app, common, lang) {
         return true;
     }
 
-    function updateMenuVisibility(node) {
-
-    }
-
     function updateTargetVisibility(node) {
         if (node.classList.contains('filter-separator')) {
             node.style.display = '';
@@ -1424,7 +1421,7 @@ function main(app, common, lang) {
             }
         }
 
-        setActiveMode(modes);
+        setActiveMode(modes, browse);
 
         browse.querySelectorAll('span.filter-button-subscriptions, span.filter-button-channels').forEach(n => n.classList.remove('selected'));
         browse.querySelectorAll('option.filter-button-subscriptions, option.filter-button-channels').forEach(n => {
@@ -1491,7 +1488,7 @@ function main(app, common, lang) {
             }
         }
 
-        setActiveModeProgress(modes);
+        setActiveModeProgress(modes, browse);
 
         browse.querySelectorAll('option.filter-button-progress').forEach(n => {
             n.selected = false;
@@ -1550,23 +1547,27 @@ function main(app, common, lang) {
         }
     }
 
-    function setActiveMode(mode) {
+    function setActiveMode(mode, browse) {
         active.mode.set(location.href, mode);
+        browse.setAttribute('filter-mode', [...mode].join(' '));
     }
 
-    function setActiveModeProgress(mode_progress) {
+    function setActiveModeProgress(mode_progress, browse) {
         active.mode_progress.set(location.href, mode_progress);
+        browse.setAttribute('filter-mode-progress', [...mode_progress].join(' '));
     }
 
-    function getActiveQuery() {
+    function getActiveQuery(browse) {
         const query = active.query.get(location.href);
         if (query) {
             return query;
         } else if (common.isSubscriptions(location.href)) {
             active.query.set(location.href, default_keyword);
+            browse.setAttribute('filter-query', default_keyword);
             return default_keyword;
         } else {
             active.query.set(location.href, '');
+            browse.setAttribute('filter-query', '');
             return '';
         }
     }
