@@ -394,7 +394,7 @@ function main(app, common, lang) {
 
             changeMode(getActiveMode().values().next().value, multiselection, false, browse);
             changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false, browse);
-            updateQueryRegex(browse, getActiveQuery());
+            updateQueryRegex(browse, getActiveQuery(browse));
             updateVisibility(browse);
 
             // add-playlist
@@ -957,7 +957,7 @@ function main(app, common, lang) {
         menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse));
         menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse));
 
-        const input = createQueryInput(menu);
+        const input = createQueryInput(menu, browse);
         menu.appendChild(createQueryInputArea(input, browse));
         menu.appendChild(createSearchButton(input, browse));
 
@@ -1069,13 +1069,13 @@ function main(app, common, lang) {
         return inputArea;
     }
 
-    function createQueryInput(menu) {
+    function createQueryInput(menu, browse) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
         input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
         input.id = 'filter-query';
-        input.value = getActiveQuery();
+        input.value = getActiveQuery(browse);
         input.addEventListener('change', e => {
             input.blur();
             menu.requestSubmit();
@@ -1557,15 +1557,17 @@ function main(app, common, lang) {
         browse.setAttribute('filter-mode-progress', [...mode_progress].join(' '));
     }
 
-    function getActiveQuery() {
+    function getActiveQuery(browse) {
         const query = active.query.get(location.href);
         if (query) {
             return query;
         } else if (common.isSubscriptions(location.href)) {
             active.query.set(location.href, default_keyword);
+            browse.setAttribute('filter-query', default_keyword);
             return default_keyword;
         } else {
             active.query.set(location.href, '');
+            browse.setAttribute('filter-query', '');
             return '';
         }
     }
