@@ -517,7 +517,7 @@ function main(app, common, lang) {
         }
         active.notRegex.set(location.href, notRegExpList);
 
-        browse.querySelectorAll('input#filter-query').forEach(e => e.value = query);
+        browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
     }
 
     function updateVisibility(node) {
