@@ -257,6 +257,18 @@ ytd-browse[page-subtype="history"]:not([filter-query=""]) ytd-item-section-rende
     display: none !important;
 }
 
+ytd-multi-page-menu-renderer:not(:has(div#spinner[hidden])) form.filter-notification {
+    display: none !important;
+}
+
+ytd-multi-page-menu-renderer:has(input#filter-query:not(:placeholder-shown)) yt-multi-page-menu-section-renderer {
+    border-bottom: 0px !important;
+}
+
+ytd-multi-page-menu-renderer:has(input#filter-query:not(:placeholder-shown)) div#section-title {
+    display: none !important;
+}
+
 .filter-spinner::before {
     content: "";
     display: block;
