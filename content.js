@@ -794,7 +794,7 @@ function main(app, common, lang) {
                     }
                 }
                 if (node.id === 'playlists' || node.id === 'items' || node.id === 'expandable-items') {
-                    updatePopupVisibility(node);
+                    updatePopupVisibility([node]);
                 }
                 break;
 
@@ -832,13 +832,13 @@ function main(app, common, lang) {
 
             // notification
             case 'YTD-NOTIFICATION-RENDERER':
-                updatePopupVisibility(node.parentNode);
+                updatePopupVisibility([node.parentNode]);
                 break;
 
             // sidebar channels
             case 'YTD-GUIDE-ENTRY-RENDERER':
                 const parent = searchParentNode(node, 'YTD-GUIDE-SECTION-RENDERER');
-                updatePopupVisibility(parent.querySelector('div#items'));
+                updatePopupVisibility([...parent.querySelectorAll('div#items')]);
                 break;
 
             // continuation stopper
@@ -1116,9 +1116,13 @@ function main(app, common, lang) {
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                 if (existsMenu !== popupMenu.get(playlists)) {
-                    existsMenu?.remove();
-                    const menu = createPopupMenu(playlists, undefined, 'filter-add-playlist', keyword_add_playlist);
-                    parent.insertBefore(menu, playlists);
+                    if (!existsMenu) {
+                        const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist);
+                        parent.insertBefore(menu, playlists);
+                    } else {
+                        existsMenu.containers.push(playlists);
+                        popupMenu.set(playlists, menu);
+                    }
                 } else {
                     existsMenu.style.display = display(keyword_add_playlist);
                 }
@@ -1131,9 +1135,13 @@ function main(app, common, lang) {
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
                 if (existsMenu !== popupMenu.get(items)) {
-                    existsMenu?.remove();
-                    const menu = createPopupMenu(items, 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels);
-                    parent.insertBefore(menu, items);
+                    if (!existsMenu) {
+                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels);
+                        parent.insertBefore(menu, items);
+                    } else {
+                        existsMenu.containers.push(items);
+                        popupMenu.set(items, menu);
+                    }
                 } else {
                     existsMenu.style.display = display(keyword_sidebar_channels);
                 }
@@ -1146,9 +1154,13 @@ function main(app, common, lang) {
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
                 if (existsMenu !== popupMenu.get(items)) {
-                    existsMenu?.remove();
-                    const menu = createPopupMenu(items, undefined, 'filter-notification', keyword_notification);
-                    parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
+                    if (!existsMenu) {
+                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification);
+                        parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
+                    } else {
+                        existsMenu.containers.push(items);
+                        popupMenu.set(items, menu);
+                    }
                 } else {
                     existsMenu.style.display = display(keyword_notification);
                 }
@@ -1156,42 +1168,47 @@ function main(app, common, lang) {
         }
     }
 
-    function createPopupMenu(container, expander, menu_class, settings) {
+    function createPopupMenu(containers, expander, menu_class, settings) {
         const menu = document.createElement('form');
         menu.classList.add('filter-popup', menu_class);
         menu.style.display = display(settings);
+        menu.containers = containers;
 
         const input = createPopupQueryInput(menu);
-        menu.appendChild(createPopupQueryInputArea(input, container));
-        menu.appendChild(createPopupSearchButton(input, container));
+        menu.appendChild(createPopupQueryInputArea(input, menu.containers));
+        menu.appendChild(createPopupSearchButton(input, menu.containers));
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
-            updatePopupQueryRegex(container, input.value);
-            updatePopupVisibility(container);
+            updatePopupQueryRegex(menu.containers, input.value);
+            updatePopupVisibility(menu.containers);
 
             if (expander) {
-                const expander_node = container.querySelector(expander);
-                if (expander_node) {
-                    expander_node.parentNode.insertBefore(spinner, expander_node);
-                    setTimeout(() => {
-                        expander_node.click();
-                        spinner.remove();
-                    }, 0);
+                for (const container of menu.containers) {
+                    const expander_node = container.querySelector(expander);
+                    if (expander_node) {
+                        expander_node.parentNode.insertBefore(spinner, expander_node);
+                        setTimeout(() => {
+                            expander_node.click();
+                            spinner.remove();
+                        }, 0);
+                    }
                 }
             }
         });
 
-        popupMenu.set(container, menu);
+        for (const container of menu.containers) {
+            popupMenu.set(container, menu);
+        }
 
         return menu;
     }
 
-    function createPopupQueryInputArea(input, container) {
+    function createPopupQueryInputArea(input, containers) {
         const inputArea = document.createElement('span');
         inputArea.classList.add('filter-query', 'area');
         inputArea.appendChild(input);
-        inputArea.appendChild(createPopupClearButton(input, container));
+        inputArea.appendChild(createPopupClearButton(input, containers));
         return inputArea;
     }
 
@@ -1208,31 +1225,33 @@ function main(app, common, lang) {
         return input;
     }
 
-    function createPopupClearButton(input, container) {
+    function createPopupClearButton(input, containers) {
         const span = document.createElement('span');
         span.classList.add('filter-clear');
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updatePopupQueryRegex(container, '');
-            updatePopupVisibility(container);
+            updatePopupQueryRegex(containers, '');
+            updatePopupVisibility(containers);
         });
         return span;
     }
 
-    function createPopupSearchButton(input, container) {
+    function createPopupSearchButton(input, containers) {
         const span = document.createElement('span');
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updatePopupQueryRegex(container, input.value);
-            updatePopupVisibility(container);
+            updatePopupQueryRegex(containers, input.value);
+            updatePopupVisibility(containers);
         });
         return span;
     }
 
-    function updatePopupVisibility(container) {
-        container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
+    function updatePopupVisibility(containers) {
+        for (const container of containers) {
+            container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
+        }
     }
 
     function updatePopupTargetVisibility(container, target) {
@@ -1243,7 +1262,7 @@ function main(app, common, lang) {
         }
     }
 
-    function updatePopupQueryRegex(container, query) {
+    function updatePopupQueryRegex(containers, query) {
         const queryList = [];
         const notQueryList = [];
         const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
@@ -1288,13 +1307,17 @@ function main(app, common, lang) {
         for (const q of queryList) {
             regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
         }
-        active.regex.set(container, regExpList);
+        for (const container of containers) {
+            active.regex.set(container, regExpList);
+        }
 
         const notRegExpList = [];
         for (const q of notQueryList) {
             notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
         }
-        active.notRegex.set(container, notRegExpList);
+        for (const container of containers) {
+            active.notRegex.set(container, notRegExpList);
+        }
     }
 
     function matchPopupQuery(container, target) {
