@@ -517,7 +517,7 @@ function main(app, common, lang) {
         }
         active.notRegex.set(location.href, notRegExpList);
 
-        browse.querySelectorAll('input#filter-query').forEach(e => e.value = query);
+        browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
     }
 
     function updateVisibility(node) {
@@ -1123,6 +1123,7 @@ function main(app, common, lang) {
                         existsMenu.containers.push(playlists);
                         popupMenu.set(playlists, menu);
                     }
+                    updatePopupVisibility([playlists]);
                 } else {
                     existsMenu.style.display = display(keyword_add_playlist);
                 }
@@ -1142,6 +1143,7 @@ function main(app, common, lang) {
                         existsMenu.containers.push(items);
                         popupMenu.set(items, menu);
                     }
+                    updatePopupVisibility([items]);
                 } else {
                     existsMenu.style.display = display(keyword_sidebar_channels);
                 }
@@ -1149,7 +1151,7 @@ function main(app, common, lang) {
         }
 
         // Notification
-        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
+        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer:has(ytd-notification-renderer) div#items')) {
             const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
@@ -1161,6 +1163,7 @@ function main(app, common, lang) {
                         existsMenu.containers.push(items);
                         popupMenu.set(items, menu);
                     }
+                    updatePopupVisibility([items]);
                 } else {
                     existsMenu.style.display = display(keyword_notification);
                 }
@@ -1262,6 +1265,10 @@ function main(app, common, lang) {
         }
     }
 
+    function getPopupKey(container) {
+        return `${container.parentNode.nodeName}#${container.parentNode.id}>${container.nodeName}#${container.id}`;
+    }
+
     function updatePopupQueryRegex(containers, query) {
         const queryList = [];
         const notQueryList = [];
@@ -1307,26 +1314,26 @@ function main(app, common, lang) {
         for (const q of queryList) {
             regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
         }
-        for (const container of containers) {
-            active.regex.set(container, regExpList);
-        }
 
         const notRegExpList = [];
         for (const q of notQueryList) {
             notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
         }
+
         for (const container of containers) {
-            active.notRegex.set(container, notRegExpList);
+            const key = getPopupKey(container);
+            active.regex.set(key, regExpList);
+            active.notRegex.set(key, notRegExpList);
         }
     }
 
     function matchPopupQuery(container, target) {
-        const text = target.querySelector('div#checkbox-label, div.ytd-notification-renderer.text, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
+        const text = target.querySelector('yt-formatted-string#label.ytd-playlist-add-to-option-renderer, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
         return matchPopupAllActiveRegex(container, text) && matchPopupAllActiveNotRegex(container, text);
     }
 
     function matchPopupAllActiveRegex(container, text) {
-        const rs = active.regex.get(container);
+        const rs = active.regex.get(getPopupKey(container));
         if (rs) {
             for (const r of rs) {
                 if (!text.match(r)) {
@@ -1338,7 +1345,7 @@ function main(app, common, lang) {
     }
 
     function matchPopupAllActiveNotRegex(container, text) {
-        const rs = active.notRegex.get(container);
+        const rs = active.notRegex.get(getPopupKey(container));
         if (rs) {
             for (const r of rs) {
                 if (!!r && text.match(r)) {
