@@ -1120,8 +1120,8 @@ function main(app, common, lang) {
                         const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist);
                         parent.insertBefore(menu, playlists);
                     } else {
-                        popupMenu.set(playlists, menu);
                         existsMenu.containers.push(playlists);
+                        popupMenu.set(playlists, menu);
                     }
                     updatePopupVisibility([playlists]);
                 } else {
@@ -1156,7 +1156,6 @@ function main(app, common, lang) {
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
                 if (existsMenu !== popupMenu.get(items)) {
-
                     if (!existsMenu) {
                         const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification);
                         parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
