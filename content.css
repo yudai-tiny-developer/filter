@@ -120,6 +120,10 @@ form.filter-popup {
     width: 100%;
 }
 
+ytd-multi-page-menu-renderer:not(:has(ytd-notification-renderer)) form.filter-notification {
+    display: none;
+}
+
 form.filter-menu.position-fixed {
     background-color: var(--yt-spec-base-background);
     position: fixed;

@@ -1151,7 +1151,7 @@ function main(app, common, lang) {
         }
 
         // Notification
-        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer div#items')) {
+        for (const items of node.querySelectorAll('yt-multi-page-menu-section-renderer:has(ytd-notification-renderer) div#items')) {
             const parent = searchParentNode(items, 'YTD-MULTI-PAGE-MENU-RENDERER');
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
