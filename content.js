@@ -1328,7 +1328,7 @@ function main(app, common, lang) {
     }
 
     function matchPopupQuery(container, target) {
-        const text = target.querySelector('div#checkbox-label, div.ytd-notification-renderer.text, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
+        const text = target.querySelector('yt-formatted-string#label.ytd-playlist-add-to-option-renderer, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
         return matchPopupAllActiveRegex(container, text) && matchPopupAllActiveNotRegex(container, text);
     }
 
