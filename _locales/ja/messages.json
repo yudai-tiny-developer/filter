@@ -78,12 +78,12 @@
         "message": "次を読み込む"
     },
     "keyword_add_playlist": {
-        "message": "再生リストに保存"
+        "message": "再生リストに保存の検索"
     },
     "keyword_sidebar_channels": {
-        "message": "サイドバーの登録チャンネル"
+        "message": "サイドバーの登録チャンネルの検索"
     },
     "keyword_notification": {
-        "message": "通知"
+        "message": "通知の検索"
     }
 }
