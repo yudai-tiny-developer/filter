@@ -78,12 +78,12 @@
         "message": "Load more feeds"
     },
     "keyword_add_playlist": {
-        "message": "Save to playlist"
+        "message": "Save to playlist Search"
     },
     "keyword_sidebar_channels": {
-        "message": "Sidebar Subscriptions"
+        "message": "Sidebar Subscriptions Search"
     },
     "keyword_notification": {
-        "message": "Notification"
+        "message": "Notification Search"
     }
 }
