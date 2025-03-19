@@ -219,6 +219,19 @@ ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(ytd-rich-
     display: none !important;
 }
 
+ytd-browse[page-subtype="subscriptions"] ytd-rich-item-renderer[rendered-from-rich-grid][is-in-first-column] {
+    margin-left: calc(var(--ytd-rich-grid-item-margin)/2) !important;
+}
+
+ytd-browse[page-subtype="subscriptions"] ytd-continuation-item-renderer {
+    width: 100% !important;
+}
+
+ytd-browse[page-subtype="subscriptions"] ytd-ghost-grid-renderer div.ghost-grid {
+    margin-left: 0px !important;
+    padding-right: calc(var(--ytd-rich-grid-item-margin)) !important;
+}
+
 ytd-browse[page-subtype="playlist"] {
     padding-top: 0px !important;
 }
