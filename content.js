@@ -1367,11 +1367,8 @@ function main(app, common, lang) {
     }
 
     async function onViewChanged() {
-        const browse = app.querySelector('ytd-browse[role="main"]');
-        if (browse) {
+        for (const browse of app.querySelectorAll('ytd-browse')) {
             await onViewChanged_Node(browse);
-        } else {
-            await onViewChanged_Node(app);
         }
     }
 
@@ -1633,10 +1630,8 @@ function main(app, common, lang) {
     function onResize() {
         if (isMenuTarget()) {
             if (responsive) {
-                const form = app.querySelector('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)');
-                if (form) {
-                    const calc = form.parentNode.querySelector('form.filter-forCalc');
-                    if (calc) {
+                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')) {
+                    for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
                         form.parentNode.insertBefore(calc, form);
                         if (calc.scrollWidth <= form.parentNode.clientWidth) {
                             document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
@@ -1645,11 +1640,7 @@ function main(app, common, lang) {
                             document.documentElement.style.setProperty('--filter-button-display', 'none');
                             document.documentElement.style.setProperty('--filter-menu-display', 'block');
                         }
-                    } else {
-                        console.warn('calc node not found');
                     }
-                } else {
-                    // not created yet
                 }
             } else {
                 document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
@@ -1750,8 +1741,7 @@ function main(app, common, lang) {
     window.addEventListener('resize', onResize);
 
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
-        const browse = app.querySelector('ytd-browse[role="main"]');
-        if (browse) {
+        for (const browse of app.querySelectorAll('ytd-browse')) {
             await updateButtonVisibility(browse);
         }
     });
