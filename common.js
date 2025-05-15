@@ -241,3 +241,8 @@ export function isHashTag(url) {
     return url.startsWith('https://www.youtube.com/hashtag/')
         ;
 }
+
+export function isTop(url) {
+    return url.split('?')[0] === 'https://www.youtube.com/'
+        ;
+}
