@@ -306,3 +306,7 @@ ytd-multi-page-menu-renderer:has(input#filter-query:not(:placeholder-shown)) div
         transform: rotate(360deg);
     }
 }
+
+ytd-rich-section-renderer:not(:has(.filter-show)):has(.filter-hidden) {
+    display: none !important;
+}
