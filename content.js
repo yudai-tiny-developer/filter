@@ -468,7 +468,6 @@ function main(app, common, lang) {
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
             || common.isHashTag(location.href)
-            || common.isTop(location.href)
             ;
     }
 
@@ -491,7 +490,6 @@ function main(app, common, lang) {
             || common.isPlaylist(location.href)
             || common.isChannels(location.href)
             || common.isHashTag(location.href)
-            || common.isTop(location.href)
             ;
     }
 
@@ -763,6 +761,7 @@ function main(app, common, lang) {
             case 'YTD-BROWSE':
             case 'YTD-SECTION-LIST-RENDERER':
             case 'YTD-TABBED-PAGE-HEADER':
+            case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
                 if (is_menu_target) {
                     await insertMenu(node);
                 }
@@ -905,17 +904,22 @@ function main(app, common, lang) {
                 const referenceNode = getReferenceNode(browse);
                 if (referenceNode) {
                     const menu = createMenu(browse);
-                    referenceNode.parentNode.insertBefore(menu, referenceNode);
+                    referenceNode.insertBefore(menu, referenceNode.firstChild);
 
                     const calc = createNodeForCalc(menu, browse);
-                    referenceNode.parentNode.insertBefore(calc, referenceNode);
+                    referenceNode.insertBefore(calc, referenceNode.firstChild);
 
-                    if (needSpacer()) {
-                        referenceNode.parentNode.insertBefore(createSpacer('browse'), referenceNode);
+                    const spacerReferenceNode = getSpacerReferenceNode(browse);
+                    if (spacerReferenceNode) {
+                        spacerReferenceNode.parentNode.insertBefore(createSpacer('browse'), spacerReferenceNode);
+                    } else {
+                        // spacer referenceNode not found
                     }
 
                     await updateButtonVisibility(browse);
                     display_query(browse, 'form.filter-menu, div.filter-menu', '');
+                } else {
+                    // referenceNode not found
                 }
             } else {
                 // already exists
@@ -927,11 +931,23 @@ function main(app, common, lang) {
 
     function getReferenceNode(browse) {
         if (forTwoColumnBrowseResultsRenderer()) {
-            return browse.querySelector('ytd-two-column-browse-results-renderer');
+            return browse.querySelector('ytd-two-column-browse-results-renderer').parentNode;
         } else if (forPageHeaderRenderer()) {
-            return browse.querySelector('yt-page-header-renderer');
+            return browse.querySelector('yt-page-header-renderer').parentNode;
+        } else if (common.isTop(location.href)) {
+            return browse.querySelector('div#scroll-container');
         } else {
+            return browse;
+        }
+    }
+
+    function getSpacerReferenceNode(browse) {
+        if (needSpacer()) {
             return browse.firstChild;
+        } else if (common.isTop(location.href)) {
+            return browse.querySelector('div#contents');
+        } else {
+            return undefined;
         }
     }
 
@@ -1780,10 +1796,11 @@ function main(app, common, lang) {
 
     document.addEventListener('yt-navigate-finish', async () => {
         await onViewChanged();
-        onResize();
     });
 
-    window.addEventListener('resize', onResize);
+    document.addEventListener('yt-action', async () => {
+        await onResize();
+    });
 
     chrome.storage.onChanged.addListener(async (changes, namespace) => {
         for (const browse of app.querySelectorAll('ytd-browse')) {

@@ -128,7 +128,7 @@ ytd-multi-page-menu-renderer:not(:has(ytd-notification-renderer)) form.filter-no
 form.filter-menu.position-fixed {
     background-color: var(--yt-spec-base-background);
     position: fixed;
-    z-index: 2001;
+    z-index: 2019;
 }
 
 div.filter-menu.spacer {
@@ -309,4 +309,8 @@ ytd-multi-page-menu-renderer:has(input#filter-query:not(:placeholder-shown)) div
 
 ytd-rich-section-renderer:not(:has(.filter-show)):has(.filter-hidden) {
     display: none !important;
+}
+
+div#frosted-glass.with-chipbar {
+    height: 168px !important;
 }
