@@ -128,7 +128,7 @@ ytd-multi-page-menu-renderer:not(:has(ytd-notification-renderer)) form.filter-no
 form.filter-menu.position-fixed {
     background-color: var(--yt-spec-base-background);
     position: fixed;
-    z-index: 2019;
+    z-index: 2001;
 }
 
 div.filter-menu.spacer {
