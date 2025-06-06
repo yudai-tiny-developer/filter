@@ -126,9 +126,12 @@ ytd-multi-page-menu-renderer:not(:has(ytd-notification-renderer)) form.filter-no
 }
 
 form.filter-menu.position-fixed {
-    background-color: var(--yt-spec-base-background);
     position: fixed;
-    z-index: 2001;
+    z-index: 2019;
+}
+
+ytd-browse[page-subtype="playlist"] form.filter-menu.position-fixed {
+    background-color: var(--yt-spec-base-background);
 }
 
 div.filter-menu.spacer {
@@ -313,4 +316,15 @@ ytd-rich-section-renderer:not(:has(.filter-show)):has(.filter-hidden) {
 
 div#frosted-glass.with-chipbar {
     height: 168px !important;
+}
+
+div#frosted-glass.without-chipbar {
+    height: 112px !important;
+    display: block !important;
+    background: var(--yt-spec-scrim-background-gradient-4) !important;
+    backdrop-filter: blur(48px) !important;
+}
+
+ytd-masthead[frosted-glass-mode=without-chipbar] div#background.ytd-masthead {
+    display: none !important;
 }
