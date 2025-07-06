@@ -935,7 +935,7 @@ function main(app, common, lang) {
         } else if (forPageHeaderRenderer()) {
             return browse.querySelector('yt-page-header-renderer');
         } else if (common.isTop(location.href)) {
-            return browse.querySelector('div#scroll-container').firstChild;
+            return browse.querySelector('div#scroll-container')?.firstChild;
         } else {
             return browse.firstChild;
         }
