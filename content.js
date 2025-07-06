@@ -904,10 +904,10 @@ function main(app, common, lang) {
                 const referenceNode = getReferenceNode(browse);
                 if (referenceNode) {
                     const menu = createMenu(browse);
-                    referenceNode.insertBefore(menu, referenceNode.firstChild);
+                    referenceNode.parentNode.insertBefore(menu, referenceNode);
 
                     const calc = createNodeForCalc(menu, browse);
-                    referenceNode.insertBefore(calc, referenceNode.firstChild);
+                    referenceNode.parentNode.insertBefore(calc, referenceNode);
 
                     const spacerReferenceNode = getSpacerReferenceNode(browse);
                     if (spacerReferenceNode) {
@@ -931,13 +931,13 @@ function main(app, common, lang) {
 
     function getReferenceNode(browse) {
         if (forTwoColumnBrowseResultsRenderer()) {
-            return browse.querySelector('ytd-two-column-browse-results-renderer').parentNode;
+            return browse.querySelector('ytd-two-column-browse-results-renderer');
         } else if (forPageHeaderRenderer()) {
-            return browse.querySelector('yt-page-header-renderer').parentNode;
+            return browse.querySelector('yt-page-header-renderer');
         } else if (common.isTop(location.href)) {
-            return browse.querySelector('div#scroll-container');
+            return browse.querySelector('div#scroll-container').firstChild;
         } else {
-            return browse;
+            return browse.firstChild;
         }
     }
 
