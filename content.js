@@ -577,9 +577,9 @@ function main(app, common, lang) {
                     } else if (lang.isScheduled_metadata(t)) {
                         status.add('scheduled');
 
-                        const video_button = node.querySelector('yt-button-shape');
+                        const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
                         if (video_button) {
-                            const t = video_button.textContent;
+                            const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
                             if (lang.isNotificationOn_button(t)) {
                                 status.add('notification_on');
                             } else if (lang.isNotificationOff_button(t)) {
