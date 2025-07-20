@@ -138,6 +138,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isLibrary(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', '');
                 display_query(browse, 'span.filter-button-subscriptions.live', '');
@@ -169,6 +171,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isPlaylist(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', '');
                 display_query(browse, 'span.filter-button-subscriptions.live', '');
@@ -200,6 +204,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isHistory(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', '');
                 display_query(browse, 'span.filter-button-subscriptions.live', '');
@@ -231,6 +237,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isHashTag(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', '');
                 display_query(browse, 'span.filter-button-subscriptions.live', '');
@@ -262,6 +270,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isPlaylists(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', 'none');
                 display_query(browse, 'span.filter-button-subscriptions.live', 'none');
@@ -293,6 +303,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isChannel(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', 'none');
                 display_query(browse, 'span.filter-button-subscriptions.live', 'none');
@@ -324,6 +336,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isShorts(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', 'none');
                 display_query(browse, 'span.filter-button-subscriptions.live', 'none');
@@ -355,6 +369,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isChannels(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', 'none');
                 display_query(browse, 'span.filter-button-subscriptions.live', 'none');
@@ -386,6 +402,8 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', display(channels_none));
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else if (common.isTop(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
                 display_query(browse, 'span.filter-button-subscriptions.live', display(live));
@@ -417,8 +435,11 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-channels.channels_none', 'none');
 
                 display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else {
                 // Unknown location.href
+                browse.setAttribute('filter-menu', 'false');
             }
 
             onResize();
