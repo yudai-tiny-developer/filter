@@ -914,6 +914,8 @@ function main(app, common, lang) {
                 } else {
                     // continuation
                     node.style.display = '';
+                    node.classList.remove('filter-hidden');
+                    node.classList.add('filter-show');
                 }
                 break;
         }
