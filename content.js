@@ -913,6 +913,7 @@ function main(app, common, lang) {
                     }
                 } else {
                     // continuation
+                    node.style.display = '';
                 }
                 break;
         }
