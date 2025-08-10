@@ -671,7 +671,7 @@ function main(app, common, lang) {
             case 'YTD-VIDEO-RENDERER':
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const progress = node.querySelector('div#progress');
+                const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
                 if (progress) {
                     status.add('progress_watched');
                 } else {
