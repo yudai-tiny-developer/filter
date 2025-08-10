@@ -574,7 +574,7 @@ function main(app, common, lang) {
     }
 
     function updateVisibility(node) {
-        node.querySelectorAll('yt-lockup-view-model, ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
     }
 
     function classifyStatus(node) {
@@ -690,9 +690,6 @@ function main(app, common, lang) {
                 if (text_node) {
                     return matchQuery(text_node.textContent);
                 }
-
-                console.warn('text node not found');
-
                 break;
 
             // subscriptions?flow=2, history
@@ -702,8 +699,6 @@ function main(app, common, lang) {
                     if (text_node) {
                         return matchQuery(text_node.textContent);
                     }
-
-                    console.warn('text node not found');
                 } else {
                     // lazy load
                 }
@@ -716,9 +711,6 @@ function main(app, common, lang) {
                 if (text_node) {
                     return matchQuery(text_node.textContent);
                 }
-
-                console.warn('text node not found');
-
                 break;
 
             // channel
@@ -727,9 +719,6 @@ function main(app, common, lang) {
                 if (text_node) {
                     return matchQuery(text_node.textContent);
                 }
-
-                console.warn('text node not found');
-
                 break;
 
             case 'YTD-GRID-PLAYLIST-RENDERER':
@@ -737,15 +726,11 @@ function main(app, common, lang) {
                 if (text_node) {
                     return matchQuery(text_node.textContent);
                 }
-
-                console.warn('text node not found');
-
                 break;
 
             // channel, playlists, shorts, library
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-            case 'YT-LOCKUP-VIEW-MODEL':
                 text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
                 if (text_node) {
                     return matchQuery(text_node.getAttribute('aria-label'));
@@ -756,8 +741,6 @@ function main(app, common, lang) {
                     return matchQuery(text_node.textContent);
                 }
 
-                // YT-LOCKUP-VIEW-MODEL content lazy load
-
                 break;
 
             // channels
@@ -766,9 +749,6 @@ function main(app, common, lang) {
                 if (text_node) {
                     return matchQuery(text_node.textContent);
                 }
-
-                console.warn('text node not found');
-
                 break;
         }
 
@@ -832,7 +812,6 @@ function main(app, common, lang) {
             case 'YTD-GRID-PLAYLIST-RENDERER':
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
             case 'YTD-RICH-ITEM-RENDERER':
-            case 'YT-LOCKUP-VIEW-MODEL':
                 if (is_menu_target) {
                     updateTargetVisibility(node);
                 }
@@ -881,8 +860,6 @@ function main(app, common, lang) {
                         updateTargetVisibility(n);
                         break;
                     }
-
-                    console.warn('progress not found');
                 }
 
                 break;
