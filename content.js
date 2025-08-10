@@ -585,9 +585,9 @@ function main(app, common, lang) {
             case 'YTD-VIDEO-RENDERER':
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const metadata_line = node.querySelector('div#metadata-line');
-                const byline_container = node.querySelector('div#byline-container');
-                const badge = node.querySelector('p.ytd-badge-supported-renderer');
+                const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
+                const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
+                const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
                 if (metadata_line || byline_container || badge) {
                     const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
                     const l = badge?.textContent ?? '';
@@ -627,6 +627,8 @@ function main(app, common, lang) {
                         const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                         if (slim_media) {
                             status.add('short');
+                        } else {
+                            status.add('video');
                         }
                     }
                 } else {
