@@ -574,7 +574,7 @@ function main(app, common, lang) {
     }
 
     function updateVisibility(node) {
-        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2, yt-lockup-view-model').forEach(n => updateTargetVisibility(n));
     }
 
     function classifyStatus(node) {
@@ -585,6 +585,7 @@ function main(app, common, lang) {
             case 'YTD-VIDEO-RENDERER':
             case 'YTD-RICH-ITEM-RENDERER':
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
+            case 'YT-LOCKUP-VIEW-MODEL':
                 const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
                 const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
                 const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
@@ -735,7 +736,10 @@ function main(app, common, lang) {
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
                 text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
                 if (text_node) {
-                    return matchQuery(text_node.getAttribute('aria-label'));
+                    const textContent = text_node.getAttribute('aria-label');
+                    if (textContent) {
+                        return matchQuery(textContent);
+                    }
                 }
 
                 text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
@@ -748,6 +752,13 @@ function main(app, common, lang) {
             // channels
             case 'YTD-CHANNEL-RENDERER':
                 text_node = node.querySelector('div#info');
+                if (text_node) {
+                    return matchQuery(text_node.textContent);
+                }
+                break;
+
+            case 'YT-LOCKUP-VIEW-MODEL':
+                text_node = node.querySelector('span.yt-core-attributed-string');
                 if (text_node) {
                     return matchQuery(text_node.textContent);
                 }
