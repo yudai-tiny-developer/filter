@@ -114,7 +114,7 @@ function createInputArea(label, default_label, onChange, row, input_class = 'lab
         input.max = maxRate;
         input.step = stepRate;
     } else {
-        if (label) {
+        if (label !== undefined) {
             input.value = label;
         } else {
             input.value = default_label;
@@ -123,9 +123,6 @@ function createInputArea(label, default_label, onChange, row, input_class = 'lab
 
     if (onChange) {
         input.addEventListener('change', () => {
-            if (!input.value) {
-                input.value = default_label;
-            }
             onChange(input);
             input.dispatchEvent(new Event('check'));
         });

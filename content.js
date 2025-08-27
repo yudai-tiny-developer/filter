@@ -6,6 +6,14 @@ import(chrome.runtime.getURL('common.js')).then(common => {
 });
 
 function main(app, common, lang) {
+    const live_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 18 18"><path d="M9 8c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1Zm1.11 2.13.71.71C11.55 10.11 12 9.11 12 8c0-1.11-.45-2.11-1.18-2.84l-.71.71c.55.55.89 1.3.89 2.13 0 .83-.34 1.58-.89 2.13Zm-4.93.71.71-.71C5.34 9.58 5 8.83 5 8c0-.83.34-1.58.89-2.13l-.71-.71C4.45 5.89 4 6.89 4 8c0 1.11.45 2.11 1.18 2.84Zm7.05 1.41.71.71C14.21 11.69 15 9.94 15 8s-.79-3.69-2.06-4.96l-.71.71C13.32 4.84 14 6.34 14 8c0 1.66-.68 3.16-1.77 4.25Zm-9.17.71.71-.71C2.68 11.16 2 9.66 2 8c0-1.66.68-3.16 1.77-4.25l-.71-.71C1.79 4.31 1 6.06 1 8s.79 3.69 2.06 4.96Z"></path></svg>';
+    const streamed_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path clip-rule="evenodd" d="M13.847 5.248c-1.638-.448-3.384-.285-4.91.458C7.853 6.233 6.933 7.026 6.254 8H8.5c.552 0 1 .448 1 1s-.448 1-1 1H3V4.5c0-.552.448-1 1-1s1 .448 1 1v1.843c.823-1.018 1.865-1.853 3.061-2.435 1.963-.956 4.207-1.165 6.313-.59 2.106.577 3.931 1.899 5.135 3.72 1.204 1.822 1.704 4.02 1.408 6.183-.296 2.163-1.369 4.145-3.018 5.576-1.649 1.431-3.762 2.214-5.945 2.203-2.184-.011-4.289-.816-5.923-2.264-1.634-1.448-2.686-3.441-2.96-5.607-.07-.548.319-1.049.867-1.118.548-.07 1.048.319 1.117.867.213 1.685 1.031 3.235 2.302 4.361 1.272 1.126 2.909 1.752 4.607 1.76 1.698.01 3.342-.6 4.624-1.712 1.283-1.113 2.117-2.655 2.347-4.337.23-1.683-.159-3.392-1.095-4.809-.936-1.417-2.355-2.445-3.993-2.893ZM13 7.5c0-.552-.448-1-1-1s-1 .448-1 1v5.015l.419.299 3.5 2.5c.45.32 1.074.217 1.395-.233.32-.45.217-1.074-.233-1.395L13 11.486V7.5Z" fill-rule="evenodd"></path></svg>';
+    const video_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><g width="24" height="24" viewBox="0 0 24 24" class="style-scope tp-yt-iron-icon"><path d="M4 5.99982H3V20.9998H18V19.9998H4V5.99982Z" class="style-scope tp-yt-iron-icon"></path><path d="M6 2.99982V17.9998H21V2.99982H6ZM11 13.9998V6.99982L17 10.4998L11 13.9998Z" class="style-scope tp-yt-iron-icon"></path></g></svg>';
+    const short_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"></path></svg>';
+    const scheduled_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path clip-rule="evenodd" d="M20.5 12c0 4.694-3.806 8.5-8.5 8.5S3.5 16.694 3.5 12 7.306 3.5 12 3.5s8.5 3.806 8.5 8.5Zm1.5 0c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Zm-9.25-5c0-.414-.336-.75-.75-.75s-.75.336-.75.75v5.375l.3.225 4 3c.331.248.802.181 1.05-.15.248-.331.181-.801-.15-1.05l-3.7-2.775V7Z" fill-rule="evenodd"></path></svg>';
+    const notification_on_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="M21.5 8.99992H19.5V8.80992C19.5 6.89992 18.39 5.18991 16.6 4.32991L17.47 2.52991C19.96 3.71991 21.5 6.12992 21.5 8.80992V8.99992ZM4.5 8.80992C4.5 6.89992 5.61 5.18991 7.4 4.32991L6.53 2.52991C4.04 3.71991 2.5 6.12992 2.5 8.80992V8.99992H4.5V8.80992ZM12 21.9999C13.1 21.9999 14 21.0999 14 19.9999H10C10 21.0999 10.9 21.9999 12 21.9999ZM20 17.3499V18.9999H4V17.3499L6 15.4699V10.3199C6 7.39991 7.56 5.09992 10 4.33992V3.95991C10 2.53991 11.49 1.45991 12.99 2.19991C13.64 2.51991 14 3.22991 14 3.95991V4.34991C16.44 5.09991 18 7.40991 18 10.3299V15.4799L20 17.3499Z"></path></svg>';
+    const notification_off_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="M3.85,3.15L3.15,3.85l3.48,3.48C6.22,8.21,6,9.22,6,10.32v5.15l-2,1.88V19h14.29l1.85,1.85l0.71-0.71L3.85,3.15z M5,18 v-0.23l2-1.88v-5.47c0-0.85,0.15-1.62,0.41-2.3L17.29,18H5z M10,20h4c0,1.1-0.9,2-2,2S10,21.1,10,20z M9.28,5.75l-0.7-0.7 c0.43-0.29,0.9-0.54,1.42-0.7V3.96c0-1.42,1.49-2.5,2.99-1.76C13.64,2.52,14,3.23,14,3.96v0.39c2.44,0.75,4,3.06,4,5.98v4.14l-1-1 v-3.05c0-2.47-1.19-4.36-3.13-5.1c-1.26-0.53-2.64-0.5-3.84,0.03C9.76,5.46,9.52,5.59,9.28,5.75z"></path></svg>';
+
     async function updateButtonVisibility(browse) {
         await chrome.storage.local.get(common.storage).then(data => {
             for (const menu of browse.querySelectorAll('form.filter-menu')) {
@@ -41,10 +49,22 @@ function main(app, common, lang) {
                     } else {
                         const span = menu.querySelector('span.filter-button.' + mode);
                         const span_text = data['button_label_' + mode];
-                        if (span_text) {
-                            span.innerHTML = span_text;
+
+                        let icon = '';
+                        switch (mode) {
+                            case 'live': icon = live_icon; break;
+                            case 'streamed': icon = streamed_icon; break;
+                            case 'video': icon = video_icon; break;
+                            case 'short': icon = short_icon; break;
+                            case 'scheduled': icon = scheduled_icon; break;
+                            case 'notification_on': icon = notification_on_icon; break;
+                            case 'notification_off': icon = notification_off_icon; break;
+                        }
+
+                        if (span_text !== undefined) {
+                            span.innerHTML = icon + span_text;
                         } else {
-                            span.innerHTML = common.button_label[mode];
+                            span.innerHTML = icon + common.button_label[mode];
                         }
                         menu.appendChild(span);
 
