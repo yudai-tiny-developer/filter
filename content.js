@@ -14,8 +14,8 @@ function main(app, common, lang) {
     const notification_on_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="M21.5 8.99992H19.5V8.80992C19.5 6.89992 18.39 5.18991 16.6 4.32991L17.47 2.52991C19.96 3.71991 21.5 6.12992 21.5 8.80992V8.99992ZM4.5 8.80992C4.5 6.89992 5.61 5.18991 7.4 4.32991L6.53 2.52991C4.04 3.71991 2.5 6.12992 2.5 8.80992V8.99992H4.5V8.80992ZM12 21.9999C13.1 21.9999 14 21.0999 14 19.9999H10C10 21.0999 10.9 21.9999 12 21.9999ZM20 17.3499V18.9999H4V17.3499L6 15.4699V10.3199C6 7.39991 7.56 5.09992 10 4.33992V3.95991C10 2.53991 11.49 1.45991 12.99 2.19991C13.64 2.51991 14 3.22991 14 3.95991V4.34991C16.44 5.09991 18 7.40991 18 10.3299V15.4799L20 17.3499Z"></path></svg>';
     const notification_off_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="M3.85,3.15L3.15,3.85l3.48,3.48C6.22,8.21,6,9.22,6,10.32v5.15l-2,1.88V19h14.29l1.85,1.85l0.71-0.71L3.85,3.15z M5,18 v-0.23l2-1.88v-5.47c0-0.85,0.15-1.62,0.41-2.3L17.29,18H5z M10,20h4c0,1.1-0.9,2-2,2S10,21.1,10,20z M9.28,5.75l-0.7-0.7 c0.43-0.29,0.9-0.54,1.42-0.7V3.96c0-1.42,1.49-2.5,2.99-1.76C13.64,2.52,14,3.23,14,3.96v0.39c2.44,0.75,4,3.06,4,5.98v4.14l-1-1 v-3.05c0-2.47-1.19-4.36-3.13-5.1c-1.26-0.53-2.64-0.5-3.84,0.03C9.76,5.46,9.52,5.59,9.28,5.75z"></path></svg>';
 
-    async function updateButtonVisibility(browse) {
-        await chrome.storage.local.get(common.storage).then(data => {
+    function updateButtonVisibility(browse) {
+        chrome.storage.local.get(common.storage).then(data => {
             for (const menu of browse.querySelectorAll('form.filter-menu')) {
                 const select = menu.querySelector('select.filter-menu');
                 const progress = menu.querySelector('select.filter-menu-progress');
@@ -789,13 +789,13 @@ function main(app, common, lang) {
         return true;
     }
 
-    async function onSubscriptionsNodeLoaded(node) {
+    function onSubscriptionsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 if (node.parentNode.children.length > limit) {
@@ -812,13 +812,13 @@ function main(app, common, lang) {
         }
     }
 
-    async function onShortsNodeLoaded(node) {
+    function onShortsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 if (node.parentNode.children.length > limit) {
@@ -835,7 +835,7 @@ function main(app, common, lang) {
         }
     }
 
-    async function onTopNodeLoaded(node) {
+    function onTopNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
@@ -844,69 +844,69 @@ function main(app, common, lang) {
                 {
                     const b = searchParentNode(node, 'YTD-BROWSE');
                     const t = b.querySelector('div#scroll-container');
-                    await insertMenu(t);
+                    insertMenu(t);
                 }
                 break;
         }
     }
 
-    async function onLibraryNodeLoaded(node) {
+    function onLibraryNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
         }
     }
 
-    async function onHistoryNodeLoaded(node) {
+    function onHistoryNodeLoaded(node) {
         switch (node.nodeName) {
             // TODO: updateTargetVisibility or updateVisibility
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
         }
     }
 
-    async function onPlaylistsNodeLoaded(node) {
+    function onPlaylistsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
         }
     }
 
-    async function onPlaylistNodeLoaded(node) {
+    function onPlaylistNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
         }
     }
 
-    async function onChannelsNodeLoaded(node) {
+    function onChannelsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-CHANNEL-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
         }
     }
 
-    async function onChannelNodeLoaded(node) {
+    function onChannelNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-GRID-VIDEO-RENDERER':
                 updateTargetVisibility(node);
@@ -924,24 +924,24 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
         }
     }
 
-    async function onHashTagNodeLoaded(node) {
+    function onHashTagNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-GRID-MEDIA':
                 updateTargetVisibility(node);
                 break;
             // TODO: insertMenu
             case 'YTD-BROWSE':
-                await insertMenu(node);
+                insertMenu(node);
                 break;
         }
     }
 
-    async function onAppNodeLoaded(node) {
+    function onAppNodeLoaded(node) {
         switch (node.nodeName) {
             // notification
             case 'YTD-NOTIFICATION-RENDERER':
@@ -977,7 +977,7 @@ function main(app, common, lang) {
         }
     }
 
-    async function insertMenu(node) {
+    function insertMenu(node) {
         const browse = searchParentNode(node, 'YTD-BROWSE');
         if (browse) {
             if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
@@ -996,7 +996,7 @@ function main(app, common, lang) {
                         // spacer referenceNode not found
                     }
 
-                    await updateButtonVisibility(browse);
+                    updateButtonVisibility(browse);
                     display_query(browse, 'form.filter-menu, div.filter-menu', '');
                 } else {
                     // referenceNode not found
@@ -1507,15 +1507,15 @@ function main(app, common, lang) {
         }
     }
 
-    async function onViewChanged() {
+    function onViewChanged() {
         for (const browse of app.querySelectorAll('ytd-browse')) {
-            await onViewChanged_Node(browse);
+            onViewChanged_Node(browse);
         }
     }
 
-    async function onViewChanged_Node(browse) {
+    function onViewChanged_Node(browse) {
         insertPlaylistSpacer(browse);
-        await updateButtonVisibility(browse);
+        updateButtonVisibility(browse);
         display_query(browse, 'form.filter-menu, div.filter-menu', display(isMenuTarget()));
         updateVisibility(browse);
     }
@@ -1874,17 +1874,17 @@ function main(app, common, lang) {
         spinner.classList.add('filter-spinner');
     }
 
-    document.addEventListener('yt-navigate-finish', async () => {
-        await onViewChanged();
+    document.addEventListener('yt-navigate-finish', () => {
+        onViewChanged();
     });
 
-    document.addEventListener('yt-action', async () => {
-        await onResize();
+    document.addEventListener('yt-action', () => {
+        onResize();
     });
 
-    chrome.storage.onChanged.addListener(async (changes, namespace) => {
+    chrome.storage.onChanged.addListener((changes, namespace) => {
         for (const browse of app.querySelectorAll('ytd-browse')) {
-            await updateButtonVisibility(browse);
+            updateButtonVisibility(browse);
         }
     });
 
