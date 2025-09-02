@@ -795,7 +795,7 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertSubscriptionsMenu(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 if (node.parentNode.children.length > limit) {
@@ -974,6 +974,23 @@ function main(app, common, lang) {
             case 'YTD-GUIDE-SECTION-RENDERER':
                 insertPopupMenu(node);
                 break;
+        }
+    }
+
+    function insertSubscriptionsMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
         }
     }
 
