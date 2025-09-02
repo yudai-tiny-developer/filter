@@ -789,114 +789,160 @@ function main(app, common, lang) {
         return true;
     }
 
-    async function onNodeLoaded(node, is_menu_target) {
-        let n;
+    async function onSubscriptionsNodeLoaded(node) {
         switch (node.nodeName) {
-            case 'YTD-BROWSE':
-            case 'YTD-SECTION-LIST-RENDERER':
-            case 'YTD-TABBED-PAGE-HEADER':
-            case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
-                if (is_menu_target) {
-                    await insertMenu(node);
-                }
-                break;
-
-            case 'YTD-POPUP-CONTAINER':
-            case 'YT-MULTI-PAGE-MENU-SECTION-RENDERER':
-            case 'YTD-GUIDE-SECTION-RENDERER':
-                insertPopupMenu(node);
-                break;
-
-            // subscriptions?flow=1, library
-            case 'YTD-GRID-VIDEO-RENDERER':
-                if (is_menu_target) {
-                    updateTargetVisibility(node);
-                }
-                break;
-
-            // subscriptions?flow=2, history
-            case 'YTD-VIDEO-RENDERER':
-                if (is_menu_target) {
-                    if (!node.classList.contains('ytd-backstage-post-renderer')) {
-                        updateTargetVisibility(node);
-                    }
-                }
-                break;
-
-            // playlist
-            case 'YTD-THUMBNAIL-OVERLAY-TIME-STATUS-RENDERER':
-                if (is_menu_target) {
-                    n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-                    if (n) {
-                        updateTargetVisibility(n);
-                    }
-                }
-                break;
-
-            // channels
-            case 'YTD-CHANNEL-RENDERER':
-                if (is_menu_target) {
-                    updateTargetVisibility(node);
-                }
-                break;
-
-            // channel
-            case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-            case 'YTD-GRID-PLAYLIST-RENDERER':
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
             case 'YTD-RICH-ITEM-RENDERER':
-                if (is_menu_target) {
-                    updateTargetVisibility(node);
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+            case 'YTD-CONTINUATION-ITEM-RENDERER':
+                if (node.parentNode.children.length > limit) {
+                    load_button_container.style.display = '';
+                    node.style.display = 'none';
+                    node.classList.remove('filter-show');
+                    node.classList.add('filter-hidden');
+                    node.parentNode.parentNode.appendChild(load_button_container);
+                    continuation_item = node;
+                } else {
+                    // continuation
                 }
                 break;
+        }
+    }
 
-            // container
-            case 'YTD-ITEM-SECTION-RENDERER':
-                if (is_menu_target) {
-                    updateVisibility(node);
+    async function onShortsNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-RICH-ITEM-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+            case 'YTD-CONTINUATION-ITEM-RENDERER':
+                if (node.parentNode.children.length > limit) {
+                    load_button_container.style.display = '';
+                    node.style.display = 'none';
+                    node.classList.remove('filter-show');
+                    node.classList.add('filter-hidden');
+                    node.parentNode.parentNode.appendChild(load_button_container);
+                    continuation_item = node;
+                } else {
+                    // continuation
                 }
                 break;
-            case 'DIV':
-                if (is_menu_target) {
-                    if (node.id === 'contents') {
-                        updateVisibility(node);
-                    }
-                }
-                if (node.id === 'playlists' || node.id === 'items' || node.id === 'expandable-items') {
-                    updatePopupVisibility([node]);
+        }
+    }
+
+    async function onTopNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-RICH-ITEM-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
+                {
+                    const b = searchParentNode(node, 'YTD-BROWSE');
+                    const t = b.querySelector('div#scroll-container');
+                    await insertMenu(t);
                 }
                 break;
+        }
+    }
 
-            // progress
-            case 'YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER':
-                if (is_menu_target) {
-                    n = searchParentNode(node, 'YTD-PLAYLIST-VIDEO-RENDERER');
-                    if (n) {
-                        updateTargetVisibility(n);
-                        break;
-                    }
-
-                    n = searchParentNode(node, 'YTD-GRID-VIDEO-RENDERER');
-                    if (n) {
-                        updateTargetVisibility(n);
-                        break;
-                    }
-
-                    n = searchParentNode(node, 'YTD-VIDEO-RENDERER');
-                    if (n) {
-                        updateTargetVisibility(n);
-                        break;
-                    }
-
-                    n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
-                    if (n) {
-                        updateTargetVisibility(n);
-                        break;
-                    }
-                }
-
+    async function onLibraryNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-RICH-ITEM-RENDERER':
+                updateTargetVisibility(node);
                 break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+        }
+    }
 
+    async function onHistoryNodeLoaded(node) {
+        switch (node.nodeName) {
+            // TODO: updateTargetVisibility or updateVisibility
+            case 'YTD-RICH-ITEM-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+        }
+    }
+
+    async function onPlaylistsNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-RICH-ITEM-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+        }
+    }
+
+    async function onPlaylistNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-PLAYLIST-VIDEO-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+        }
+    }
+
+    async function onChannelsNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-CHANNEL-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+        }
+    }
+
+    async function onChannelNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-GRID-VIDEO-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                updateTargetVisibility(node);
+                break;
+            case 'YT-LOCKUP-VIEW-MODEL':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-GRID-CHANNEL-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-POST-RENDERER':
+                updateTargetVisibility(node);
+                break;
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+        }
+    }
+
+    async function onHashTagNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-RICH-GRID-MEDIA':
+                updateTargetVisibility(node);
+                break;
+            // TODO: insertMenu
+            case 'YTD-BROWSE':
+                await insertMenu(node);
+                break;
+        }
+    }
+
+    async function onAppNodeLoaded(node) {
+        switch (node.nodeName) {
             // notification
             case 'YTD-NOTIFICATION-RENDERER':
                 updatePopupVisibility([node.parentNode]);
@@ -908,25 +954,25 @@ function main(app, common, lang) {
                 updatePopupVisibility([...parent.querySelectorAll('div#items')]);
                 break;
 
-            // continuation stopper
-            case 'YTD-CONTINUATION-ITEM-RENDERER':
-                if (common.isSubscriptions(location.href) || common.isShorts(location.href)) {
-                    if (node.parentNode.children.length > limit) {
-                        load_button_container.style.display = '';
-                        node.style.display = 'none';
-                        node.classList.remove('filter-show');
-                        node.classList.add('filter-hidden');
-                        node.parentNode.parentNode.appendChild(load_button_container);
-                        continuation_item = node;
-                    } else {
-                        // continuation
-                    }
-                } else {
-                    // continuation
-                    node.style.display = '';
-                    node.classList.remove('filter-hidden');
-                    node.classList.add('filter-show');
+            case 'DIV':
+                if (node.id === 'playlists' || node.id === 'items' || node.id === 'expandable-items') {
+                    updatePopupVisibility([node]);
                 }
+                break;
+
+            // add to playlist
+            case 'YTD-POPUP-CONTAINER':
+                insertPopupMenu(node);
+                break;
+
+            // notification
+            case 'YT-MULTI-PAGE-MENU-SECTION-RENDERER':
+                insertPopupMenu(node);
+                break;
+
+            // sidebar channels
+            case 'YTD-GUIDE-SECTION-RENDERER':
+                insertPopupMenu(node);
                 break;
         }
     }
@@ -1843,9 +1889,60 @@ function main(app, common, lang) {
     });
 
     new MutationObserver((mutations, observer) => {
-        const is_menu_target = isMenuTarget();
-        for (const m of mutations) {
-            onNodeLoaded(m.target, is_menu_target);
+        if (common.isSubscriptions(location.href)) {
+            for (const m of mutations) {
+                onSubscriptionsNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isShorts(location.href)) {
+            for (const m of mutations) {
+                onShortsNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isTop(location.href)) {
+            for (const m of mutations) {
+                onTopNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isLibrary(location.href)) {
+            for (const m of mutations) {
+                onLibraryNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isHistory(location.href)) {
+            for (const m of mutations) {
+                onHistoryNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isPlaylists(location.href)) {
+            for (const m of mutations) {
+                onPlaylistsNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isPlaylist(location.href)) {
+            for (const m of mutations) {
+                onPlaylistNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isChannels(location.href)) {
+            for (const m of mutations) {
+                onChannelsNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isChannel(location.href)) {
+            for (const m of mutations) {
+                onChannelNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isHashTag(location.href)) {
+            for (const m of mutations) {
+                onHashTagNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else {
+            for (const m of mutations) {
+                onAppNodeLoaded(m.target);
+            }
         }
     }).observe(app, { subtree: true, childList: true });
 }
