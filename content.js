@@ -512,28 +512,6 @@ function main(app, common, lang) {
             ;
     }
 
-    function forTwoColumnBrowseResultsRenderer() {
-        return common.isChannel(location.href)
-            ;
-    }
-
-    function forPageHeaderRenderer() {
-        return common.isHashTag(location.href)
-            ;
-    }
-
-    function needSpacer() {
-        return common.isSubscriptions(location.href)
-            || common.isShorts(location.href)
-            || common.isLibrary(location.href)
-            || common.isHistory(location.href)
-            || common.isPlaylists(location.href)
-            || common.isPlaylist(location.href)
-            || common.isChannels(location.href)
-            || common.isHashTag(location.href)
-            ;
-    }
-
     function updateQueryRegex(browse, query) {
         active.query.set(location.href, query);
         browse.setAttribute('filter-query', query);
@@ -812,13 +790,30 @@ function main(app, common, lang) {
         }
     }
 
+    function insertSubscriptionsMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
+        }
+    }
+
     function onShortsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertShortsMenu(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 if (node.parentNode.children.length > limit) {
@@ -835,18 +830,63 @@ function main(app, common, lang) {
         }
     }
 
+    function insertShortsMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
+        }
+    }
+
     function onTopNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node);
                 break;
             case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
-                {
-                    const b = searchParentNode(node, 'YTD-BROWSE');
-                    const t = b.querySelector('div#scroll-container');
-                    insertMenu(t);
-                }
+                insertTopMenu(node);
                 break;
+        }
+    }
+
+    function insertTopMenu(node) {
+        const browse = searchParentNode(node, 'YTD-BROWSE');
+        if (browse) {
+            if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+                const referenceNode = browse.querySelector('div#scroll-container');
+                if (referenceNode) {
+                    const menu = createMenu(browse);
+                    referenceNode.insertBefore(menu, referenceNode.firstChild);
+
+                    const calc = createNodeForCalc(menu, browse);
+                    referenceNode.insertBefore(calc, referenceNode.firstChild);
+
+                    const spacerReferenceNode = browse.querySelector('div#contents');
+                    if (spacerReferenceNode) {
+                        spacerReferenceNode.parentNode.insertBefore(createSpacer('browse'), spacerReferenceNode);
+                    } else {
+                        // spacer referenceNode not found
+                    }
+
+                    updateButtonVisibility(browse);
+                    display_query(browse, 'form.filter-menu, div.filter-menu', '');
+                } else {
+                    // referenceNode not found
+                }
+            } else {
+                // already exists
+            }
+        } else {
+            // not target
         }
     }
 
@@ -856,8 +896,25 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertLibraryMenu(node);
                 break;
+        }
+    }
+
+    function insertLibraryMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
         }
     }
 
@@ -868,8 +925,25 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertHistoryMenu(node);
                 break;
+        }
+    }
+
+    function insertHistoryMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
         }
     }
 
@@ -879,8 +953,25 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertPlaylistsMenu(node);
                 break;
+        }
+    }
+
+    function insertPlaylistsMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
         }
     }
 
@@ -890,8 +981,25 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertPlaylistMenu(node);
                 break;
+        }
+    }
+
+    function insertPlaylistMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
         }
     }
 
@@ -901,8 +1009,25 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertChannelsMenu(node);
                 break;
+        }
+    }
+
+    function insertChannelsMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
         }
     }
 
@@ -924,8 +1049,31 @@ function main(app, common, lang) {
                 updateTargetVisibility(node);
                 break;
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertChannelMenu(node);
                 break;
+        }
+    }
+
+    function insertChannelMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+
+            const referenceNode = browse.querySelector('ytd-two-column-browse-results-renderer');
+            if (referenceNode) {
+                browse.insertBefore(menu, referenceNode);
+
+                const calc = createNodeForCalc(menu, browse);
+                browse.insertBefore(calc, referenceNode);
+
+                browse.insertBefore(createSpacer('browse'), referenceNode);
+
+                updateButtonVisibility(browse);
+                display_query(browse, 'form.filter-menu, div.filter-menu', '');
+            } else {
+                // referenceNode not found
+            }
+        } else {
+            // already exists
         }
     }
 
@@ -934,10 +1082,26 @@ function main(app, common, lang) {
             case 'YTD-RICH-GRID-MEDIA':
                 updateTargetVisibility(node);
                 break;
-            // TODO: insertMenu
             case 'YTD-BROWSE':
-                insertMenu(node);
+                insertHashTagMenu(node);
                 break;
+        }
+    }
+
+    function insertHashTagMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
         }
     }
 
@@ -974,77 +1138,6 @@ function main(app, common, lang) {
             case 'YTD-GUIDE-SECTION-RENDERER':
                 insertPopupMenu(node);
                 break;
-        }
-    }
-
-    function insertSubscriptionsMenu(browse) {
-        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
-            browse.insertBefore(menu, browse.firstChild);
-
-            const calc = createNodeForCalc(menu, browse);
-            browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
-
-            updateButtonVisibility(browse);
-            display_query(browse, 'form.filter-menu, div.filter-menu', '');
-        } else {
-            // already exists
-        }
-    }
-
-    function insertMenu(node) {
-        const browse = searchParentNode(node, 'YTD-BROWSE');
-        if (browse) {
-            if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-                const referenceNode = getReferenceNode(browse);
-                if (referenceNode) {
-                    const menu = createMenu(browse);
-                    referenceNode.parentNode.insertBefore(menu, referenceNode);
-
-                    const calc = createNodeForCalc(menu, browse);
-                    referenceNode.parentNode.insertBefore(calc, referenceNode);
-
-                    const spacerReferenceNode = getSpacerReferenceNode(browse);
-                    if (spacerReferenceNode) {
-                        spacerReferenceNode.parentNode.insertBefore(createSpacer('browse'), spacerReferenceNode);
-                    } else {
-                        // spacer referenceNode not found
-                    }
-
-                    updateButtonVisibility(browse);
-                    display_query(browse, 'form.filter-menu, div.filter-menu', '');
-                } else {
-                    // referenceNode not found
-                }
-            } else {
-                // already exists
-            }
-        } else {
-            // not target
-        }
-    }
-
-    function getReferenceNode(browse) {
-        if (forTwoColumnBrowseResultsRenderer()) {
-            return browse.querySelector('ytd-two-column-browse-results-renderer');
-        } else if (forPageHeaderRenderer()) {
-            return browse.querySelector('yt-page-header-renderer');
-        } else if (common.isTop(location.href)) {
-            return browse.querySelector('div#scroll-container')?.firstChild;
-        } else {
-            return browse.firstChild;
-        }
-    }
-
-    function getSpacerReferenceNode(browse) {
-        if (needSpacer()) {
-            return browse.firstChild;
-        } else if (common.isTop(location.href)) {
-            return browse.querySelector('div#contents');
-        } else {
-            return undefined;
         }
     }
 
