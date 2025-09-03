@@ -572,7 +572,7 @@ function main(app, common, lang) {
     }
 
     function updateVisibility(node) {
-        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2, yt-lockup-view-model').forEach(n => updateTargetVisibility(n));
+        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2, yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchTextContent, classifyStatus, classifyStatusProgress));
     }
 
     function classifyStatus(node) {
@@ -770,7 +770,7 @@ function main(app, common, lang) {
     function onSubscriptionsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertSubscriptionsMenu(node);
@@ -810,7 +810,7 @@ function main(app, common, lang) {
     function onShortsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertShortsMenu(node);
@@ -850,7 +850,7 @@ function main(app, common, lang) {
     function onTopNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
                 insertTopMenu(node);
@@ -893,7 +893,7 @@ function main(app, common, lang) {
     function onLibraryNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertLibraryMenu(node);
@@ -920,9 +920,8 @@ function main(app, common, lang) {
 
     function onHistoryNodeLoaded(node) {
         switch (node.nodeName) {
-            // TODO: updateTargetVisibility or updateVisibility
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertHistoryMenu(node);
@@ -950,7 +949,7 @@ function main(app, common, lang) {
     function onPlaylistsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertPlaylistsMenu(node);
@@ -978,7 +977,7 @@ function main(app, common, lang) {
     function onPlaylistNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertPlaylistMenu(node);
@@ -1006,7 +1005,7 @@ function main(app, common, lang) {
     function onChannelsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-CHANNEL-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertChannelsMenu(node);
@@ -1034,19 +1033,19 @@ function main(app, common, lang) {
     function onChannelNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-GRID-VIDEO-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YT-LOCKUP-VIEW-MODEL':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-GRID-CHANNEL-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-POST-RENDERER':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertChannelMenu(node);
@@ -1080,7 +1079,7 @@ function main(app, common, lang) {
     function onHashTagNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-GRID-MEDIA':
-                updateTargetVisibility(node);
+                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
                 break;
             case 'YTD-BROWSE':
                 insertHashTagMenu(node);
@@ -1601,12 +1600,12 @@ function main(app, common, lang) {
         return true;
     }
 
-    function updateTargetVisibility(node) {
+    function updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress) {
         if (node.classList.contains('filter-separator')) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
-        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress()) && matchTextContent(node)) {
+        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyStatus, classifyStatusProgress) && matchTextContent(node)) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
@@ -1630,11 +1629,11 @@ function main(app, common, lang) {
         updateVisibility(browse);
     }
 
-    function includesStatus(node, status_mode, status_progress) {
-        return includesStatusMode(node, status_mode) && includesStatusProgress(node, status_progress);
+    function includesStatus(node, status_mode, status_progress, classifyStatus, classifyStatusProgress) {
+        return includesStatusMode(node, status_mode, classifyStatus) && includesStatusProgress(node, status_progress, classifyStatusProgress);
     }
 
-    function includesStatusMode(node, status) {
+    function includesStatusMode(node, status, classifyStatus) {
         if (status.size === 0 || status.has('all')) {
             return true;
         } else {
@@ -1648,7 +1647,7 @@ function main(app, common, lang) {
         }
     }
 
-    function includesStatusProgress(node, status) {
+    function includesStatusProgress(node, status, classifyStatusProgress) {
         if (status.size === 0 || status.has('progress_all')) {
             return true;
         } else {
