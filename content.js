@@ -572,205 +572,499 @@ function main(app, common, lang) {
     }
 
     function updateVisibility(node) {
-        node.querySelectorAll('ytd-backstage-post-thread-renderer, ytd-channel-renderer, ytd-grid-playlist-renderer, ytd-grid-video-renderer, ytd-playlist-video-renderer, ytd-rich-item-renderer, ytd-video-renderer:not(.ytd-backstage-post-renderer), ytm-shorts-lockup-view-model-v2, yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchTextContent, classifyStatus, classifyStatusProgress));
+        node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchRichItemRendererTextContent, classifyRichItemRendererModeStatus, classifyRichItemRendererProgressStatus));
+        node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n, matchPlaylistVideoRendererTextContent, classifyPlaylistVideoRendererModeStatus, classifyPlaylistVideoRendererProgressStatus));
+        node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n, matchChannelRendererTextContent, classifyChannelRendererModeStatus, classifyChannelRendererProgressStatus));
+        node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n, matchGridVideoRendererTextContent, classifyGridVideoRendererModeStatus, classifyGridVideoRendererProgressStatus));
+        node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchShortsLockupViewModelV2TextContent, classifyShortsLockupViewModelV2ModeStatus, classifyShortsLockupViewModelV2ProgressStatus));
+        node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchLockupViewModelTextContent, classifyLockupViewModelModeStatus, classifyLockupViewModelProgressStatus));
+        node.querySelectorAll('ytd-grid-channel-renderer').forEach(n => updateTargetVisibility(n, matchGridChannelRendererTextContent, classifyGridChannelRendererModeStatus, classifyGridChannelRendererProgressStatus));
+        node.querySelectorAll('ytd-post-renderer').forEach(n => updateTargetVisibility(n, matchPostRendererTextContent, classifyPostRendererModeStatus, classifyPostRendererProgressStatus));
+        node.querySelectorAll('ytd-rich-grid-media').forEach(n => updateTargetVisibility(n, matchRichGridMediaTextContent, classifyRichGridMediaModeStatus, classifyRichGridMediaProgressStatus));
     }
 
-    function classifyStatus(node) {
-        const status = new Set();
-
-        switch (node.nodeName) {
-            case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTD-VIDEO-RENDERER':
-            case 'YTD-RICH-ITEM-RENDERER':
-            case 'YTD-PLAYLIST-VIDEO-RENDERER':
-            case 'YT-LOCKUP-VIEW-MODEL':
-                const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
-                const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
-                const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
-                if (metadata_line || byline_container || badge) {
-                    const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-                    const l = badge?.textContent ?? '';
-                    if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
-                        status.add('live');
-                    } else if (lang.isStreamed_metadata(t)) {
-                        status.add('streamed');
-                    } else if (lang.isScheduled_metadata(t)) {
-                        status.add('scheduled');
-
-                        const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
-                        if (video_button) {
-                            const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
-                            if (lang.isNotificationOn_button(t)) {
-                                status.add('notification_on');
-                            } else if (lang.isNotificationOff_button(t)) {
-                                status.add('notification_off');
-                            } else {
-                                // Unknown notification status
-                            }
-                        }
-                    } else /*if (lang.isVideo_metadata(t))*/ {
-                        const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
-                        if (thumbnail_overlay) {
-                            const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
-                            if (overlay_style) {
-                                if (overlay_style === 'DEFAULT') {
-                                    status.add('video');
-                                } else if (overlay_style === 'SHORTS') {
-                                    status.add('short');
-                                } else {
-                                    status.add('video'); // membership only video
-                                }
-                            }
-                        }
-
-                        const slim_media = node.querySelector('ytd-rich-grid-slim-media');
-                        if (slim_media) {
-                            status.add('short');
-                        } else {
-                            status.add('video');
-                        }
-                    }
-                } else {
-                    const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
-                    if (shorts) {
-                        status.add('short');
-                    }
-                }
-
-                break;
-            case 'YTD-CHANNEL-RENDERER':
-                const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
-                if (channel_notification) {
-                    const t = channel_notification.getAttribute('aria-label');
-                    if (lang.isChannelsAllNotifications(t)) {
-                        status.add('channels_all');
-                    } else if (lang.isChannelsPersonalizedNotifications(t)) {
-                        status.add('channels_personalized');
-                    } else if (lang.isChannelsNoNotifications(t)) {
-                        status.add('channels_none');
-                    } else {
-                        // Unknown channel notification
-                    }
-                } else {
-                    // sponsor
-                }
-                break;
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-                status.add('short');
-                break;
-        }
-        return status;
-    }
-
-    function classifyStatusProgress(node) {
-        const status = new Set();
-
-        switch (node.nodeName) {
-            case 'YTD-GRID-VIDEO-RENDERER':
-            case 'YTD-VIDEO-RENDERER':
-            case 'YTD-RICH-ITEM-RENDERER':
-            case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
-                if (progress) {
-                    status.add('progress_watched');
-                } else {
-                    status.add('progress_unwatched');
-                }
-                break;
-        }
-
-        return status;
-    }
-
-    function matchTextContent(node) {
+    // ytd-rich-item-renderer
+    function matchRichItemRendererTextContent(node) {
         let text_node;
-        switch (node.nodeName) {
-            // subscriptions?flow=1, library
-            case 'YTD-GRID-VIDEO-RENDERER':
-                text_node = node.querySelector('a#video-title');
-                if (text_node) {
-                    return matchQuery(text_node.textContent);
-                }
-                break;
 
-            // subscriptions?flow=2, history
-            case 'YTD-VIDEO-RENDERER':
-                if (!node.classList.contains('ytd-backstage-post-renderer')) {
-                    text_node = node.querySelector('a#video-title');
-                    if (text_node) {
-                        return matchQuery(text_node.textContent);
-                    }
-                } else {
-                    // lazy load
-                }
+        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle'); // TODO
+        if (text_node) {
+            const textContent = text_node.getAttribute('aria-label');
+            if (textContent) {
+                return matchQuery(textContent);
+            }
+        }
 
-                break;
-
-            // playlist
-            case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                text_node = node.querySelector('div#meta');
-                if (text_node) {
-                    return matchQuery(text_node.textContent);
-                }
-                break;
-
-            // channel
-            case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
-                text_node = node.querySelector('div#content');
-                if (text_node) {
-                    return matchQuery(text_node.textContent);
-                }
-                break;
-
-            case 'YTD-GRID-PLAYLIST-RENDERER':
-                text_node = node.querySelector('a#video-title');
-                if (text_node) {
-                    return matchQuery(text_node.textContent);
-                }
-                break;
-
-            // channel, playlists, shorts, library
-            case 'YTD-RICH-ITEM-RENDERER':
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-                text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
-                if (text_node) {
-                    const textContent = text_node.getAttribute('aria-label');
-                    if (textContent) {
-                        return matchQuery(textContent);
-                    }
-                }
-
-                text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
-                if (text_node) {
-                    return matchQuery(text_node.textContent);
-                }
-
-                break;
-
-            // channels
-            case 'YTD-CHANNEL-RENDERER':
-                text_node = node.querySelector('div#info');
-                if (text_node) {
-                    return matchQuery(text_node.textContent);
-                }
-                break;
-
-            case 'YT-LOCKUP-VIEW-MODEL':
-                text_node = node.querySelector('span.yt-core-attributed-string');
-                if (text_node) {
-                    return matchQuery(text_node.textContent);
-                }
-                break;
+        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string'); // TODO
+        if (text_node) {
+            return matchQuery(text_node.textContent);
         }
 
         // default: visible
         return true;
     }
 
+    function classifyRichItemRendererModeStatus(node) {
+        const status = new Set();
+
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
+
+        if (metadata_line || byline_container || badge) { // TODO
+            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
+            const l = badge?.textContent ?? '';
+            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                if (video_button) {
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    } else {
+                        // Unknown notification status
+                    }
+                }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer'); // TODO
+                if (thumbnail_overlay) {
+                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
+                    if (overlay_style) {
+                        if (overlay_style === 'DEFAULT') {
+                            status.add('video');
+                        } else if (overlay_style === 'SHORTS') {
+                            status.add('short');
+                        } else {
+                            status.add('video'); // membership only video
+                        }
+                    }
+                }
+
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                if (slim_media) {
+                    status.add('short');
+                } else {
+                    status.add('video');
+                }
+            }
+        } else {
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            if (shorts) {
+                status.add('short');
+            }
+        }
+
+        return status;
+    }
+
+    function classifyRichItemRendererProgressStatus(node) {
+        const status = new Set();
+
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
+
+        return status;
+    }
+
+    // ytd-playlist-video-renderer
+    function matchPlaylistVideoRendererTextContent(node) {
+        let text_node;
+
+        text_node = node.querySelector('div#meta');
+        if (text_node) {
+            return matchQuery(text_node.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyPlaylistVideoRendererModeStatus(node) {
+        const status = new Set();
+
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
+        if (metadata_line || byline_container || badge) { // TODO
+            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
+            const l = badge?.textContent ?? '';
+            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                if (video_button) {
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    } else {
+                        // Unknown notification status
+                    }
+                }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
+                if (thumbnail_overlay) {
+                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
+                    if (overlay_style) {
+                        if (overlay_style === 'DEFAULT') {
+                            status.add('video');
+                        } else if (overlay_style === 'SHORTS') {
+                            status.add('short');
+                        } else {
+                            status.add('video'); // membership only video
+                        }
+                    }
+                }
+
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                if (slim_media) {
+                    status.add('short');
+                } else {
+                    status.add('video');
+                }
+            }
+        } else {
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            if (shorts) {
+                status.add('short');
+            }
+        }
+
+        return status;
+    }
+
+    function classifyPlaylistVideoRendererProgressStatus(node) {
+        const status = new Set();
+
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
+
+        return status;
+    }
+
+    // ytd-channel-renderer
+    function matchChannelRendererTextContent(node) {
+        let text_node;
+
+        text_node = node.querySelector('div#info');
+        if (text_node) {
+            return matchQuery(text_node.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyChannelRendererModeStatus(node) {
+        const status = new Set();
+
+        const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
+        if (channel_notification) {
+            const t = channel_notification.getAttribute('aria-label');
+            if (lang.isChannelsAllNotifications(t)) {
+                status.add('channels_all');
+            } else if (lang.isChannelsPersonalizedNotifications(t)) {
+                status.add('channels_personalized');
+            } else if (lang.isChannelsNoNotifications(t)) {
+                status.add('channels_none');
+            } else {
+                // Unknown channel notification
+            }
+        } else {
+            // sponsor
+        }
+
+        return status;
+    }
+
+    function classifyChannelRendererProgressStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    // ytd-grid-video-renderer
+    function matchGridVideoRendererTextContent(node) {
+        let text_node;
+
+        text_node = node.querySelector('a#video-title');
+        if (text_node) {
+            return matchQuery(text_node.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyGridVideoRendererModeStatus(node) {
+        const status = new Set();
+
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
+        if (metadata_line || byline_container || badge) { // TODO
+            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? ''); // TODO
+            const l = badge?.textContent ?? '';
+            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                if (video_button) {
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    } else {
+                        // Unknown notification status
+                    }
+                }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
+                if (thumbnail_overlay) {
+                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
+                    if (overlay_style) {
+                        if (overlay_style === 'DEFAULT') {
+                            status.add('video');
+                        } else if (overlay_style === 'SHORTS') {
+                            status.add('short');
+                        } else {
+                            status.add('video'); // membership only video
+                        }
+                    }
+                }
+
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                if (slim_media) {
+                    status.add('short');
+                } else {
+                    status.add('video');
+                }
+            }
+        } else {
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            if (shorts) {
+                status.add('short');
+            }
+        }
+
+        return status;
+    }
+
+    function classifyGridVideoRendererProgressStatus(node) {
+        const status = new Set();
+
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
+
+        return status;
+    }
+
+    // ytm-shorts-lockup-view-model-v2
+    function matchShortsLockupViewModelV2TextContent(node) {
+        let text_node;
+
+        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle'); // TODO
+        if (text_node) {
+            const textContent = text_node.getAttribute('aria-label');
+            if (textContent) {
+                return matchQuery(textContent);
+            }
+        }
+
+        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string'); // TODO
+        if (text_node) {
+            return matchQuery(text_node.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyShortsLockupViewModelV2ModeStatus(node) {
+        const status = new Set();
+
+        status.add('short');
+
+        return status;
+    }
+
+    function classifyShortsLockupViewModelV2ProgressStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    // yt-lockup-view-model
+    function matchLockupViewModelTextContent(node) {
+        let text_node;
+
+        text_node = node.querySelector('span.yt-core-attributed-string');
+        if (text_node) {
+            return matchQuery(text_node.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyLockupViewModelModeStatus(node) {
+        const status = new Set();
+
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
+        if (metadata_line || byline_container || badge) { // TODO
+            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? ''); // TODO
+            const l = badge?.textContent ?? '';
+            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                if (video_button) {
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    } else {
+                        // Unknown notification status
+                    }
+                }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
+                if (thumbnail_overlay) {
+                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
+                    if (overlay_style) {
+                        if (overlay_style === 'DEFAULT') {
+                            status.add('video');
+                        } else if (overlay_style === 'SHORTS') {
+                            status.add('short');
+                        } else {
+                            status.add('video'); // membership only video
+                        }
+                    }
+                }
+
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                if (slim_media) {
+                    status.add('short');
+                } else {
+                    status.add('video');
+                }
+            }
+        } else {
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            if (shorts) {
+                status.add('short');
+            }
+        }
+
+        return status;
+    }
+
+    function classifyLockupViewModelProgressStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    // ytd-grid-channel-renderer
+    function matchGridChannelRendererTextContent(node) {
+        let text_node;
+
+        // default: visible
+        return true;
+    }
+
+    function classifyGridChannelRendererModeStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    function classifyGridChannelRendererProgressStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    // ytd-post-renderer
+    function matchPostRendererTextContent(node) {
+        let text_node;
+
+        // default: visible
+        return true;
+    }
+
+    function classifyPostRendererModeStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    function classifyPostRendererProgressStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    // ytd-rich-grid-media
+    function matchRichGridMediaTextContent(node) {
+        let text_node;
+
+        // default: visible
+        return true;
+    }
+
+    function classifyRichGridMediaModeStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
+    function classifyRichGridMediaProgressStatus(node) {
+        const status = new Set();
+
+        return status;
+    }
+
     function onSubscriptionsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchRichItemRendererTextContent, classifyRichItemRendererModeStatus, classifyRichItemRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertSubscriptionsMenu(node);
@@ -810,7 +1104,7 @@ function main(app, common, lang) {
     function onShortsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchRichItemRendererTextContent, classifyRichItemRendererModeStatus, classifyRichItemRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertShortsMenu(node);
@@ -850,7 +1144,7 @@ function main(app, common, lang) {
     function onTopNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchRichItemRendererTextContent, classifyRichItemRendererModeStatus, classifyRichItemRendererProgressStatus);
                 break;
             case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
                 insertTopMenu(node);
@@ -893,7 +1187,7 @@ function main(app, common, lang) {
     function onLibraryNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchRichItemRendererTextContent, classifyRichItemRendererModeStatus, classifyRichItemRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertLibraryMenu(node);
@@ -921,7 +1215,7 @@ function main(app, common, lang) {
     function onHistoryNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchRichItemRendererTextContent, classifyRichItemRendererModeStatus, classifyRichItemRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertHistoryMenu(node);
@@ -949,7 +1243,7 @@ function main(app, common, lang) {
     function onPlaylistsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchRichItemRendererTextContent, classifyRichItemRendererModeStatus, classifyRichItemRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertPlaylistsMenu(node);
@@ -977,7 +1271,7 @@ function main(app, common, lang) {
     function onPlaylistNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchPlaylistVideoRendererTextContent, classifyPlaylistVideoRendererModeStatus, classifyPlaylistVideoRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertPlaylistMenu(node);
@@ -1005,7 +1299,7 @@ function main(app, common, lang) {
     function onChannelsNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-CHANNEL-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchChannelRendererTextContent, classifyChannelRendererModeStatus, classifyChannelRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertChannelsMenu(node);
@@ -1033,19 +1327,19 @@ function main(app, common, lang) {
     function onChannelNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-GRID-VIDEO-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchGridVideoRendererTextContent, classifyGridVideoRendererModeStatus, classifyGridVideoRendererProgressStatus);
                 break;
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchShortsLockupViewModelV2TextContent, classifyShortsLockupViewModelV2ModeStatus, classifyShortsLockupViewModelV2ProgressStatus);
                 break;
             case 'YT-LOCKUP-VIEW-MODEL':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchLockupViewModelTextContent, classifyLockupViewModelModeStatus, classifyLockupViewModelProgressStatus);
                 break;
             case 'YTD-GRID-CHANNEL-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchGridChannelRendererTextContent, classifyGridChannelRendererModeStatus, classifyGridChannelRendererProgressStatus);
                 break;
             case 'YTD-POST-RENDERER':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchPostRendererTextContent, classifyPostRendererModeStatus, classifyPostRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertChannelMenu(node);
@@ -1079,7 +1373,7 @@ function main(app, common, lang) {
     function onHashTagNodeLoaded(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-GRID-MEDIA':
-                updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress);
+                updateTargetVisibility(node, matchTextContent, classifyRichGridMediaModeStatus, classifyRichGridMediaProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertHashTagMenu(node);
@@ -1600,12 +1894,12 @@ function main(app, common, lang) {
         return true;
     }
 
-    function updateTargetVisibility(node, matchTextContent, classifyStatus, classifyStatusProgress) {
+    function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
         if (node.classList.contains('filter-separator')) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
-        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyStatus, classifyStatusProgress) && matchTextContent(node)) {
+        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
@@ -1629,16 +1923,16 @@ function main(app, common, lang) {
         updateVisibility(browse);
     }
 
-    function includesStatus(node, status_mode, status_progress, classifyStatus, classifyStatusProgress) {
-        return includesStatusMode(node, status_mode, classifyStatus) && includesStatusProgress(node, status_progress, classifyStatusProgress);
+    function includesStatus(node, status_mode, status_progress, classifyModeStatus, classifyProgressStatus) {
+        return includesModeStatus(node, status_mode, classifyModeStatus) && includesProgressStatus(node, status_progress, classifyProgressStatus);
     }
 
-    function includesStatusMode(node, status, classifyStatus) {
+    function includesModeStatus(node, status, classifyModeStatus) {
         if (status.size === 0 || status.has('all')) {
             return true;
         } else {
             for (const s of status) {
-                const node_status = classifyStatus(node);
+                const node_status = classifyModeStatus(node);
                 if (node_status.has(s)) {
                     return true;
                 }
@@ -1647,12 +1941,12 @@ function main(app, common, lang) {
         }
     }
 
-    function includesStatusProgress(node, status, classifyStatusProgress) {
+    function includesProgressStatus(node, status, classifyProgressStatus) {
         if (status.size === 0 || status.has('progress_all')) {
             return true;
         } else {
             for (const s of status) {
-                const node_status = classifyStatusProgress(node);
+                const node_status = classifyProgressStatus(node);
                 if (node_status.has(s)) {
                     return true;
                 }
