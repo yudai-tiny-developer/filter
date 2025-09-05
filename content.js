@@ -583,6 +583,7 @@ function main(app, common, lang) {
         } else if (common.isHistory(location.href)) {
             node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchHistoryLockupViewModelTextContent, classifyHistoryLockupViewModelModeStatus, classifyHistoryLockupViewModelProgressStatus));
             node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchHistoryShortsLockupViewModelV2TextContent, classifyHistoryShortsLockupViewModelV2ModeStatus, classifyHistoryShortsLockupViewModelV2ProgressStatus));
+            node.querySelectorAll('ytd-video-renderer').forEach(n => updateTargetVisibility(n, matchHistoryVideoRendererTextContent, classifyHistoryVideoRendererModeStatus, classifyHistoryVideoRendererProgressStatus));
         } else if (common.isPlaylists(location.href)) {
             node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchPlaylistsRichItemRendererTextContent, classifyPlaylistsRichItemRendererModeStatus, classifyPlaylistsRichItemRendererProgressStatus));
         } else if (common.isPlaylist(location.href)) {
@@ -992,8 +993,19 @@ function main(app, common, lang) {
             case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
                 updateTargetVisibility(node, matchHistoryShortsLockupViewModelV2TextContent, classifyHistoryShortsLockupViewModelV2ModeStatus, classifyHistoryShortsLockupViewModelV2ProgressStatus);
                 break;
+            case 'YTD-VIDEO-RENDERER':
+                updateTargetVisibility(node, matchHistoryVideoRendererTextContent, classifyHistoryVideoRendererModeStatus, classifyHistoryVideoRendererProgressStatus);
+                break;
             case 'YTD-ITEM-SECTION-RENDERER':
                 updateVisibility(node);
+                break;
+            case 'YTD-REEL-SHELF-RENDERER':
+                updateVisibility(node);
+                break;
+            case 'DIV':
+                if (node.id === 'contens') {
+                    updateVisibility(node);
+                }
                 break;
             case 'YTD-BROWSE':
                 insertHistoryMenu(node);
@@ -1033,175 +1045,68 @@ function main(app, common, lang) {
         return true;
     }
 
-    // TODO
     function classifyHistoryLockupViewModelModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
-
-        if (metadata_line || byline_container || badge) {
-            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-            const l = badge?.textContent ?? '';
-            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(1) span:nth-child(3)');
+        if (metadata) {
+            const t = metadata.textContent;
+            if (lang.isLive_metadata(t)) {
                 status.add('live');
-            } else if (lang.isStreamed_metadata(t)) {
-                status.add('streamed');
-            } else if (lang.isScheduled_metadata(t)) {
-                status.add('scheduled');
-
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
-                if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
-                    if (lang.isNotificationOn_button(t)) {
-                        status.add('notification_on');
-                    } else if (lang.isNotificationOff_button(t)) {
-                        status.add('notification_off');
-                    } else {
-                        // Unknown notification status
-                    }
-                }
-            } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
-                if (thumbnail_overlay) {
-                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
-                    if (overlay_style) {
-                        if (overlay_style === 'DEFAULT') {
-                            status.add('video');
-                        } else if (overlay_style === 'SHORTS') {
-                            status.add('short');
-                        } else {
-                            status.add('video'); // membership only video
-                        }
-                    }
-                }
-
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
-                if (slim_media) {
-                    status.add('short');
-                } else {
-                    status.add('video');
-                }
-            }
-        } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
-            if (shorts) {
-                status.add('short');
+            } else if (lang.isVideo_metadata(t)) {
+                status.add('video');
             }
         }
 
         return status;
     }
 
-    // TODO
     function classifyHistoryLockupViewModelProgressStatus(node) {
-        const status = new Set();
-
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
-        if (progress) {
-            status.add('progress_watched');
-        } else {
-            status.add('progress_unwatched');
-        }
-
-        return status;
+        return undefined;
     }
 
-    // TODO
     function matchHistoryShortsLockupViewModelV2TextContent(node) {
-        let text_node;
-
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
-        if (text_node) {
-            const textContent = text_node.getAttribute('aria-label');
-            if (textContent) {
-                return matchQuery(textContent);
-            }
-        }
-
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
-        if (text_node) {
-            return matchQuery(text_node.textContent);
+        const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+        if (metadata) {
+            return matchQuery(metadata.textContent);
         }
 
         // default: visible
         return true;
     }
 
-    // TODO
     function classifyHistoryShortsLockupViewModelV2ModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
-
-        if (metadata_line || byline_container || badge) {
-            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-            const l = badge?.textContent ?? '';
-            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
-                status.add('live');
-            } else if (lang.isStreamed_metadata(t)) {
-                status.add('streamed');
-            } else if (lang.isScheduled_metadata(t)) {
-                status.add('scheduled');
-
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
-                if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
-                    if (lang.isNotificationOn_button(t)) {
-                        status.add('notification_on');
-                    } else if (lang.isNotificationOff_button(t)) {
-                        status.add('notification_off');
-                    } else {
-                        // Unknown notification status
-                    }
-                }
-            } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
-                if (thumbnail_overlay) {
-                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
-                    if (overlay_style) {
-                        if (overlay_style === 'DEFAULT') {
-                            status.add('video');
-                        } else if (overlay_style === 'SHORTS') {
-                            status.add('short');
-                        } else {
-                            status.add('video'); // membership only video
-                        }
-                    }
-                }
-
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
-                if (slim_media) {
-                    status.add('short');
-                } else {
-                    status.add('video');
-                }
-            }
-        } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
-            if (shorts) {
-                status.add('short');
-            }
-        }
+        status.add('short');
 
         return status;
     }
 
-    // TODO
     function classifyHistoryShortsLockupViewModelV2ProgressStatus(node) {
-        const status = new Set();
+        return undefined;
+    }
 
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
-        if (progress) {
-            status.add('progress_watched');
-        } else {
-            status.add('progress_unwatched');
+    function matchHistoryVideoRendererTextContent(node) {
+        const title = node.querySelector('h3.title-and-badge');
+        if (title) {
+            return matchQuery(title.textContent);
         }
 
+        // default: visible
+        return true;
+    }
+
+    function classifyHistoryVideoRendererModeStatus(node) {
+        const status = new Set();
+
+        status.add('short');
+
         return status;
+    }
+
+    function classifyHistoryVideoRendererProgressStatus(node) {
+        return undefined;
     }
 
     function onPlaylistsNodeLoaded(node) {
