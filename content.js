@@ -930,62 +930,41 @@ function main(app, common, lang) {
         return true;
     }
 
-    // TODO
     function classifyLibraryRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
-
-        if (metadata_line || byline_container || badge) {
-            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-            const l = badge?.textContent ?? '';
-            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        if (metadata) {
+            const t = metadata.textContent;
+            if (lang.isLive_metadata(t)) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
+            } else if (lang.isVideo_metadata(t)) {
+                status.add('video');
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
-                if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
+                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                if (notification_button) {
+                    const t = notification_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
                         status.add('notification_off');
-                    } else {
-                        // Unknown notification status
                     }
                 }
-            } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
-                if (thumbnail_overlay) {
-                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
-                    if (overlay_style) {
-                        if (overlay_style === 'DEFAULT') {
-                            status.add('video');
-                        } else if (overlay_style === 'SHORTS') {
-                            status.add('short');
-                        } else {
-                            status.add('video'); // membership only video
-                        }
-                    }
-                }
+            }
+        }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
-                if (slim_media) {
-                    status.add('short');
-                } else {
-                    status.add('video');
-                }
-            }
-        } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
-            if (shorts) {
-                status.add('short');
-            }
+        const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
+        if (shorts) {
+            status.add('short');
+        }
+
+        const collection = node.querySelector('yt-collection-thumbnail-view-model');
+        if (collection) {
+            status.add('collection');
         }
 
         return status;
