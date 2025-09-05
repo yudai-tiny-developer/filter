@@ -907,10 +907,11 @@ function main(app, common, lang) {
         }
     }
 
+    // TODO
     function matchLibraryRichItemRendererTextContent(node) {
         let text_node;
 
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle'); // TODO
+        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
         if (text_node) {
             const textContent = text_node.getAttribute('aria-label');
             if (textContent) {
@@ -918,7 +919,7 @@ function main(app, common, lang) {
             }
         }
 
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string'); // TODO
+        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
         if (text_node) {
             return matchQuery(text_node.textContent);
         }
@@ -927,14 +928,15 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyLibraryRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
 
-        if (metadata_line || byline_container || badge) { // TODO
+        if (metadata_line || byline_container || badge) {
             const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
             const l = badge?.textContent ?? '';
             if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
@@ -944,9 +946,9 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
                 if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
@@ -956,7 +958,7 @@ function main(app, common, lang) {
                     }
                 }
             } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer'); // TODO
+                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
                 if (thumbnail_overlay) {
                     const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
                     if (overlay_style) {
@@ -970,7 +972,7 @@ function main(app, common, lang) {
                     }
                 }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                 if (slim_media) {
                     status.add('short');
                 } else {
@@ -978,7 +980,7 @@ function main(app, common, lang) {
                 }
             }
         } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
             if (shorts) {
                 status.add('short');
             }
@@ -987,10 +989,11 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyLibraryRichItemRendererProgressStatus(node) {
         const status = new Set();
 
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
         if (progress) {
             status.add('progress_watched');
         } else {
@@ -1028,11 +1031,11 @@ function main(app, common, lang) {
         }
     }
 
-
+    // TODO
     function matchHistoryRichItemRendererTextContent(node) {
         let text_node;
 
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle'); // TODO
+        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
         if (text_node) {
             const textContent = text_node.getAttribute('aria-label');
             if (textContent) {
@@ -1040,7 +1043,7 @@ function main(app, common, lang) {
             }
         }
 
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string'); // TODO
+        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
         if (text_node) {
             return matchQuery(text_node.textContent);
         }
@@ -1049,14 +1052,15 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyHistoryRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
 
-        if (metadata_line || byline_container || badge) { // TODO
+        if (metadata_line || byline_container || badge) {
             const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
             const l = badge?.textContent ?? '';
             if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
@@ -1066,9 +1070,9 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
                 if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
@@ -1078,7 +1082,7 @@ function main(app, common, lang) {
                     }
                 }
             } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer'); // TODO
+                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
                 if (thumbnail_overlay) {
                     const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
                     if (overlay_style) {
@@ -1092,7 +1096,7 @@ function main(app, common, lang) {
                     }
                 }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                 if (slim_media) {
                     status.add('short');
                 } else {
@@ -1100,7 +1104,7 @@ function main(app, common, lang) {
                 }
             }
         } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
             if (shorts) {
                 status.add('short');
             }
@@ -1109,10 +1113,11 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyHistoryRichItemRendererProgressStatus(node) {
         const status = new Set();
 
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
         if (progress) {
             status.add('progress_watched');
         } else {
@@ -1150,11 +1155,11 @@ function main(app, common, lang) {
         }
     }
 
-
+    // TODO
     function matchPlaylistsRichItemRendererTextContent(node) {
         let text_node;
 
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle'); // TODO
+        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
         if (text_node) {
             const textContent = text_node.getAttribute('aria-label');
             if (textContent) {
@@ -1162,7 +1167,7 @@ function main(app, common, lang) {
             }
         }
 
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string'); // TODO
+        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
         if (text_node) {
             return matchQuery(text_node.textContent);
         }
@@ -1174,11 +1179,11 @@ function main(app, common, lang) {
     function classifyPlaylistsRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
 
-        if (metadata_line || byline_container || badge) { // TODO
+        if (metadata_line || byline_container || badge) {
             const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
             const l = badge?.textContent ?? '';
             if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
@@ -1188,9 +1193,9 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
                 if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
@@ -1200,7 +1205,7 @@ function main(app, common, lang) {
                     }
                 }
             } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer'); // TODO
+                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
                 if (thumbnail_overlay) {
                     const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
                     if (overlay_style) {
@@ -1214,7 +1219,7 @@ function main(app, common, lang) {
                     }
                 }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                 if (slim_media) {
                     status.add('short');
                 } else {
@@ -1222,7 +1227,7 @@ function main(app, common, lang) {
                 }
             }
         } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
             if (shorts) {
                 status.add('short');
             }
@@ -1231,10 +1236,11 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyPlaylistsRichItemRendererProgressStatus(node) {
         const status = new Set();
 
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
         if (progress) {
             status.add('progress_watched');
         } else {
@@ -1272,7 +1278,7 @@ function main(app, common, lang) {
         }
     }
 
-
+    // TODO
     function matchPlaylistVideoRendererTextContent(node) {
         let text_node;
 
@@ -1285,13 +1291,14 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyPlaylistVideoRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
-        if (metadata_line || byline_container || badge) { // TODO
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
+        if (metadata_line || byline_container || badge) {
             const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
             const l = badge?.textContent ?? '';
             if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
@@ -1301,9 +1308,9 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
                 if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
@@ -1327,7 +1334,7 @@ function main(app, common, lang) {
                     }
                 }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                 if (slim_media) {
                     status.add('short');
                 } else {
@@ -1335,7 +1342,7 @@ function main(app, common, lang) {
                 }
             }
         } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
             if (shorts) {
                 status.add('short');
             }
@@ -1344,10 +1351,11 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyPlaylistVideoRendererProgressStatus(node) {
         const status = new Set();
 
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
         if (progress) {
             status.add('progress_watched');
         } else {
@@ -1385,6 +1393,7 @@ function main(app, common, lang) {
         }
     }
 
+    // TODO
     function matchChannelRendererTextContent(node) {
         let text_node;
 
@@ -1397,6 +1406,7 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyChannelRendererModeStatus(node) {
         const status = new Set();
 
@@ -1419,6 +1429,7 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyChannelRendererProgressStatus(node) {
         const status = new Set();
 
@@ -1471,7 +1482,7 @@ function main(app, common, lang) {
         }
     }
 
-
+    // TODO
     function matchGridVideoRendererTextContent(node) {
         let text_node;
 
@@ -1484,14 +1495,15 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyGridVideoRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
-        if (metadata_line || byline_container || badge) { // TODO
-            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? ''); // TODO
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
+        if (metadata_line || byline_container || badge) {
+            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
             const l = badge?.textContent ?? '';
             if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
                 status.add('live');
@@ -1500,9 +1512,9 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
                 if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
@@ -1526,7 +1538,7 @@ function main(app, common, lang) {
                     }
                 }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                 if (slim_media) {
                     status.add('short');
                 } else {
@@ -1534,7 +1546,7 @@ function main(app, common, lang) {
                 }
             }
         } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
             if (shorts) {
                 status.add('short');
             }
@@ -1543,10 +1555,11 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyGridVideoRendererProgressStatus(node) {
         const status = new Set();
 
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
         if (progress) {
             status.add('progress_watched');
         } else {
@@ -1556,10 +1569,11 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function matchShortsLockupViewModelV2TextContent(node) {
         let text_node;
 
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle'); // TODO
+        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
         if (text_node) {
             const textContent = text_node.getAttribute('aria-label');
             if (textContent) {
@@ -1567,7 +1581,7 @@ function main(app, common, lang) {
             }
         }
 
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string'); // TODO
+        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
         if (text_node) {
             return matchQuery(text_node.textContent);
         }
@@ -1576,6 +1590,7 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyShortsLockupViewModelV2ModeStatus(node) {
         const status = new Set();
 
@@ -1584,12 +1599,14 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyShortsLockupViewModelV2ProgressStatus(node) {
         const status = new Set();
 
         return status;
     }
 
+    // TODO
     function matchLockupViewModelTextContent(node) {
         let text_node;
 
@@ -1602,14 +1619,15 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyLockupViewModelModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
-        if (metadata_line || byline_container || badge) { // TODO
-            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? ''); // TODO
+        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
+        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
+        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
+        if (metadata_line || byline_container || badge) {
+            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
             const l = badge?.textContent ?? '';
             if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
                 status.add('live');
@@ -1618,9 +1636,9 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
+                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
                 if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
@@ -1644,7 +1662,7 @@ function main(app, common, lang) {
                     }
                 }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
+                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
                 if (slim_media) {
                     status.add('short');
                 } else {
@@ -1652,7 +1670,7 @@ function main(app, common, lang) {
                 }
             }
         } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
+            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
             if (shorts) {
                 status.add('short');
             }
@@ -1661,12 +1679,14 @@ function main(app, common, lang) {
         return status;
     }
 
+    // TODO
     function classifyLockupViewModelProgressStatus(node) {
         const status = new Set();
 
         return status;
     }
 
+    // TODO
     function matchGridChannelRendererTextContent(node) {
         let text_node;
 
@@ -1674,18 +1694,21 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyGridChannelRendererModeStatus(node) {
         const status = new Set();
 
         return status;
     }
 
+    // TODO
     function classifyGridChannelRendererProgressStatus(node) {
         const status = new Set();
 
         return status;
     }
 
+    // TODO
     function matchPostRendererTextContent(node) {
         let text_node;
 
@@ -1693,12 +1716,14 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyPostRendererModeStatus(node) {
         const status = new Set();
 
         return status;
     }
 
+    // TODO
     function classifyPostRendererProgressStatus(node) {
         const status = new Set();
 
@@ -1733,6 +1758,7 @@ function main(app, common, lang) {
         }
     }
 
+    // TODO
     function matchRichGridMediaTextContent(node) {
         let text_node;
 
@@ -1740,12 +1766,14 @@ function main(app, common, lang) {
         return true;
     }
 
+    // TODO
     function classifyRichGridMediaModeStatus(node) {
         const status = new Set();
 
         return status;
     }
 
+    // TODO
     function classifyRichGridMediaProgressStatus(node) {
         const status = new Set();
 
