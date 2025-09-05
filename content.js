@@ -970,7 +970,6 @@ function main(app, common, lang) {
         return status;
     }
 
-    // TODO
     function classifyLibraryRichItemRendererProgressStatus(node) {
         const status = new Set();
 
