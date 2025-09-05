@@ -1137,19 +1137,8 @@ function main(app, common, lang) {
         }
     }
 
-    // TODO
     function matchPlaylistsRichItemRendererTextContent(node) {
-        let text_node;
-
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
-        if (text_node) {
-            const textContent = text_node.getAttribute('aria-label');
-            if (textContent) {
-                return matchQuery(textContent);
-            }
-        }
-
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
+        const text_node = node.querySelector('yt-lockup-metadata-view-model div:nth-child(1) h3');
         if (text_node) {
             return matchQuery(text_node.textContent);
         }
@@ -1158,79 +1147,12 @@ function main(app, common, lang) {
         return true;
     }
 
-    // TODO
     function classifyPlaylistsRichItemRendererModeStatus(node) {
-        const status = new Set();
-
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model');
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model');
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model');
-
-        if (metadata_line || byline_container || badge) {
-            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-            const l = badge?.textContent ?? '';
-            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
-                status.add('live');
-            } else if (lang.isStreamed_metadata(t)) {
-                status.add('streamed');
-            } else if (lang.isScheduled_metadata(t)) {
-                status.add('scheduled');
-
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape');
-                if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent;
-                    if (lang.isNotificationOn_button(t)) {
-                        status.add('notification_on');
-                    } else if (lang.isNotificationOff_button(t)) {
-                        status.add('notification_off');
-                    } else {
-                        // Unknown notification status
-                    }
-                }
-            } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer');
-                if (thumbnail_overlay) {
-                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
-                    if (overlay_style) {
-                        if (overlay_style === 'DEFAULT') {
-                            status.add('video');
-                        } else if (overlay_style === 'SHORTS') {
-                            status.add('short');
-                        } else {
-                            status.add('video'); // membership only video
-                        }
-                    }
-                }
-
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media');
-                if (slim_media) {
-                    status.add('short');
-                } else {
-                    status.add('video');
-                }
-            }
-        } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
-            if (shorts) {
-                status.add('short');
-            }
-        }
-
-        return status;
+        return undefined;
     }
 
-    // TODO
     function classifyPlaylistsRichItemRendererProgressStatus(node) {
-        const status = new Set();
-
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
-        if (progress) {
-            status.add('progress_watched');
-        } else {
-            status.add('progress_unwatched');
-        }
-
-        return status;
+        return undefined;
     }
 
     function onPlaylistNodeLoaded(node) {
