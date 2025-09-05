@@ -599,6 +599,46 @@ function main(app, common, lang) {
         }
     }
 
+    function onSubscriptionsNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YTD-RICH-ITEM-RENDERER':
+                updateTargetVisibility(node, matchSubscriptionsRichItemRendererTextContent, classifySubscriptionsRichItemRendererModeStatus, classifySubscriptionsRichItemRendererProgressStatus);
+                break;
+            case 'YTD-BROWSE':
+                insertSubscriptionsMenu(node);
+                break;
+            case 'YTD-CONTINUATION-ITEM-RENDERER':
+                if (node.parentNode.children.length > limit) {
+                    load_button_container.style.display = '';
+                    node.style.display = 'none';
+                    node.classList.remove('filter-show');
+                    node.classList.add('filter-hidden');
+                    node.parentNode.parentNode.appendChild(load_button_container);
+                    continuation_item = node;
+                } else {
+                    // continuation
+                }
+                break;
+        }
+    }
+
+    function insertSubscriptionsMenu(browse) {
+        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+            const menu = createMenu(browse);
+            browse.insertBefore(menu, browse.firstChild);
+
+            const calc = createNodeForCalc(menu, browse);
+            browse.insertBefore(calc, browse.firstChild);
+
+            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+
+            updateButtonVisibility(browse);
+            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+        } else {
+            // already exists
+        }
+    }
+
     function matchSubscriptionsRichItemRendererTextContent(node) {
         const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
         if (metadata) {
@@ -650,46 +690,6 @@ function main(app, common, lang) {
         }
 
         return status;
-    }
-
-    function onSubscriptionsNodeLoaded(node) {
-        switch (node.nodeName) {
-            case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchSubscriptionsRichItemRendererTextContent, classifySubscriptionsRichItemRendererModeStatus, classifySubscriptionsRichItemRendererProgressStatus);
-                break;
-            case 'YTD-BROWSE':
-                insertSubscriptionsMenu(node);
-                break;
-            case 'YTD-CONTINUATION-ITEM-RENDERER':
-                if (node.parentNode.children.length > limit) {
-                    load_button_container.style.display = '';
-                    node.style.display = 'none';
-                    node.classList.remove('filter-show');
-                    node.classList.add('filter-hidden');
-                    node.parentNode.parentNode.appendChild(load_button_container);
-                    continuation_item = node;
-                } else {
-                    // continuation
-                }
-                break;
-        }
-    }
-
-    function insertSubscriptionsMenu(browse) {
-        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
-            browse.insertBefore(menu, browse.firstChild);
-
-            const calc = createNodeForCalc(menu, browse);
-            browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
-
-            updateButtonVisibility(browse);
-            display_query(browse, 'form.filter-menu, div.filter-menu', '');
-        } else {
-            // already exists
-        }
     }
 
     function onShortsNodeLoaded(node) {
