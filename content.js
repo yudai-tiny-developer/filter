@@ -645,7 +645,7 @@ function main(app, common, lang) {
             return matchQuery(metadata.textContent);
         }
 
-        const shorts_metadata = node.querySelector('ytm-shorts-lockup-view-model-v2 h3.shortsLockupViewModelHostMetadataTitle');
+        const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) {
             return matchQuery(shorts_metadata.textContent);
         }
@@ -809,6 +809,19 @@ function main(app, common, lang) {
             return matchQuery(metadata.textContent);
         }
 
+        const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+        if (shorts_metadata) {
+            return matchQuery(shorts_metadata.textContent);
+        }
+
+        const collection = node.querySelector('yt-collection-thumbnail-view-model');
+        if (collection) {
+            const collection_metadata = node.querySelector('yt-lockup-metadata-view-model');
+            if (collection_metadata) {
+                return matchQuery(collection_metadata.textContent);
+            }
+        }
+
         // default: visible
         return true;
     }
@@ -843,6 +856,11 @@ function main(app, common, lang) {
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
+        }
+
+        const collection = node.querySelector('yt-collection-thumbnail-view-model');
+        if (collection) {
+            status.add('collection');
         }
 
         return status;
