@@ -907,21 +907,23 @@ function main(app, common, lang) {
         }
     }
 
-    // TODO
     function matchLibraryRichItemRendererTextContent(node) {
-        let text_node;
-
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle');
-        if (text_node) {
-            const textContent = text_node.getAttribute('aria-label');
-            if (textContent) {
-                return matchQuery(textContent);
-            }
+        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        if (metadata) {
+            return matchQuery(metadata.textContent);
         }
 
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string');
-        if (text_node) {
-            return matchQuery(text_node.textContent);
+        const shorts_metadata = node.querySelector('ytd-rich-grid-media div#meta h3');
+        if (shorts_metadata) {
+            return matchQuery(shorts_metadata.textContent);
+        }
+
+        const collection = node.querySelector('yt-collection-thumbnail-view-model');
+        if (collection) {
+            const collection_metadata = node.querySelector('yt-lockup-metadata-view-model');
+            if (collection_metadata) {
+                return matchQuery(collection_metadata.textContent);
+            }
         }
 
         // default: visible
