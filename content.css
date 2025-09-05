@@ -219,10 +219,6 @@ ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer>div#contents {
     padding-top: 0px !important;
 }
 
-ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]) {
-    display: none !important;
-}
-
 ytd-browse[page-subtype="subscriptions"] ytd-rich-item-renderer[rendered-from-rich-grid][is-in-first-column] {
     margin-left: calc(var(--ytd-rich-grid-item-margin)/2) !important;
 }

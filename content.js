@@ -645,6 +645,11 @@ function main(app, common, lang) {
             return matchQuery(metadata.textContent);
         }
 
+        const shorts_metadata = node.querySelector('ytm-shorts-lockup-view-model-v2 h3.shortsLockupViewModelHostMetadataTitle');
+        if (shorts_metadata) {
+            return matchQuery(shorts_metadata.textContent);
+        }
+
         // default: visible
         return true;
     }
@@ -674,6 +679,11 @@ function main(app, common, lang) {
                     }
                 }
             }
+        }
+
+        const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
+        if (shorts) {
+            status.add('short');
         }
 
         return status;
@@ -794,19 +804,9 @@ function main(app, common, lang) {
     }
 
     function matchTopRichItemRendererTextContent(node) {
-        let text_node;
-
-        text_node = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle, h3.shortsLockupViewModelHostOutsideMetadataTitle'); // TODO
-        if (text_node) {
-            const textContent = text_node.getAttribute('aria-label');
-            if (textContent) {
-                return matchQuery(textContent);
-            }
-        }
-
-        text_node = node.querySelector('h3.ytd-rich-grid-media, .ytd-rich-grid-slim-media, .yt-core-attributed-string'); // TODO
-        if (text_node) {
-            return matchQuery(text_node.textContent);
+        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        if (metadata) {
+            return matchQuery(metadata.textContent);
         }
 
         // default: visible
@@ -816,58 +816,33 @@ function main(app, common, lang) {
     function classifyTopRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata_line = node.querySelector('div#metadata-line, yt-content-metadata-view-model'); // TODO
-        const byline_container = node.querySelector('div#byline-container, lockup-attachments-view-model'); // TODO
-        const badge = node.querySelector('p.ytd-badge-supported-renderer, yt-thumbnail-badge-view-model'); // TODO
-
-        if (metadata_line || byline_container || badge) { // TODO
-            const t = (metadata_line?.textContent ?? '') + '\n' + (byline_container?.textContent ?? '');
-            const l = badge?.textContent ?? '';
-            if (lang.isLive_metadata(t) || lang.isLive_status_label(l)) {
+        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        if (metadata) {
+            const t = metadata.textContent;
+            if (lang.isLive_metadata(t)) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
+            } else if (lang.isVideo_metadata(t)) {
+                status.add('video');
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const video_button = node.querySelector('yt-button-shape > button[aria-label]') ?? node.querySelector('yt-button-shape'); // TODO
-                if (video_button) {
-                    const t = video_button.getAttribute('aria-label') ?? video_button.textContent; // TODO
+                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                if (notification_button) {
+                    const t = notification_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
                         status.add('notification_on');
                     } else if (lang.isNotificationOff_button(t)) {
                         status.add('notification_off');
-                    } else {
-                        // Unknown notification status
                     }
                 }
-            } else /*if (lang.isVideo_metadata(t))*/ {
-                const thumbnail_overlay = node.querySelector('ytd-thumbnail-overlay-time-status-renderer'); // TODO
-                if (thumbnail_overlay) {
-                    const overlay_style = thumbnail_overlay.getAttribute('overlay-style');
-                    if (overlay_style) {
-                        if (overlay_style === 'DEFAULT') {
-                            status.add('video');
-                        } else if (overlay_style === 'SHORTS') {
-                            status.add('short');
-                        } else {
-                            status.add('video'); // membership only video
-                        }
-                    }
-                }
+            }
+        }
 
-                const slim_media = node.querySelector('ytd-rich-grid-slim-media'); // TODO
-                if (slim_media) {
-                    status.add('short');
-                } else {
-                    status.add('video');
-                }
-            }
-        } else {
-            const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2'); // TODO
-            if (shorts) {
-                status.add('short');
-            }
+        const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
+        if (shorts) {
+            status.add('short');
         }
 
         return status;
@@ -876,7 +851,7 @@ function main(app, common, lang) {
     function classifyTopRichItemRendererProgressStatus(node) {
         const status = new Set();
 
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model'); // TODO
+        const progress = node.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
         if (progress) {
             status.add('progress_watched');
         } else {
@@ -1883,13 +1858,9 @@ function main(app, common, lang) {
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
         span.innerHTML = text;
         span.addEventListener('click', () => {
-            if (isShorts && common.isSubscriptions(location.href)) {
-                location.href = 'https://www.youtube.com/feed/subscriptions/shorts';
-            } else {
-                changeMode(mode, multiselection, span.classList.contains('selected'), browse);
-                updateVisibility(browse);
-                window.scroll({ top: 0, behavior: 'instant' });
-            }
+            changeMode(mode, multiselection, span.classList.contains('selected'), browse);
+            updateVisibility(browse);
+            window.scroll({ top: 0, behavior: 'instant' });
         });
         return span;
     }
@@ -2265,7 +2236,7 @@ function main(app, common, lang) {
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
         } else {
-            node.style.display = 'none';
+            node.style.cssText = 'display: none !important;';
             node.classList.remove('filter-show');
             node.classList.add('filter-hidden');
         }
