@@ -593,7 +593,7 @@ function main(app, common, lang) {
         } else if (common.isHashTag(location.href)) {
             node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchHashTagRichItemRendererTextContent, classifyHashTagRichItemRendererModeStatus, classifyHashTagRichItemRendererProgressStatus));
         } else if (common.isChannel(location.href)) {
-            node.querySelectorAll('ytd-item-section-renderer').forEach(n => updateTargetVisibility(n, matchChannelItemSectionRendererTextContent, classifyChannelItemSectionRendererModeStatus, classifyChannelItemSectionRendererProgressStatus));
+            node.querySelectorAll('ytd-channel-featured-content-renderer').forEach(n => updateTargetVisibility(n, matchChannelChannelFeaturedContentRendererTextContent, classifyChannelChannelFeaturedContentRendererModeStatus, classifyChannelChannelFeaturedContentRendererProgressStatus));
             node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n, matchChannelGridVideoRendererTextContent, classifyChannelGridVideoRendererModeStatus, classifyChannelGridVideoRendererProgressStatus));
             node.querySelectorAll('ytd-grid-channel-renderer').forEach(n => updateTargetVisibility(n, matchChannelGridChannelRendererTextContent, classifyChannelGridChannelRendererModeStatus, classifyChannelGridChannelRendererProgressStatus));
             node.querySelectorAll('ytd-post-renderer').forEach(n => updateTargetVisibility(n, matchChannelPostRendererTextContent, classifyChannelPostRendererModeStatus, classifyChannelPostRendererProgressStatus));
@@ -1336,8 +1336,8 @@ function main(app, common, lang) {
 
     function onChannelNodeLoaded(node) {
         switch (node.nodeName) {
-            case 'YTD-ITEM-SECTION-RENDERER':
-                updateTargetVisibility(node, matchChannelItemSectionRendererTextContent, classifyChannelItemSectionRendererModeStatus, classifyChannelItemSectionRendererProgressStatus);
+            case 'YTD-CHANNEL-FEATURED-CONTENT-RENDERER':
+                updateTargetVisibility(node, matchChannelChannelFeaturedContentRendererTextContent, classifyChannelChannelFeaturedContentRendererModeStatus, classifyChannelChannelFeaturedContentRendererProgressStatus);
                 break;
             case 'YTD-GRID-VIDEO-RENDERER':
                 updateTargetVisibility(node, matchChannelGridVideoRendererTextContent, classifyChannelGridVideoRendererModeStatus, classifyChannelGridVideoRendererProgressStatus);
@@ -1380,7 +1380,7 @@ function main(app, common, lang) {
         }
     }
 
-    function matchChannelItemSectionRendererTextContent(node) {
+    function matchChannelChannelFeaturedContentRendererTextContent(node) {
         const title = node.querySelector('a#video-title');
         if (title) {
             return matchQuery(title.textContent);
@@ -1390,11 +1390,11 @@ function main(app, common, lang) {
         return true;
     }
 
-    function classifyChannelItemSectionRendererModeStatus(node) {
+    function classifyChannelChannelFeaturedContentRendererModeStatus(node) {
         return undefined;
     }
 
-    function classifyChannelItemSectionRendererProgressStatus(node) {
+    function classifyChannelChannelFeaturedContentRendererProgressStatus(node) {
         const status = new Set();
 
         const progress = node.querySelector('div#progress');
