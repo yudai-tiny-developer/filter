@@ -801,6 +801,30 @@ function main(app, common, lang) {
             }
         }
 
+        const metadata_line = node.querySelector('metadata-line');
+        if (metadata_line) {
+            const t = metadata_line.textContent;
+            if (lang.isLive_metadata(t)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isVideo_metadata(t)) {
+                status.add('video');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                if (notification_button) {
+                    const t = notification_button.textContent;
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    }
+                }
+            }
+        }
+
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
