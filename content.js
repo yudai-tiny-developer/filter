@@ -1273,13 +1273,10 @@ function main(app, common, lang) {
         }
     }
 
-    // TODO
     function matchChannelRendererTextContent(node) {
-        let text_node;
-
-        text_node = node.querySelector('div#info');
-        if (text_node) {
-            return matchQuery(text_node.textContent);
+        const info = node.querySelector('div#info');
+        if (info) {
+            return matchQuery(info.textContent);
         }
 
         // default: visible
@@ -1290,30 +1287,23 @@ function main(app, common, lang) {
     function classifyChannelRendererModeStatus(node) {
         const status = new Set();
 
-        const channel_notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
-        if (channel_notification) {
-            const t = channel_notification.getAttribute('aria-label');
+        const notification = node.querySelector('ytd-subscription-notification-toggle-button-renderer-next button[aria-label]');
+        if (notification) {
+            const t = notification.getAttribute('aria-label');
             if (lang.isChannelsAllNotifications(t)) {
                 status.add('channels_all');
             } else if (lang.isChannelsPersonalizedNotifications(t)) {
                 status.add('channels_personalized');
             } else if (lang.isChannelsNoNotifications(t)) {
                 status.add('channels_none');
-            } else {
-                // Unknown channel notification
             }
-        } else {
-            // sponsor
         }
 
         return status;
     }
 
-    // TODO
     function classifyChannelRendererProgressStatus(node) {
-        const status = new Set();
-
-        return status;
+        return undefined;
     }
 
     function onChannelNodeLoaded(node) {
