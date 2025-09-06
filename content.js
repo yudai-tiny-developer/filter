@@ -1490,11 +1490,6 @@ function main(app, common, lang) {
     }
 
     function classifyChannelRichItemRendererProgressStatus(node) {
-        const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
-        if (metadata) {
-            return undefined;
-        }
-
         const status = new Set();
 
         const progress = node.querySelector('div#progress');
