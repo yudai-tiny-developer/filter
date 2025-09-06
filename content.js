@@ -713,6 +713,14 @@ function main(app, common, lang) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node, matchTopRichItemRendererTextContent, classifyTopRichItemRendererModeStatus, classifyTopRichItemRendererProgressStatus);
                 break;
+            case 'YT-LOCKUP-VIEW-MODEL':
+                {
+                    const n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n, matchTopRichItemRendererTextContent, classifyTopRichItemRendererModeStatus, classifyTopRichItemRendererProgressStatus);
+                    }
+                }
+                break;
             case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
                 insertTopMenu(node);
                 break;
