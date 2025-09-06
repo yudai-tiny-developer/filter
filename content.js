@@ -597,6 +597,7 @@ function main(app, common, lang) {
             node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n, matchChannelGridVideoRendererTextContent, classifyChannelGridVideoRendererModeStatus, classifyChannelGridVideoRendererProgressStatus));
             node.querySelectorAll('ytd-grid-channel-renderer').forEach(n => updateTargetVisibility(n, matchChannelGridChannelRendererTextContent, classifyChannelGridChannelRendererModeStatus, classifyChannelGridChannelRendererProgressStatus));
             node.querySelectorAll('ytd-post-renderer').forEach(n => updateTargetVisibility(n, matchChannelPostRendererTextContent, classifyChannelPostRendererModeStatus, classifyChannelPostRendererProgressStatus));
+            node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchChannelShortsLockupViewModelV2TextContent, classifyChannelShortsLockupViewModelV2ModeStatus, classifyChannelShortsLockupViewModelV2ProgressStatus));
             node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchChannelRichItemRendererTextContent, classifyChannelRichItemRendererModeStatus, classifyChannelRichItemRendererProgressStatus));
             node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchChannelLockupViewModelTextContent, classifyChannelLockupViewModelModeStatus, classifyChannelLockupViewModelProgressStatus));
             node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n, matchChannelBackstagePostThreadRendererTextContent, classifyChannelBackstagePostThreadRendererModeStatus, classifyChannelBackstagePostThreadRendererProgressStatus));
@@ -1379,6 +1380,9 @@ function main(app, common, lang) {
             case 'YTD-POST-RENDERER':
                 updateTargetVisibility(node, matchChannelPostRendererTextContent, classifyChannelPostRendererModeStatus, classifyChannelPostRendererProgressStatus);
                 break;
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                updateTargetVisibility(node, matchChannelShortsLockupViewModelV2TextContent, classifyChannelShortsLockupViewModelV2ModeStatus, classifyChannelShortsLockupViewModelV2ProgressStatus);
+                break;
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node, matchChannelRichItemRendererTextContent, classifyChannelRichItemRendererModeStatus, classifyChannelRichItemRendererProgressStatus);
                 break;
@@ -1498,6 +1502,28 @@ function main(app, common, lang) {
     }
 
     function classifyChannelPostRendererProgressStatus(node) {
+        return undefined;
+    }
+
+    function matchChannelShortsLockupViewModelV2TextContent(node) {
+        const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+        if (metadata) {
+            return matchQuery(metadata.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyChannelShortsLockupViewModelV2ModeStatus(node) {
+        const status = new Set();
+
+        status.add('short');
+
+        return status;
+    }
+
+    function classifyChannelShortsLockupViewModelV2ProgressStatus(node) {
         return undefined;
     }
 
