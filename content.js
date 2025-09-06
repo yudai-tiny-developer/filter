@@ -502,12 +502,14 @@ function main(app, common, lang) {
 
     function isPositionFixedTarget() {
         return common.isSubscriptions(location.href)
+            // || common.isTop(location.href)
             || common.isShorts(location.href)
             || common.isLibrary(location.href)
             || common.isHistory(location.href)
             || common.isPlaylists(location.href)
             || common.isPlaylist(location.href)
-            || common.isHashTag(location.href)
+            // || common.isHashTag(location.href)
+            // || common.isChannel(location.href)
             || common.isChannels(location.href)
             ;
     }
@@ -1253,6 +1255,14 @@ function main(app, common, lang) {
             case 'YTD-BROWSE':
                 insertHashTagMenu(node);
                 break;
+            case 'TP-YT-APP-HEADER':
+                {
+                    const n = searchParentNode(node, 'YTD-BROWSE');
+                    if (n) {
+                        insertHashTagMenu(n);
+                    }
+                }
+                break;
         }
     }
 
@@ -1265,8 +1275,6 @@ function main(app, common, lang) {
 
                 const calc = createNodeForCalc(menu, browse);
                 header.insertBefore(calc, header.firstChild);
-
-                header.insertBefore(createSpacer('browse'), header.firstChild);
 
                 updateButtonVisibility(browse);
                 display_query(browse, 'form.filter-menu, div.filter-menu', '');
