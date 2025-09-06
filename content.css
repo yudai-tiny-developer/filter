@@ -219,10 +219,6 @@ ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer>div#contents {
     padding-top: 0px !important;
 }
 
-ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]) {
-    display: none !important;
-}
-
 ytd-browse[page-subtype="subscriptions"] ytd-rich-item-renderer[rendered-from-rich-grid][is-in-first-column] {
     margin-left: calc(var(--ytd-rich-grid-item-margin)/2) !important;
 }
@@ -317,8 +313,4 @@ ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) div#frosted-glass.witho
     display: block !important;
     background: var(--yt-spec-scrim-background-gradient-4) !important;
     backdrop-filter: blur(48px) !important;
-}
-
-ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) ytd-masthead[frosted-glass-mode=without-chipbar] div#background.ytd-masthead {
-    display: none !important;
 }
