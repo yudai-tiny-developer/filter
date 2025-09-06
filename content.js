@@ -1516,11 +1516,7 @@ function main(app, common, lang) {
     }
 
     function classifyChannelShortsLockupViewModelV2ModeStatus(node) {
-        const status = new Set();
-
-        status.add('short');
-
-        return status;
+        return undefined;
     }
 
     function classifyChannelShortsLockupViewModelV2ProgressStatus(node) {
