@@ -1283,7 +1283,6 @@ function main(app, common, lang) {
         return true;
     }
 
-    // TODO
     function classifyChannelRendererModeStatus(node) {
         const status = new Set();
 
