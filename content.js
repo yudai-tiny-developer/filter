@@ -704,7 +704,7 @@ function main(app, common, lang) {
     function classifySubscriptionsRichItemRendererProgressStatus(node) {
         const status = new Set();
 
-        const progress = node.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
+        const progress = node.querySelector('div#progress') ?? node.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
         if (progress) {
             status.add('progress_watched');
         } else {
