@@ -647,14 +647,14 @@ function main(app, common, lang) {
     }
 
     function matchSubscriptionsRichItemRendererTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
-        if (metadata) {
-            return matchQuery(metadata.textContent);
+        const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        if (title) {
+            return matchQuery(title.textContent);
         }
 
-        const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
-        if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent);
+        const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+        if (shorts_title) {
+            return matchQuery(shorts_title.textContent);
         }
 
         // default: visible
@@ -664,7 +664,7 @@ function main(app, common, lang) {
     function classifySubscriptionsRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        const metadata = node.querySelector('div#metadata-line') ?? node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -676,7 +676,7 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                const notification_button = node.querySelector('div#buttons button') ?? node.querySelector('lockup-attachments-view-model button');
                 if (notification_button) {
                     const t = notification_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
