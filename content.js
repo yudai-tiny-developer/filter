@@ -692,6 +692,11 @@ function main(app, common, lang) {
             status.add('short');
         }
 
+        if (status.size === 0) {
+            // Member-only Video
+            status.add('video');
+        }
+
         return status;
     }
 
@@ -841,6 +846,11 @@ function main(app, common, lang) {
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
         if (collection) {
             status.add('collection');
+        }
+
+        if (status.size === 0) {
+            // Member-only Video
+            status.add('video');
         }
 
         return status;
