@@ -300,10 +300,6 @@ ytd-multi-page-menu-renderer:has(input#filter-query:not(:placeholder-shown)) div
     }
 }
 
-ytd-rich-section-renderer:not(:has(.filter-show)):has(.filter-hidden) {
-    display: none !important;
-}
-
 ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) div#frosted-glass.with-chipbar {
     height: 168px !important;
 }
@@ -313,8 +309,4 @@ ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) div#frosted-glass.witho
     display: block !important;
     background: var(--yt-spec-scrim-background-gradient-4) !important;
     backdrop-filter: blur(48px) !important;
-}
-
-ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) ytd-masthead[frosted-glass-mode=without-chipbar] div#background.ytd-masthead {
-    display: none !important;
 }

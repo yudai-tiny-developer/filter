@@ -291,7 +291,7 @@ function main(app, common, lang) {
 
                 display_query(browse, 'span.filter-query', display(keyword));
 
-                browse.setAttribute('filter-menu', 'true');
+                browse.setAttribute('filter-menu', 'false');
             } else if (common.isPlaylists(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', 'none');
                 display_query(browse, 'span.filter-button-subscriptions.live', 'none');
@@ -597,7 +597,7 @@ function main(app, common, lang) {
             node.querySelectorAll('ytd-grid-channel-renderer').forEach(n => updateTargetVisibility(n, matchGridChannelRendererTextContent, classifyGridChannelRendererModeStatus, classifyGridChannelRendererProgressStatus));
             node.querySelectorAll('ytd-post-renderer').forEach(n => updateTargetVisibility(n, matchPostRendererTextContent, classifyPostRendererModeStatus, classifyPostRendererProgressStatus));
         } else if (common.isHashTag(location.href)) {
-            node.querySelectorAll('ytd-rich-grid-media').forEach(n => updateTargetVisibility(n, matchRichGridMediaTextContent, classifyRichGridMediaModeStatus, classifyRichGridMediaProgressStatus));
+            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchHashTagRichItemRendererTextContent, classifyHashTagRichItemRendererModeStatus, classifyHashTagRichItemRendererProgressStatus));
         }
     }
 
@@ -1601,8 +1601,8 @@ function main(app, common, lang) {
 
     function onHashTagNodeLoaded(node) {
         switch (node.nodeName) {
-            case 'YTD-RICH-GRID-MEDIA':
-                updateTargetVisibility(node, matchTextContent, classifyRichGridMediaModeStatus, classifyRichGridMediaProgressStatus);
+            case 'YTD-RICH-ITEM-RENDERER':
+                updateTargetVisibility(node, matchHashTagRichItemRendererTextContent, classifyHashTagRichItemRendererModeStatus, classifyHashTagRichItemRendererProgressStatus);
                 break;
             case 'YTD-BROWSE':
                 insertHashTagMenu(node);
@@ -1612,39 +1612,68 @@ function main(app, common, lang) {
 
     function insertHashTagMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
-            browse.insertBefore(menu, browse.firstChild);
+            const header = browse.querySelector('div#page-header-container');
+            if (header) {
+                const menu = createMenu(browse);
+                header.insertBefore(menu, header.firstChild);
 
-            const calc = createNodeForCalc(menu, browse);
-            browse.insertBefore(calc, browse.firstChild);
+                const calc = createNodeForCalc(menu, browse);
+                header.insertBefore(calc, header.firstChild);
 
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
+                header.insertBefore(createSpacer('browse'), header.firstChild);
 
-            updateButtonVisibility(browse);
-            display_query(browse, 'form.filter-menu, div.filter-menu', '');
+                updateButtonVisibility(browse);
+                display_query(browse, 'form.filter-menu, div.filter-menu', '');
+            }
         } else {
             // already exists
         }
     }
 
-    // TODO
-    function matchRichGridMediaTextContent(node) {
-        let text_node;
+    function matchHashTagRichItemRendererTextContent(node) {
+        const title = node.querySelector('yt-formatted-string#video-title');
+        if (title) {
+            return matchQuery(title.textContent);
+        }
 
         // default: visible
         return true;
     }
 
-    // TODO
-    function classifyRichGridMediaModeStatus(node) {
+    function classifyHashTagRichItemRendererModeStatus(node) {
         const status = new Set();
+
+        const metadata_line = node.querySelector('div#metadata-line');
+        if (metadata_line) {
+            const t = metadata_line.textContent;
+            if (lang.isLive_metadata(t)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isVideo_metadata(t)) {
+                const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
+                if (shorts) {
+                    status.add('short');
+                } else {
+                    status.add('video');
+                }
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+            }
+        }
 
         return status;
     }
 
-    // TODO
-    function classifyRichGridMediaProgressStatus(node) {
+    function classifyHashTagRichItemRendererProgressStatus(node) {
         const status = new Set();
+
+        const progress = node.querySelector('div#progress');
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
 
         return status;
     }
