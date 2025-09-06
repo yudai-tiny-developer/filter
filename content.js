@@ -1042,17 +1042,6 @@ function main(app, common, lang) {
             case 'YTD-VIDEO-RENDERER':
                 updateTargetVisibility(node, matchHistoryVideoRendererTextContent, classifyHistoryVideoRendererModeStatus, classifyHistoryVideoRendererProgressStatus);
                 break;
-            case 'YTD-ITEM-SECTION-RENDERER':
-                updateVisibility(node);
-                break;
-            case 'YTD-REEL-SHELF-RENDERER':
-                updateVisibility(node);
-                break;
-            case 'DIV':
-                if (node.id === 'contens') {
-                    updateVisibility(node);
-                }
-                break;
             case 'YTD-BROWSE':
                 insertHistoryMenu(node);
                 break;
@@ -1217,11 +1206,6 @@ function main(app, common, lang) {
                     if (n) {
                         updateTargetVisibility(n, matchPlaylistVideoRendererTextContent, classifyPlaylistVideoRendererModeStatus, classifyPlaylistVideoRendererProgressStatus);
                     }
-                }
-                break;
-            case 'DIV':
-                if (node.id === 'contens') {
-                    updateVisibility(node);
                 }
                 break;
             case 'YTD-BROWSE':
