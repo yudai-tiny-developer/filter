@@ -696,6 +696,16 @@ function main(app, common, lang) {
     }
 
     function classifySubscriptionsRichItemRendererProgressStatus(node) {
+        const notification_button = node.querySelector('lockup-attachments-view-model button');
+        if (notification_button) {
+            return undefined;
+        }
+
+        const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
+        if (shorts) {
+            return undefined;
+        }
+
         const status = new Set();
 
         const progress = node.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
