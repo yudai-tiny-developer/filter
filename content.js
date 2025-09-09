@@ -465,7 +465,7 @@ function main(app, common, lang) {
             onResize();
 
             changeMode(getActiveMode().values().next().value, multiselection, false, browse);
-            changeModeProgress(getActiveModeProgress().values().next().value, multiselection, false, browse);
+            changeModeProgress(getActiveModeProgress().values().next().value, browse);
             updateQueryRegex(browse, getActiveQuery(browse));
             updateVisibility(browse);
 
@@ -1950,7 +1950,7 @@ function main(app, common, lang) {
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-progress');
         select.addEventListener('change', () => {
-            changeModeProgress(select.value, multiselection, select.querySelector('option.selected.' + select.value), browse);
+            changeModeProgress(select.value, browse);
             updateVisibility(browse);
             window.scroll({ top: 0, behavior: 'instant' });
         });
@@ -2405,8 +2405,8 @@ function main(app, common, lang) {
         }
     }
 
-    function changeModeProgress(mode, multi, sub, browse) {
-        const modes = multi ? getActiveModeProgress() : new Set();
+    function changeModeProgress(mode, browse) {
+        const modes = new Set();
 
         if (!mode) {
             if (common.isSubscriptions(location.href)) {
@@ -2417,19 +2417,12 @@ function main(app, common, lang) {
                 modes.add('progress_all');
             }
         } else {
-            if (multi && sub) {
-                modes.delete(mode);
-                if (modes.size === 0) {
-                    modes.add('progress_all');
-                }
+            if (mode === 'progress_all') {
+                modes.clear();
             } else {
-                if (mode === 'progress_all') {
-                    modes.clear();
-                } else {
-                    modes.delete('progress_all');
-                }
-                modes.add(mode);
+                modes.delete('progress_all');
             }
+            modes.add(mode);
         }
 
         setActiveModeProgress(modes, browse);
@@ -2447,21 +2440,10 @@ function main(app, common, lang) {
         for (const mode of modes) {
             browse.querySelectorAll('option.filter-button-progress.' + mode).forEach(n => {
                 n.classList.add('selected');
-
-                if (multi) {
-                    const i = n.innerHTML.indexOf('✔ ');
-                    if (i === -1) {
-                        n.innerHTML = '✔ ' + n.innerHTML;
-                    }
-                }
             });
         }
 
-        if (multi) {
-            browse.querySelectorAll('option.filter-button-progress.placeholder').forEach(n => n.selected = true);
-        } else {
-            browse.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
-        }
+        browse.querySelectorAll('option.filter-button-progress.selected').forEach(n => n.selected = true);
     }
 
     function searchParentNode(node, nodeName) {
