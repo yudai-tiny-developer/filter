@@ -227,24 +227,24 @@ function main(app, common, lang) {
 
                 browse.setAttribute('filter-menu', 'true');
             } else if (common.isLibrary(location.href)) {
-                display_query(browse, 'span.filter-button-subscriptions.all', '');
-                display_query(browse, 'span.filter-button-subscriptions.live', '');
-                display_query(browse, 'span.filter-button-subscriptions.streamed', '');
-                display_query(browse, 'span.filter-button-subscriptions.video', '');
-                display_query(browse, 'span.filter-button-subscriptions.short', '');
-                display_query(browse, 'span.filter-button-subscriptions.scheduled', '');
-                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
-                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                display_query(browse, 'span.filter-button-subscriptions.live', display(live));
+                display_query(browse, 'span.filter-button-subscriptions.streamed', display(streamed));
+                display_query(browse, 'span.filter-button-subscriptions.video', display(video));
+                display_query(browse, 'span.filter-button-subscriptions.short', display(short));
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', display(scheduled));
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', display(notification_on));
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', display(notification_off));
 
-                display_query(browse, 'select.filter-menu', '');
-                display_query(browse, 'option.filter-button-subscriptions.all', '');
-                display_query(browse, 'option.filter-button-subscriptions.live', '');
-                display_query(browse, 'option.filter-button-subscriptions.streamed', '');
-                display_query(browse, 'option.filter-button-subscriptions.video', '');
-                display_query(browse, 'option.filter-button-subscriptions.short', '');
-                display_query(browse, 'option.filter-button-subscriptions.scheduled', '');
-                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
-                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                display_query(browse, 'select.filter-menu', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                display_query(browse, 'option.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                display_query(browse, 'option.filter-button-subscriptions.live', display(live));
+                display_query(browse, 'option.filter-button-subscriptions.streamed', display(streamed));
+                display_query(browse, 'option.filter-button-subscriptions.video', display(video));
+                display_query(browse, 'option.filter-button-subscriptions.short', display(short));
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', display(scheduled));
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', display(notification_on));
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', display(notification_off));
 
                 display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
                 display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
@@ -364,9 +364,9 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-subscriptions.streamed', 'none');
                 display_query(browse, 'span.filter-button-subscriptions.video', '');
                 display_query(browse, 'span.filter-button-subscriptions.short', '');
-                display_query(browse, 'span.filter-button-subscriptions.scheduled', '');
-                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
-                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', display(scheduled));
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', display(notification_on));
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', display(notification_off));
 
                 display_query(browse, 'select.filter-menu', '');
                 display_query(browse, 'option.filter-button-subscriptions.all', '');
@@ -374,9 +374,9 @@ function main(app, common, lang) {
                 display_query(browse, 'option.filter-button-subscriptions.streamed', 'none');
                 display_query(browse, 'option.filter-button-subscriptions.video', '');
                 display_query(browse, 'option.filter-button-subscriptions.short', '');
-                display_query(browse, 'option.filter-button-subscriptions.scheduled', '');
-                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
-                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', display(scheduled));
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', display(notification_on));
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', display(notification_off));
 
                 display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
                 display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
@@ -578,6 +578,7 @@ function main(app, common, lang) {
             node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchSubscriptionsRichItemRendererTextContent, classifySubscriptionsRichItemRendererModeStatus, classifySubscriptionsRichItemRendererProgressStatus));
         } else if (common.isTop(location.href)) {
             node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchTopRichItemRendererTextContent, classifyTopRichItemRendererModeStatus, classifyTopRichItemRendererProgressStatus));
+            node.querySelectorAll('ytd-rich-grid-media').forEach(n => updateTargetVisibility(n, matchTopRichGridMediaTextContent, classifyTopRichGridMediaModeStatus, classifyTopRichGridMediaProgressStatus));
         } else if (common.isShorts(location.href)) {
             node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchShortsRichItemRendererTextContent, classifyShortsRichItemRendererModeStatus, classifyShortsRichItemRendererProgressStatus));
         } else if (common.isLibrary(location.href)) {
@@ -727,6 +728,9 @@ function main(app, common, lang) {
                     }
                 }
                 break;
+            case 'YTD-RICH-GRID-MEDIA':
+                updateTargetVisibility(node, matchTopRichGridMediaTextContent, classifyTopRichGridMediaModeStatus, classifyTopRichGridMediaProgressStatus);
+                break;
             case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
                 insertTopMenu(node);
                 break;
@@ -858,6 +862,98 @@ function main(app, common, lang) {
     }
 
     function classifyTopRichItemRendererProgressStatus(node) {
+        const status = new Set();
+
+        const progress = node.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
+
+        return status;
+    }
+
+    function matchTopRichGridMediaTextContent(node) {
+        const title = node.querySelector('a#video-title-link');
+        if (title) {
+            return matchQuery(title.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyTopRichGridMediaModeStatus(node) {
+        const status = new Set();
+
+        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        if (metadata) {
+            const t = metadata.textContent;
+            if (lang.isLive_metadata(t)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isVideo_metadata(t)) {
+                status.add('video');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                if (notification_button) {
+                    const t = notification_button.textContent;
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    }
+                }
+            }
+        }
+
+        const metadata_line = node.querySelector('metadata-line');
+        if (metadata_line) {
+            const t = metadata_line.textContent;
+            if (lang.isLive_metadata(t)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isVideo_metadata(t)) {
+                status.add('video');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                if (notification_button) {
+                    const t = notification_button.textContent;
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    }
+                }
+            }
+        }
+
+        const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
+        if (shorts) {
+            status.add('short');
+        }
+
+        const collection = node.querySelector('yt-collection-thumbnail-view-model');
+        if (collection) {
+            status.add('collection');
+        }
+
+        if (status.size === 0) {
+            // Member-only Video
+            status.add('video');
+        }
+
+        return status;
+    }
+
+    function classifyTopRichGridMediaProgressStatus(node) {
         const status = new Set();
 
         const progress = node.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
@@ -1365,6 +1461,16 @@ function main(app, common, lang) {
                 }
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
+
+                const notification_button = node.querySelector('div#buttons button');
+                if (notification_button) {
+                    const t = notification_button.textContent;
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    }
+                }
             }
         }
 
