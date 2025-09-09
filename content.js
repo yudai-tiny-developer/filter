@@ -1118,6 +1118,14 @@ function main(app, common, lang) {
             }
         }
 
+        const badge = node.querySelector('ytd-thumbnail-overlay-time-status-renderer badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
         const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
         if (shorts) {
             status.add('short');
@@ -1206,6 +1214,14 @@ function main(app, common, lang) {
             }
         }
 
+        const badge = node.querySelector('ytd-thumbnail-overlay-time-status-renderer badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
         if (status.size === 0) {
             // Member-only Video
             status.add('video');
@@ -1265,6 +1281,14 @@ function main(app, common, lang) {
                 } else {
                     status.add('video');
                 }
+            }
+        }
+
+        const badge = node.querySelector('ytd-thumbnail-overlay-time-status-renderer badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
             }
         }
 
@@ -1395,6 +1419,14 @@ function main(app, common, lang) {
             }
         }
 
+        const badge = node.querySelector('ytd-thumbnail-overlay-time-status-renderer badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
         return status;
     }
 
@@ -1487,6 +1519,14 @@ function main(app, common, lang) {
                         status.add('notification_off');
                     }
                 }
+            }
+        }
+
+        const badge = node.querySelector('ytd-thumbnail-overlay-time-status-renderer badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
             }
         }
 
