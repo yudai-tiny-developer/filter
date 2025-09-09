@@ -851,6 +851,14 @@ function main(app, common, lang) {
             }
         }
 
+        const badge = node.querySelector('yt-thumbnail-badge-view-model > badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
