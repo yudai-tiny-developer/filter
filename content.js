@@ -1522,7 +1522,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('yt-thumbnail-badge-view-model > badge-shape > div:nth-child(2)');
+        const badge = node.querySelector('div.badge > p');
         if (badge) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
