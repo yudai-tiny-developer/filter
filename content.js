@@ -827,7 +827,7 @@ function main(app, common, lang) {
             }
         }
 
-        const metadata_line = node.querySelector('metadata-line');
+        const metadata_line = node.querySelector('div#metadata-line');
         if (metadata_line) {
             const t = metadata_line.textContent;
             if (lang.isLive_metadata(t)) {
@@ -839,7 +839,7 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                const notification_button = node.querySelector('div#buttons button') ?? node.querySelector('lockup-attachments-view-model button');
                 if (notification_button) {
                     const t = notification_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
@@ -927,7 +927,7 @@ function main(app, common, lang) {
             }
         }
 
-        const metadata_line = node.querySelector('metadata-line');
+        const metadata_line = node.querySelector('div#metadata-line');
         if (metadata_line) {
             const t = metadata_line.textContent;
             if (lang.isLive_metadata(t)) {
