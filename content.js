@@ -939,7 +939,7 @@ function main(app, common, lang) {
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
-                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                const notification_button = node.querySelector('div#buttons button') ?? node.querySelector('lockup-attachments-view-model button');
                 if (notification_button) {
                     const t = notification_button.textContent;
                     if (lang.isNotificationOn_button(t)) {
