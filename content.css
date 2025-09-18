@@ -203,83 +203,6 @@ div.filter-button-load {
     width: 100%;
 }
 
-div.shortsLockupViewModelHostInlineMetadataShortScrim {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.5) 20%, rgba(0, 0, 0, 0) 40%) !important;
-}
-
-h3.shortsLockupViewModelHostMetadataTitle::after {
-    content: attr(aria-label);
-}
-
-div.shortsLockupViewModelHostMetadataSubhead {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="subscriptions"] ytd-rich-grid-renderer>div#contents {
-    padding-top: 0px !important;
-}
-
-ytd-browse[page-subtype="subscriptions"] ytd-rich-item-renderer[rendered-from-rich-grid][is-in-first-column] {
-    margin-left: calc(var(--ytd-rich-grid-item-margin)/2) !important;
-}
-
-ytd-browse[page-subtype="subscriptions"] ytd-continuation-item-renderer {
-    width: 100% !important;
-}
-
-ytd-browse[page-subtype="subscriptions"] ytd-ghost-grid-renderer div.ghost-grid {
-    margin-left: 0px !important;
-    padding-right: calc(var(--ytd-rich-grid-item-margin)) !important;
-}
-
-ytd-browse[page-subtype="playlist"] {
-    padding-top: 0px !important;
-}
-
-ytd-browse[page-subtype="playlist"] yt-page-header-renderer {
-    padding-top: 56px !important;
-}
-
-ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-menu="true"]) ytd-item-section-renderer {
-    border: none !important;
-}
-
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-menu="true"]) div.grid-subheader {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-menu="true"]) div#contents {
-    margin-top: 0px !important;
-}
-
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-menu="true"]) ytd-expanded-shelf-contents-renderer {
-    margin-bottom: 0px !important;
-}
-
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-menu="true"]) div#primary div#header-container {
-    margin-bottom: 24px !important;
-}
-
-ytd-browse[page-subtype="history"]:not([filter-menu="true"]) ytd-item-section-renderer div#header {
-    display: none !important;
-}
-
-ytd-multi-page-menu-renderer:not(:has(div#spinner[hidden])) form.filter-notification {
-    display: none !important;
-}
-
-ytd-multi-page-menu-renderer:has(input#filter-query:not(:placeholder-shown)) yt-multi-page-menu-section-renderer {
-    border-bottom: 0px !important;
-}
-
-ytd-multi-page-menu-renderer:has(input#filter-query:not(:placeholder-shown)) div#section-title {
-    display: none !important;
-}
-
 .filter-spinner::before {
     content: "";
     display: block;
@@ -313,4 +236,48 @@ ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) div#frosted-glass.witho
     display: block !important;
     background: var(--yt-spec-scrim-background-gradient-4) !important;
     backdrop-filter: blur(48px) !important;
+}
+
+ytd-browse[page-subtype="home"] div#scroll-container {
+    width: 100% !important;
+}
+
+div.shortsLockupViewModelHostMetadataSubhead {
+    display: none !important;
+}
+
+div.shortsLockupViewModelHostInlineMetadataShortScrim {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.5) 20%, rgba(0, 0, 0, 0) 40%) !important;
+}
+
+h3.shortsLockupViewModelHostMetadataTitle::after {
+    content: attr(aria-label);
+}
+
+ytd-browse[page-subtype="playlist"] {
+    padding-top: 0px !important;
+}
+
+ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
+    display: none !important;
+}
+
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+    display: none !important;
+}
+
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div.grid-subheader {
+    display: none !important;
+}
+
+ytd-browse[page-subtype="history"]:not([filter-mode="all"]) ytd-item-section-renderer div#header {
+    display: none !important;
+}
+
+ytd-browse[page-subtype="history"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#title-container {
+    display: none !important;
+}
+
+ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
+    display: none !important;
 }
