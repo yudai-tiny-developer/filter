@@ -2079,6 +2079,21 @@ function main(app, common, lang) {
             case 'YTD-GUIDE-SECTION-RENDERER':
                 insertPopupMenu(node);
                 break;
+
+            // video player lazy load
+            case 'YTD-APP':
+                if (common.isVideoPlayer(location.href)) {
+                    const chip = node.querySelector('YT-CHIP-CLOUD-RENDERER');
+                    if (chip) {
+                        onVideoPlayerNodeLoaded(chip);
+                    }
+
+                    const guide = node.querySelector('YTD-GUIDE-SECTION-RENDERER');
+                    if (guide) {
+                        onAppNodeLoaded(guide);
+                    }
+                }
+                break;
         }
     }
 
