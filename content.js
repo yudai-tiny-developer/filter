@@ -2814,7 +2814,7 @@ function main(app, common, lang) {
     function onResize() {
         if (isMenuTarget()) {
             if (responsive) {
-                for (const form of app.querySelectorAll('form.filter-menu:not(.filter-forCalc)')) {
+                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc), ytd-watch-flexy[role="main"] form.filter-menu:not(.filter-forCalc)')) {
                     for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
                         form.parentNode.insertBefore(calc, form);
                         if (calc.scrollWidth <= form.parentNode.clientWidth) {
