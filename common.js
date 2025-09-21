@@ -246,3 +246,10 @@ export function isTop(url) {
     return url.split('?')[0] === 'https://www.youtube.com/'
         ;
 }
+
+export function isVideoPlayer(url) {
+    return url.startsWith('https://www.youtube.com/watch?')
+        || url.startsWith('https://www.youtube.com/live/')
+        || url.startsWith('https://www.youtube.com/embed/')
+        ;
+}
