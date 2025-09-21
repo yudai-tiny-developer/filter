@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Subscription Feed Filter for YouTube",
-    "version": "1.46.8",
+    "version": "1.46.9",
     "description": "__MSG_appDesc__",
     "default_locale": "en",
     "icons": {

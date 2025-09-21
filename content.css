@@ -266,7 +266,15 @@ ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-i
     display: none !important;
 }
 
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+    display: none !important;
+}
+
 ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div.grid-subheader {
+    display: none !important;
+}
+
+ytd-browse[page-subtype="subscriptions-channels"]:not([filter-query=""]) div.grid-subheader {
     display: none !important;
 }
 
@@ -274,7 +282,15 @@ ytd-browse[page-subtype="history"]:not([filter-mode="all"]) ytd-item-section-ren
     display: none !important;
 }
 
+ytd-browse[page-subtype="history"]:not([filter-query=""]) ytd-item-section-renderer div#header {
+    display: none !important;
+}
+
 ytd-browse[page-subtype="history"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#title-container {
+    display: none !important;
+}
+
+ytd-browse[page-subtype="history"]:not([filter-query=""]) ytd-reel-shelf-renderer div#title-container {
     display: none !important;
 }
 
