@@ -545,6 +545,7 @@ function main(app, common, lang) {
             // || common.isHashTag(location.href)
             // || common.isChannel(location.href)
             || common.isChannels(location.href)
+            // || common.isVideoPlayer(location.href)
             ;
     }
 
@@ -2941,7 +2942,7 @@ function main(app, common, lang) {
     });
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
-        for (const browse of app.querySelectorAll('ytd-browse')) {
+        for (const browse of app.querySelectorAll('ytd-browse:has(form.filter-menu), ytd-watch-flexy:has(form.filter-menu)')) {
             updateButtonVisibility(browse);
         }
     });
