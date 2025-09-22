@@ -2081,7 +2081,7 @@ function main(app, common, lang) {
                 insertPopupMenu(node);
                 break;
 
-            // video player lazy load
+            // Refresh the cached page
             case 'YTD-APP':
                 onViewChanged();
                 break;
