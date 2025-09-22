@@ -457,6 +457,39 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-query', display(keyword));
 
                 browse.setAttribute('filter-menu', 'true');
+            } else if (common.isVideoPlayer(location.href)) {
+                display_query(browse, 'span.filter-button-subscriptions.all', '');
+                display_query(browse, 'span.filter-button-subscriptions.live', display(live));
+                display_query(browse, 'span.filter-button-subscriptions.streamed', display(streamed));
+                display_query(browse, 'span.filter-button-subscriptions.video', display(video));
+                display_query(browse, 'span.filter-button-subscriptions.short', display(short));
+                display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+
+                display_query(browse, 'select.filter-menu', '');
+                display_query(browse, 'option.filter-button-subscriptions.all', '');
+                display_query(browse, 'option.filter-button-subscriptions.live', display(live));
+                display_query(browse, 'option.filter-button-subscriptions.streamed', display(streamed));
+                display_query(browse, 'option.filter-button-subscriptions.video', display(video));
+                display_query(browse, 'option.filter-button-subscriptions.short', display(short));
+                display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+
+                display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
+                display_query(browse, 'option.filter-button-progress.progress_unwatched', display(progress_unwatched));
+                display_query(browse, 'option.filter-button-progress.progress_watched', display(progress_watched));
+
+                display_query(browse, 'span.filter-button-channels.all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
+                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
+
+                display_query(browse, 'span.filter-query', display(keyword));
+
+                browse.setAttribute('filter-menu', 'true');
             } else {
                 // Unknown location.href
                 browse.setAttribute('filter-menu', 'false');
@@ -497,6 +530,7 @@ function main(app, common, lang) {
             || common.isHashTag(location.href)
             || common.isChannel(location.href)
             || common.isChannels(location.href)
+            || common.isVideoPlayer(location.href)
             ;
     }
 
@@ -511,6 +545,7 @@ function main(app, common, lang) {
             // || common.isHashTag(location.href)
             // || common.isChannel(location.href)
             || common.isChannels(location.href)
+            // || common.isVideoPlayer(location.href)
             ;
     }
 
@@ -604,6 +639,9 @@ function main(app, common, lang) {
             node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n, matchChannelBackstagePostThreadRendererTextContent, classifyChannelBackstagePostThreadRendererModeStatus, classifyChannelBackstagePostThreadRendererProgressStatus));
         } else if (common.isChannels(location.href)) {
             node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n, matchChannelsChannelRendererTextContent, classifyChannelsChannelRendererModeStatus, classifyChannelsChannelRendererProgressStatus));
+        } else if (common.isVideoPlayer(location.href)) {
+            node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchVideoPlayerLockupViewModelTextContent, classifyVideoPlayerLockupViewModelModeStatus, classifyVideoPlayerLockupViewModelProgressStatus));
+            node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchVideoPlayerShortsLockupViewModelV2TextContent, classifyVideoPlayerShortsLockupViewModelV2ModeStatus, classifyVideoPlayerShortsLockupViewModelV2ProgressStatus));
         }
     }
 
@@ -632,7 +670,7 @@ function main(app, common, lang) {
 
     function insertSubscriptionsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -751,7 +789,7 @@ function main(app, common, lang) {
             if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
                 const referenceNode = browse.querySelector('div#scroll-container');
                 if (referenceNode) {
-                    const menu = createMenu(browse);
+                    const menu = createMenu(browse, true);
                     referenceNode.insertBefore(menu, referenceNode.firstChild);
 
                     const calc = createNodeForCalc(menu, browse);
@@ -1007,7 +1045,7 @@ function main(app, common, lang) {
 
     function insertShortsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1053,7 +1091,7 @@ function main(app, common, lang) {
 
     function insertLibraryMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1171,7 +1209,7 @@ function main(app, common, lang) {
 
     function insertHistoryMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1317,7 +1355,7 @@ function main(app, common, lang) {
 
     function insertPlaylistsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1371,7 +1409,7 @@ function main(app, common, lang) {
 
     function insertPlaylistMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1466,7 +1504,7 @@ function main(app, common, lang) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const header = browse.querySelector('div#page-header-container');
             if (header) {
-                const menu = createMenu(browse);
+                const menu = createMenu(browse, true);
                 header.insertBefore(menu, header.firstChild);
 
                 const calc = createNodeForCalc(menu, browse);
@@ -1580,7 +1618,7 @@ function main(app, common, lang) {
 
     function insertChannelMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
 
             const referenceNode = browse.querySelector('ytd-two-column-browse-results-renderer');
             if (referenceNode) {
@@ -1784,7 +1822,7 @@ function main(app, common, lang) {
 
     function insertChannelsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse);
+            const menu = createMenu(browse, true);
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1831,6 +1869,184 @@ function main(app, common, lang) {
         return undefined;
     }
 
+    function onVideoPlayerNodeLoaded(node) {
+        switch (node.nodeName) {
+            case 'YT-LOCKUP-VIEW-MODEL':
+                updateTargetVisibility(node, matchVideoPlayerLockupViewModelTextContent, classifyVideoPlayerLockupViewModelModeStatus, classifyVideoPlayerLockupViewModelProgressStatus);
+                break;
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+                updateTargetVisibility(node, matchVideoPlayerShortsLockupViewModelV2TextContent, classifyVideoPlayerShortsLockupViewModelV2ModeStatus, classifyVideoPlayerShortsLockupViewModelV2ProgressStatus);
+                break;
+            case 'YTD-VIDEO-RENDERER':
+                updateTargetVisibility(node, matchVideoPlayerVideoRendererTextContent, classifyVideoPlayerVideoRendererModeStatus, classifyVideoPlayerVideoRendererProgressStatus);
+                break;
+            case 'YT-CHIP-CLOUD-RENDERER':
+                insertVideoPlayerMenu(node);
+                break;
+        }
+    }
+
+    function insertVideoPlayerMenu(node) {
+        const browse = searchParentNode(node, 'YTD-WATCH-FLEXY');
+        if (browse) {
+            if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
+                const referenceNode = browse.querySelector('div#related ytd-watch-next-secondary-results-renderer');
+                if (referenceNode) {
+                    const menu = createMenu(browse, false);
+                    referenceNode.insertBefore(menu, referenceNode.firstChild);
+
+                    const calc = createNodeForCalc(menu, browse);
+                    referenceNode.insertBefore(calc, referenceNode.firstChild);
+
+                    const spacerReferenceNode = browse.querySelector('div#related ytd-item-section-renderer');
+                    if (spacerReferenceNode) {
+                        spacerReferenceNode.parentNode.insertBefore(createSpacer('browse'), spacerReferenceNode);
+                    } else {
+                        // spacer referenceNode not found
+                    }
+
+                    updateButtonVisibility(browse);
+                    display_query(browse, 'form.filter-menu, div.filter-menu', '');
+                } else {
+                    // referenceNode not found
+                }
+            } else {
+                // already exists
+            }
+        } else {
+            // not target
+        }
+    }
+
+    function matchVideoPlayerLockupViewModelTextContent(node) {
+        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        if (metadata) {
+            return matchQuery(metadata.textContent);
+        }
+
+        const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+        if (shorts_metadata) {
+            return matchQuery(shorts_metadata.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyVideoPlayerLockupViewModelModeStatus(node) {
+        const status = new Set();
+
+        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        if (metadata) {
+            const t = metadata.textContent;
+            if (lang.isLive_metadata(t)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isVideo_metadata(t)) {
+                status.add('video');
+            }
+        }
+
+        const badge = node.querySelector('div.badge > p') ?? node.querySelector('yt-thumbnail-badge-view-model > badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
+        if (status.size === 0) {
+            // Member-only Video
+            status.add('video');
+        }
+
+        return status;
+    }
+
+    function classifyVideoPlayerLockupViewModelProgressStatus(node) {
+        const status = new Set();
+
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
+
+        return status;
+    }
+
+    function matchVideoPlayerShortsLockupViewModelV2TextContent(node) {
+        const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
+        if (metadata) {
+            return matchQuery(metadata.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyVideoPlayerShortsLockupViewModelV2ModeStatus(node) {
+        const status = new Set();
+
+        status.add('short');
+
+        return status;
+    }
+
+    function classifyVideoPlayerShortsLockupViewModelV2ProgressStatus(node) {
+        return undefined;
+    }
+
+    function matchVideoPlayerVideoRendererTextContent(node) {
+        const title = node.querySelector('h3.title-and-badge');
+        if (title) {
+            return matchQuery(title.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyVideoPlayerVideoRendererModeStatus(node) {
+        const status = new Set();
+
+        const metadata = node.querySelector('div#metadata-line');
+        if (metadata) {
+            const t = metadata.textContent;
+            if (lang.isLive_metadata(t)) {
+                status.add('live');
+            } else if (lang.isVideo_metadata(t)) {
+                const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
+                if (shorts) {
+                    status.add('short');
+                } else {
+                    status.add('video');
+                }
+            }
+        }
+
+        const badge = node.querySelector('div.badge > p') ?? node.querySelector('yt-thumbnail-badge-view-model > badge-shape > div:nth-child(2)');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
+        if (status.size === 0) {
+            // Member-only Video
+            status.add('video');
+        }
+
+        return status;
+    }
+
+    function classifyVideoPlayerVideoRendererProgressStatus(node) {
+        return undefined;
+    }
+
     function onAppNodeLoaded(node) {
         switch (node.nodeName) {
             // notification
@@ -1864,6 +2080,21 @@ function main(app, common, lang) {
             case 'YTD-GUIDE-SECTION-RENDERER':
                 insertPopupMenu(node);
                 break;
+
+            // video player lazy load
+            case 'YTD-APP':
+                if (common.isVideoPlayer(location.href)) {
+                    const chip = node.querySelector('YT-CHIP-CLOUD-RENDERER');
+                    if (chip) {
+                        onVideoPlayerNodeLoaded(chip);
+                    }
+
+                    const guide = node.querySelector('YTD-GUIDE-SECTION-RENDERER');
+                    if (guide) {
+                        onAppNodeLoaded(guide);
+                    }
+                }
+                break;
         }
     }
 
@@ -1885,7 +2116,7 @@ function main(app, common, lang) {
         }
     }
 
-    function createMenu(browse) {
+    function createMenu(browse, scroll) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
 
@@ -1895,16 +2126,16 @@ function main(app, common, lang) {
             menu.classList.add('filter-menu');
         }
 
-        menu.appendChild(createButton(common.button_label.all, 'all', false, browse));
-        menu.appendChild(createButton(common.button_label.live, 'live', false, browse));
-        menu.appendChild(createButton(common.button_label.streamed, 'streamed', false, browse));
-        menu.appendChild(createButton(common.button_label.video, 'video', false, browse));
-        menu.appendChild(createButton(common.button_label.short, 'short', true, browse));
-        menu.appendChild(createButton(common.button_label.scheduled, 'scheduled', false, browse));
-        menu.appendChild(createButton(common.button_label.notification_on, 'notification_on', false, browse));
-        menu.appendChild(createButton(common.button_label.notification_off, 'notification_off', false, browse));
+        menu.appendChild(createButton(common.button_label.all, 'all', browse, scroll));
+        menu.appendChild(createButton(common.button_label.live, 'live', browse, scroll));
+        menu.appendChild(createButton(common.button_label.streamed, 'streamed', browse, scroll));
+        menu.appendChild(createButton(common.button_label.video, 'video', browse, scroll));
+        menu.appendChild(createButton(common.button_label.short, 'short', browse, scroll));
+        menu.appendChild(createButton(common.button_label.scheduled, 'scheduled', browse, scroll));
+        menu.appendChild(createButton(common.button_label.notification_on, 'notification_on', browse, scroll));
+        menu.appendChild(createButton(common.button_label.notification_off, 'notification_off', browse, scroll));
 
-        const select = createSelect(browse);
+        const select = createSelect(browse, scroll);
         select.appendChild(createOption(common.button_label.placeholder));
         select.appendChild(createOption(common.button_label.all, 'all'));
         select.appendChild(createOption(common.button_label.live, 'live'));
@@ -1916,27 +2147,29 @@ function main(app, common, lang) {
         select.appendChild(createOption(common.button_label.notification_off, 'notification_off'));
         menu.appendChild(select);
 
-        const progress = createSelectProgress(browse);
+        const progress = createSelectProgress(browse, scroll);
         progress.appendChild(createOptionProgress(common.button_label.progress_placeholder));
         progress.appendChild(createOptionProgress(common.button_label.progress_all, 'progress_all'));
         progress.appendChild(createOptionProgress(common.button_label.progress_unwatched, 'progress_unwatched'));
         progress.appendChild(createOptionProgress(common.button_label.progress_watched, 'progress_watched'));
         menu.appendChild(progress);
 
-        menu.appendChild(createButtonChannels(common.button_label.all, 'all', browse));
-        menu.appendChild(createButtonChannels(common.button_label.channels_all, 'channels_all', browse));
-        menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse));
-        menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse));
+        menu.appendChild(createButtonChannels(common.button_label.all, 'all', browse, scroll));
+        menu.appendChild(createButtonChannels(common.button_label.channels_all, 'channels_all', browse, scroll));
+        menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse, scroll));
+        menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse, scroll));
 
         const input = createQueryInput(menu, browse);
-        menu.appendChild(createQueryInputArea(input, browse));
-        menu.appendChild(createSearchButton(input, browse));
+        menu.appendChild(createQueryInputArea(input, browse, scroll));
+        menu.appendChild(createSearchButton(input, browse, scroll));
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
             updateQueryRegex(browse, input.value);
             updateVisibility(browse);
-            window.scroll({ top: 0, behavior: 'instant' });
+            if (scroll) {
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
         });
 
         return menu;
@@ -1949,7 +2182,7 @@ function main(app, common, lang) {
         return spacer;
     }
 
-    function createButton(text, mode, isShorts, browse) {
+    function createButton(text, mode, browse, scroll) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
@@ -1957,12 +2190,14 @@ function main(app, common, lang) {
         span.addEventListener('click', () => {
             changeMode(mode, multiselection, span.classList.contains('selected'), browse);
             updateVisibility(browse);
-            window.scroll({ top: 0, behavior: 'instant' });
+            if (scroll) {
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
         });
         return span;
     }
 
-    function createButtonChannels(text, mode, browse) {
+    function createButtonChannels(text, mode, browse, scroll) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-button', 'filter-button-channels', mode);
@@ -1970,19 +2205,23 @@ function main(app, common, lang) {
         span.addEventListener('click', () => {
             changeMode(mode, multiselection, span.classList.contains('selected'), browse);
             updateVisibility(browse);
-            window.scroll({ top: 0, behavior: 'instant' });
+            if (scroll) {
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
         });
         return span;
     }
 
-    function createSelect(browse) {
+    function createSelect(browse, scroll) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-subscriptions');
         select.addEventListener('change', () => {
             changeMode(select.value, multiselection, select.querySelector('option.selected.' + select.value), browse);
             updateVisibility(browse);
-            window.scroll({ top: 0, behavior: 'instant' });
+            if (scroll) {
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
         });
         return select;
     }
@@ -2001,14 +2240,16 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createSelectProgress(browse) {
+    function createSelectProgress(browse, scroll) {
         const select = document.createElement('select');
         select.style.display = 'none';
         select.classList.add('filter-menu', 'filter-menu-progress');
         select.addEventListener('change', () => {
             changeModeProgress(select.value, browse);
             updateVisibility(browse);
-            window.scroll({ top: 0, behavior: 'instant' });
+            if (scroll) {
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
         });
         return select;
     }
@@ -2027,12 +2268,12 @@ function main(app, common, lang) {
         return option;
     }
 
-    function createQueryInputArea(input, browse) {
+    function createQueryInputArea(input, browse, scroll) {
         const inputArea = document.createElement('span');
         inputArea.style.display = 'none';
         inputArea.classList.add('filter-query', 'area');
         inputArea.appendChild(input);
-        inputArea.appendChild(createClearButton(input, browse));
+        inputArea.appendChild(createClearButton(input, browse, scroll));
         return inputArea;
     }
 
@@ -2050,7 +2291,7 @@ function main(app, common, lang) {
         return input;
     }
 
-    function createClearButton(input, browse) {
+    function createClearButton(input, browse, scroll) {
         const span = document.createElement('span');
         span.classList.add('filter-clear');
         span.innerHTML = common.button_label.clear;
@@ -2058,12 +2299,14 @@ function main(app, common, lang) {
             input.value = '';
             updateQueryRegex(browse, '');
             updateVisibility(browse);
-            window.scroll({ top: 0, behavior: 'instant' });
+            if (scroll) {
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
         });
         return span;
     }
 
-    function createSearchButton(input, browse) {
+    function createSearchButton(input, browse, scroll) {
         const span = document.createElement('span');
         span.style.display = 'none';
         span.classList.add('filter-query', 'search');
@@ -2071,7 +2314,9 @@ function main(app, common, lang) {
         span.addEventListener('click', () => {
             updateQueryRegex(browse, input.value);
             updateVisibility(browse);
-            window.scroll({ top: 0, behavior: 'instant' });
+            if (scroll) {
+                window.scroll({ top: 0, behavior: 'instant' });
+            }
         });
         return span;
     }
@@ -2585,7 +2830,7 @@ function main(app, common, lang) {
     function onResize() {
         if (isMenuTarget()) {
             if (responsive) {
-                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')) {
+                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc), ytd-watch-flexy[role="main"] form.filter-menu:not(.filter-forCalc)')) {
                     for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
                         form.parentNode.insertBefore(calc, form);
                         if (calc.scrollWidth <= form.parentNode.clientWidth) {
@@ -2697,7 +2942,7 @@ function main(app, common, lang) {
     });
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
-        for (const browse of app.querySelectorAll('ytd-browse')) {
+        for (const browse of app.querySelectorAll('ytd-browse:has(form.filter-menu), ytd-watch-flexy:has(form.filter-menu)')) {
             updateButtonVisibility(browse);
         }
     });
@@ -2751,6 +2996,11 @@ function main(app, common, lang) {
         } else if (common.isChannels(location.href)) {
             for (const m of mutations) {
                 onChannelsNodeLoaded(m.target);
+                onAppNodeLoaded(m.target);
+            }
+        } else if (common.isVideoPlayer(location.href)) {
+            for (const m of mutations) {
+                onVideoPlayerNodeLoaded(m.target);
                 onAppNodeLoaded(m.target);
             }
         } else {

@@ -294,6 +294,22 @@ ytd-browse[page-subtype="history"]:not([filter-query=""]) ytd-reel-shelf-rendere
     display: none !important;
 }
 
+ytd-watch-flexy:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
+    display: none !important;
+}
+
+ytd-watch-flexy:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
+    display: none !important;
+}
+
+ytd-watch-flexy[filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
+    display: none !important;
+}
+
+ytd-watch-flexy:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
+    display: none !important;
+}
+
 ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
     display: none !important;
 }
