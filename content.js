@@ -2843,8 +2843,22 @@ function main(app, common, lang) {
                     }
                 }
             } else {
-                document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                const form = app.querySelector('ytd-watch-flexy[role="main"] form.filter-menu:not(.filter-forCalc)');
+                if (form) { // video page filter must be responsive
+                    for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
+                        form.parentNode.insertBefore(calc, form);
+                        if (calc.scrollWidth <= form.parentNode.clientWidth) {
+                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                        } else {
+                            document.documentElement.style.setProperty('--filter-button-display', 'none');
+                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                        }
+                    }
+                } else {
+                    document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                    document.documentElement.style.setProperty('--filter-menu-display', 'none');
+                }
             }
         }
     }
