@@ -1948,7 +1948,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p') ?? node.querySelector('yt-thumbnail-badge-view-model > badge-shape > div');
+        const badge = node.querySelector('div.badge > p') ?? node.querySelector('yt-thumbnail-badge-view-model > badge-shape > div:nth-child(2)');
         if (badge) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
