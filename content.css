@@ -302,7 +302,7 @@ ytd-watch-flexy:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-she
     display: none !important;
 }
 
-ytd-watch-flexy:not([filter-mode-progress="progress_all"]) ytd-reel-shelf-renderer div#header {
+ytd-watch-flexy[filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
     display: none !important;
 }
 
