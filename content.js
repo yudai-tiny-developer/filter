@@ -2585,7 +2585,7 @@ function main(app, common, lang) {
     }
 
     function onViewChanged() {
-        for (const browse of app.querySelectorAll('ytd-browse')) {
+        for (const browse of app.querySelectorAll('ytd-browse:has(form.filter-menu), ytd-watch-flexy:has(form.filter-menu)')) {
             onViewChanged_Node(browse);
         }
     }
