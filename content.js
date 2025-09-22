@@ -550,7 +550,7 @@ function main(app, common, lang) {
     }
 
     function updateQueryRegex(browse, query) {
-        active.query.set(location.href, query);
+        set_cache_query(query);
         browse.setAttribute('filter-query', query);
 
         const queryList = [];
@@ -593,17 +593,17 @@ function main(app, common, lang) {
             // empty query
         }
 
-        const regExpList = [];
+        const regex = [];
         for (const q of queryList) {
-            regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+            regex.push(new RegExp(q.replace(/"/g, ''), 'i'));
         }
-        active.regex.set(location.href, regExpList);
+        set_cache_regex(regex);
 
-        const notRegExpList = [];
+        const notRegex = [];
         for (const q of notQueryList) {
-            notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
+            notRegex.push(new RegExp(q.replace(/"/g, ''), 'i'));
         }
-        active.notRegex.set(location.href, notRegExpList);
+        set_cache_notRegex(notRegex);
 
         browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
     }
@@ -2083,17 +2083,7 @@ function main(app, common, lang) {
 
             // video player lazy load
             case 'YTD-APP':
-                if (common.isVideoPlayer(location.href)) {
-                    const chip = node.querySelector('YT-CHIP-CLOUD-RENDERER');
-                    if (chip) {
-                        onVideoPlayerNodeLoaded(chip);
-                    }
-
-                    const guide = node.querySelector('YTD-GUIDE-SECTION-RENDERER');
-                    if (guide) {
-                        onAppNodeLoaded(guide);
-                    }
-                }
+                onViewChanged();
                 break;
         }
     }
@@ -2757,7 +2747,7 @@ function main(app, common, lang) {
     }
 
     function getActiveMode() {
-        const mode = active.mode.get(location.href);
+        const mode = get_cache_mode();
         if (mode) {
             return mode;
         } else {
@@ -2766,34 +2756,34 @@ function main(app, common, lang) {
     }
 
     function getActiveModeProgress() {
-        const mode = active.mode_progress.get(location.href);
-        if (mode) {
-            return mode;
+        const mode_progress = get_cache_mode_progress();
+        if (mode_progress) {
+            return mode_progress;
         } else {
             return new Set();
         }
     }
 
     function setActiveMode(mode, browse) {
-        active.mode.set(location.href, mode);
+        set_cache_mode(mode);
         browse.setAttribute('filter-mode', [...mode].join(' '));
     }
 
     function setActiveModeProgress(mode_progress, browse) {
-        active.mode_progress.set(location.href, mode_progress);
+        set_cache_mode_progress(mode_progress);
         browse.setAttribute('filter-mode-progress', [...mode_progress].join(' '));
     }
 
     function getActiveQuery(browse) {
-        const query = active.query.get(location.href);
+        const query = get_cache_query();
         if (query) {
             return query;
         } else if (common.isSubscriptions(location.href)) {
-            active.query.set(location.href, default_keyword);
+            set_cache_query(default_keyword);
             browse.setAttribute('filter-query', default_keyword);
             return default_keyword;
         } else {
-            active.query.set(location.href, '');
+            set_cache_query('');
             browse.setAttribute('filter-query', '');
             return '';
         }
@@ -2804,9 +2794,9 @@ function main(app, common, lang) {
     }
 
     function matchAllActiveRegex(text) {
-        const rs = active.regex.get(location.href);
-        if (rs) {
-            for (const r of rs) {
+        const regex = get_cache_regex();
+        if (regex) {
+            for (const r of regex) {
                 if (!text.match(r)) {
                     return false;
                 }
@@ -2816,9 +2806,9 @@ function main(app, common, lang) {
     }
 
     function matchAllActiveNotRegex(text) {
-        const rs = active.notRegex.get(location.href);
-        if (rs) {
-            for (const r of rs) {
+        const notRegex = get_cache_notRegex();
+        if (notRegex) {
+            for (const r of notRegex) {
                 if (!!r && text.match(r)) {
                     return false;
                 }
@@ -2884,6 +2874,74 @@ function main(app, common, lang) {
 
     function display_query(node, query, display) {
         node.querySelectorAll(query).forEach(n => n.style.display = display);
+    }
+
+    function cache_key(url) {
+        if (common.isSubscriptions(url)) {
+            return 'subscriptions';
+        } else if (common.isShorts(url)) {
+            return 'shorts';
+        } else if (common.isLibrary(url)) {
+            return 'library';
+        } else if (common.isHistory(url)) {
+            return 'history';
+        } else if (common.isPlaylists(url)) {
+            return 'playlists';
+        } else if (common.isPlaylist(url)) {
+            return url;
+        } else if (common.isChannels(url)) {
+            return 'channels';
+        } else if (common.isChannel(url)) {
+            return url;
+        } else if (common.isHashTag(url)) {
+            return url;
+        } else if (common.isTop(url)) {
+            return 'top';
+        } else if (common.isVideoPlayer(url)) {
+            return 'video_player';
+        } else {
+            return url;
+        }
+    }
+
+    function get_cache_mode() {
+        return active.mode.get(cache_key(location.href));
+    }
+
+    function set_cache_mode(mode) {
+        active.mode.set(cache_key(location.href), mode);
+    }
+
+    function get_cache_mode_progress() {
+        return active.mode_progress.get(cache_key(location.href));
+    }
+
+    function set_cache_mode_progress(mode_progress) {
+        active.mode_progress.set(cache_key(location.href), mode_progress);
+    }
+
+    function get_cache_query() {
+        return active.query.get(cache_key(location.href));
+    }
+
+    function set_cache_query(query) {
+        active.query.set(cache_key(location.href), query);
+    }
+
+    function get_cache_regex() {
+        return active.regex.get(cache_key(location.href));
+    }
+
+    function set_cache_regex(regex) {
+        active.regex.set(cache_key(location.href), regex);
+    }
+
+    function get_cache_notRegex() {
+        return active.notRegex.set(cache_key(location.href));
+    }
+
+    function set_cache_notRegex(notRegex) {
+        active.notRegex.set(cache_key(location.href), notRegex);
     }
 
     const default_tab = {
