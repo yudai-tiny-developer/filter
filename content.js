@@ -747,11 +747,6 @@ function main(app, common, lang) {
             status.add('short');
         }
 
-        if (status.size === 0) {
-            // Member-only Video
-            status.add('video');
-        }
-
         return status;
     }
 
@@ -921,11 +916,6 @@ function main(app, common, lang) {
             status.add('collection');
         }
 
-        if (status.size === 0) {
-            // Member-only Video
-            status.add('video');
-        }
-
         return status;
     }
 
@@ -1003,6 +993,21 @@ function main(app, common, lang) {
             }
         }
 
+        const badge = node.querySelector('div.badge > p');
+        if (badge) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
+        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+            }
+        }
+
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
@@ -1011,11 +1016,6 @@ function main(app, common, lang) {
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
         if (collection) {
             status.add('collection');
-        }
-
-        if (status.size === 0) {
-            // Member-only Video
-            status.add('video');
         }
 
         return status;
@@ -1288,11 +1288,6 @@ function main(app, common, lang) {
             }
         }
 
-        if (status.size === 0) {
-            // Member-only Video
-            status.add('video');
-        }
-
         return status;
     }
 
@@ -1363,11 +1358,6 @@ function main(app, common, lang) {
             if (lang.isLive_status_label(t)) {
                 status.add('live');
             }
-        }
-
-        if (status.size === 0) {
-            // Member-only Video
-            status.add('video');
         }
 
         return status;
@@ -2012,11 +2002,6 @@ function main(app, common, lang) {
             }
         }
 
-        if (status.size === 0) {
-            // Member-only Video
-            status.add('video');
-        }
-
         return status;
     }
 
@@ -2096,11 +2081,6 @@ function main(app, common, lang) {
             if (lang.isLive_status_label(t)) {
                 status.add('live');
             }
-        }
-
-        if (status.size === 0) {
-            // Member-only Video
-            status.add('video');
         }
 
         return status;
