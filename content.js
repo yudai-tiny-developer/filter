@@ -747,6 +747,11 @@ function main(app, common, lang) {
             status.add('short');
         }
 
+        const collection = node.querySelector('yt-collection-thumbnail-view-model');
+        if (collection) {
+            status.add('collection');
+        }
+
         return status;
     }
 
@@ -914,6 +919,11 @@ function main(app, common, lang) {
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
         if (collection) {
             status.add('collection');
+        }
+
+        if (status.size === 0) {
+            // Ad
+            status.add('video');
         }
 
         return status;
@@ -1286,6 +1296,11 @@ function main(app, common, lang) {
             if (lang.isLive_status_label(t)) {
                 status.add('live');
             }
+        }
+
+        if (status.size === 0) {
+            // Member-only Video
+            status.add('video');
         }
 
         return status;
@@ -1899,6 +1914,8 @@ function main(app, common, lang) {
             } else if (lang.isChannelsNoNotifications(t)) {
                 status.add('channels_none');
             }
+        } else {
+            status.add('channels_purchased');
         }
 
         return status;
@@ -2634,29 +2651,37 @@ function main(app, common, lang) {
         return includesModeStatus(node, status_mode, classifyModeStatus) && includesProgressStatus(node, status_progress, classifyProgressStatus);
     }
 
-    function includesModeStatus(node, status, classifyModeStatus) {
-        if (!status || status.size === 0 || status.has('all')) {
+    function includesModeStatus(node, status_mode, classifyModeStatus) {
+        if (!status_mode || status_mode.size === 0 || status_mode.has('all')) {
             return true;
         } else {
-            for (const s of status) {
-                const node_status = classifyModeStatus(node);
-                if (!node_status || node_status.size === 0 || node_status.has(s)) {
-                    return true;
+            const node_status_mode = classifyModeStatus(node);
+            if (node_status_mode && node_status_mode.size > 0) {
+                for (const s of status_mode) {
+                    if (node_status_mode.has(s)) {
+                        return true;
+                    }
                 }
+            } else {
+                // unknown node
             }
             return false;
         }
     }
 
-    function includesProgressStatus(node, status, classifyProgressStatus) {
-        if (!status || status.size === 0 || status.has('progress_all')) {
+    function includesProgressStatus(node, status_progress, classifyProgressStatus) {
+        if (!status_progress || status_progress.size === 0 || status_progress.has('progress_all')) {
             return true;
         } else {
-            for (const s of status) {
-                const node_status = classifyProgressStatus(node);
-                if (!node_status || node_status.size === 0 || node_status.has(s)) {
-                    return true;
+            const node_status_progress = classifyProgressStatus(node);
+            if (node_status_progress && node_status_progress.size > 0) {
+                for (const s of status_progress) {
+                    if (node_status_progress.has(s)) {
+                        return true;
+                    }
                 }
+            } else {
+                // unknown node
             }
             return false;
         }
