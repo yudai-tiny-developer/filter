@@ -727,15 +727,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -896,15 +888,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -921,9 +905,9 @@ function main(app, common, lang) {
             status.add('collection');
         }
 
-        if (status.size === 0) {
-            // Ad
-            status.add('video');
+        const ad_slot = node.querySelector('ytd-ad-slot-renderer');
+        if (ad_slot) {
+            status.add('ad');
         }
 
         return status;
@@ -1003,15 +987,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -1180,15 +1156,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -1283,15 +1251,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -1360,15 +1320,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -1497,15 +1449,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -1607,15 +1551,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -2004,15 +1940,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
@@ -2085,15 +2013,7 @@ function main(app, common, lang) {
             }
         }
 
-        const badge = node.querySelector('div.badge > p');
-        if (badge) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('yt-thumbnail-badge-view-model > badge-shape > div')) {
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
