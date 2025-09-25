@@ -1918,9 +1918,10 @@ function main(app, common, lang) {
     }
 
     function matchVideoPlayerLockupViewModelTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
-        if (metadata) {
-            return matchQuery(metadata.textContent);
+        const title = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const channel_name = node.querySelector('yt-content-metadata-view-model div span');
+        if (title || channel_name) {
+            return matchQuery(`${title.textContent}\n${channel_name.textContent}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
