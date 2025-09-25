@@ -1426,7 +1426,7 @@ function main(app, common, lang) {
         const title = node.querySelector('a#video-title');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title.textContent}\n${channel_name.textContent}`);
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         // default: visible
@@ -1518,8 +1518,9 @@ function main(app, common, lang) {
 
     function matchHashTagRichItemRendererTextContent(node) {
         const title = node.querySelector('yt-formatted-string#video-title');
-        if (title) {
-            return matchQuery(title.textContent);
+        const channel_name = node.querySelector('yt-formatted-string#text.ytd-channel-name');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         // default: visible
@@ -1921,7 +1922,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model div span');
         if (title || channel_name) {
-            return matchQuery(`${title.textContent}\n${channel_name.textContent}`);
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
