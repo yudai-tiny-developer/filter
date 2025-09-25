@@ -833,11 +833,6 @@ function main(app, common, lang) {
             }
         }
 
-        const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
-        if (ad_metadata) {
-            return false;
-        }
-
         // default: visible
         return true;
     }
