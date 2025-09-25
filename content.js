@@ -1300,8 +1300,9 @@ function main(app, common, lang) {
 
     function matchHistoryVideoRendererTextContent(node) {
         const title = node.querySelector('h3.title-and-badge');
-        if (title) {
-            return matchQuery(title.textContent);
+        const channel_name = node.querySelector('ytd-channel-name');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         // default: visible
