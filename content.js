@@ -772,12 +772,14 @@ function main(app, common, lang) {
             return matchQuery(shorts_metadata.textContent);
         }
 
-        const collection = node.querySelector('yt-collection-thumbnail-view-model');
-        if (collection) {
-            const collection_metadata = node.querySelector('yt-lockup-metadata-view-model');
-            if (collection_metadata) {
-                return matchQuery(collection_metadata.textContent);
-            }
+        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model');
+        if (collection_metadata) {
+            return matchQuery(collection_metadata.textContent);
+        }
+
+        const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
+        if (ad_metadata) {
+            return matchQuery(ad_metadata.textContent);
         }
 
         // default: visible
@@ -1064,12 +1066,9 @@ function main(app, common, lang) {
             return matchQuery(shorts_metadata.textContent);
         }
 
-        const collection = node.querySelector('yt-collection-thumbnail-view-model');
-        if (collection) {
-            const collection_metadata = node.querySelector('yt-lockup-metadata-view-model');
-            if (collection_metadata) {
-                return matchQuery(collection_metadata.textContent);
-            }
+        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model');
+        if (collection_metadata) {
+            return matchQuery(collection_metadata.textContent);
         }
 
         // default: visible
