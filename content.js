@@ -657,7 +657,7 @@ function main(app, common, lang) {
     }
 
     function matchSubscriptionsRichItemRendererTextContent(node) {
-        const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div > h3');
         if (title) {
             return matchQuery(title.textContent);
         }
@@ -786,7 +786,7 @@ function main(app, common, lang) {
     }
 
     function matchTopRichItemRendererTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
+        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3');
         if (metadata) {
             return matchQuery(metadata.textContent);
         }
@@ -796,14 +796,9 @@ function main(app, common, lang) {
             return matchQuery(shorts_metadata.textContent);
         }
 
-        const collection_metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3');
+        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model');
         if (collection_metadata) {
             return matchQuery(collection_metadata.textContent);
-        }
-
-        const collection_metadata2 = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model');
-        if (collection_metadata2) {
-            return matchQuery(collection_metadata2.textContent);
         }
 
         const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
@@ -1085,7 +1080,7 @@ function main(app, common, lang) {
     }
 
     function matchLibraryRichItemRendererTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3');
         if (metadata) {
             return matchQuery(metadata.textContent);
         }
@@ -1199,7 +1194,7 @@ function main(app, common, lang) {
     }
 
     function matchHistoryLockupViewModelTextContent(node) {
-        const title = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const title = node.querySelector('yt-lockup-metadata-view-model > div > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model div span');
         if (title || channel_name) {
             return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
@@ -1340,7 +1335,7 @@ function main(app, common, lang) {
     }
 
     function matchPlaylistsRichItemRendererTextContent(node) {
-        const text_node = node.querySelector('yt-lockup-metadata-view-model div:nth-child(1) h3');
+        const text_node = node.querySelector('yt-lockup-metadata-view-model > div > h3');
         if (text_node) {
             return matchQuery(text_node.textContent);
         }
@@ -1743,7 +1738,7 @@ function main(app, common, lang) {
     }
 
     function matchChannelLockupViewModelTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(1) h3');
+        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3');
         if (metadata) {
             return matchQuery(metadata.textContent);
         }
@@ -1890,7 +1885,7 @@ function main(app, common, lang) {
     }
 
     function matchVideoPlayerLockupViewModelTextContent(node) {
-        const title = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const title = node.querySelector('yt-lockup-metadata-view-model > div > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model div span');
         if (title || channel_name) {
             return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
