@@ -657,7 +657,7 @@ function main(app, common, lang) {
     }
 
     function matchSubscriptionsRichItemRendererTextContent(node) {
-        const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         if (title) {
             return matchQuery(title.textContent);
         }
@@ -674,7 +674,7 @@ function main(app, common, lang) {
     function classifySubscriptionsRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('div#metadata-line') ?? node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        const metadata = node.querySelector('div#metadata-line') ?? node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -786,7 +786,7 @@ function main(app, common, lang) {
     }
 
     function matchTopRichItemRendererTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
         if (metadata) {
             return matchQuery(metadata.textContent);
         }
@@ -796,7 +796,7 @@ function main(app, common, lang) {
             return matchQuery(shorts_metadata.textContent);
         }
 
-        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model');
+        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
         if (collection_metadata) {
             return matchQuery(collection_metadata.textContent);
         }
@@ -813,7 +813,7 @@ function main(app, common, lang) {
     function classifyTopRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -912,7 +912,7 @@ function main(app, common, lang) {
     function classifyTopRichGridMediaModeStatus(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -1080,7 +1080,7 @@ function main(app, common, lang) {
     }
 
     function matchLibraryRichItemRendererTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
+        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
         if (metadata) {
             return matchQuery(metadata.textContent);
         }
@@ -1090,7 +1090,7 @@ function main(app, common, lang) {
             return matchQuery(shorts_metadata.textContent);
         }
 
-        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model');
+        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
         if (collection_metadata) {
             return matchQuery(collection_metadata.textContent);
         }
@@ -1102,7 +1102,7 @@ function main(app, common, lang) {
     function classifyLibraryRichItemRendererModeStatus(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -1194,8 +1194,8 @@ function main(app, common, lang) {
     }
 
     function matchHistoryLockupViewModelTextContent(node) {
-        const title = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
-        const channel_name = node.querySelector('yt-content-metadata-view-model div span');
+        const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
             return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
@@ -1212,7 +1212,7 @@ function main(app, common, lang) {
     function classifyHistoryLockupViewModelModeStatus(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(1) span:nth-child(3)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(3)');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -1335,7 +1335,7 @@ function main(app, common, lang) {
     }
 
     function matchPlaylistsRichItemRendererTextContent(node) {
-        const text_node = node.querySelector('yt-lockup-metadata-view-model div:nth-child(1) h3');
+        const text_node = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         if (text_node) {
             return matchQuery(text_node.textContent);
         }
@@ -1738,7 +1738,7 @@ function main(app, common, lang) {
     }
 
     function matchChannelLockupViewModelTextContent(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model div:nth-child(1) h3');
+        const metadata = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         if (metadata) {
             return matchQuery(metadata.textContent);
         }
@@ -1885,8 +1885,8 @@ function main(app, common, lang) {
     }
 
     function matchVideoPlayerLockupViewModelTextContent(node) {
-        const title = node.querySelector('yt-lockup-metadata-view-model div:nth-child(2) h3');
-        const channel_name = node.querySelector('yt-content-metadata-view-model div span');
+        const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1)');
         if (title || channel_name) {
             return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
@@ -1903,7 +1903,7 @@ function main(app, common, lang) {
     function classifyVideoPlayerLockupViewModelModeStatus(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model div:nth-child(2)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -2301,7 +2301,7 @@ function main(app, common, lang) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
-        input.setAttribute('title', '" "  PHRASE search operator.   e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n ( )    Grouping operator.          e.g. Phrase1 (Phrase2 | Phrase3)');
+        input.setAttribute('title', '" "  PHRASE search operator.   e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n ( )  Grouping operator.            e.g. Phrase1 (Phrase2 | Phrase3)');
         input.id = 'filter-query';
         input.value = getActiveQuery(browse);
         input.addEventListener('change', e => {
@@ -2674,11 +2674,12 @@ function main(app, common, lang) {
     function createQueryEvaluator(query) {
         function tokenize(input) {
             const tokens = [];
-            const regex = /\(|\)|\||"(?:\\"|[^"])*"|[^\s()|]+/g;
+            const regex = /\(|\)|\||-?"(?:\\"|[^"])*"|-?[^\s()|]+/g;
             let match;
             while ((match = regex?.exec(input)) !== null) {
                 tokens?.push(match[0]);
             }
+            console.log(tokens);
             return tokens;
         }
 
