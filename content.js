@@ -499,7 +499,7 @@ function main(app, common, lang) {
 
             changeMode(getActiveMode().values().next().value, multiselection, false, browse);
             changeModeProgress(getActiveModeProgress().values().next().value, browse);
-            updateQueryRegex(browse, getActiveQuery(browse));
+            updateQuery(browse, getActiveQuery(browse));
             updateVisibility(browse);
 
             // add-playlist
@@ -549,62 +549,9 @@ function main(app, common, lang) {
             ;
     }
 
-    function updateQueryRegex(browse, query) {
+    function updateQuery(browse, query) {
         set_cache_query(query);
         browse.setAttribute('filter-query', query);
-
-        const queryList = [];
-        const notQueryList = [];
-        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
-        let nextOr = false;
-        let nextNot = false;
-        if (tokenList) {
-            for (const token of tokenList) {
-                if (token === '|') {
-                    nextOr = true;
-                } else if (token === '-') {
-                    nextNot = true;
-                } else {
-                    const t = token.replace(/\|/g, '\\|');
-                    if (nextOr && nextNot) {
-                        if (notQueryList.length - 1 >= 0) {
-                            notQueryList[notQueryList.length - 1] = notQueryList[notQueryList.length - 1] + '|' + t;
-                        } else {
-                            notQueryList.push(t);
-                        }
-                        nextOr = false;
-                        nextNot = false;
-                    } else if (nextOr) {
-                        if (queryList.length - 1 >= 0) {
-                            queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
-                        } else {
-                            queryList.push(t);
-                        }
-                        nextOr = false;
-                    } else if (nextNot) {
-                        notQueryList.push(t);
-                        nextNot = false;
-                    } else {
-                        queryList.push(t);
-                    }
-                }
-            }
-        } else {
-            // empty query
-        }
-
-        const regex = [];
-        for (const q of queryList) {
-            regex.push(new RegExp(q.replace(/"/g, ''), 'i'));
-        }
-        set_cache_regex(regex);
-
-        const notRegex = [];
-        for (const q of notQueryList) {
-            notRegex.push(new RegExp(q.replace(/"/g, ''), 'i'));
-        }
-        set_cache_notRegex(notRegex);
-
         browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
     }
 
@@ -831,11 +778,6 @@ function main(app, common, lang) {
             if (collection_metadata) {
                 return matchQuery(collection_metadata.textContent);
             }
-        }
-
-        const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
-        if (ad_metadata) {
-            return false;
         }
 
         // default: visible
@@ -2145,7 +2087,7 @@ function main(app, common, lang) {
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
-            updateQueryRegex(browse, input.value);
+            updateQuery(browse, input.value);
             updateVisibility(browse);
             if (scroll) {
                 window.scroll({ top: 0, behavior: 'instant' });
@@ -2261,7 +2203,7 @@ function main(app, common, lang) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
-        input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
+        input.setAttribute('title', '" "  PHRASE search operator.   e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n ( )    Grouping operator.          e.g. Phrase1 (Phrase2 | Phrase3)');
         input.id = 'filter-query';
         input.value = getActiveQuery(browse);
         input.addEventListener('change', e => {
@@ -2277,7 +2219,7 @@ function main(app, common, lang) {
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updateQueryRegex(browse, '');
+            updateQuery(browse, '');
             updateVisibility(browse);
             if (scroll) {
                 window.scroll({ top: 0, behavior: 'instant' });
@@ -2292,7 +2234,7 @@ function main(app, common, lang) {
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updateQueryRegex(browse, input.value);
+            updateQuery(browse, input.value);
             updateVisibility(browse);
             if (scroll) {
                 window.scroll({ top: 0, behavior: 'instant' });
@@ -2375,7 +2317,7 @@ function main(app, common, lang) {
 
         menu.addEventListener('submit', e => {
             e.preventDefault();
-            updatePopupQueryRegex(menu.containers, input.value);
+            updatePopupQuery(menu.containers, input.value);
             updatePopupVisibility(menu.containers);
 
             if (expander) {
@@ -2426,7 +2368,7 @@ function main(app, common, lang) {
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updatePopupQueryRegex(containers, '');
+            updatePopupQuery(containers, '');
             updatePopupVisibility(containers);
         });
         return span;
@@ -2437,7 +2379,7 @@ function main(app, common, lang) {
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updatePopupQueryRegex(containers, input.value);
+            updatePopupQuery(containers, input.value);
             updatePopupVisibility(containers);
         });
         return span;
@@ -2461,91 +2403,20 @@ function main(app, common, lang) {
         return `${container.parentNode.nodeName}#${container.parentNode.id}>${container.nodeName}#${container.id}`;
     }
 
-    function updatePopupQueryRegex(containers, query) {
-        const queryList = [];
-        const notQueryList = [];
-        const tokenList = query.replace(/[.*+?^=!:${}()[\]\/\\]/g, '\\$&').match(/[^\s|\-"]+|"([^"]*)"|\||\-/g);
-        let nextOr = false;
-        let nextNot = false;
-        if (tokenList) {
-            for (const token of tokenList) {
-                if (token === '|') {
-                    nextOr = true;
-                } else if (token === '-') {
-                    nextNot = true;
-                } else {
-                    const t = token.replace(/\|/g, '\\|');
-                    if (nextOr && nextNot) {
-                        if (notQueryList.length - 1 >= 0) {
-                            notQueryList[notQueryList.length - 1] = notQueryList[notQueryList.length - 1] + '|' + t;
-                        } else {
-                            notQueryList.push(t);
-                        }
-                        nextOr = false;
-                        nextNot = false;
-                    } else if (nextOr) {
-                        if (queryList.length - 1 >= 0) {
-                            queryList[queryList.length - 1] = queryList[queryList.length - 1] + '|' + t;
-                        } else {
-                            queryList.push(t);
-                        }
-                        nextOr = false;
-                    } else if (nextNot) {
-                        notQueryList.push(t);
-                        nextNot = false;
-                    } else {
-                        queryList.push(t);
-                    }
-                }
-            }
-        } else {
-            // empty query
-        }
-
-        const regExpList = [];
-        for (const q of queryList) {
-            regExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
-        }
-
-        const notRegExpList = [];
-        for (const q of notQueryList) {
-            notRegExpList.push(new RegExp(q.replace(/"/g, ''), 'i'));
-        }
-
+    function updatePopupQuery(containers, query) {
         for (const container of containers) {
             const key = getPopupKey(container);
-            active.regex.set(key, regExpList);
-            active.notRegex.set(key, notRegExpList);
+            active.query.set(key, query);
         }
     }
 
     function matchPopupQuery(container, target) {
+        const query = active.query.get(getPopupKey(container));
+        if (!query) return true;
+
+        const evaluator = createQueryEvaluator(query?.toLowerCase());
         const text = target.querySelector('yt-formatted-string#label.ytd-playlist-add-to-option-renderer, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
-        return matchPopupAllActiveRegex(container, text) && matchPopupAllActiveNotRegex(container, text);
-    }
-
-    function matchPopupAllActiveRegex(container, text) {
-        const rs = active.regex.get(getPopupKey(container));
-        if (rs) {
-            for (const r of rs) {
-                if (!text.match(r)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    function matchPopupAllActiveNotRegex(container, text) {
-        const rs = active.notRegex.get(getPopupKey(container));
-        if (rs) {
-            for (const r of rs) {
-                if (!!r && text.match(r)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return evaluator(text?.toLowerCase());
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
@@ -2787,32 +2658,124 @@ function main(app, common, lang) {
         }
     }
 
+    function createQueryEvaluator(query) {
+        function tokenize(input) {
+            const tokens = [];
+            const regex = /\(|\)|\||"(?:\\"|[^"])*"|[^\s()|]+/g;
+            let match;
+            while ((match = regex?.exec(input)) !== null) {
+                tokens?.push(match[0]);
+            }
+            return tokens;
+        }
+
+        function parse(tokens) {
+            let pos = 0;
+
+            function peek() {
+                return tokens[pos];
+            }
+
+            function consume(expected) {
+                const token = tokens[pos];
+                if (expected && token !== expected) {
+                    return '';
+                }
+                pos++;
+                return token;
+            }
+
+            function parseExpression() {
+                let node = parseAnd();
+                while (peek() === '|') {
+                    consume('|');
+                    node = { type: 'or', left: node, right: parseAnd() };
+                }
+                return node;
+            }
+
+            function parseAnd() {
+                let node = parseNot();
+                while (peek() && peek() !== ')' && peek() !== '|') {
+                    node = { type: 'and', left: node, right: parseNot() };
+                }
+                return node;
+            }
+
+            function parseNot() {
+                if (peek() && peek().startsWith('-')) {
+                    let token = consume();
+                    if (token === '-') {
+                        const expr = parsePrimary();
+                        return { type: 'not', expr };
+                    } else if (token?.startsWith('-"') && token?.endsWith('"')) {
+                        return {
+                            type: 'not',
+                            expr: { type: 'keyword', value: token?.slice(2, -1) }
+                        };
+                    } else {
+                        return {
+                            type: 'not',
+                            expr: { type: 'keyword', value: token?.slice(1) }
+                        };
+                    }
+                }
+                return parsePrimary();
+            }
+
+            function parsePrimary() {
+                if (peek() === '(') {
+                    consume('(');
+                    const expr = parseExpression();
+                    consume(')');
+                    return expr;
+                }
+                const token = consume();
+                if (token?.startsWith('"') && token?.endsWith('"')) {
+                    return { type: 'keyword', value: token?.slice(1, -1) };
+                }
+                return { type: 'keyword', value: token };
+            }
+
+            const ast = parseExpression();
+            if (pos < tokens?.length) {
+                return '';
+            }
+            return ast;
+        }
+
+        function compile(ast) {
+            switch (ast?.type) {
+                case 'keyword':
+                    return text => text?.includes(ast?.value);
+                case 'not': {
+                    const fn = compile(ast?.expr);
+                    return text => !fn(text);
+                }
+                case 'and': {
+                    const left = compile(ast?.left);
+                    const right = compile(ast?.right);
+                    return text => left(text) && right(text);
+                }
+                case 'or': {
+                    const left = compile(ast?.left);
+                    const right = compile(ast?.right);
+                    return text => left(text) || right(text);
+                }
+            }
+        }
+
+        const tokens = tokenize(query);
+        const ast = parse(tokens);
+        return compile(ast);
+    }
+
     function matchQuery(text) {
-        return matchAllActiveRegex(text) && matchAllActiveNotRegex(text);
-    }
+        const query = get_cache_query();
+        if (!query) return true;
 
-    function matchAllActiveRegex(text) {
-        const regex = get_cache_regex();
-        if (regex) {
-            for (const r of regex) {
-                if (!text.match(r)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    function matchAllActiveNotRegex(text) {
-        const notRegex = get_cache_notRegex();
-        if (notRegex) {
-            for (const r of notRegex) {
-                if (!!r && text.match(r)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        const evaluator = createQueryEvaluator(query?.toLowerCase());
+        return evaluator(text?.toLowerCase());
     }
 
     function onResize() {
@@ -2926,22 +2889,6 @@ function main(app, common, lang) {
         active.query.set(cache_key(location.href), query);
     }
 
-    function get_cache_regex() {
-        return active.regex.get(cache_key(location.href));
-    }
-
-    function set_cache_regex(regex) {
-        active.regex.set(cache_key(location.href), regex);
-    }
-
-    function get_cache_notRegex() {
-        return active.notRegex.set(cache_key(location.href));
-    }
-
-    function set_cache_notRegex(notRegex) {
-        active.notRegex.set(cache_key(location.href), notRegex);
-    }
-
     const default_tab = {
         live: common.default_default_live,
         streamed: common.default_default_streamed,
@@ -2963,8 +2910,6 @@ function main(app, common, lang) {
         mode: new Map(),
         mode_progress: new Map(),
         query: new Map(),
-        regex: new Map(),
-        notRegex: new Map(),
     };
 
     let keyword = common.default_keyword;
