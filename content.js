@@ -2679,7 +2679,6 @@ function main(app, common, lang) {
             while ((match = regex?.exec(input)) !== null) {
                 tokens?.push(match[0]);
             }
-            console.log(tokens);
             return tokens;
         }
 
