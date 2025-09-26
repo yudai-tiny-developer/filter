@@ -549,12 +549,6 @@ function main(app, common, lang) {
             ;
     }
 
-    function updateQuery(browse, query) {
-        set_cache_query(query);
-        browse.setAttribute('filter-query', query);
-        browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
-    }
-
     function updateVisibility(node) {
         if (common.isSubscriptions(location.href)) {
             node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchSubscriptionsRichItemRendererTextContent, classifySubscriptionsRichItemRendererModeStatus, classifySubscriptionsRichItemRendererProgressStatus));
@@ -590,6 +584,36 @@ function main(app, common, lang) {
             node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchVideoPlayerLockupViewModelTextContent, classifyVideoPlayerLockupViewModelModeStatus, classifyVideoPlayerLockupViewModelProgressStatus));
             node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchVideoPlayerShortsLockupViewModelV2TextContent, classifyVideoPlayerShortsLockupViewModelV2ModeStatus, classifyVideoPlayerShortsLockupViewModelV2ProgressStatus));
         }
+    }
+
+    function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
+        if (node.classList.contains('filter-separator')) {
+            node.style.display = '';
+            node.classList.add('filter-show');
+            node.classList.remove('filter-hidden');
+        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
+            node.style.display = '';
+            node.classList.add('filter-show');
+            node.classList.remove('filter-hidden');
+        } else {
+            node.style.cssText = 'display: none !important;';
+            node.classList.remove('filter-show');
+            node.classList.add('filter-hidden');
+        }
+    }
+
+    function updateQuery(browse, query) {
+        set_cache_query(query);
+        browse.setAttribute('filter-query', query);
+        browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
+    }
+
+    function matchQuery(text) {
+        const query = get_cache_query();
+        if (!query) return true;
+
+        const evaluator = createQueryEvaluator(query?.toLowerCase());
+        return evaluator(text?.toLowerCase());
     }
 
     function onSubscriptionsNodeLoaded(node) {
@@ -1978,6 +2002,40 @@ function main(app, common, lang) {
         return undefined;
     }
 
+    function updatePopupVisibility(containers) {
+        for (const container of containers) {
+            container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
+        }
+    }
+
+    function updatePopupTargetVisibility(container, target) {
+        if (matchPopupQuery(container, target)) {
+            target.style.display = '';
+        } else {
+            target.style.display = 'none';
+        }
+    }
+
+    function getPopupKey(container) {
+        return `${container.parentNode.nodeName}#${container.parentNode.id}>${container.nodeName}#${container.id}`;
+    }
+
+    function updatePopupQuery(containers, query) {
+        for (const container of containers) {
+            const key = getPopupKey(container);
+            active.query.set(key, query);
+        }
+    }
+
+    function matchPopupQuery(container, target) {
+        const query = active.query.get(getPopupKey(container));
+        if (!query) return true;
+
+        const evaluator = createQueryEvaluator(query?.toLowerCase());
+        const text = target.querySelector('yt-formatted-string#label.ytd-playlist-add-to-option-renderer, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
+        return evaluator(text?.toLowerCase());
+    }
+
     function onAppNodeLoaded(node) {
         switch (node.nodeName) {
             // notification
@@ -2019,21 +2077,56 @@ function main(app, common, lang) {
         }
     }
 
-    function insertPlaylistSpacer(browse) {
-        for (const sidebar of browse.querySelectorAll('ytd-playlist-sidebar-renderer')) {
-            if (sidebar.firstChild.id !== 'sidebar-spacer') {
-                sidebar.insertBefore(createSpacer('sidebar-spacer'), sidebar.firstChild);
-            } else {
-                // already exists
-            }
+    function onViewChanged() {
+        for (const browse of app.querySelectorAll('ytd-browse:has(form.filter-menu), ytd-watch-flexy:has(form.filter-menu)')) {
+            onViewChanged_Node(browse);
         }
+    }
 
-        for (const header of browse.querySelectorAll('ytd-playlist-header-renderer')) {
-            if (header.firstChild.id !== 'header-spacer') {
-                header.insertBefore(createSpacer('header-spacer'), header.firstChild);
+    function onViewChanged_Node(browse) {
+        insertPlaylistSpacer(browse);
+        updateButtonVisibility(browse);
+        display_query(browse, 'form.filter-menu, div.filter-menu', display(isMenuTarget()));
+        updateVisibility(browse);
+    }
+
+    function includesStatus(node, status_mode, status_progress, classifyModeStatus, classifyProgressStatus) {
+        return includesModeStatus(node, status_mode, classifyModeStatus) && includesProgressStatus(node, status_progress, classifyProgressStatus);
+    }
+
+    function includesModeStatus(node, status_mode, classifyModeStatus) {
+        if (!status_mode || status_mode.size === 0 || status_mode.has('all')) {
+            return true;
+        } else {
+            const node_status_mode = classifyModeStatus(node);
+            if (node_status_mode && node_status_mode.size > 0) {
+                for (const s of status_mode) {
+                    if (node_status_mode.has(s)) {
+                        return true;
+                    }
+                }
             } else {
-                // already exists
+                // unknown node
             }
+            return false;
+        }
+    }
+
+    function includesProgressStatus(node, status_progress, classifyProgressStatus) {
+        if (!status_progress || status_progress.size === 0 || status_progress.has('progress_all')) {
+            return true;
+        } else {
+            const node_status_progress = classifyProgressStatus(node);
+            if (node_status_progress && node_status_progress.size > 0) {
+                for (const s of status_progress) {
+                    if (node_status_progress.has(s)) {
+                        return true;
+                    }
+                }
+            } else {
+                // unknown node
+            }
+            return false;
         }
     }
 
@@ -2094,6 +2187,12 @@ function main(app, common, lang) {
         });
 
         return menu;
+    }
+
+    function createNodeForCalc(menu) {
+        const nodeForCalc = menu.cloneNode(true);
+        nodeForCalc.classList.add('filter-forCalc');
+        return nodeForCalc;
     }
 
     function createSpacer(id) {
@@ -2384,106 +2483,21 @@ function main(app, common, lang) {
         return span;
     }
 
-    function updatePopupVisibility(containers) {
-        for (const container of containers) {
-            container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
-        }
-    }
-
-    function updatePopupTargetVisibility(container, target) {
-        if (matchPopupQuery(container, target)) {
-            target.style.display = '';
-        } else {
-            target.style.display = 'none';
-        }
-    }
-
-    function getPopupKey(container) {
-        return `${container.parentNode.nodeName}#${container.parentNode.id}>${container.nodeName}#${container.id}`;
-    }
-
-    function updatePopupQuery(containers, query) {
-        for (const container of containers) {
-            const key = getPopupKey(container);
-            active.query.set(key, query);
-        }
-    }
-
-    function matchPopupQuery(container, target) {
-        const query = active.query.get(getPopupKey(container));
-        if (!query) return true;
-
-        const evaluator = createQueryEvaluator(query?.toLowerCase());
-        const text = target.querySelector('yt-formatted-string#label.ytd-playlist-add-to-option-renderer, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
-        return evaluator(text?.toLowerCase());
-    }
-
-    function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (node.classList.contains('filter-separator')) {
-            node.style.display = '';
-            node.classList.add('filter-show');
-            node.classList.remove('filter-hidden');
-        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
-            node.style.display = '';
-            node.classList.add('filter-show');
-            node.classList.remove('filter-hidden');
-        } else {
-            node.style.cssText = 'display: none !important;';
-            node.classList.remove('filter-show');
-            node.classList.add('filter-hidden');
-        }
-    }
-
-    function onViewChanged() {
-        for (const browse of app.querySelectorAll('ytd-browse:has(form.filter-menu), ytd-watch-flexy:has(form.filter-menu)')) {
-            onViewChanged_Node(browse);
-        }
-    }
-
-    function onViewChanged_Node(browse) {
-        insertPlaylistSpacer(browse);
-        updateButtonVisibility(browse);
-        display_query(browse, 'form.filter-menu, div.filter-menu', display(isMenuTarget()));
-        updateVisibility(browse);
-    }
-
-    function includesStatus(node, status_mode, status_progress, classifyModeStatus, classifyProgressStatus) {
-        return includesModeStatus(node, status_mode, classifyModeStatus) && includesProgressStatus(node, status_progress, classifyProgressStatus);
-    }
-
-    function includesModeStatus(node, status_mode, classifyModeStatus) {
-        if (!status_mode || status_mode.size === 0 || status_mode.has('all')) {
-            return true;
-        } else {
-            const node_status_mode = classifyModeStatus(node);
-            if (node_status_mode && node_status_mode.size > 0) {
-                for (const s of status_mode) {
-                    if (node_status_mode.has(s)) {
-                        return true;
-                    }
-                }
+    function insertPlaylistSpacer(browse) {
+        for (const sidebar of browse.querySelectorAll('ytd-playlist-sidebar-renderer')) {
+            if (sidebar.firstChild.id !== 'sidebar-spacer') {
+                sidebar.insertBefore(createSpacer('sidebar-spacer'), sidebar.firstChild);
             } else {
-                // unknown node
+                // already exists
             }
-            return false;
         }
-    }
 
-    function includesProgressStatus(node, status_progress, classifyProgressStatus) {
-        if (!status_progress || status_progress.size === 0 || status_progress.has('progress_all')) {
-            return true;
-        } else {
-            const node_status_progress = classifyProgressStatus(node);
-            if (node_status_progress && node_status_progress.size > 0) {
-                for (const s of status_progress) {
-                    if (node_status_progress.has(s)) {
-                        return true;
-                    }
-                }
+        for (const header of browse.querySelectorAll('ytd-playlist-header-renderer')) {
+            if (header.firstChild.id !== 'header-spacer') {
+                header.insertBefore(createSpacer('header-spacer'), header.firstChild);
             } else {
-                // unknown node
+                // already exists
             }
-            return false;
         }
     }
 
@@ -2769,14 +2783,6 @@ function main(app, common, lang) {
         return compile(ast);
     }
 
-    function matchQuery(text) {
-        const query = get_cache_query();
-        if (!query) return true;
-
-        const evaluator = createQueryEvaluator(query?.toLowerCase());
-        return evaluator(text?.toLowerCase());
-    }
-
     function onResize() {
         if (isMenuTarget()) {
             if (responsive) {
@@ -2811,12 +2817,6 @@ function main(app, common, lang) {
                 }
             }
         }
-    }
-
-    function createNodeForCalc(menu) {
-        const nodeForCalc = menu.cloneNode(true);
-        nodeForCalc.classList.add('filter-forCalc');
-        return nodeForCalc;
     }
 
     function display(value) {
