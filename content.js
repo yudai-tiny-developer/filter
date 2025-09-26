@@ -2674,11 +2674,12 @@ function main(app, common, lang) {
     function createQueryEvaluator(query) {
         function tokenize(input) {
             const tokens = [];
-            const regex = /\(|\)|\||"(?:\\"|[^"])*"|[^\s()|]+/g;
+            const regex = /\(|\)|\||-?"(?:\\"|[^"])*"|-?[^\s()|]+/g;
             let match;
             while ((match = regex?.exec(input)) !== null) {
                 tokens?.push(match[0]);
             }
+            console.log(tokens);
             return tokens;
         }
 
