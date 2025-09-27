@@ -551,38 +551,27 @@ function main(app, common, lang) {
 
     function updateVisibility(node) {
         if (common.isSubscriptions(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchSubscriptionsRichItemRendererTextContent, classifySubscriptionsRichItemRendererModeStatus, classifySubscriptionsRichItemRendererProgressStatus));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, YTD-CONTINUATION-ITEM-RENDERER').forEach(n => onSubscriptionsNodeLoaded(n));
         } else if (common.isTop(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchTopRichItemRendererTextContent, classifyTopRichItemRendererModeStatus, classifyTopRichItemRendererProgressStatus));
-            node.querySelectorAll('ytd-rich-grid-media').forEach(n => updateTargetVisibility(n, matchTopRichGridMediaTextContent, classifyTopRichGridMediaModeStatus, classifyTopRichGridMediaProgressStatus));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER').forEach(n => onTopNodeLoaded(n));
         } else if (common.isShorts(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchShortsRichItemRendererTextContent, classifyShortsRichItemRendererModeStatus, classifyShortsRichItemRendererProgressStatus));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, YTD-CONTINUATION-ITEM-RENDERER').forEach(n => onShortsNodeLoaded(n));
         } else if (common.isLibrary(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchLibraryRichItemRendererTextContent, classifyLibraryRichItemRendererModeStatus, classifyLibraryRichItemRendererProgressStatus));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onLibraryNodeLoaded(n));
         } else if (common.isHistory(location.href)) {
-            node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchHistoryLockupViewModelTextContent, classifyHistoryLockupViewModelModeStatus, classifyHistoryLockupViewModelProgressStatus));
-            node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchHistoryShortsLockupViewModelV2TextContent, classifyHistoryShortsLockupViewModelV2ModeStatus, classifyHistoryShortsLockupViewModelV2ProgressStatus));
-            node.querySelectorAll('ytd-video-renderer').forEach(n => updateTargetVisibility(n, matchHistoryVideoRendererTextContent, classifyHistoryVideoRendererModeStatus, classifyHistoryVideoRendererProgressStatus));
+            node.querySelectorAll('YT-LOCKUP-VIEW-MODEL,YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-BROWSE').forEach(n => onHistoryNodeLoaded(n));
         } else if (common.isPlaylists(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchPlaylistsRichItemRendererTextContent, classifyPlaylistsRichItemRendererModeStatus, classifyPlaylistsRichItemRendererProgressStatus));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onPlaylistsNodeLoaded(n));
         } else if (common.isPlaylist(location.href)) {
-            node.querySelectorAll('ytd-playlist-video-renderer').forEach(n => updateTargetVisibility(n, matchPlaylistVideoRendererTextContent, classifyPlaylistVideoRendererModeStatus, classifyPlaylistVideoRendererProgressStatus));
+            node.querySelectorAll('YTD-PLAYLIST-VIDEO-RENDERER, YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER, YTD-BROWSE').forEach(n => onPlaylistNodeLoaded(n));
         } else if (common.isHashTag(location.href)) {
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchHashTagRichItemRendererTextContent, classifyHashTagRichItemRendererModeStatus, classifyHashTagRichItemRendererProgressStatus));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, TP-YT-APP-HEADER').forEach(n => onHashTagNodeLoaded(n));
         } else if (common.isChannel(location.href)) {
-            node.querySelectorAll('ytd-channel-featured-content-renderer').forEach(n => updateTargetVisibility(n, matchChannelChannelFeaturedContentRendererTextContent, classifyChannelChannelFeaturedContentRendererModeStatus, classifyChannelChannelFeaturedContentRendererProgressStatus));
-            node.querySelectorAll('ytd-grid-video-renderer').forEach(n => updateTargetVisibility(n, matchChannelGridVideoRendererTextContent, classifyChannelGridVideoRendererModeStatus, classifyChannelGridVideoRendererProgressStatus));
-            node.querySelectorAll('ytd-grid-channel-renderer').forEach(n => updateTargetVisibility(n, matchChannelGridChannelRendererTextContent, classifyChannelGridChannelRendererModeStatus, classifyChannelGridChannelRendererProgressStatus));
-            node.querySelectorAll('ytd-post-renderer').forEach(n => updateTargetVisibility(n, matchChannelPostRendererTextContent, classifyChannelPostRendererModeStatus, classifyChannelPostRendererProgressStatus));
-            node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchChannelShortsLockupViewModelV2TextContent, classifyChannelShortsLockupViewModelV2ModeStatus, classifyChannelShortsLockupViewModelV2ProgressStatus));
-            node.querySelectorAll('ytd-rich-item-renderer').forEach(n => updateTargetVisibility(n, matchChannelRichItemRendererTextContent, classifyChannelRichItemRendererModeStatus, classifyChannelRichItemRendererProgressStatus));
-            node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchChannelLockupViewModelTextContent, classifyChannelLockupViewModelModeStatus, classifyChannelLockupViewModelProgressStatus));
-            node.querySelectorAll('ytd-backstage-post-thread-renderer').forEach(n => updateTargetVisibility(n, matchChannelBackstagePostThreadRendererTextContent, classifyChannelBackstagePostThreadRendererModeStatus, classifyChannelBackstagePostThreadRendererProgressStatus));
+            node.querySelectorAll('YTD-CHANNEL-FEATURED-CONTENT-RENDERER, YTD-GRID-VIDEO-RENDERER, YTD-GRID-CHANNEL-RENDERER, YTD-POST-RENDERER, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-BACKSTAGE-POST-THREAD-RENDERER, YTD-BROWSE').forEach(n => onChannelNodeLoaded(n));
         } else if (common.isChannels(location.href)) {
-            node.querySelectorAll('ytd-channel-renderer').forEach(n => updateTargetVisibility(n, matchChannelsChannelRendererTextContent, classifyChannelsChannelRendererModeStatus, classifyChannelsChannelRendererProgressStatus));
+            node.querySelectorAll('YTD-CHANNEL-RENDERER, YTD-BROWSE').forEach(n => onChannelsNodeLoaded(n));
         } else if (common.isVideoPlayer(location.href)) {
-            node.querySelectorAll('yt-lockup-view-model').forEach(n => updateTargetVisibility(n, matchVideoPlayerLockupViewModelTextContent, classifyVideoPlayerLockupViewModelModeStatus, classifyVideoPlayerLockupViewModelProgressStatus));
-            node.querySelectorAll('ytm-shorts-lockup-view-model-v2').forEach(n => updateTargetVisibility(n, matchVideoPlayerShortsLockupViewModelV2TextContent, classifyVideoPlayerShortsLockupViewModelV2ModeStatus, classifyVideoPlayerShortsLockupViewModelV2ProgressStatus));
+            node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-COMPACT-MOVIE-RENDERER, YT-CHIP-CLOUD-RENDERER').forEach(n => onVideoPlayerNodeLoaded(n));
         }
     }
 
@@ -1846,6 +1835,9 @@ function main(app, common, lang) {
             case 'YTD-VIDEO-RENDERER':
                 updateTargetVisibility(node, matchVideoPlayerVideoRendererTextContent, classifyVideoPlayerVideoRendererModeStatus, classifyVideoPlayerVideoRendererProgressStatus);
                 break;
+            case 'YTD-COMPACT-MOVIE-RENDERER':
+                updateTargetVisibility(node, matchVideoPlayerCompactMovieRendererTextContent, classifyVideoPlayerCompactMovieRendererModeStatus, classifyVideoPlayerCompactMovieRendererProgressStatus);
+                break;
             case 'YT-CHIP-CLOUD-RENDERER':
                 insertVideoPlayerMenu(node);
                 break;
@@ -2000,6 +1992,32 @@ function main(app, common, lang) {
 
     function classifyVideoPlayerVideoRendererProgressStatus(node) {
         return undefined;
+    }
+
+    function matchVideoPlayerCompactMovieRendererTextContent(node) {
+        const title = node.querySelector('div.details h3');
+        if (title) {
+            return matchQuery(title.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyVideoPlayerCompactMovieRendererModeStatus(node) {
+        const status = new Set();
+
+        status.add('video');
+
+        return status;
+    }
+
+    function classifyVideoPlayerCompactMovieRendererProgressStatus(node) {
+        const status = new Set();
+
+        status.add('progress_unwatched');
+
+        return status;
     }
 
     function updatePopupVisibility(containers) {
@@ -2962,65 +2980,9 @@ function main(app, common, lang) {
     });
 
     new MutationObserver((mutations, observer) => {
-        if (common.isSubscriptions(location.href)) {
-            for (const m of mutations) {
-                onSubscriptionsNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isTop(location.href)) {
-            for (const m of mutations) {
-                onTopNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isShorts(location.href)) {
-            for (const m of mutations) {
-                onShortsNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isLibrary(location.href)) {
-            for (const m of mutations) {
-                onLibraryNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isHistory(location.href)) {
-            for (const m of mutations) {
-                onHistoryNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isPlaylists(location.href)) {
-            for (const m of mutations) {
-                onPlaylistsNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isPlaylist(location.href)) {
-            for (const m of mutations) {
-                onPlaylistNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isHashTag(location.href)) {
-            for (const m of mutations) {
-                onHashTagNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isChannel(location.href)) {
-            for (const m of mutations) {
-                onChannelNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isChannels(location.href)) {
-            for (const m of mutations) {
-                onChannelsNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else if (common.isVideoPlayer(location.href)) {
-            for (const m of mutations) {
-                onVideoPlayerNodeLoaded(m.target);
-                onAppNodeLoaded(m.target);
-            }
-        } else {
-            for (const m of mutations) {
-                onAppNodeLoaded(m.target);
-            }
+        for (const m of mutations) {
+            updateVisibility(m.target);
+            onAppNodeLoaded(m.target);
         }
     }).observe(app, { subtree: true, childList: true });
 }
