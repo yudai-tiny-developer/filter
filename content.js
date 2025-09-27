@@ -571,7 +571,7 @@ function main(app, common, lang) {
         } else if (common.isChannels(location.href)) {
             node.querySelectorAll('YTD-CHANNEL-RENDERER, YTD-BROWSE').forEach(n => onChannelsNodeLoaded(n));
         } else if (common.isVideoPlayer(location.href)) {
-            node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YT-CHIP-CLOUD-RENDERER').forEach(n => onVideoPlayerNodeLoaded(n));
+            node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-COMPACT-MOVIE-RENDERER, YT-CHIP-CLOUD-RENDERER').forEach(n => onVideoPlayerNodeLoaded(n));
         }
     }
 
@@ -1835,6 +1835,9 @@ function main(app, common, lang) {
             case 'YTD-VIDEO-RENDERER':
                 updateTargetVisibility(node, matchVideoPlayerVideoRendererTextContent, classifyVideoPlayerVideoRendererModeStatus, classifyVideoPlayerVideoRendererProgressStatus);
                 break;
+            case 'YTD-COMPACT-MOVIE-RENDERER':
+                updateTargetVisibility(node, matchVideoPlayerCompactMovieRendererTextContent, classifyVideoPlayerCompactMovieRendererModeStatus, classifyVideoPlayerCompactMovieRendererProgressStatus);
+                break;
             case 'YT-CHIP-CLOUD-RENDERER':
                 insertVideoPlayerMenu(node);
                 break;
@@ -1989,6 +1992,32 @@ function main(app, common, lang) {
 
     function classifyVideoPlayerVideoRendererProgressStatus(node) {
         return undefined;
+    }
+
+    function matchVideoPlayerCompactMovieRendererTextContent(node) {
+        const title = node.querySelector('div.details h3');
+        if (title) {
+            return matchQuery(title.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyVideoPlayerCompactMovieRendererModeStatus(node) {
+        const status = new Set();
+
+        status.add('video');
+
+        return status;
+    }
+
+    function classifyVideoPlayerCompactMovieRendererProgressStatus(node) {
+        const status = new Set();
+
+        status.add('progress_unwatched');
+
+        return status;
     }
 
     function updatePopupVisibility(containers) {
