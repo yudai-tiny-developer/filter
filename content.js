@@ -551,11 +551,13 @@ function main(app, common, lang) {
 
     function updateVisibility(node) {
         if (common.isSubscriptions(location.href)) {
-            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, YTD-CONTINUATION-ITEM-RENDERER').forEach(n => onSubscriptionsNodeLoaded(n));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onSubscriptionsNodeLoaded(n));
+            if (node.nodeName === 'YTD-CONTINUATION-ITEM-RENDERER') onSubscriptionsNodeLoaded(node);
         } else if (common.isTop(location.href)) {
             node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER').forEach(n => onTopNodeLoaded(n));
         } else if (common.isShorts(location.href)) {
-            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, YTD-CONTINUATION-ITEM-RENDERER').forEach(n => onShortsNodeLoaded(n));
+            node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onShortsNodeLoaded(n));
+            if (node.nodeName === 'YTD-CONTINUATION-ITEM-RENDERER') onShortsNodeLoaded(node);
         } else if (common.isLibrary(location.href)) {
             node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onLibraryNodeLoaded(n));
         } else if (common.isHistory(location.href)) {
