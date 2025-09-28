@@ -134,10 +134,6 @@ ytd-browse[page-subtype="playlist"] form.filter-menu.position-fixed {
     background-color: var(--yt-spec-base-background);
 }
 
-div.filter-menu.spacer {
-    visibility: hidden;
-}
-
 select.filter-menu {
     background-color: var(--yt-spec-text-primary);
     color: var(--yt-spec-text-primary-inverse);
@@ -316,4 +312,28 @@ ytd-watch-flexy:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
 
 ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
     display: none !important;
+}
+
+ytd-browse:has(form.filter-menu.with-space)>ytd-two-column-browse-results-renderer {
+    padding-top: 56px !important;
+}
+
+ytd-browse:has(form.filter-menu.with-space-header)>div#header {
+    padding-top: 56px !important;
+}
+
+ytd-browse:has(form.filter-menu.with-space-related) div#related ytd-item-section-renderer {
+    padding-top: 56px !important;
+}
+
+ytd-browse:has(form.filter-sidebar-channels) ytd-playlist-sidebar-renderer {
+    padding-top: 56px !important;
+}
+
+ytd-browse:has(form.filter-add-playlist) ytd-playlist-header-renderer {
+    padding-top: 56px !important;
+}
+
+ytd-browse:has(form.filter-menu.with-space-playlist-header) ytd-playlist-header-renderer {
+    padding-top: 56px !important;
 }
