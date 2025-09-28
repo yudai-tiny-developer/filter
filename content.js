@@ -641,12 +641,11 @@ function main(app, common, lang) {
     function insertSubscriptionsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
+            menu.classList.add('with-space');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
             browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
 
             updateButtonVisibility(browse);
             display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -763,13 +762,6 @@ function main(app, common, lang) {
 
                     const calc = createNodeForCalc(menu, browse);
                     referenceNode.insertBefore(calc, referenceNode.firstChild);
-
-                    const spacerReferenceNode = browse.querySelector('div#contents');
-                    if (spacerReferenceNode) {
-                        spacerReferenceNode.parentNode.insertBefore(createSpacer('browse'), spacerReferenceNode);
-                    } else {
-                        // spacer referenceNode not found
-                    }
 
                     updateButtonVisibility(browse);
                     display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -1018,12 +1010,11 @@ function main(app, common, lang) {
     function insertShortsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
+            menu.classList.add('with-space');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
             browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
 
             updateButtonVisibility(browse);
             display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -1064,12 +1055,11 @@ function main(app, common, lang) {
     function insertLibraryMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
+            menu.classList.add('with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
             browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
 
             updateButtonVisibility(browse);
             display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -1178,12 +1168,11 @@ function main(app, common, lang) {
     function insertHistoryMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
+            menu.classList.add('with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
             browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
 
             updateButtonVisibility(browse);
             display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -1319,12 +1308,11 @@ function main(app, common, lang) {
     function insertPlaylistsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
+            menu.classList.add('with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
             browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
 
             updateButtonVisibility(browse);
             display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -1373,12 +1361,12 @@ function main(app, common, lang) {
     function insertPlaylistMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
+            menu.classList.add('with-space-header');
+            menu.classList.add('with-space-playlist-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
             browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
 
             updateButtonVisibility(browse);
             display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -1786,12 +1774,11 @@ function main(app, common, lang) {
     function insertChannelsMenu(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
+            menu.classList.add('with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
             browse.insertBefore(calc, browse.firstChild);
-
-            browse.insertBefore(createSpacer('browse'), browse.firstChild);
 
             updateButtonVisibility(browse);
             display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -1861,17 +1848,11 @@ function main(app, common, lang) {
                 const referenceNode = browse.querySelector('div#related ytd-watch-next-secondary-results-renderer');
                 if (referenceNode) {
                     const menu = createMenu(browse, false);
+                    menu.classList.add('with-space-related');
                     referenceNode.insertBefore(menu, referenceNode.firstChild);
 
                     const calc = createNodeForCalc(menu, browse);
                     referenceNode.insertBefore(calc, referenceNode.firstChild);
-
-                    const spacerReferenceNode = browse.querySelector('div#related ytd-item-section-renderer');
-                    if (spacerReferenceNode) {
-                        spacerReferenceNode.parentNode.insertBefore(createSpacer('browse'), spacerReferenceNode);
-                    } else {
-                        // spacer referenceNode not found
-                    }
 
                     updateButtonVisibility(browse);
                     display_query(browse, 'form.filter-menu, div.filter-menu', '');
@@ -2112,7 +2093,6 @@ function main(app, common, lang) {
     }
 
     function onViewChanged_Node(browse) {
-        insertPlaylistSpacer(browse);
         updateButtonVisibility(browse);
         display_query(browse, 'form.filter-menu, div.filter-menu', display(isMenuTarget()));
         updateVisibility(browse);
@@ -2221,13 +2201,6 @@ function main(app, common, lang) {
         const nodeForCalc = menu.cloneNode(true);
         nodeForCalc.classList.add('filter-forCalc');
         return nodeForCalc;
-    }
-
-    function createSpacer(id) {
-        const spacer = document.createElement('div');
-        spacer.classList.add('filter-menu', 'spacer');
-        spacer.id = id;
-        return spacer;
     }
 
     function createButton(text, mode, browse, scroll) {
@@ -2509,24 +2482,6 @@ function main(app, common, lang) {
             updatePopupVisibility(containers);
         });
         return span;
-    }
-
-    function insertPlaylistSpacer(browse) {
-        for (const sidebar of browse.querySelectorAll('ytd-playlist-sidebar-renderer')) {
-            if (sidebar.firstChild.id !== 'sidebar-spacer') {
-                sidebar.insertBefore(createSpacer('sidebar-spacer'), sidebar.firstChild);
-            } else {
-                // already exists
-            }
-        }
-
-        for (const header of browse.querySelectorAll('ytd-playlist-header-renderer')) {
-            if (header.firstChild.id !== 'header-spacer') {
-                header.insertBefore(createSpacer('header-spacer'), header.firstChild);
-            } else {
-                // already exists
-            }
-        }
     }
 
     function changeMode(mode, multi, sub, browse) {
