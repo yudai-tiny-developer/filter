@@ -614,7 +614,7 @@ function main(app, common, lang) {
                     if (section) {
                         const items = section.querySelectorAll('ytd-rich-item-renderer');
                         if (items.length > 0) {
-                            const visibled_items = Array.from(items).filter(n => getComputedStyle(n).display !== 'none');
+                            const visibled_items = Array.from(items).filter(n => n.style.display !== 'none');
                             section.style.display = visibled_items.length === 0 ? 'none' : '';
                         }
                     }
