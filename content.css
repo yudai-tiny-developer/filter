@@ -266,6 +266,10 @@ ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
     display: none !important;
 }
 
+ytd-browse[page-subtype="playlist"] yt-page-header-renderer.page-header-sidebar {
+    padding-top: 56px !important;
+}
+
 ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
     display: none !important;
 }
