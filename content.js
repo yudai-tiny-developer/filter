@@ -609,6 +609,16 @@ function main(app, common, lang) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node, matchSubscriptionsRichItemRendererTextContent, classifySubscriptionsRichItemRendererModeStatus, classifySubscriptionsRichItemRendererProgressStatus);
+                {
+                    const section = searchParentNode(node, 'YTD-RICH-SECTION-RENDERER');
+                    if (section) {
+                        const items = section.querySelectorAll('ytd-rich-item-renderer');
+                        if (items.length > 0) {
+                            const visibled_items = Array.from(items).filter(n => getComputedStyle(n).display !== 'none');
+                            section.style.display = visibled_items.length === 0 ? 'none' : '';
+                        }
+                    }
+                }
                 break;
             case 'YTD-BROWSE':
                 insertSubscriptionsMenu(node);
