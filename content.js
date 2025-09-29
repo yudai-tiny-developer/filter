@@ -2079,7 +2079,7 @@ function main(app, common, lang) {
     }
 
     function onViewChanged() {
-        for (const browse of app.querySelectorAll('ytd-browse:has(form.filter-menu), ytd-watch-flexy:has(form.filter-menu)')) {
+        for (const browse of app.querySelectorAll('ytd-browse, ytd-watch-flexy')) {
             onViewChanged_Node(browse);
         }
     }
@@ -2922,18 +2922,16 @@ function main(app, common, lang) {
         spinner.classList.add('filter-spinner');
     }
 
-    document.addEventListener('yt-navigate-finish', () => {
-        onViewChanged();
-    });
-
     document.addEventListener('yt-action', () => {
         onResize();
     });
 
+    document.addEventListener('yt-navigate-finish', () => {
+        onViewChanged();
+    });
+
     chrome.storage.onChanged.addListener((changes, namespace) => {
-        for (const browse of app.querySelectorAll('ytd-browse:has(form.filter-menu), ytd-watch-flexy:has(form.filter-menu)')) {
-            updateButtonVisibility(browse);
-        }
+        onViewChanged();
     });
 
     new MutationObserver((mutations, observer) => {
