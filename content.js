@@ -1211,7 +1211,7 @@ function main(app, common, lang) {
         }
 
         if (status.size === 0) {
-            // Member-only Video
+            // workaround: Member-only Video
             status.add('video');
         }
 
