@@ -242,7 +242,7 @@ export function isHashTag(url) {
         ;
 }
 
-export function isTop(url) {
+export function isHome(url) {
     return url.split('?')[0] === 'https://www.youtube.com/'
         ;
 }

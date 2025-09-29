@@ -121,17 +121,9 @@ form.filter-popup {
     width: 100%;
 }
 
-ytd-multi-page-menu-renderer:not(:has(ytd-notification-renderer)) form.filter-notification {
-    display: none;
-}
-
 form.filter-menu.position-fixed {
     position: fixed;
     z-index: 2019;
-}
-
-ytd-browse[page-subtype="playlist"] form.filter-menu.position-fixed {
-    background-color: var(--yt-spec-base-background);
 }
 
 select.filter-menu {
@@ -219,78 +211,27 @@ div.filter-button-load {
     }
 }
 
-ytd-rich-section-renderer:not(:has(.filter-show)):has(.filter-hidden) {
+ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
     display: none !important;
 }
 
-ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) div#frosted-glass.with-chipbar {
-    height: 168px !important;
-}
-
-ytd-app:has(ytd-browse[role="main"][filter-menu="true"]) div#frosted-glass.without-chipbar {
-    height: 112px !important;
-    display: block !important;
-    background: var(--yt-spec-scrim-background-gradient-4) !important;
-    backdrop-filter: blur(48px) !important;
-}
-
-ytd-browse[page-subtype="home"] div#scroll-container {
-    width: 100% !important;
-}
-
-ytd-browse[page-subtype="home"] ytd-feed-filter-chip-bar-renderer {
-    height: 112px !important;
-}
-
-div.shortsLockupViewModelHostMetadataSubhead {
+ytd-rich-section-renderer:has(.filter-hidden) {
     display: none !important;
 }
 
-div.shortsLockupViewModelHostInlineMetadataShortScrim {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.5) 20%, rgba(0, 0, 0, 0) 40%) !important;
-}
-
-h3.shortsLockupViewModelHostMetadataTitle::after {
-    content: attr(aria-label);
-}
-
-ytd-browse[page-subtype="playlist"] {
-    padding-top: 0px !important;
-}
-
-ytd-browse[page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
+ytd-browse[role="main"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
     display: none !important;
 }
 
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+ytd-browse[role="main"]:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
     display: none !important;
 }
 
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+ytd-browse[role="main"][filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
     display: none !important;
 }
 
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div.grid-subheader {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="subscriptions-channels"]:not([filter-query=""]) div.grid-subheader {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="history"]:not([filter-mode="all"]) ytd-item-section-renderer div#header {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="history"]:not([filter-query=""]) ytd-item-section-renderer div#header {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="history"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#title-container {
-    display: none !important;
-}
-
-ytd-browse[page-subtype="history"]:not([filter-query=""]) ytd-reel-shelf-renderer div#title-container {
+ytd-browse[role="main"]:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
     display: none !important;
 }
 
@@ -310,30 +251,102 @@ ytd-watch-flexy:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
     display: none !important;
 }
 
-ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
+ytd-browse[role="main"][page-subtype="home"] div#scroll-container {
+    width: 100% !important;
+}
+
+ytd-app:has(ytd-browse[role="main"][page-subtype="home"]) div#frosted-glass {
+    height: 168px !important;
+}
+
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#header {
+    height: 0px !important;
+}
+
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#masthead-ad:not([hidden]) {
+    padding-top: 112px !important;
+}
+
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer:has(div#masthead-ad[hidden]) div#contents {
+    padding-top: 112px !important;
+}
+
+ytd-browse[role="main"] div.shortsLockupViewModelHostMetadataSubhead {
     display: none !important;
 }
 
-ytd-browse:has(form.filter-menu.with-space)>ytd-two-column-browse-results-renderer {
+ytd-browse[role="main"] div.shortsLockupViewModelHostInlineMetadataShortScrim {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.5) 20%, rgba(0, 0, 0, 0) 40%) !important;
+}
+
+ytd-browse[role="main"] h3.shortsLockupViewModelHostMetadataTitle::after {
+    content: attr(aria-label);
+}
+
+ytd-browse[role="main"][page-subtype="playlist"] {
+    padding-top: 0px !important;
+}
+
+ytd-browse[role="main"][page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="playlist"] form.filter-menu {
+    background-color: var(--yt-spec-base-background);
+}
+
+ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div.grid-subheader {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) div.grid-subheader {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="history"]:not([filter-mode="all"]) ytd-item-section-renderer div#header {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="history"]:not([filter-query=""]) ytd-item-section-renderer div#header {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="history"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#title-container {
+    display: none !important;
+}
+
+ytd-browse[role="main"][page-subtype="history"]:not([filter-query=""]) ytd-reel-shelf-renderer div#title-container {
+    display: none !important;
+}
+
+ytd-browse[role="main"]:has(form.filter-menu.with-space)>ytd-two-column-browse-results-renderer {
     padding-top: 56px !important;
 }
 
-ytd-browse:has(form.filter-menu.with-space-header)>div#header {
+ytd-browse[role="main"]:has(form.filter-menu.with-space-header)>div#header {
     padding-top: 56px !important;
 }
 
-ytd-browse:has(form.filter-menu.with-space-related) div#related ytd-item-section-renderer {
+ytd-browse[role="main"]:has(form.filter-menu.with-space-related) div#related ytd-item-section-renderer {
     padding-top: 56px !important;
 }
 
-ytd-browse:has(form.filter-sidebar-channels) ytd-playlist-sidebar-renderer {
+ytd-browse[role="main"]:has(form.filter-sidebar-channels) ytd-playlist-sidebar-renderer {
     padding-top: 56px !important;
 }
 
-ytd-browse:has(form.filter-add-playlist) ytd-playlist-header-renderer {
+ytd-browse[role="main"]:has(form.filter-add-playlist) ytd-playlist-header-renderer {
     padding-top: 56px !important;
 }
 
-ytd-browse:has(form.filter-menu.with-space-playlist-header) ytd-playlist-header-renderer {
+ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) ytd-playlist-header-renderer {
     padding-top: 56px !important;
 }
