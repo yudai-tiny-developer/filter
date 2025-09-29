@@ -2193,6 +2193,7 @@ function main(app, common, lang) {
     function createButton(text, mode, browse, scroll) {
         const span = document.createElement('span');
         span.style.display = 'none';
+        span.setAttribute('translate', 'no');
         span.classList.add('filter-button', 'filter-button-subscriptions', mode);
         span.innerHTML = text;
         span.addEventListener('click', () => {
@@ -2208,6 +2209,7 @@ function main(app, common, lang) {
     function createButtonChannels(text, mode, browse, scroll) {
         const span = document.createElement('span');
         span.style.display = 'none';
+        span.setAttribute('translate', 'no');
         span.classList.add('filter-button', 'filter-button-channels', mode);
         span.innerHTML = text;
         span.addEventListener('click', () => {
@@ -2236,6 +2238,7 @@ function main(app, common, lang) {
 
     function createOption(text, mode) {
         const option = document.createElement('option');
+        option.setAttribute('translate', 'no');
         option.classList.add('filter-button', 'filter-button-subscriptions');
         option.innerHTML = text;
         if (mode) {
@@ -2264,6 +2267,7 @@ function main(app, common, lang) {
 
     function createOptionProgress(text, mode) {
         const option = document.createElement('option');
+        option.setAttribute('translate', 'no');
         option.classList.add('filter-button', 'filter-button-progress');
         option.innerHTML = text;
         if (mode) {
@@ -2290,6 +2294,7 @@ function main(app, common, lang) {
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
         input.setAttribute('title', '" "  PHRASE search operator.   e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n ( )  Grouping operator.            e.g. Phrase1 (Phrase2 | Phrase3)');
+        input.setAttribute('translate', 'no');
         input.id = 'filter-query';
         input.value = getActiveQuery(browse);
         input.addEventListener('change', e => {
