@@ -211,6 +211,10 @@ div.filter-button-load {
     }
 }
 
+ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
+    display: none !important;
+}
+
 ytd-rich-section-renderer:has(.filter-hidden) {
     display: none !important;
 }
