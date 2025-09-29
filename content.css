@@ -219,12 +219,16 @@ ytd-rich-section-renderer:has(.filter-hidden) {
     display: none !important;
 }
 
-ytd-browse[page-subtype="home"][role="main"] div#scroll-container {
+ytd-browse[role="main"][page-subtype="home"] div#scroll-container {
     width: 100% !important;
 }
 
-ytd-app:has(ytd-browse[page-subtype="home"][role="main"]) div#frosted-glass {
+ytd-app:has(ytd-browse[role="main"][page-subtype="home"]) div#frosted-glass {
     height: 168px !important;
+}
+
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#contents {
+    padding-top: 56px !important;
 }
 
 ytd-browse[role="main"] div.shortsLockupViewModelHostMetadataSubhead {
