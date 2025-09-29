@@ -160,7 +160,7 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-query', display(keyword));
 
                 browse.setAttribute('filter-menu', 'true');
-            } else if (common.isTop(location.href)) {
+            } else if (common.isHome(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
                 display_query(browse, 'span.filter-button-subscriptions.live', display(live));
                 display_query(browse, 'span.filter-button-subscriptions.streamed', display(streamed));
@@ -521,7 +521,7 @@ function main(app, common, lang) {
 
     function isMenuTarget() {
         return common.isSubscriptions(location.href)
-            || common.isTop(location.href)
+            || common.isHome(location.href)
             || common.isShorts(location.href)
             || common.isLibrary(location.href)
             || common.isHistory(location.href)
@@ -537,7 +537,7 @@ function main(app, common, lang) {
     function updateVisibility(node, shallow) {
         if (common.isSubscriptions(location.href)) {
             shallow ? onNodeLoaded_Subscriptions(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
-        } else if (common.isTop(location.href)) {
+        } else if (common.isHome(location.href)) {
             shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER').forEach(n => onNodeLoaded_Home(n));
         } else if (common.isShorts(location.href)) {
             shallow ? onNodeLoaded_Shorts(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
@@ -2829,7 +2829,7 @@ function main(app, common, lang) {
             return url;
         } else if (common.isHashTag(url)) {
             return url;
-        } else if (common.isTop(url)) {
+        } else if (common.isHome(url)) {
             return 'top';
         } else if (common.isVideoPlayer(url)) {
             return 'video_player';
