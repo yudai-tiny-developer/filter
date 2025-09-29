@@ -561,11 +561,7 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (node.classList.contains('filter-separator')) {
-            node.style.display = '';
-            node.classList.add('filter-show');
-            node.classList.remove('filter-hidden');
-        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
+        if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');

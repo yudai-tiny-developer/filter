@@ -211,7 +211,7 @@ div.filter-button-load {
     }
 }
 
-ytd-browse[role="main"] ytd-rich-section-renderer:not(:has(.filter-show)):has(.filter-hidden) {
+ytd-rich-section-renderer:has(.filter-hidden) {
     display: none !important;
 }
 
