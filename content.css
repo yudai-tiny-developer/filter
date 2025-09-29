@@ -227,8 +227,12 @@ ytd-app:has(ytd-browse[role="main"][page-subtype="home"]) div#frosted-glass {
     height: 168px !important;
 }
 
-ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#contents {
-    padding-top: 56px !important;
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#header {
+    height: 0px !important;
+}
+
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#masthead-ad {
+    padding-top: 112px !important;
 }
 
 ytd-browse[role="main"] div.shortsLockupViewModelHostMetadataSubhead {
