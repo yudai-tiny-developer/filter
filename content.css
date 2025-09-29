@@ -219,6 +219,38 @@ ytd-rich-section-renderer:has(.filter-hidden) {
     display: none !important;
 }
 
+ytd-browse[role="main"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
+    display: none !important;
+}
+
+ytd-browse[role="main"]:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
+    display: none !important;
+}
+
+ytd-browse[role="main"][filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
+    display: none !important;
+}
+
+ytd-browse[role="main"]:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
+    display: none !important;
+}
+
+ytd-watch-flexy:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
+    display: none !important;
+}
+
+ytd-watch-flexy:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
+    display: none !important;
+}
+
+ytd-watch-flexy[filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
+    display: none !important;
+}
+
+ytd-watch-flexy:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
+    display: none !important;
+}
+
 ytd-browse[role="main"][page-subtype="home"] div#scroll-container {
     width: 100% !important;
 }
