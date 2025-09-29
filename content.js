@@ -534,21 +534,6 @@ function main(app, common, lang) {
             ;
     }
 
-    function isPositionFixedTarget() {
-        return common.isSubscriptions(location.href)
-            // || common.isTop(location.href)
-            || common.isShorts(location.href)
-            || common.isLibrary(location.href)
-            || common.isHistory(location.href)
-            || common.isPlaylists(location.href)
-            || common.isPlaylist(location.href)
-            // || common.isHashTag(location.href)
-            // || common.isChannel(location.href)
-            || common.isChannels(location.href)
-            // || common.isVideoPlayer(location.href)
-            ;
-    }
-
     function updateVisibility(node, shallow) {
         if (common.isSubscriptions(location.href)) {
             shallow ? onNodeLoaded_Subscriptions(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
@@ -641,7 +626,7 @@ function main(app, common, lang) {
     function insertMenu_Subscriptions(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
-            menu.classList.add('with-space');
+            menu.classList.add('position-fixed', 'with-space');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1012,7 +997,7 @@ function main(app, common, lang) {
     function insertMenu_Shorts(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
-            menu.classList.add('with-space');
+            menu.classList.add('position-fixed', 'with-space');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1059,7 +1044,7 @@ function main(app, common, lang) {
     function insertMenu_Library(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
-            menu.classList.add('with-space-header');
+            menu.classList.add('position-fixed', 'with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1174,7 +1159,7 @@ function main(app, common, lang) {
     function insertMenu_History(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
-            menu.classList.add('with-space-header');
+            menu.classList.add('position-fixed', 'with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1316,7 +1301,7 @@ function main(app, common, lang) {
     function insertMenu_Playlists(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
-            menu.classList.add('with-space-header');
+            menu.classList.add('position-fixed', 'with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1371,8 +1356,7 @@ function main(app, common, lang) {
     function insertMenu_Playlist(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
-            menu.classList.add('with-space-header');
-            menu.classList.add('with-space-playlist-header');
+            menu.classList.add('position-fixed', 'with-space-playlist-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -1784,7 +1768,7 @@ function main(app, common, lang) {
     function insertMenu_Channels(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
             const menu = createMenu(browse, true);
-            menu.classList.add('with-space-header');
+            menu.classList.add('position-fixed', 'with-space-header');
             browse.insertBefore(menu, browse.firstChild);
 
             const calc = createNodeForCalc(menu, browse);
@@ -2153,12 +2137,7 @@ function main(app, common, lang) {
     function createMenu(browse, scroll) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
-
-        if (isPositionFixedTarget()) {
-            menu.classList.add('filter-menu', 'position-fixed');
-        } else {
-            menu.classList.add('filter-menu');
-        }
+        menu.classList.add('filter-menu');
 
         menu.appendChild(createButton(common.button_label.all, 'all', browse, scroll));
         menu.appendChild(createButton(common.button_label.live, 'live', browse, scroll));
