@@ -259,16 +259,17 @@ ytd-app:has(ytd-browse[role="main"][page-subtype="home"]) div#frosted-glass {
     height: 168px !important;
 }
 
-ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#header {
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer>div#primary>ytd-rich-grid-renderer>div#header {
     height: 0px !important;
 }
 
-ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer div#masthead-ad:not([hidden]) {
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer>div#primary>ytd-rich-grid-renderer>div#contents {
     padding-top: 112px !important;
 }
 
-ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer:has(div#masthead-ad[hidden]) div#contents {
-    padding-top: 112px !important;
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer>div#primary>ytd-rich-grid-renderer>div#big-yoodle,
+ytd-browse[role="main"][page-subtype="home"]>ytd-two-column-browse-results-renderer>div#primary>ytd-rich-grid-renderer>div#masthead-ad {
+    transform: translateY(112px);
 }
 
 ytd-browse[role="main"] div.shortsLockupViewModelHostMetadataSubhead {
