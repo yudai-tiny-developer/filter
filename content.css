@@ -332,7 +332,7 @@ ytd-multi-page-menu-renderer form.filter-notification {
     display: none !important;
 }
 
-ytd-multi-page-menu-renderer:has(a[href="/account_notifications"]) form.filter-notification {
+ytd-multi-page-menu-renderer:has(ytd-notification-renderer) form.filter-notification {
     display: flex !important;
 }
 
