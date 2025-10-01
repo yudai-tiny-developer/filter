@@ -328,6 +328,14 @@ ytd-browse[role="main"][page-subtype="history"]:not([filter-query=""]) ytd-reel-
     display: none !important;
 }
 
+ytd-multi-page-menu-renderer form.filter-notification {
+    display: none !important;
+}
+
+ytd-multi-page-menu-renderer:has(a[href="/account_notifications"]) form.filter-notification {
+    display: flex !important;
+}
+
 ytd-browse[role="main"]:has(form.filter-menu.with-space)>ytd-two-column-browse-results-renderer {
     padding-top: 56px !important;
 }
