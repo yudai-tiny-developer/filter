@@ -353,7 +353,7 @@ ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) ytd-pla
 }
 
 ytd-multi-page-menu-renderer:has(ytd-notification-renderer) form.filter-notification {
-    display: flex !important;
+    display: flex;
 }
 
 ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
