@@ -126,6 +126,10 @@ form.filter-menu.position-fixed {
     z-index: 2019;
 }
 
+form.filter-notification {
+    display: none;
+}
+
 select.filter-menu {
     background-color: var(--yt-spec-text-primary);
     color: var(--yt-spec-text-primary-inverse);
@@ -209,10 +213,6 @@ div.filter-button-load {
     to {
         transform: rotate(360deg);
     }
-}
-
-ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
-    display: none !important;
 }
 
 ytd-rich-section-renderer:has(.filter-hidden) {
@@ -350,4 +350,12 @@ ytd-browse[role="main"]:has(form.filter-add-playlist) ytd-playlist-header-render
 
 ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) ytd-playlist-header-renderer {
     padding-top: 56px !important;
+}
+
+ytd-multi-page-menu-renderer:has(ytd-notification-renderer) form.filter-notification {
+    display: flex;
+}
+
+ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
+    display: none !important;
 }
