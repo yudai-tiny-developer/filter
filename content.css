@@ -348,7 +348,9 @@ ytd-browse[role="main"]:has(form.filter-add-playlist) ytd-playlist-header-render
     padding-top: 56px !important;
 }
 
-ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) ytd-playlist-header-renderer {
+ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) ytd-playlist-header-renderer,
+ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header)>yt-page-header-renderer,
+ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header)>div#masthead-ad {
     padding-top: 56px !important;
 }
 
