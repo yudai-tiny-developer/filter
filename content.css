@@ -257,16 +257,7 @@ ytd-app:has(ytd-browse[role="main"][page-subtype="home"]) div#frosted-glass {
 }
 
 ytd-browse[role="main"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#header {
-    height: 0px !important;
-}
-
-ytd-browse[role="main"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#contents {
-    padding-top: 112px !important;
-}
-
-ytd-browse[role="main"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#big-yoodle,
-ytd-browse[role="main"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#masthead-ad {
-    transform: translateY(112px);
+    height: 112px !important;
 }
 
 ytd-browse[role="main"] div.shortsLockupViewModelHostMetadataSubhead {
