@@ -2336,24 +2336,34 @@ function main(app, common, lang) {
 
     function insertPopupMenu(node) {
         // Save to playlist
-        for (const playlists of node.querySelectorAll('yt-list-view-model:has(toggleable-list-item-view-model)')) {
-            const parent = node.querySelector('div.ytContextualSheetLayoutHeaderContainer');
-            if (parent) {
-                const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
-                if (existsMenu !== popupMenu.get(playlists)) {
-                    if (!existsMenu) {
-                        const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist);
-                        parent.append(menu);
+        for (const playlists of node.querySelectorAll('yt-list-view-model')) {
+            if (playlists.querySelector('toggleable-list-item-view-model')) {
+                const parent = node.querySelector('div.ytContextualSheetLayoutHeaderContainer');
+                if (parent) {
+                    const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
+                    if (existsMenu !== popupMenu.get(playlists)) {
+                        if (!existsMenu) {
+                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist);
+                            parent.append(menu);
+                        } else {
+                            existsMenu.containers.push(playlists);
+                            existsMenu.clearInput();
+                            popupMenu.set(playlists, menu);
+                        }
+                        updatePopupVisibility([playlists]);
                     } else {
-                        existsMenu.containers.push(playlists);
                         existsMenu.clearInput();
-                        popupMenu.set(playlists, menu);
+                        updatePopupVisibility([playlists]);
+                        existsMenu.style.display = display(keyword_add_playlist);
                     }
-                    updatePopupVisibility([playlists]);
-                } else {
-                    existsMenu.clearInput();
-                    updatePopupVisibility([playlists]);
-                    existsMenu.style.display = display(keyword_add_playlist);
+                }
+            } else { // If a previously created "Save to playlist" dropdown menu was being reused as a different menu
+                const parent = node.querySelector('div.ytContextualSheetLayoutHeaderContainer');
+                if (parent) {
+                    const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
+                    if (existsMenu) {
+                        existsMenu.style.display = 'none';
+                    }
                 }
             }
         }
