@@ -2005,7 +2005,7 @@ function main(app, common, lang) {
 
     function updatePopupVisibility(containers) {
         for (const container of containers) {
-            container.querySelectorAll('ytd-playlist-add-to-option-renderer, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
+            container.querySelectorAll('yt-list-item-view-model, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
         }
     }
 
@@ -2033,7 +2033,7 @@ function main(app, common, lang) {
         if (!query) return true;
 
         const evaluator = createQueryEvaluator(query?.toLowerCase());
-        const text = target.querySelector('yt-formatted-string#label.ytd-playlist-add-to-option-renderer, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
+        const text = target.querySelector('span.yt-core-attributed-string, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
         return evaluator(text?.toLowerCase());
     }
 
@@ -2057,7 +2057,7 @@ function main(app, common, lang) {
                 break;
 
             // add to playlist
-            case 'YTD-POPUP-CONTAINER':
+            case 'YT-SHEET-VIEW-MODEL':
                 insertPopupMenu(node);
                 break;
 
@@ -2336,20 +2336,23 @@ function main(app, common, lang) {
 
     function insertPopupMenu(node) {
         // Save to playlist
-        for (const playlists of node.querySelectorAll('ytd-add-to-playlist-renderer div#playlists')) {
-            const parent = playlists.parentNode;
+        for (const playlists of node.querySelectorAll('yt-list-view-model:has(toggleable-list-item-view-model)')) {
+            const parent = node.querySelector('div.ytContextualSheetLayoutHeaderContainer');
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                 if (existsMenu !== popupMenu.get(playlists)) {
                     if (!existsMenu) {
                         const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist);
-                        parent.insertBefore(menu, playlists);
+                        parent.append(menu);
                     } else {
                         existsMenu.containers.push(playlists);
+                        existsMenu.clearInput();
                         popupMenu.set(playlists, menu);
                     }
                     updatePopupVisibility([playlists]);
                 } else {
+                    existsMenu.clearInput();
+                    updatePopupVisibility([playlists]);
                     existsMenu.style.display = display(keyword_add_playlist);
                 }
             }
@@ -2406,6 +2409,12 @@ function main(app, common, lang) {
         menu.appendChild(createPopupQueryInputArea(input, menu.containers));
         menu.appendChild(createPopupSearchButton(input, menu.containers));
 
+        menu.addEventListener('click', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            input.focus();
+        });
+
         menu.addEventListener('submit', e => {
             e.preventDefault();
             updatePopupQuery(menu.containers, input.value);
@@ -2424,6 +2433,11 @@ function main(app, common, lang) {
                 }
             }
         });
+
+        menu.clearInput = () => {
+            input.value = '';
+            updatePopupQuery(menu.containers, '');
+        };
 
         for (const container of menu.containers) {
             popupMenu.set(container, menu);
@@ -2945,4 +2959,15 @@ function main(app, common, lang) {
             onAppNodeLoaded(m.target);
         }
     }).observe(app, { subtree: true, childList: true });
+
+    new MutationObserver((mutations, observer) => {
+        for (const m of mutations) {
+            const node = m.target;
+            switch (node.nodeName) {
+                case 'TP-YT-IRON-DROPDOWN':
+                    insertPopupMenu(node);
+                    break;
+            }
+        }
+    }).observe(app.querySelector('ytd-popup-container'), { subtree: true, attributeFilter: ['style'] });
 }
