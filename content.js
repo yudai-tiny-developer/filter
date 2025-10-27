@@ -2970,14 +2970,23 @@ function main(app, common, lang) {
         }
     }).observe(app, { subtree: true, childList: true });
 
-    new MutationObserver((mutations, observer) => {
-        for (const m of mutations) {
-            const node = m.target;
-            switch (node.nodeName) {
-                case 'TP-YT-IRON-DROPDOWN':
-                    insertPopupMenu(node);
-                    break;
-            }
+    const popup_detect_interval = setInterval(() => {
+        const popup = app?.querySelector('ytd-popup-container');
+        if (!popup) {
+            return;
         }
-    }).observe(app.querySelector('ytd-popup-container'), { subtree: true, attributeFilter: ['style'] });
+
+        clearInterval(popup_detect_interval);
+
+        new MutationObserver((mutations, observer) => {
+            for (const m of mutations) {
+                const node = m.target;
+                switch (node.nodeName) {
+                    case 'TP-YT-IRON-DROPDOWN':
+                        insertPopupMenu(node);
+                        break;
+                }
+            }
+        }).observe(popup, { subtree: true, attributeFilter: ['style'] });
+    }, 500);
 }
