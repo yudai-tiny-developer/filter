@@ -556,7 +556,7 @@ function main(app, common, lang) {
         } else if (common.isChannels(location.href)) {
             shallow ? onNodeLoaded_Channels(node) : node.querySelectorAll('YTD-CHANNEL-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channels(n));
         } else if (common.isVideoPlayer(location.href)) {
-            shallow ? onNodeLoaded_VideoPlayer(node) : node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-COMPACT-MOVIE-RENDERER, YT-CHIP-CLOUD-RENDERER').forEach(n => onNodeLoaded_VideoPlayer(n));
+            shallow ? onNodeLoaded_VideoPlayer(node) : node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-COMPACT-VIDEO-RENDERER, YTD-VIDEO-RENDERER, YTD-COMPACT-MOVIE-RENDERER, YT-CHIP-CLOUD-RENDERER').forEach(n => onNodeLoaded_VideoPlayer(n));
         }
     }
 
@@ -1818,7 +1818,7 @@ function main(app, common, lang) {
             case 'YT-LOCKUP-VIEW-MODEL':
                 updateTargetVisibility(node, matchTextContent_VideoPlayer_LockupViewModel, classifyModeStatus_VideoPlayer_LockupViewModel, classifyProgressStatus_VideoPlayer_LockupViewModel);
                 break;
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2':
+            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2': // old style shorts
                 updateTargetVisibility(node, matchTextContent_VideoPlayer_ShortsLockupViewModelV2, classifyModeStatus_VideoPlayer_ShortsLockupViewModelV2, classifyProgressStatus_VideoPlayer_ShortsLockupViewModelV2);
                 break;
             case 'YTD-VIDEO-RENDERER':
@@ -1826,6 +1826,9 @@ function main(app, common, lang) {
                 break;
             case 'YTD-COMPACT-MOVIE-RENDERER':
                 updateTargetVisibility(node, matchTextContent_VideoPlayer_CompactMovieRenderer, classifyModeStatus_VideoPlayer_CompactMovieRenderer, classifyProgressStatus_VideoPlayer_CompactMovieRenderer);
+                break;
+            case 'YTD-COMPACT-VIDEO-RENDERER':
+                updateTargetVisibility(node, matchTextContent_VideoPlayer_CompactVideoRenderer, classifyModeStatus_VideoPlayer_CompactVideoRenderer, classifyProgressStatus_VideoPlayer_CompactVideoRenderer);
                 break;
             case 'YT-CHIP-CLOUD-RENDERER':
                 insertMenu_VideoPlayer(node);
@@ -1913,7 +1916,7 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_VideoPlayer_ShortsLockupViewModelV2(node) {
+    function matchTextContent_VideoPlayer_ShortsLockupViewModelV2(node) { // old style shorts
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
             return matchQuery(metadata.textContent);
@@ -1923,7 +1926,7 @@ function main(app, common, lang) {
         return true;
     }
 
-    function classifyModeStatus_VideoPlayer_ShortsLockupViewModelV2(node) {
+    function classifyModeStatus_VideoPlayer_ShortsLockupViewModelV2(node) { // old style shorts
         const status = new Set();
 
         status.add('short');
@@ -1931,7 +1934,7 @@ function main(app, common, lang) {
         return status;
     }
 
-    function classifyProgressStatus_VideoPlayer_ShortsLockupViewModelV2(node) {
+    function classifyProgressStatus_VideoPlayer_ShortsLockupViewModelV2(node) { // old style shorts
         return undefined;
     }
 
@@ -1999,6 +2002,37 @@ function main(app, common, lang) {
         const status = new Set();
 
         status.add('progress_unwatched');
+
+        return status;
+    }
+
+    function matchTextContent_VideoPlayer_CompactVideoRenderer(node) {
+        const title = node.querySelector('div.details h3');
+        if (title) {
+            return matchQuery(title.textContent);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyModeStatus_VideoPlayer_CompactVideoRenderer(node) {
+        const status = new Set();
+
+        status.add('short');
+
+        return status;
+    }
+
+    function classifyProgressStatus_VideoPlayer_CompactVideoRenderer(node) {
+        const status = new Set();
+
+        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
 
         return status;
     }
