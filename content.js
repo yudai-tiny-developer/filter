@@ -330,7 +330,7 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-button-subscriptions.live', '');
                 display_query(browse, 'span.filter-button-subscriptions.streamed', '');
                 display_query(browse, 'span.filter-button-subscriptions.video', '');
-                display_query(browse, 'span.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'span.filter-button-subscriptions.short', '');
                 display_query(browse, 'span.filter-button-subscriptions.scheduled', '');
                 display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
                 display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
@@ -340,7 +340,7 @@ function main(app, common, lang) {
                 display_query(browse, 'option.filter-button-subscriptions.live', '');
                 display_query(browse, 'option.filter-button-subscriptions.streamed', '');
                 display_query(browse, 'option.filter-button-subscriptions.video', '');
-                display_query(browse, 'option.filter-button-subscriptions.short', 'none');
+                display_query(browse, 'option.filter-button-subscriptions.short', '');
                 display_query(browse, 'option.filter-button-subscriptions.scheduled', '');
                 display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
                 display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
@@ -1387,7 +1387,17 @@ function main(app, common, lang) {
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
             } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
+                const title = node.querySelector('div#meta a#video-title');
+                if (title) {
+                    const t = title.textContent.toLowerCase();
+                    if (t.includes('#shorts')) {
+                        status.add('short');
+                    } else {
+                        status.add('video');
+                    }
+                } else {
+                    status.add('video');
+                }
             }
         }
 
