@@ -2049,7 +2049,7 @@ function main(app, common, lang) {
 
     function updatePopupVisibility(containers) {
         for (const container of containers) {
-            container.querySelectorAll('yt-list-item-view-model, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(:has(a#endpoint[href="/feed/channels"]))').forEach(target => updatePopupTargetVisibility(container, target));
+            container.querySelectorAll('yt-list-item-view-model, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(#header-entry)').forEach(target => updatePopupTargetVisibility(container, target));
         }
     }
 
