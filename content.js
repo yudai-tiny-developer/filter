@@ -226,39 +226,6 @@ function main(app, common, lang) {
                 display_query(browse, 'span.filter-query', display(keyword));
 
                 browse.setAttribute('filter-menu', 'true');
-            } else if (common.isLibrary(location.href)) {
-                display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                display_query(browse, 'span.filter-button-subscriptions.live', display(live));
-                display_query(browse, 'span.filter-button-subscriptions.streamed', display(streamed));
-                display_query(browse, 'span.filter-button-subscriptions.video', display(video));
-                display_query(browse, 'span.filter-button-subscriptions.short', display(short));
-                display_query(browse, 'span.filter-button-subscriptions.scheduled', display(scheduled));
-                display_query(browse, 'span.filter-button-subscriptions.notification_on', display(notification_on));
-                display_query(browse, 'span.filter-button-subscriptions.notification_off', display(notification_off));
-
-                display_query(browse, 'select.filter-menu', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                display_query(browse, 'option.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                display_query(browse, 'option.filter-button-subscriptions.live', display(live));
-                display_query(browse, 'option.filter-button-subscriptions.streamed', display(streamed));
-                display_query(browse, 'option.filter-button-subscriptions.video', display(video));
-                display_query(browse, 'option.filter-button-subscriptions.short', display(short));
-                display_query(browse, 'option.filter-button-subscriptions.scheduled', display(scheduled));
-                display_query(browse, 'option.filter-button-subscriptions.notification_on', display(notification_on));
-                display_query(browse, 'option.filter-button-subscriptions.notification_off', display(notification_off));
-
-                display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
-                display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
-                display_query(browse, 'option.filter-button-progress.progress_unwatched', display(progress_unwatched));
-                display_query(browse, 'option.filter-button-progress.progress_watched', display(progress_watched));
-
-                display_query(browse, 'span.filter-button-channels.all', 'none');
-                display_query(browse, 'span.filter-button-channels.channels_all', 'none');
-                display_query(browse, 'span.filter-button-channels.channels_personalized', 'none');
-                display_query(browse, 'span.filter-button-channels.channels_none', 'none');
-
-                display_query(browse, 'span.filter-query', display(keyword));
-
-                browse.setAttribute('filter-menu', 'true');
             } else if (common.isHistory(location.href)) {
                 display_query(browse, 'span.filter-button-subscriptions.all', '');
                 display_query(browse, 'span.filter-button-subscriptions.live', '');
