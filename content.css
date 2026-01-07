@@ -4,7 +4,7 @@
 }
 
 span.filter-button {
-    background-color: var(--yt-spec-badge-chip-background);
+    background-color: var(--yt-spec-overlay-button-secondary);
     color: var(--yt-spec-text-primary);
     fill: var(--yt-spec-text-primary);
     align-items: center;
