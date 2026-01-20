@@ -114,9 +114,14 @@ form.filter-menu,
 div.filter-menu,
 form.filter-popup {
     display: flex;
-    height: 56px;
     justify-content: center;
     width: 100%;
+}
+
+ytd-browse[filter-menu="true"] form.filter-menu,
+ytd-browse[filter-menu="true"] div.filter-menu,
+ytd-browse[filter-menu="true"] form.filter-popup {
+    height: 56px;
 }
 
 form.filter-menu.position-fixed {
@@ -212,149 +217,149 @@ div.filter-button-load {
     }
 }
 
-ytd-rich-section-renderer:has(.filter-hidden) {
+ytd-browse[filter-menu="true"] ytd-rich-section-renderer:has(.filter-hidden) {
     display: none !important;
 }
 
-ytd-browse[role="main"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
+ytd-browse[filter-menu="true"][role="main"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
     display: none !important;
 }
 
-ytd-browse[role="main"]:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
+ytd-browse[filter-menu="true"][role="main"]:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
     display: none !important;
 }
 
-ytd-browse[role="main"][filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
+ytd-browse[filter-menu="true"][role="main"][filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
     display: none !important;
 }
 
-ytd-browse[role="main"]:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
+ytd-browse[filter-menu="true"][role="main"]:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
     display: none !important;
 }
 
-ytd-watch-flexy:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
+ytd-browse[filter-menu="true"] ytd-watch-flexy:not([filter-mode="all"]) ytd-reel-shelf-renderer div#header {
     display: none !important;
 }
 
-ytd-watch-flexy:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
+ytd-browse[filter-menu="true"] ytd-watch-flexy:not([filter-mode="all"]):not([filter-mode="short"]) ytd-reel-shelf-renderer {
     display: none !important;
 }
 
-ytd-watch-flexy[filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
+ytd-browse[filter-menu="true"] ytd-watch-flexy[filter-mode-progress="progress_watched"] ytd-reel-shelf-renderer {
     display: none !important;
 }
 
-ytd-watch-flexy:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
+ytd-browse[filter-menu="true"] ytd-watch-flexy:not([filter-query=""]) ytd-reel-shelf-renderer div#header {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="home"] div#scroll-container {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="home"] div#scroll-container {
     width: 100% !important;
 }
 
-ytd-app:has(ytd-browse[role="main"][page-subtype="home"]) div#frosted-glass {
+ytd-app:has(ytd-browse[filter-menu="true"][role="main"][page-subtype="home"]) div#frosted-glass {
     height: 168px !important;
 }
 
-ytd-browse[role="main"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#header {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#header {
     height: 112px !important;
 }
 
-ytd-browse[role="main"] div.shortsLockupViewModelHostMetadataSubhead {
+ytd-browse[filter-menu="true"][role="main"] div.shortsLockupViewModelHostMetadataSubhead {
     display: none !important;
 }
 
-ytd-browse[role="main"] div.shortsLockupViewModelHostInlineMetadataShortScrim {
+ytd-browse[filter-menu="true"][role="main"] div.shortsLockupViewModelHostInlineMetadataShortScrim {
     background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.5) 20%, rgba(0, 0, 0, 0) 40%) !important;
 }
 
-ytd-browse[role="main"] h3.shortsLockupViewModelHostMetadataTitle::after {
+ytd-browse[filter-menu="true"][role="main"] h3.shortsLockupViewModelHostMetadataTitle::after {
     content: attr(aria-label);
 }
 
-ytd-browse[role="main"][page-subtype="playlist"] {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="playlist"] {
     padding-top: 0px !important;
 }
 
-ytd-browse[role="main"][page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="playlist"] ytd-feed-filter-chip-bar-renderer {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="playlist"] form.filter-menu {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="playlist"] form.filter-menu {
     background-color: var(--yt-spec-base-background);
 }
 
-ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div.grid-subheader {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) div.grid-subheader {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) div.grid-subheader {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) div.grid-subheader {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="history"]:not([filter-mode="all"]) ytd-item-section-renderer div#header {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="history"]:not([filter-mode="all"]) ytd-item-section-renderer div#header {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="history"]:not([filter-query=""]) ytd-item-section-renderer div#header {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="history"]:not([filter-query=""]) ytd-item-section-renderer div#header {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="history"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#title-container {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="history"]:not([filter-mode="all"]) ytd-reel-shelf-renderer div#title-container {
     display: none !important;
 }
 
-ytd-browse[role="main"][page-subtype="history"]:not([filter-query=""]) ytd-reel-shelf-renderer div#title-container {
+ytd-browse[filter-menu="true"][role="main"][page-subtype="history"]:not([filter-query=""]) ytd-reel-shelf-renderer div#title-container {
     display: none !important;
 }
 
-ytd-browse[role="main"]:has(form.filter-menu.with-space) > ytd-two-column-browse-results-renderer {
+ytd-browse[filter-menu="true"][role="main"]:has(form.filter-menu.with-space) > ytd-two-column-browse-results-renderer {
     padding-top: 56px !important;
 }
 
-ytd-browse[role="main"]:has(form.filter-menu.with-space-header) > div#header {
+ytd-browse[filter-menu="true"][role="main"]:has(form.filter-menu.with-space-header) > div#header {
     padding-top: 56px !important;
 }
 
-ytd-browse[role="main"]:has(form.filter-menu.with-space-related) div#related ytd-item-section-renderer {
+ytd-browse[filter-menu="true"][role="main"]:has(form.filter-menu.with-space-related) div#related ytd-item-section-renderer {
     padding-top: 56px !important;
 }
 
-ytd-browse[role="main"]:has(form.filter-sidebar-channels) ytd-playlist-sidebar-renderer {
+ytd-browse[filter-menu="true"][role="main"]:has(form.filter-sidebar-channels) ytd-playlist-sidebar-renderer {
     padding-top: 56px !important;
 }
 
-ytd-browse[role="main"]:has(form.filter-add-playlist) ytd-playlist-header-renderer {
+ytd-browse[filter-menu="true"][role="main"]:has(form.filter-add-playlist) ytd-playlist-header-renderer {
     padding-top: 56px !important;
 }
 
 @media (min-width: 1081px) {
 
-    ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) > yt-page-header-renderer,
-    ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) > ytd-playlist-header-renderer,
-    ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) > div#masthead-ad {
+    ytd-browse[filter-menu="true"][role="main"]:has(form.filter-menu.with-space-playlist-header) > yt-page-header-renderer,
+    ytd-browse[filter-menu="true"][role="main"]:has(form.filter-menu.with-space-playlist-header) > ytd-playlist-header-renderer,
+    ytd-browse[filter-menu="true"][role="main"]:has(form.filter-menu.with-space-playlist-header) > div#masthead-ad {
         padding-top: 56px !important;
     }
 }
 
 @media (max-width: 1080px) {
-    ytd-browse[role="main"]:has(form.filter-menu.with-space-playlist-header) > div#header {
+    ytd-browse[filter-menu="true"][role="main"]:has(form.filter-menu.with-space-playlist-header) > div#header {
         padding-top: 56px !important;
     }
 }
 
-ytd-multi-page-menu-renderer:has(ytd-notification-renderer) form.filter-notification {
+ytd-browse[filter-menu="true"] ytd-multi-page-menu-renderer:has(ytd-notification-renderer) form.filter-notification {
     display: flex;
 }
 
-ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
+ytd-browse[filter-menu="true"] ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
     display: none !important;
 }

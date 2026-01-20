@@ -85,5 +85,32 @@
     },
     "keyword_notification": {
         "message": "Notification Search"
+    },
+    "filter_subscriptions": {
+        "message": "Filter for Subscriptions Feed"
+    },
+    "filter_home": {
+        "message": "Filter for YouTube Home Feed"
+    },
+    "filter_shorts": {
+        "message": "Filter for Shorts Feed"
+    },
+    "filter_history": {
+        "message": "Filter for History Page"
+    },
+    "filter_playlist": {
+        "message": "Filter for Playlist Pages"
+    },
+    "filter_playlists": {
+        "message": "Filter for All Playlists Page"
+    },
+    "filter_hashtag": {
+        "message": "Filter for Hashtag Pages"
+    },
+    "filter_channel": {
+        "message": "Filter for Channel Pages"
+    },
+    "filter_channels": {
+        "message": "Filter for All Channels Page"
     }
 }

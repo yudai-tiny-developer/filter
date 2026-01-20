@@ -54,6 +54,16 @@ export const storage = [
     'keyword_add_playlist',
     'keyword_sidebar_channels',
     'keyword_notification',
+
+    'filter_subscriptions',
+    'filter_home',
+    'filter_shorts',
+    'filter_history',
+    'filter_playlist',
+    'filter_playlists',
+    'filter_hashtag',
+    'filter_channel',
+    'filter_channels',
 ];
 
 export const default_order = [
@@ -120,6 +130,16 @@ export const button_label = {
     keyword_add_playlist: chrome.i18n.getMessage('keyword_add_playlist'),
     keyword_sidebar_channels: chrome.i18n.getMessage('keyword_sidebar_channels'),
     keyword_notification: chrome.i18n.getMessage('keyword_notification'),
+
+    filter_subscriptions: chrome.i18n.getMessage('filter_subscriptions'),
+    filter_home: chrome.i18n.getMessage('filter_home'),
+    filter_shorts: chrome.i18n.getMessage('filter_shorts'),
+    filter_history: chrome.i18n.getMessage('filter_history'),
+    filter_playlist: chrome.i18n.getMessage('filter_playlist'),
+    filter_playlists: chrome.i18n.getMessage('filter_playlists'),
+    filter_hashtag: chrome.i18n.getMessage('filter_hashtag'),
+    filter_channel: chrome.i18n.getMessage('filter_channel'),
+    filter_channels: chrome.i18n.getMessage('filter_channels'),
 };
 
 export const default_live = true;
@@ -167,6 +187,16 @@ export const default_default_channels_personalized = false;
 export const default_default_channels_none = false;
 
 export const default_default_keyword = '';
+
+export const default_filter_subscriptions = true;
+export const default_filter_home = true;
+export const default_filter_shorts = true;
+export const default_filter_history = true;
+export const default_filter_playlist = true;
+export const default_filter_playlists = true;
+export const default_filter_hashtag = true;
+export const default_filter_channel = true;
+export const default_filter_channels = true;
 
 export function value(value, defaultValue) {
     return value === undefined ? defaultValue : value;
