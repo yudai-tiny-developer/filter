@@ -85,5 +85,32 @@
     },
     "keyword_notification": {
         "message": "Notification Search"
+    },
+    "filter_subscriptions": {
+        "message": "Subscriptions filter"
+    },
+    "filter_home": {
+        "message": "Home feed filter"
+    },
+    "filter_shorts": {
+        "message": "Shorts filter"
+    },
+    "filter_history": {
+        "message": "History filter"
+    },
+    "filter_playlist": {
+        "message": "Playlist filter"
+    },
+    "filter_playlists": {
+        "message": "All playlists filter"
+    },
+    "filter_hashtag": {
+        "message": "Hashtag filter"
+    },
+    "filter_channel": {
+        "message": "Channel filter"
+    },
+    "filter_channels": {
+        "message": "All channels filter"
     }
 }

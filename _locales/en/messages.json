@@ -87,30 +87,30 @@
         "message": "Notification Search"
     },
     "filter_subscriptions": {
-        "message": "登録チャンネルのフィルター"
+        "message": "Subscriptions filter"
     },
     "filter_home": {
-        "message": "ホームのフィルター"
+        "message": "Home feed filter"
     },
     "filter_shorts": {
-        "message": "ショートのフィルター"
+        "message": "Shorts filter"
     },
     "filter_history": {
-        "message": "履歴のフィルター"
+        "message": "History filter"
     },
     "filter_playlist": {
-        "message": "再生リストのフィルター"
+        "message": "Playlist filter"
     },
     "filter_playlists": {
-        "message": "再生リスト一覧のフィルター"
+        "message": "All playlists filter"
     },
     "filter_hashtag": {
-        "message": "ハッシュタグのフィルター"
+        "message": "Hashtag filter"
     },
     "filter_channel": {
-        "message": "チャンネルのフィルター"
+        "message": "Channel filter"
     },
     "filter_channels": {
-        "message": "登録チャンネル一覧のフィルター"
+        "message": "All channels filter"
     }
 }
