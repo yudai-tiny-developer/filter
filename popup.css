@@ -65,7 +65,6 @@ div.label {
 }
 
 div.svg-label {
-    text-align: center;
     vertical-align: middle;
 }
 
@@ -83,13 +82,17 @@ div.header-label {
     vertical-align: middle;
 }
 
-div.header-label.header-keyword-4 {
-    width: 176px;
-}
-
 div.spacer-label {
     display: table-cell;
     padding: 4px;
+}
+
+div.table-label {
+    display: table-cell;
+    padding: 8px;
+    vertical-align: middle;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 input.label {
@@ -168,7 +171,7 @@ label.switch:after {
     align-items: flex-end;
 }
 
-input.checkbox:checked+label.switch:after {
+input.checkbox:checked + label.switch:after {
     left: 28px;
     content: "\2714";
 
@@ -215,7 +218,8 @@ div#reset_progress.done {
 
     div.label,
     div.draggable-label,
-    div.header-label {
+    div.header-label,
+    div.table-label {
         color: rgb(0, 0, 0);
         fill: rgb(0, 0, 0);
     }
@@ -230,12 +234,12 @@ div#reset_progress.done {
         color: rgb(255, 255, 255);
     }
 
-    input.checkbox:checked+label.switch {
+    input.checkbox:checked + label.switch {
         background-color: rgb(26, 187, 26);
         border-color: rgb(26, 187, 26);
     }
 
-    input.checkbox:checked+label.switch:after {
+    input.checkbox:checked + label.switch:after {
         background-color: rgb(249, 255, 249);
         color: rgb(0, 0, 0);
     }
@@ -279,7 +283,8 @@ div#reset_progress.done {
 
     div.label,
     div.draggable-label,
-    div.header-label {
+    div.header-label,
+    div.table-label {
         color: rgb(255, 255, 255);
         fill: rgb(255, 255, 255);
     }
@@ -294,12 +299,12 @@ div#reset_progress.done {
         color: rgb(0, 0, 0);
     }
 
-    input.checkbox:checked+label.switch {
+    input.checkbox:checked + label.switch {
         background-color: rgb(73, 249, 73);
         border-color: rgb(73, 249, 73);
     }
 
-    input.checkbox:checked+label.switch:after {
+    input.checkbox:checked + label.switch:after {
         background-color: rgb(26, 73, 26);
         color: rgb(255, 255, 255);
     }
