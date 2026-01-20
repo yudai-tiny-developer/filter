@@ -656,7 +656,11 @@ function main(app, common, lang) {
             // already exists
         }
 
-        set_frosted_glass_mode();
+        if (browse.getAttribute('filter-menu') === 'true') {
+            set_frosted_glass_mode();
+        } else {
+            reset_frosted_glass_mode();
+        }
     }
 
     function matchTextContent_Subscriptions_RichItemRenderer(node) {
@@ -1027,7 +1031,11 @@ function main(app, common, lang) {
             // already exists
         }
 
-        set_frosted_glass_mode();
+        if (browse.getAttribute('filter-menu') === 'true') {
+            set_frosted_glass_mode();
+        } else {
+            reset_frosted_glass_mode();
+        }
     }
 
     function matchTextContent_Shorts_RichItemRenderer(node) {
@@ -1074,7 +1082,11 @@ function main(app, common, lang) {
             // already exists
         }
 
-        set_frosted_glass_mode();
+        if (browse.getAttribute('filter-menu') === 'true') {
+            set_frosted_glass_mode();
+        } else {
+            reset_frosted_glass_mode();
+        }
     }
 
     function matchTextContent_Library_RichItemRenderer(node) {
@@ -1189,7 +1201,11 @@ function main(app, common, lang) {
             // already exists
         }
 
-        set_frosted_glass_mode();
+        if (browse.getAttribute('filter-menu') === 'true') {
+            set_frosted_glass_mode();
+        } else {
+            reset_frosted_glass_mode();
+        }
     }
 
     function matchTextContent_History_LockupViewModel(node) {
@@ -1331,7 +1347,11 @@ function main(app, common, lang) {
             // already exists
         }
 
-        set_frosted_glass_mode();
+        if (browse.getAttribute('filter-menu') === 'true') {
+            set_frosted_glass_mode();
+        } else {
+            reset_frosted_glass_mode();
+        }
     }
 
     function matchTextContent_Playlists_RichItemRenderer(node) {
@@ -1808,7 +1828,11 @@ function main(app, common, lang) {
             // already exists
         }
 
-        set_frosted_glass_mode();
+        if (browse.getAttribute('filter-menu') === 'true') {
+            set_frosted_glass_mode();
+        } else {
+            reset_frosted_glass_mode();
+        }
     }
 
     function matchTextContent_Channels_ChannelRenderer(node) {
@@ -2956,6 +2980,11 @@ function main(app, common, lang) {
     function set_frosted_glass_mode() {
         document.getElementById('frosted-glass').classList.replace('without-chipbar', 'with-chipbar');
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'with-chipbar');
+    }
+
+    function reset_frosted_glass_mode() {
+        document.getElementById('frosted-glass').classList.replace('with-chipbar', 'without-chipbar');
+        document.getElementById('masthead').setAttribute('frosted-glass-mode', 'without-chipbar');
     }
 
     const default_tab = {
