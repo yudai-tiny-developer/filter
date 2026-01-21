@@ -112,5 +112,8 @@
     },
     "filter_channels": {
         "message": "Filter for All Channels Page"
+    },
+    "url_param_filter_mode_enabled": {
+        "message": "Use URL Parameters"
     }
 }
