@@ -2595,7 +2595,7 @@ function main(app, common, lang) {
     function get_url_param_filter_mode() {
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
-            const filter_mode = url.searchParams.get('filter_mode');
+            const filter_mode = url.searchParams.get('filter-mode');
             if (filter_mode) {
                 return filter_mode.split(',');
             } else {
@@ -2691,7 +2691,7 @@ function main(app, common, lang) {
     function get_url_param_filter_mode_progress() {
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
-            const filter_mode = url.searchParams.get('filter_mode_progress');
+            const filter_mode = url.searchParams.get('filter-mode-progress');
             if (filter_mode) {
                 return filter_mode.split(',');
             } else {
@@ -2782,7 +2782,7 @@ function main(app, common, lang) {
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
             url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
-            url.searchParams.set('filter_mode', [...mode].join(','));
+            url.searchParams.set('filter-mode', [...mode].join(','));
             history.replaceState({}, '', url);
         }
     }
@@ -2794,7 +2794,7 @@ function main(app, common, lang) {
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
             url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
-            url.searchParams.set('filter_mode_progress', [...mode_progress].join(','));
+            url.searchParams.set('filter-mode-progress', [...mode_progress].join(','));
             history.replaceState({}, '', url);
         }
     }
