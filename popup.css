@@ -84,7 +84,7 @@ div.header-label {
 
 div.spacer-label {
     display: table-cell;
-    padding: 4px;
+    padding: 14px;
 }
 
 div.table-label {
@@ -93,6 +93,7 @@ div.table-label {
     vertical-align: middle;
     font-size: 18px;
     font-weight: 500;
+    text-decoration: underline;
 }
 
 input.label {

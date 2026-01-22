@@ -16,7 +16,8 @@ function main(common, settings, progress, data) {
     const settings_list_3 = document.body.querySelector('div#settings_list_3');
     const settings_list_4 = document.body.querySelector('div#settings_list_4');
     const settings_list_5 = document.body.querySelector('div#settings_list_5');
-    const settings_lists = [settings_list_1, settings_list_2, settings_list_3, settings_list_4, settings_list_5];
+    const settings_list_6 = document.body.querySelector('div#settings_list_6');
+    const settings_lists = [settings_list_1, settings_list_2, settings_list_3, settings_list_4, settings_list_5, settings_list_6];
 
     const progress_class = 'progress';
     const done_class = 'done';
@@ -48,21 +49,21 @@ function main(common, settings, progress, data) {
 
     settings_list_5.appendChild(settings.createRow(common.button_label.multiselection, undefined, 'multiselection', data.multiselection, false));
     settings_list_5.appendChild(settings.createRow(common.button_label.responsive, undefined, 'responsive', data.responsive, true));
+    settings_list_5.appendChild(settings.createRow(common.button_label.url_param_filter_mode_enabled, undefined, 'url_param_filter_mode_enabled', data.url_param_filter_mode_enabled, false));
     settings_list_5.appendChild(settings.createRow(common.button_label.limit, undefined, 'limit', data.limit, common.defaultLimit, undefined, undefined, input => chrome.storage.local.set({ limit: common.limit(input.value, common.defaultLimit, common.minLimit, common.maxLimit, common.stepLimit) }), undefined, 'step', common.minLimit, common.maxLimit, common.stepLimit, common.limit));
 
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_subscriptions, undefined, 'filter_subscriptions', data.filter_subscriptions, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_home, undefined, 'filter_home', data.filter_home, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_shorts, undefined, 'filter_shorts', data.filter_shorts, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_history, undefined, 'filter_history', data.filter_history, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_playlist, undefined, 'filter_playlist', data.filter_playlist, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_playlists, undefined, 'filter_playlists', data.filter_playlists, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_hashtag, undefined, 'filter_hashtag', data.filter_hashtag, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_channel, undefined, 'filter_channel', data.filter_channel, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.filter_channels, undefined, 'filter_channels', data.filter_channels, true));
-
-    settings_list_5.appendChild(settings.createRow(common.button_label.keyword_add_playlist, undefined, 'keyword_add_playlist', data.keyword_add_playlist, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.keyword_sidebar_channels, undefined, 'keyword_sidebar_channels', data.keyword_sidebar_channels, true));
-    settings_list_5.appendChild(settings.createRow(common.button_label.keyword_notification, undefined, 'keyword_notification', data.keyword_notification, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_subscriptions, undefined, 'filter_subscriptions', data.filter_subscriptions, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_home, undefined, 'filter_home', data.filter_home, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_shorts, undefined, 'filter_shorts', data.filter_shorts, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_history, undefined, 'filter_history', data.filter_history, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_playlist, undefined, 'filter_playlist', data.filter_playlist, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_playlists, undefined, 'filter_playlists', data.filter_playlists, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_hashtag, undefined, 'filter_hashtag', data.filter_hashtag, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_channel, undefined, 'filter_channel', data.filter_channel, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.filter_channels, undefined, 'filter_channels', data.filter_channels, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.keyword_add_playlist, undefined, 'keyword_add_playlist', data.keyword_add_playlist, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.keyword_sidebar_channels, undefined, 'keyword_sidebar_channels', data.keyword_sidebar_channels, true));
+    settings_list_6.appendChild(settings.createRow(common.button_label.keyword_notification, undefined, 'keyword_notification', data.keyword_notification, true));
 
     for (const settings_list of settings_lists) {
         for (const mode of common.order(data.order)) {

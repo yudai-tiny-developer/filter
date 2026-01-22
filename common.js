@@ -64,6 +64,8 @@ export const storage = [
     'filter_hashtag',
     'filter_channel',
     'filter_channels',
+
+    'url_param_filter_mode_enabled',
 ];
 
 export const default_order = [
@@ -140,6 +142,8 @@ export const button_label = {
     filter_hashtag: chrome.i18n.getMessage('filter_hashtag'),
     filter_channel: chrome.i18n.getMessage('filter_channel'),
     filter_channels: chrome.i18n.getMessage('filter_channels'),
+
+    url_param_filter_mode_enabled: chrome.i18n.getMessage('url_param_filter_mode_enabled'),
 };
 
 export const default_live = true;
@@ -197,6 +201,8 @@ export const default_filter_playlists = true;
 export const default_filter_hashtag = true;
 export const default_filter_channel = true;
 export const default_filter_channels = true;
+
+export const default_url_param_filter_mode_enabled = false;
 
 export function value(value, defaultValue) {
     return value === undefined ? defaultValue : value;

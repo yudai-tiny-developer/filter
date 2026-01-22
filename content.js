@@ -137,6 +137,8 @@ function main(app, common, lang) {
             const filter_channel = common.value(data.filter_channel, common.default_filter_channel);
             const filter_channels = common.value(data.filter_channels, common.default_filter_channels);
 
+            url_param_filter_mode_enabled = common.value(data.url_param_filter_mode_enabled, common.default_url_param_filter_mode_enabled);
+
             if (common.isSubscriptions(location.href)) {
                 if (filter_subscriptions) {
                     display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -2590,11 +2592,30 @@ function main(app, common, lang) {
         return span;
     }
 
+    function get_url_param_filter_mode() {
+        if (url_param_filter_mode_enabled) {
+            const url = new URL(location);
+            const filter_mode = url.searchParams.get('filter-mode');
+            if (filter_mode) {
+                return filter_mode.split(',');
+            } else {
+                return undefined;
+            }
+        } else {
+            return undefined;
+        }
+    }
+
     function changeMode(mode, multi, sub, browse) {
         const modes = multi ? getActiveMode() : new Set();
 
         if (!mode) {
-            if (common.isSubscriptions(location.href)) {
+            const url_param_filter_mode = get_url_param_filter_mode();
+            if (url_param_filter_mode) {
+                for (const m of url_param_filter_mode) {
+                    modes.add(m);
+                }
+            } else if (common.isSubscriptions(location.href)) {
                 if (default_tab.live) modes.add('live');
                 if (default_tab.streamed) modes.add('streamed');
                 if (default_tab.video) modes.add('video');
@@ -2667,11 +2688,30 @@ function main(app, common, lang) {
         }
     }
 
+    function get_url_param_filter_mode_progress() {
+        if (url_param_filter_mode_enabled) {
+            const url = new URL(location);
+            const filter_mode = url.searchParams.get('filter-mode-progress');
+            if (filter_mode) {
+                return filter_mode.split(',');
+            } else {
+                return undefined;
+            }
+        } else {
+            return undefined;
+        }
+    }
+
     function changeModeProgress(mode, browse) {
         const modes = new Set();
 
         if (!mode) {
-            if (common.isSubscriptions(location.href)) {
+            const url_param_filter_mode = get_url_param_filter_mode_progress();
+            if (url_param_filter_mode) {
+                for (const m of url_param_filter_mode) {
+                    modes.add(m);
+                }
+            } else if (common.isSubscriptions(location.href)) {
                 if (default_tab.progress_unwatched) modes.add('progress_unwatched');
                 if (default_tab.progress_watched) modes.add('progress_watched');
                 if (modes.size === 0) modes.add('progress_all');
@@ -2738,11 +2778,25 @@ function main(app, common, lang) {
     function setActiveMode(mode, browse) {
         set_cache_mode(mode);
         browse.setAttribute('filter-mode', [...mode].join(' '));
+
+        if (url_param_filter_mode_enabled) {
+            const url = new URL(location);
+            url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
+            url.searchParams.set('filter-mode', [...mode].join(','));
+            history.replaceState({}, '', url);
+        }
     }
 
     function setActiveModeProgress(mode_progress, browse) {
         set_cache_mode_progress(mode_progress);
         browse.setAttribute('filter-mode-progress', [...mode_progress].join(' '));
+
+        if (url_param_filter_mode_enabled) {
+            const url = new URL(location);
+            url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
+            url.searchParams.set('filter-mode-progress', [...mode_progress].join(','));
+            history.replaceState({}, '', url);
+        }
     }
 
     function getActiveQuery(browse) {
@@ -2926,30 +2980,33 @@ function main(app, common, lang) {
     }
 
     function cache_key(url) {
-        if (common.isSubscriptions(url)) {
+        const u = new URL(url);
+        const pathname = u.pathname;
+
+        if (common.isSubscriptions(pathname)) {
             return 'subscriptions';
-        } else if (common.isShorts(url)) {
+        } else if (common.isShorts(pathname)) {
             return 'shorts';
-        } else if (common.isLibrary(url)) {
+        } else if (common.isLibrary(pathname)) {
             return 'library';
-        } else if (common.isHistory(url)) {
+        } else if (common.isHistory(pathname)) {
             return 'history';
-        } else if (common.isPlaylists(url)) {
+        } else if (common.isPlaylists(pathname)) {
             return 'playlists';
-        } else if (common.isPlaylist(url)) {
-            return url;
-        } else if (common.isChannels(url)) {
+        } else if (common.isPlaylist(pathname)) {
+            return pathname;
+        } else if (common.isChannels(pathname)) {
             return 'channels';
-        } else if (common.isChannel(url)) {
-            return url;
-        } else if (common.isHashTag(url)) {
-            return url;
-        } else if (common.isHome(url)) {
+        } else if (common.isChannel(pathname)) {
+            return pathname;
+        } else if (common.isHashTag(pathname)) {
+            return pathname;
+        } else if (common.isHome(pathname)) {
             return 'top';
-        } else if (common.isVideoPlayer(url)) {
+        } else if (common.isVideoPlayer(pathname)) {
             return 'video_player';
         } else {
-            return url;
+            return pathname;
         }
     }
 
@@ -3019,6 +3076,8 @@ function main(app, common, lang) {
     let keyword_add_playlist = common.default_keyword_add_playlist;
     let keyword_sidebar_channels = false; // anti-flicker
     let keyword_notification = common.default_keyword_notification;
+
+    let url_param_filter_mode_enabled = common.default_url_param_filter_mode_enabled;
 
     const popupMenu = new Map();
 
