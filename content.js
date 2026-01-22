@@ -2781,9 +2781,9 @@ function main(app, common, lang) {
 
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
-            url.searchParams.set("app", url.searchParams.get("app") ?? "desktop");
-            url.searchParams.set("filter_mode", [...mode].join(','));
-            history.replaceState({}, "", url);
+            url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
+            url.searchParams.set('filter_mode', [...mode].join(','));
+            history.replaceState({}, '', url);
         }
     }
 
@@ -2793,9 +2793,9 @@ function main(app, common, lang) {
 
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
-            url.searchParams.set("app", url.searchParams.get("app") ?? "desktop");
-            url.searchParams.set("filter_mode_progress", [...mode_progress].join(','));
-            history.replaceState({}, "", url);
+            url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
+            url.searchParams.set('filter_mode_progress', [...mode_progress].join(','));
+            history.replaceState({}, '', url);
         }
     }
 
