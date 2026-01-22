@@ -2781,7 +2781,7 @@ function main(app, common, lang) {
 
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
-            url.searchParams.set("app", "desktop");
+            url.searchParams.set("app", url.searchParams.get("app") ?? "desktop");
             url.searchParams.set("filter_mode", [...mode].join(','));
             history.replaceState({}, "", url);
         }
@@ -2793,7 +2793,7 @@ function main(app, common, lang) {
 
         if (url_param_filter_mode_enabled) {
             const url = new URL(location);
-            url.searchParams.set("app", "desktop");
+            url.searchParams.set("app", url.searchParams.get("app") ?? "desktop");
             url.searchParams.set("filter_mode_progress", [...mode_progress].join(','));
             history.replaceState({}, "", url);
         }
@@ -2980,30 +2980,33 @@ function main(app, common, lang) {
     }
 
     function cache_key(url) {
-        if (common.isSubscriptions(url)) {
+        const u = new URL(url);
+        const pathname = u.pathname;
+
+        if (common.isSubscriptions(pathname)) {
             return 'subscriptions';
-        } else if (common.isShorts(url)) {
+        } else if (common.isShorts(pathname)) {
             return 'shorts';
-        } else if (common.isLibrary(url)) {
+        } else if (common.isLibrary(pathname)) {
             return 'library';
-        } else if (common.isHistory(url)) {
+        } else if (common.isHistory(pathname)) {
             return 'history';
-        } else if (common.isPlaylists(url)) {
+        } else if (common.isPlaylists(pathname)) {
             return 'playlists';
-        } else if (common.isPlaylist(url)) {
-            return url;
-        } else if (common.isChannels(url)) {
+        } else if (common.isPlaylist(pathname)) {
+            return pathname;
+        } else if (common.isChannels(pathname)) {
             return 'channels';
-        } else if (common.isChannel(url)) {
-            return url;
-        } else if (common.isHashTag(url)) {
-            return url;
-        } else if (common.isHome(url)) {
+        } else if (common.isChannel(pathname)) {
+            return pathname;
+        } else if (common.isHashTag(pathname)) {
+            return pathname;
+        } else if (common.isHome(pathname)) {
             return 'top';
-        } else if (common.isVideoPlayer(url)) {
+        } else if (common.isVideoPlayer(pathname)) {
             return 'video_player';
         } else {
-            return url;
+            return pathname;
         }
     }
 
