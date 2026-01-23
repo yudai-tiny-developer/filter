@@ -547,14 +547,23 @@ function main(app, common, lang) {
         return common.isSubscriptions(location.href)
             || common.isHome(location.href)
             || common.isShorts(location.href)
-            || common.isLibrary(location.href)
             || common.isHistory(location.href)
             || common.isPlaylists(location.href)
             || common.isPlaylist(location.href)
             || common.isHashTag(location.href)
             || common.isChannel(location.href)
             || common.isChannels(location.href)
-            || common.isVideoPlayer(location.href)
+            ;
+    }
+
+    function isUrlParamsTarget() {
+        return common.isSubscriptions(location.href)
+            || common.isHome(location.href)
+            || common.isHistory(location.href)
+            || common.isPlaylist(location.href)
+            || common.isHashTag(location.href)
+            || common.isChannel(location.href)
+            || common.isChannels(location.href)
             ;
     }
 
@@ -2779,7 +2788,7 @@ function main(app, common, lang) {
         set_cache_mode(mode);
         browse.setAttribute('filter-mode', [...mode].join(' '));
 
-        if (url_param_filter_mode_enabled) {
+        if (url_param_filter_mode_enabled && isUrlParamsTarget()) {
             const url = new URL(location);
             url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
             url.searchParams.set('filter-mode', [...mode].join(','));
@@ -2791,7 +2800,7 @@ function main(app, common, lang) {
         set_cache_mode_progress(mode_progress);
         browse.setAttribute('filter-mode-progress', [...mode_progress].join(' '));
 
-        if (url_param_filter_mode_enabled) {
+        if (url_param_filter_mode_enabled && isUrlParamsTarget()) {
             const url = new URL(location);
             url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
             url.searchParams.set('filter-mode-progress', [...mode_progress].join(','));
