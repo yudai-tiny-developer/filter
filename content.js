@@ -2625,6 +2625,7 @@ function main(app, common, lang) {
                     modes.add(m);
                 }
             }
+
             if (modes.size === 0) {
                 if (common.isSubscriptions(location.href)) {
                     if (default_tab.live) modes.add('live');
@@ -2723,12 +2724,16 @@ function main(app, common, lang) {
                 for (const m of url_param_filter_mode) {
                     modes.add(m);
                 }
-            } else if (common.isSubscriptions(location.href)) {
-                if (default_tab.progress_unwatched) modes.add('progress_unwatched');
-                if (default_tab.progress_watched) modes.add('progress_watched');
-                if (modes.size === 0) modes.add('progress_all');
-            } else {
-                modes.add('progress_all');
+            }
+
+            if (modes.size === 0) {
+                if (common.isSubscriptions(location.href)) {
+                    if (default_tab.progress_unwatched) modes.add('progress_unwatched');
+                    if (default_tab.progress_watched) modes.add('progress_watched');
+                    if (modes.size === 0) modes.add('progress_all');
+                } else {
+                    modes.add('progress_all');
+                }
             }
         } else {
             if (mode === 'progress_all') {
