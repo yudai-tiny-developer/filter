@@ -2624,22 +2624,26 @@ function main(app, common, lang) {
                 for (const m of url_param_filter_mode) {
                     modes.add(m);
                 }
-            } else if (common.isSubscriptions(location.href)) {
-                if (default_tab.live) modes.add('live');
-                if (default_tab.streamed) modes.add('streamed');
-                if (default_tab.video) modes.add('video');
-                if (default_tab.short) modes.add('short');
-                if (default_tab.scheduled) modes.add('scheduled');
-                if (default_tab.notification_on) modes.add('notification_on');
-                if (default_tab.notification_off) modes.add('notification_off');
-                if (modes.size === 0) modes.add('all');
-            } else if (common.isChannels(location.href)) {
-                if (default_tab.channels_all) modes.add('channels_all');
-                if (default_tab.channels_personalized) modes.add('channels_personalized');
-                if (default_tab.channels_none) modes.add('channels_none');
-                if (modes.size === 0) modes.add('all');
-            } else {
-                modes.add('all');
+            }
+
+            if (modes.size === 0) {
+                if (common.isSubscriptions(location.href)) {
+                    if (default_tab.live) modes.add('live');
+                    if (default_tab.streamed) modes.add('streamed');
+                    if (default_tab.video) modes.add('video');
+                    if (default_tab.short) modes.add('short');
+                    if (default_tab.scheduled) modes.add('scheduled');
+                    if (default_tab.notification_on) modes.add('notification_on');
+                    if (default_tab.notification_off) modes.add('notification_off');
+                    if (modes.size === 0) modes.add('all');
+                } else if (common.isChannels(location.href)) {
+                    if (default_tab.channels_all) modes.add('channels_all');
+                    if (default_tab.channels_personalized) modes.add('channels_personalized');
+                    if (default_tab.channels_none) modes.add('channels_none');
+                    if (modes.size === 0) modes.add('all');
+                } else {
+                    modes.add('all');
+                }
             }
         } else {
             if (multi && sub) {
@@ -2720,12 +2724,16 @@ function main(app, common, lang) {
                 for (const m of url_param_filter_mode) {
                     modes.add(m);
                 }
-            } else if (common.isSubscriptions(location.href)) {
-                if (default_tab.progress_unwatched) modes.add('progress_unwatched');
-                if (default_tab.progress_watched) modes.add('progress_watched');
-                if (modes.size === 0) modes.add('progress_all');
-            } else {
-                modes.add('progress_all');
+            }
+
+            if (modes.size === 0) {
+                if (common.isSubscriptions(location.href)) {
+                    if (default_tab.progress_unwatched) modes.add('progress_unwatched');
+                    if (default_tab.progress_watched) modes.add('progress_watched');
+                    if (modes.size === 0) modes.add('progress_all');
+                } else {
+                    modes.add('progress_all');
+                }
             }
         } else {
             if (mode === 'progress_all') {
@@ -3119,6 +3127,10 @@ function main(app, common, lang) {
     });
 
     document.addEventListener('yt-navigate-finish', () => {
+        onViewChanged();
+    });
+
+    document.addEventListener('yt-service-request-completed', () => {
         onViewChanged();
     });
 
