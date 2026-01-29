@@ -790,6 +790,7 @@ function main(app, common, lang) {
                     display_query(browse, 'form.filter-menu, div.filter-menu', '');
                 } else {
                     // referenceNode not found
+                    // as a workaround, create a filter under div#masthead-ad
                     const referenceNode = browse.querySelector('div#masthead-ad');
                     if (referenceNode) {
                         const menu = createMenu(browse, true);
@@ -804,7 +805,9 @@ function main(app, common, lang) {
                         // referenceNode not found
                     }
                 }
-            } else { // already exists
+            } else {
+                // already exists
+                // move the filter created under div#masthead-ad to its proper location
                 const menu = browse.querySelector('div#masthead-ad > form.filter-menu:not(.filter-forCalc)');
                 const calc = browse.querySelector('div#masthead-ad > form.filter-menu.filter-forCalc');
                 if (menu && calc) {
