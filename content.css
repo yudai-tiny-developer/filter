@@ -257,8 +257,12 @@ ytd-browse[filter-menu="true"][role="main"][page-subtype="home"] div#scroll-cont
     width: 100% !important;
 }
 
-ytd-app:has(ytd-browse[filter-menu="true"][role="main"][page-subtype="home"]) div#frosted-glass {
+ytd-app:has(ytd-browse[filter-menu="true"][role="main"][page-subtype="home"] div#scroll-container) div#frosted-glass {
     height: 168px !important;
+}
+
+ytd-app:has(ytd-browse[filter-menu="true"][role="main"][page-subtype="home"] div#header[hidden]) div#frosted-glass {
+    height: 56px !important;
 }
 
 ytd-browse[filter-menu="true"][role="main"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#header {
