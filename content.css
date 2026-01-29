@@ -356,10 +356,10 @@ ytd-browse[filter-menu="true"][role="main"]:has(form.filter-add-playlist) ytd-pl
     }
 }
 
-ytd-browse[filter-menu="true"] ytd-multi-page-menu-renderer:has(ytd-notification-renderer) form.filter-notification {
+ytd-multi-page-menu-renderer[menu-style="multi-page-menu-style-type-notifications"] form.filter-notification {
     display: flex;
 }
 
-ytd-browse[filter-menu="true"] ytd-multi-page-menu-renderer ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
+ytd-multi-page-menu-renderer[menu-style="multi-page-menu-style-type-notifications"] ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
     display: none !important;
 }
