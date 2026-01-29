@@ -571,7 +571,7 @@ function main(app, common, lang) {
         if (common.isSubscriptions(location.href)) {
             shallow ? onNodeLoaded_Subscriptions(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
         } else if (common.isHome(location.href)) {
-            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
+            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, YTD-RICH-GRID-RENDERER').forEach(n => onNodeLoaded_Home(n));
         } else if (common.isShorts(location.href)) {
             shallow ? onNodeLoaded_Shorts(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
         } else if (common.isLibrary(location.href)) {
@@ -768,10 +768,8 @@ function main(app, common, lang) {
             case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
                 insertMenu_Home(node);
                 break;
-            case 'DIV':
-                if (node.id === 'header' && node.childElementCount === 0) {
-                    insertMenu_Home(node);
-                }
+            case 'YTD-RICH-GRID-RENDERER':
+                insertMenu_Home(node);
                 break;
         }
     }
