@@ -571,7 +571,7 @@ function main(app, common, lang) {
         if (common.isSubscriptions(location.href)) {
             shallow ? onNodeLoaded_Subscriptions(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
         } else if (common.isHome(location.href)) {
-            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER').forEach(n => onNodeLoaded_Home(n));
+            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
         } else if (common.isShorts(location.href)) {
             shallow ? onNodeLoaded_Shorts(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
         } else if (common.isLibrary(location.href)) {
@@ -768,6 +768,11 @@ function main(app, common, lang) {
             case 'YTD-FEED-FILTER-CHIP-BAR-RENDERER':
                 insertMenu_Home(node);
                 break;
+            case 'DIV':
+                if (node.id === 'header' && node.childElementCount === 0) {
+                    insertMenu_Home(node);
+                }
+                break;
         }
     }
 
@@ -787,9 +792,38 @@ function main(app, common, lang) {
                     display_query(browse, 'form.filter-menu, div.filter-menu', '');
                 } else {
                     // referenceNode not found
+                    // as a workaround, create a filter under div#masthead-ad
+                    const referenceNode = browse.querySelector('div#masthead-ad');
+                    if (referenceNode) {
+                        const menu = createMenu(browse, true);
+                        referenceNode.insertBefore(menu, referenceNode.firstChild);
+
+                        const calc = createNodeForCalc(menu, browse);
+                        referenceNode.insertBefore(calc, referenceNode.firstChild);
+
+                        updateButtonVisibility(browse);
+                        display_query(browse, 'form.filter-menu, div.filter-menu', '');
+                    } else {
+                        // referenceNode not found
+                    }
                 }
             } else {
                 // already exists
+                // move the filter created under div#masthead-ad to its proper location
+                const menu = browse.querySelector('div#masthead-ad > form.filter-menu:not(.filter-forCalc)');
+                const calc = browse.querySelector('div#masthead-ad > form.filter-menu.filter-forCalc');
+                if (menu && calc) {
+                    const referenceNode = browse.querySelector('div#scroll-container');
+                    if (referenceNode) {
+                        referenceNode.insertBefore(menu, referenceNode.firstChild);
+                        referenceNode.insertBefore(calc, referenceNode.firstChild);
+
+                        updateButtonVisibility(browse);
+                        display_query(browse, 'form.filter-menu, div.filter-menu', '');
+                    } else {
+                        // referenceNode not found
+                    }
+                }
             }
         } else {
             // not target
