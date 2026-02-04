@@ -2852,7 +2852,7 @@ function main(app, common, lang) {
 
     function getActiveQuery(browse) {
         const query = get_cache_query();
-        if (query) {
+        if (query !== undefined) {
             return query;
         } else if (common.isSubscriptions(location.href)) {
             set_cache_query(default_keyword);
@@ -3119,7 +3119,7 @@ function main(app, common, lang) {
     };
 
     let keyword = common.default_keyword;
-    let default_keyword = common.default_default_keyword;
+    let default_keyword = undefined;
 
     let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;
