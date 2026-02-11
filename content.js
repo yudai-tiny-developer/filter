@@ -2772,6 +2772,10 @@ function main(app, common, lang) {
             box.className = 'suggest-box';
 
             box.addEventListener('mousedown', e => {
+                e.preventDefault();
+            });
+
+            box.addEventListener('click', e => {
                 const li = e.target.closest('.suggest-item');
                 if (!li) return;
                 e.preventDefault();
