@@ -59,6 +59,9 @@
     "button_keyword": {
         "message": "キーワード"
     },
+    "button_suggestions": {
+        "message": "サジェスト"
+    },
     "button_placeholder": {
         "message": "▶"
     },

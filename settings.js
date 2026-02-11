@@ -60,6 +60,19 @@ export function createRowKeyword(label, mode, setting, deafult_value, keyword, o
     return div;
 }
 
+export function createRowSuggestions(label, mode, setting, deafult_value, keyword, onChange = undefined, button_label_clear = undefined) {
+    const div = document.createElement('div');
+    div.classList.add('row', mode);
+    div.appendChild(createDraggableIcon(undefined));
+    div.appendChild(createLabelInput(label, undefined, undefined, undefined, undefined));
+    div.appendChild(createToggle(mode, setting, deafult_value));
+
+    const keyword_input = createLabelInput(keyword, '', onChange, div, button_label_clear, 'keyword_input', 10);
+    div.appendChild(keyword_input);
+
+    return div;
+}
+
 function createDraggableIcon(draggable) {
     const div = document.createElement('div');
     if (draggable) {
@@ -71,12 +84,12 @@ function createDraggableIcon(draggable) {
     return div;
 }
 
-function createLabelInput(label, default_label, onChange, row, button_label_clear, input_class = 'label') {
+function createLabelInput(label, default_label, onChange, row, button_label_clear, input_class = 'label', rows = 1) {
     const div = document.createElement('div');
     div.classList.add('label');
 
     if (default_label !== undefined) {
-        const input = createInputArea(label, default_label, onChange, row, input_class);
+        const input = rows > 1 ? createTextArea(label, default_label, onChange, row, input_class, rows) : createInputArea(label, default_label, onChange, row, input_class);
         const clear = createClearButton(button_label_clear, input, default_label, onChange);
         input.dispatchEvent(new Event('check'));
         div.appendChild(input);
@@ -92,6 +105,7 @@ function createLabelInput(label, default_label, onChange, row, button_label_clea
 function createInputArea(label, default_label, onChange, row, input_class = 'label', minRate = undefined, maxRate = undefined, stepRate = undefined, limitRate = undefined) {
     const input = document.createElement('input');
     input.setAttribute('type', 'text');
+
     input.classList.add(input_class);
 
     input.addEventListener('focus', () => {
@@ -119,6 +133,46 @@ function createInputArea(label, default_label, onChange, row, input_class = 'lab
         } else {
             input.value = default_label;
         }
+    }
+
+    if (onChange) {
+        input.addEventListener('change', () => {
+            onChange(input);
+            input.dispatchEvent(new Event('check'));
+        });
+    }
+
+    input.addEventListener('reset', () => {
+        input.value = default_label;
+        input.dispatchEvent(new Event('check'));
+    });
+
+    return input;
+}
+
+export function createTextArea(label, default_label, onChange, row, input_class = 'label', rows) {
+    const input = document.createElement('textarea');
+
+    input.style.resize = 'none';
+    input.setAttribute('rows', rows);
+    input.classList.add(input_class);
+
+    input.addEventListener('focus', () => {
+        if (row) {
+            row.setAttribute('draggable', 'false');
+        }
+    });
+
+    input.addEventListener('blur', () => {
+        if (row) {
+            row.setAttribute('draggable', 'true');
+        }
+    });
+
+    if (label !== undefined) {
+        input.value = label;
+    } else {
+        input.value = default_label;
     }
 
     if (onChange) {

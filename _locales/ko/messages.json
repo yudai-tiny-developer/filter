@@ -59,6 +59,9 @@
     "button_keyword": {
         "message": "키워드 검색"
     },
+    "button_suggestions": {
+        "message": "Suggestions"
+    },
     "button_placeholder": {
         "message": "▶"
     },

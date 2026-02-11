@@ -15,6 +15,7 @@ export const storage = [
     'channels_none',
 
     'keyword',
+    'suggest',
 
     'order',
 
@@ -48,6 +49,7 @@ export const storage = [
     'button_label_progress_watched',
 
     'default_keyword',
+    'suggestions',
 
     'limit',
 
@@ -116,6 +118,7 @@ export const button_label = {
     search: chrome.i18n.getMessage('button_search'),
 
     keyword: chrome.i18n.getMessage('button_keyword'),
+    suggestions: chrome.i18n.getMessage('button_suggestions'),
 
     visibility: chrome.i18n.getMessage('visibility'),
     default: chrome.i18n.getMessage('default'),
@@ -162,6 +165,7 @@ export const default_channels_personalized = true;
 export const default_channels_none = true;
 
 export const default_keyword = true;
+export const default_suggest = false;
 
 export const default_multiselection = false;
 export const default_responsive = true;
@@ -191,6 +195,7 @@ export const default_default_channels_personalized = false;
 export const default_default_channels_none = false;
 
 export const default_default_keyword = '';
+export const default_suggestions = '';
 
 export const default_filter_subscriptions = true;
 export const default_filter_home = true;

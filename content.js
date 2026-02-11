@@ -103,6 +103,7 @@ function main(app, common, lang) {
             const channels_none = common.value(data.channels_none, common.default_channels_none);
 
             keyword = common.value(data.keyword, common.default_keyword);
+            suggest = common.value(data.suggest, common.default_suggest);
 
             default_tab.live = common.value(data.default_live, common.default_default_live);
             default_tab.streamed = common.value(data.default_streamed, common.default_default_streamed);
@@ -126,6 +127,7 @@ function main(app, common, lang) {
             keyword_sidebar_channels = common.value(data.keyword_sidebar_channels, common.default_keyword_sidebar_channels);
             keyword_notification = common.value(data.keyword_notification, common.default_keyword_notification);
             default_keyword = common.value(data.default_keyword, common.default_default_keyword);
+            suggestions = common.value(data.suggestions, common.default_suggestions).split(/\r?\n/).filter(line => line.trim() !== "");
 
             const filter_subscriptions = common.value(data.filter_subscriptions, common.default_filter_subscriptions);
             const filter_home = common.value(data.filter_home, common.default_filter_home);
@@ -2436,6 +2438,9 @@ function main(app, common, lang) {
             input.blur();
             menu.requestSubmit();
         });
+
+        attachSuggest(input);
+
         return input;
     }
 
@@ -2609,6 +2614,9 @@ function main(app, common, lang) {
             input.blur();
             menu.requestSubmit();
         });
+
+        attachSuggest(input);
+
         return input;
     }
 
@@ -3095,6 +3103,87 @@ function main(app, common, lang) {
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'without-chipbar');
     }
 
+    function attachSuggest(input) {
+        let box = null;
+
+        function createBox() {
+            box = document.createElement('ul');
+            box.style.position = 'fixed';
+            box.style.zIndex = '3000';
+            box.style.listStyle = 'none';
+            box.style.margin = '0';
+            box.style.padding = '4px 0';
+            box.style.border = '1px solid #ccc';
+            box.style.background = '#fff';
+            box.style.fontSize = '14px';
+            box.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+            input.parentNode.appendChild(box);
+        }
+
+        function positionBox() {
+            const parent_rect = input.getBoundingClientRect();
+            const box_rect = box.getBoundingClientRect();
+            box.style.transform = `translate(0, ${parent_rect.height + box_rect.height / 2}px)`;
+            box.style.minWidth = `${parent_rect.width + 20}px`;
+        }
+
+        function show() {
+            if (!suggest) {
+                input.setAttribute('autocomplete', 'on');
+                return;
+            }
+
+            input.setAttribute('autocomplete', 'off');
+
+            if (!suggestions || suggestions.length === 0) return;
+            if (!box) createBox();
+            box.innerHTML = '';
+
+            suggestions.forEach(text => {
+                const li = document.createElement('li');
+                li.textContent = text;
+                li.style.padding = '4px 8px';
+                li.style.cursor = 'pointer';
+
+                li.addEventListener('mousedown', e => {
+                    e.preventDefault();
+                    input.value = text;
+                    input.dispatchEvent(new Event('change'));
+                    hide();
+                });
+
+                li.addEventListener('mouseenter', () => {
+                    li.style.background = '#eee';
+                });
+
+                li.addEventListener('mouseleave', () => {
+                    li.style.background = '';
+                });
+
+                box.appendChild(li);
+            });
+
+            positionBox();
+            box.style.visibility = 'visible';
+        }
+
+        function hide() {
+            if (box) box.style.visibility = 'hidden';
+        }
+
+        input.addEventListener('focus', () => {
+            if (input.value === '') show();
+        });
+
+        input.addEventListener('input', () => {
+            hide();
+        });
+
+        input.addEventListener('blur', () => {
+            hide();
+        });
+    }
+
     const default_tab = {
         live: common.default_default_live,
         streamed: common.default_default_streamed,
@@ -3120,6 +3209,9 @@ function main(app, common, lang) {
 
     let keyword = common.default_keyword;
     let default_keyword = undefined;
+
+    let suggest;
+    let suggestions = undefined;
 
     let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;
