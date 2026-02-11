@@ -82,6 +82,10 @@ div.header-label {
     vertical-align: middle;
 }
 
+div.header-keyword-4 {
+    padding-right: 36px;
+}
+
 div.spacer-label {
     display: table-cell;
     padding: 14px;
@@ -104,8 +108,18 @@ input.label {
 
 input.keyword_input {
     width: 100%;
+    max-width: 150px;
     height: 30px;
     vertical-align: middle;
+}
+
+textarea.keyword_input {
+    width: 100%;
+    max-width: 150px;
+    height: 150px;
+    vertical-align: middle;
+    resize: none;
+    text-wrap: nowrap;
 }
 
 input.step {

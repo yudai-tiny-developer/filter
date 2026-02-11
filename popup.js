@@ -42,6 +42,7 @@ function main(common, settings, progress, data) {
 
     settings_list_3.appendChild(settings.createHeaderRow(common.button_label.visibility, common.button_label.default, 'header-keyword'));
     settings_list_3.appendChild(settings.createRowKeyword(common.button_label.keyword, 'keyword', data.keyword, true, data.default_keyword, input => chrome.storage.local.set({ default_keyword: input.value }), common.button_label.clear));
+    settings_list_3.appendChild(settings.createRowSuggestions(common.button_label.suggestions, 'suggest', data.suggest, false, data.suggestions, input => chrome.storage.local.set({ suggestions: input.value }), common.button_label.clear));
 
     settings_list_4.appendChild(settings.createRow(common.button_label.channels_all, undefined, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
     settings_list_4.appendChild(settings.createRow(common.button_label.channels_personalized, undefined, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));

@@ -217,6 +217,32 @@ div.filter-button-load {
     }
 }
 
+.suggest-box {
+    position: absolute;
+    z-index: 3000;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    visibility: hidden;
+}
+
+.suggest-box.is-visible {
+    visibility: visible;
+}
+
+.suggest-item {
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.suggest-item.is-active {
+    background: #ccc;
+}
+
 ytd-browse[filter-menu="true"] ytd-rich-section-renderer:has(.filter-hidden) {
     display: none !important;
 }

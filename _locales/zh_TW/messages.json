@@ -59,6 +59,9 @@
     "button_keyword": {
         "message": "關鍵字搜尋"
     },
+    "button_suggestions": {
+        "message": "Suggestions"
+    },
     "button_placeholder": {
         "message": "▶"
     },

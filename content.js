@@ -103,6 +103,7 @@ function main(app, common, lang) {
             const channels_none = common.value(data.channels_none, common.default_channels_none);
 
             keyword = common.value(data.keyword, common.default_keyword);
+            suggest = common.value(data.suggest, common.default_suggest);
 
             default_tab.live = common.value(data.default_live, common.default_default_live);
             default_tab.streamed = common.value(data.default_streamed, common.default_default_streamed);
@@ -126,6 +127,7 @@ function main(app, common, lang) {
             keyword_sidebar_channels = common.value(data.keyword_sidebar_channels, common.default_keyword_sidebar_channels);
             keyword_notification = common.value(data.keyword_notification, common.default_keyword_notification);
             default_keyword = common.value(data.default_keyword, common.default_default_keyword);
+            suggestions = common.value(data.suggestions, common.default_suggestions).split(/\r?\n/).filter(line => line.trim() !== "");
 
             const filter_subscriptions = common.value(data.filter_subscriptions, common.default_filter_subscriptions);
             const filter_home = common.value(data.filter_home, common.default_filter_home);
@@ -574,8 +576,6 @@ function main(app, common, lang) {
             shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
         } else if (common.isShorts(location.href)) {
             shallow ? onNodeLoaded_Shorts(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
-        } else if (common.isLibrary(location.href)) {
-            shallow ? onNodeLoaded_Library(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Library(n));
         } else if (common.isHistory(location.href)) {
             shallow ? onNodeLoaded_History(node) : node.querySelectorAll('YT-LOCKUP-VIEW-MODEL,YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_History(n));
         } else if (common.isPlaylists(location.href)) {
@@ -588,8 +588,6 @@ function main(app, common, lang) {
             shallow ? onNodeLoaded_Channel(node) : node.querySelectorAll('YTD-CHANNEL-FEATURED-CONTENT-RENDERER, YTD-GRID-VIDEO-RENDERER, YTD-GRID-CHANNEL-RENDERER, YTD-POST-RENDERER, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-BACKSTAGE-POST-THREAD-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channel(n));
         } else if (common.isChannels(location.href)) {
             shallow ? onNodeLoaded_Channels(node) : node.querySelectorAll('YTD-CHANNEL-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channels(n));
-        } else if (common.isVideoPlayer(location.href)) {
-            shallow ? onNodeLoaded_VideoPlayer(node) : node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-COMPACT-VIDEO-RENDERER, YTD-VIDEO-RENDERER, YTD-COMPACT-MOVIE-RENDERER, YT-CHIP-CLOUD-RENDERER').forEach(n => onNodeLoaded_VideoPlayer(n));
         }
     }
 
@@ -612,7 +610,7 @@ function main(app, common, lang) {
     }
 
     function matchQuery(text) {
-        const query = get_cache_query();
+        const query = get_cache_query()?.trim();
         if (!query) return true;
 
         const evaluator = createQueryEvaluator(query?.toLowerCase());
@@ -676,8 +674,9 @@ function main(app, common, lang) {
 
     function matchTextContent_Subscriptions_RichItemRenderer(node) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
-        if (title) {
-            return matchQuery(title.textContent);
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -831,9 +830,10 @@ function main(app, common, lang) {
     }
 
     function matchTextContent_Home_RichItemRenderer(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
-        if (metadata) {
-            return matchQuery(metadata.textContent);
+        const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -946,8 +946,9 @@ function main(app, common, lang) {
 
     function matchTextContent_Home_RichGridMedia(node) {
         const title = node.querySelector('a#video-title-link');
-        if (title) {
-            return matchQuery(title.textContent);
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         // default: visible
@@ -1099,119 +1100,6 @@ function main(app, common, lang) {
 
     function classifyProgressStatus_Shorts_RichItemRenderer(node) {
         return undefined;
-    }
-
-    function onNodeLoaded_Library(node) {
-        switch (node.nodeName) {
-            case 'YTD-RICH-ITEM-RENDERER':
-                updateTargetVisibility(node, matchTextContent_Library_RichItemRenderer, classifyModeStatus_Library_RichItemRenderer, classifyProgressStatus_Library_RichItemRenderer);
-                break;
-            case 'YTD-BROWSE':
-                insertMenu_Library(node);
-                break;
-        }
-    }
-
-    function insertMenu_Library(browse) {
-        if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse, true);
-            menu.classList.add('position-fixed', 'with-space-header');
-            browse.insertBefore(menu, browse.firstChild);
-
-            const calc = createNodeForCalc(menu, browse);
-            browse.insertBefore(calc, browse.firstChild);
-
-            updateButtonVisibility(browse);
-            display_query(browse, 'form.filter-menu, div.filter-menu', '');
-        } else {
-            // already exists
-        }
-
-        if (browse.getAttribute('filter-menu') === 'true') {
-            set_frosted_glass_mode();
-        } else {
-            reset_frosted_glass_mode();
-        }
-    }
-
-    function matchTextContent_Library_RichItemRenderer(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
-        if (metadata) {
-            return matchQuery(metadata.textContent);
-        }
-
-        const shorts_metadata = node.querySelector('ytd-rich-grid-media div#meta h3');
-        if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent);
-        }
-
-        const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
-        if (collection_metadata) {
-            return matchQuery(collection_metadata.textContent);
-        }
-
-        // default: visible
-        return true;
-    }
-
-    function classifyModeStatus_Library_RichItemRenderer(node) {
-        const status = new Set();
-
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
-        if (metadata) {
-            const t = metadata.textContent;
-            if (lang.isLive_metadata(t)) {
-                status.add('live');
-            } else if (lang.isStreamed_metadata(t)) {
-                status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
-            } else if (lang.isScheduled_metadata(t)) {
-                status.add('scheduled');
-
-                const notification_button = node.querySelector('lockup-attachments-view-model button');
-                if (notification_button) {
-                    const t = notification_button.textContent;
-                    if (lang.isNotificationOn_button(t)) {
-                        status.add('notification_on');
-                    } else if (lang.isNotificationOff_button(t)) {
-                        status.add('notification_off');
-                    }
-                }
-            }
-        }
-
-        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
-        if (shorts) {
-            status.add('short');
-        }
-
-        const collection = node.querySelector('yt-collection-thumbnail-view-model');
-        if (collection) {
-            status.add('collection');
-        }
-
-        return status;
-    }
-
-    function classifyProgressStatus_Library_RichItemRenderer(node) {
-        const status = new Set();
-
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
-        if (progress) {
-            status.add('progress_watched');
-        } else {
-            status.add('progress_unwatched');
-        }
-
-        return status;
     }
 
     function onNodeLoaded_History(node) {
@@ -1400,9 +1288,10 @@ function main(app, common, lang) {
     }
 
     function matchTextContent_Playlists_RichItemRenderer(node) {
-        const text_node = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
-        if (text_node) {
-            return matchQuery(text_node.textContent);
+        const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         // default: visible
@@ -1914,230 +1803,6 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function onNodeLoaded_VideoPlayer(node) {
-        switch (node.nodeName) {
-            case 'YT-LOCKUP-VIEW-MODEL':
-                updateTargetVisibility(node, matchTextContent_VideoPlayer_LockupViewModel, classifyModeStatus_VideoPlayer_LockupViewModel, classifyProgressStatus_VideoPlayer_LockupViewModel);
-                break;
-            case 'YTM-SHORTS-LOCKUP-VIEW-MODEL-V2': // old style shorts
-                updateTargetVisibility(node, matchTextContent_VideoPlayer_ShortsLockupViewModelV2, classifyModeStatus_VideoPlayer_ShortsLockupViewModelV2, classifyProgressStatus_VideoPlayer_ShortsLockupViewModelV2);
-                break;
-            case 'YTD-VIDEO-RENDERER':
-                updateTargetVisibility(node, matchTextContent_VideoPlayer_VideoRenderer, classifyModeStatus_VideoPlayer_VideoRenderer, classifyProgressStatus_VideoPlayer_VideoRenderer);
-                break;
-            case 'YTD-COMPACT-MOVIE-RENDERER':
-                updateTargetVisibility(node, matchTextContent_VideoPlayer_CompactMovieRenderer, classifyModeStatus_VideoPlayer_CompactMovieRenderer, classifyProgressStatus_VideoPlayer_CompactMovieRenderer);
-                break;
-            case 'YTD-COMPACT-VIDEO-RENDERER':
-                updateTargetVisibility(node, matchTextContent_VideoPlayer_CompactVideoRenderer, classifyModeStatus_VideoPlayer_CompactVideoRenderer, classifyProgressStatus_VideoPlayer_CompactVideoRenderer);
-                break;
-            case 'YT-CHIP-CLOUD-RENDERER':
-                insertMenu_VideoPlayer(node);
-                break;
-        }
-    }
-
-    function insertMenu_VideoPlayer(node) {
-        const browse = searchParentNode(node, 'YTD-WATCH-FLEXY');
-        if (browse) {
-            if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-                const referenceNode = browse.querySelector('div#related ytd-watch-next-secondary-results-renderer');
-                if (referenceNode) {
-                    const menu = createMenu(browse, false);
-                    menu.classList.add('with-space-related');
-                    referenceNode.insertBefore(menu, referenceNode.firstChild);
-
-                    const calc = createNodeForCalc(menu, browse);
-                    referenceNode.insertBefore(calc, referenceNode.firstChild);
-
-                    updateButtonVisibility(browse);
-                    display_query(browse, 'form.filter-menu, div.filter-menu', '');
-                } else {
-                    // referenceNode not found
-                }
-            } else {
-                // already exists
-            }
-        } else {
-            // not target
-        }
-    }
-
-    function matchTextContent_VideoPlayer_LockupViewModel(node) {
-        const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
-        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1)');
-        if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
-        }
-
-        const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
-        if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent);
-        }
-
-        // default: visible
-        return true;
-    }
-
-    function classifyModeStatus_VideoPlayer_LockupViewModel(node) {
-        const status = new Set();
-
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
-        if (metadata) {
-            const t = metadata.textContent;
-            if (lang.isLive_metadata(t)) {
-                status.add('live');
-            } else if (lang.isStreamed_metadata(t)) {
-                status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
-            }
-        }
-
-        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        return status;
-    }
-
-    function classifyProgressStatus_VideoPlayer_LockupViewModel(node) {
-        const status = new Set();
-
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
-        if (progress) {
-            status.add('progress_watched');
-        } else {
-            status.add('progress_unwatched');
-        }
-
-        return status;
-    }
-
-    function matchTextContent_VideoPlayer_ShortsLockupViewModelV2(node) { // old style shorts
-        const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
-        if (metadata) {
-            return matchQuery(metadata.textContent);
-        }
-
-        // default: visible
-        return true;
-    }
-
-    function classifyModeStatus_VideoPlayer_ShortsLockupViewModelV2(node) { // old style shorts
-        const status = new Set();
-
-        status.add('short');
-
-        return status;
-    }
-
-    function classifyProgressStatus_VideoPlayer_ShortsLockupViewModelV2(node) { // old style shorts
-        return undefined;
-    }
-
-    function matchTextContent_VideoPlayer_VideoRenderer(node) {
-        const title = node.querySelector('h3.title-and-badge');
-        if (title) {
-            return matchQuery(title.textContent);
-        }
-
-        // default: visible
-        return true;
-    }
-
-    function classifyModeStatus_VideoPlayer_VideoRenderer(node) {
-        const status = new Set();
-
-        const metadata = node.querySelector('div#metadata-line');
-        if (metadata) {
-            const t = metadata.textContent;
-            if (lang.isLive_metadata(t)) {
-                status.add('live');
-            } else if (lang.isVideo_metadata(t)) {
-                const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
-                if (shorts) {
-                    status.add('short');
-                } else {
-                    status.add('video');
-                }
-            }
-        }
-
-        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
-            const t = badge.textContent;
-            if (lang.isLive_status_label(t)) {
-                status.add('live');
-            }
-        }
-
-        return status;
-    }
-
-    function classifyProgressStatus_VideoPlayer_VideoRenderer(node) {
-        return undefined;
-    }
-
-    function matchTextContent_VideoPlayer_CompactMovieRenderer(node) {
-        const title = node.querySelector('div.details h3');
-        if (title) {
-            return matchQuery(title.textContent);
-        }
-
-        // default: visible
-        return true;
-    }
-
-    function classifyModeStatus_VideoPlayer_CompactMovieRenderer(node) {
-        const status = new Set();
-
-        status.add('video');
-
-        return status;
-    }
-
-    function classifyProgressStatus_VideoPlayer_CompactMovieRenderer(node) {
-        const status = new Set();
-
-        status.add('progress_unwatched');
-
-        return status;
-    }
-
-    function matchTextContent_VideoPlayer_CompactVideoRenderer(node) {
-        const title = node.querySelector('div.details h3');
-        if (title) {
-            return matchQuery(title.textContent);
-        }
-
-        // default: visible
-        return true;
-    }
-
-    function classifyModeStatus_VideoPlayer_CompactVideoRenderer(node) {
-        const status = new Set();
-
-        status.add('short');
-
-        return status;
-    }
-
-    function classifyProgressStatus_VideoPlayer_CompactVideoRenderer(node) {
-        const status = new Set();
-
-        const progress = node.querySelector('div#progress, yt-thumbnail-overlay-progress-bar-view-model');
-        if (progress) {
-            status.add('progress_watched');
-        } else {
-            status.add('progress_unwatched');
-        }
-
-        return status;
-    }
-
     function updatePopupVisibility(containers) {
         for (const container of containers) {
             container.querySelectorAll('yt-list-item-view-model, ytd-notification-renderer, ytd-guide-entry-renderer:not(#expander-item):not(#collapser-item):not(#header-entry)').forEach(target => updatePopupTargetVisibility(container, target));
@@ -2433,9 +2098,11 @@ function main(app, common, lang) {
         input.id = 'filter-query';
         input.value = getActiveQuery(browse);
         input.addEventListener('change', e => {
-            input.blur();
             menu.requestSubmit();
         });
+
+        attachSuggest(input);
+
         return input;
     }
 
@@ -2478,7 +2145,7 @@ function main(app, common, lang) {
                     const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                     if (existsMenu !== popupMenu.get(playlists)) {
                         if (!existsMenu) {
-                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist);
+                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true);
                             parent.append(menu);
                         } else {
                             existsMenu.containers.push(playlists);
@@ -2510,7 +2177,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels);
+                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels, false);
                         parent.insertBefore(menu, items);
                     } else {
                         existsMenu.containers.push(items);
@@ -2530,7 +2197,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification);
+                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false);
                         parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
                     } else {
                         existsMenu.containers.push(items);
@@ -2544,7 +2211,7 @@ function main(app, common, lang) {
         }
     }
 
-    function createPopupMenu(containers, expander, menu_class, settings) {
+    function createPopupMenu(containers, expander, menu_class, settings, stopPropagation) {
         const menu = document.createElement('form');
         menu.classList.add('filter-popup', menu_class);
         menu.style.display = display(settings);
@@ -2554,7 +2221,9 @@ function main(app, common, lang) {
         menu.appendChild(createPopupQueryInputArea(input, menu.containers));
         menu.appendChild(createPopupSearchButton(input, menu.containers));
 
+        // workaround: add-playlist
         menu.addEventListener('click', e => {
+            if (!stopPropagation) return;
             e.preventDefault();
             e.stopPropagation();
             input.focus();
@@ -2606,9 +2275,11 @@ function main(app, common, lang) {
         input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
         input.id = 'filter-query';
         input.addEventListener('change', e => {
-            input.blur();
             menu.requestSubmit();
         });
+
+        attachSuggest(input);
+
         return input;
     }
 
@@ -3038,8 +2709,6 @@ function main(app, common, lang) {
             return 'subscriptions';
         } else if (common.isShorts(pathname)) {
             return 'shorts';
-        } else if (common.isLibrary(pathname)) {
-            return 'library';
         } else if (common.isHistory(pathname)) {
             return 'history';
         } else if (common.isPlaylists(pathname)) {
@@ -3054,8 +2723,6 @@ function main(app, common, lang) {
             return pathname;
         } else if (common.isHome(pathname)) {
             return 'top';
-        } else if (common.isVideoPlayer(pathname)) {
-            return 'video_player';
         } else {
             return pathname;
         }
@@ -3095,6 +2762,170 @@ function main(app, common, lang) {
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'without-chipbar');
     }
 
+    function attachSuggest(input, maxVisible = 20) {
+        let box = null;
+        let activeIndex = -1;
+        let prevActiveIndex = -1;
+        let currentItems = [];
+        let currentValues = [];
+
+        function createBox() {
+            box = document.createElement('ul');
+            box.className = 'suggest-box';
+
+            box.addEventListener('mousedown', e => {
+                e.preventDefault();
+            });
+
+            box.addEventListener('click', e => {
+                const li = e.target.closest('.suggest-item');
+                if (!li) return;
+                e.preventDefault();
+                const index = Number(li.dataset.index);
+                selectValue(index);
+                hide();
+            });
+
+            box.addEventListener('mousemove', e => {
+                const li = e.target.closest('.suggest-item');
+                if (!li) return;
+                const index = Number(li.dataset.index);
+                if (index !== activeIndex) {
+                    setActiveIndex(index);
+                }
+            });
+
+            input.parentNode.appendChild(box);
+        }
+
+        function positionBox() {
+            const parent_rect = input.getBoundingClientRect();
+            const box_rect = box.getBoundingClientRect();
+            box.style.transform = `translate(0, ${parent_rect.height + box_rect.height / 2}px)`;
+            box.style.minWidth = `${parent_rect.width + 20}px`;
+        }
+
+        function setActiveIndex(index) {
+            if (index < 0 || index >= currentItems.length) return;
+            prevActiveIndex = activeIndex;
+            activeIndex = index;
+            updateActive();
+        }
+
+        function updateActive() {
+            if (prevActiveIndex >= 0 && currentItems[prevActiveIndex]) {
+                currentItems[prevActiveIndex].classList.remove('is-active');
+            }
+            if (activeIndex >= 0 && currentItems[activeIndex]) {
+                currentItems[activeIndex].classList.add('is-active');
+            }
+        }
+
+        function selectValue(index) {
+            const value = currentValues[index];
+            if (value) {
+                input.value = value + ' ';
+            }
+            input.dispatchEvent(new Event('change'));
+        }
+
+        function show() {
+            if (!suggest) {
+                input.setAttribute('autocomplete', 'on');
+                return;
+            }
+
+            input.setAttribute('autocomplete', 'off');
+            if (!suggestions.length) return;
+            if (!box) createBox();
+
+            const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
+            const filteredAll = value === ''
+                ? suggestions
+                : suggestions.filter(t => t.toLowerCase().replaceAll(/\s+/g, ' ').trim().includes(value));
+
+            const filtered = filteredAll.slice(0, maxVisible);
+
+            if (!filtered.length) {
+                hide();
+                return;
+            }
+
+            box.innerHTML = '';
+            activeIndex = -1;
+            prevActiveIndex = -1;
+            currentItems = [];
+            currentValues = filtered.slice();
+
+            if (filteredAll.length > maxVisible) {
+                box.style.maxHeight = `${maxVisible * 28}px`;
+                box.style.overflowY = 'auto';
+            } else {
+                box.style.maxHeight = '';
+                box.style.overflowY = '';
+            }
+
+            filtered.forEach((text, index) => {
+                const li = document.createElement('li');
+                li.textContent = text;
+                li.dataset.index = index;
+                li.className = 'suggest-item';
+                box.appendChild(li);
+                currentItems.push(li);
+            });
+
+            positionBox();
+            box.classList.add('is-visible');
+        }
+
+        function hide() {
+            if (box) box.classList.remove('is-visible');
+            activeIndex = -1;
+            prevActiveIndex = -1;
+        }
+
+        input.addEventListener('focus', show);
+        input.addEventListener('click', show);
+        input.addEventListener('input', show);
+
+        input.addEventListener('keydown', e => {
+            if (!box) return;
+            if (!currentItems.length) return;
+
+            if (e.key === 'ArrowDown') {
+                if (!box.classList.contains('is-visible')) show();
+                e.preventDefault();
+                const next = (activeIndex + 1) % currentItems.length;
+                setActiveIndex(next);
+            } else if (e.key === 'ArrowUp') {
+                if (!box.classList.contains('is-visible')) show();
+                e.preventDefault();
+                const next = (Math.max(activeIndex, 0) - 1 + currentItems.length) % currentItems.length;
+                setActiveIndex(next);
+            } else if (e.key === 'Enter') {
+                if (!box.classList.contains('is-visible')) return;
+                e.preventDefault();
+                selectValue(activeIndex);
+                hide();
+            } else if (e.key === 'Tab') {
+                if (!box.classList.contains('is-visible')) return;
+                if (activeIndex >= 0) {
+                    e.preventDefault();
+                    selectValue(activeIndex);
+                    input.focus();
+                    const len = input.value.length;
+                    input.setSelectionRange(len, len);
+                    show();
+                }
+            } else if (e.key === 'Escape') {
+                if (!box.classList.contains('is-visible')) return;
+                hide();
+            }
+        });
+
+        input.addEventListener('blur', hide);
+    }
+
     const default_tab = {
         live: common.default_default_live,
         streamed: common.default_default_streamed,
@@ -3120,6 +2951,9 @@ function main(app, common, lang) {
 
     let keyword = common.default_keyword;
     let default_keyword = undefined;
+
+    let suggest;
+    let suggestions = undefined;
 
     let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;

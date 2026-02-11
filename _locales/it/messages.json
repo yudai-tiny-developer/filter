@@ -59,6 +59,9 @@
     "button_keyword": {
         "message": "Ricerca per parole chiave"
     },
+    "button_suggestions": {
+        "message": "Suggestions"
+    },
     "button_placeholder": {
         "message": "▶"
     },
