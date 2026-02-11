@@ -2098,7 +2098,6 @@ function main(app, common, lang) {
         input.id = 'filter-query';
         input.value = getActiveQuery(browse);
         input.addEventListener('change', e => {
-            input.blur();
             menu.requestSubmit();
         });
 
@@ -2274,7 +2273,6 @@ function main(app, common, lang) {
         input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
         input.id = 'filter-query';
         input.addEventListener('change', e => {
-            input.blur();
             menu.requestSubmit();
         });
 
@@ -2771,19 +2769,10 @@ function main(app, common, lang) {
 
         function createBox() {
             box = document.createElement('ul');
-            box.style.position = 'fixed';
-            box.style.zIndex = '3000';
-            box.style.listStyle = 'none';
-            box.style.margin = '0';
-            box.style.padding = '4px 0';
-            box.style.border = '1px solid #ccc';
-            box.style.background = '#fff';
-            box.style.fontSize = '14px';
-            box.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
-            box.style.visibility = 'hidden';
+            box.className = 'suggest-box';
 
             box.addEventListener('mousedown', e => {
-                const li = e.target.closest('li');
+                const li = e.target.closest('.suggest-item');
                 if (!li) return;
                 e.preventDefault();
                 const index = Number(li.dataset.index);
@@ -2792,7 +2781,7 @@ function main(app, common, lang) {
             });
 
             box.addEventListener('mousemove', e => {
-                const li = e.target.closest('li');
+                const li = e.target.closest('.suggest-item');
                 if (!li) return;
                 const index = Number(li.dataset.index);
                 if (index !== activeIndex) {
@@ -2812,7 +2801,6 @@ function main(app, common, lang) {
 
         function setActiveIndex(index) {
             if (index < 0 || index >= currentItems.length) return;
-
             prevActiveIndex = activeIndex;
             activeIndex = index;
             updateActive();
@@ -2820,10 +2808,10 @@ function main(app, common, lang) {
 
         function updateActive() {
             if (prevActiveIndex >= 0 && currentItems[prevActiveIndex]) {
-                currentItems[prevActiveIndex].style.background = '';
+                currentItems[prevActiveIndex].classList.remove('is-active');
             }
             if (activeIndex >= 0 && currentItems[activeIndex]) {
-                currentItems[activeIndex].style.background = '#ccc';
+                currentItems[activeIndex].classList.add('is-active');
             }
         }
 
@@ -2874,18 +2862,17 @@ function main(app, common, lang) {
                 const li = document.createElement('li');
                 li.textContent = text;
                 li.dataset.index = index;
-                li.style.padding = '4px 8px';
-                li.style.cursor = 'pointer';
+                li.className = 'suggest-item';
                 box.appendChild(li);
                 currentItems.push(li);
             });
 
             positionBox();
-            box.style.visibility = 'visible';
+            box.classList.add('is-visible');
         }
 
         function hide() {
-            if (box) box.style.visibility = 'hidden';
+            if (box) box.classList.remove('is-visible');
             activeIndex = -1;
             prevActiveIndex = -1;
         }
@@ -2895,7 +2882,7 @@ function main(app, common, lang) {
         input.addEventListener('input', show);
 
         input.addEventListener('keydown', e => {
-            if (!box || box.style.visibility !== 'visible') return;
+            if (!box || !box.classList.contains('is-visible')) return;
             if (!currentItems.length) return;
 
             if (e.key === 'ArrowDown') {
@@ -2907,11 +2894,11 @@ function main(app, common, lang) {
                 const next = (activeIndex - 1 + currentItems.length) % currentItems.length;
                 setActiveIndex(next);
             } else if (e.key === 'Enter') {
+                e.preventDefault();
                 if (activeIndex >= 0) {
-                    e.preventDefault();
                     selectValue(activeIndex);
-                    hide();
                 }
+                hide();
             } else if (e.key === 'Tab') {
                 if (activeIndex >= 0) {
                     e.preventDefault();
