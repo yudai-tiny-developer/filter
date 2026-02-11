@@ -834,9 +834,10 @@ function main(app, common, lang) {
     }
 
     function matchTextContent_Home_RichItemRenderer(node) {
-        const metadata = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
-        if (metadata) {
-            return matchQuery(metadata.textContent);
+        const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
