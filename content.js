@@ -2762,8 +2762,12 @@ function main(app, common, lang) {
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'without-chipbar');
     }
 
-    function attachSuggest(input) {
+    function attachSuggest(input, maxVisible = 20) {
         let box = null;
+        let activeIndex = -1;
+        let prevActiveIndex = -1;
+        let currentItems = [];
+        let currentValues = [];
 
         function createBox() {
             box = document.createElement('ul');
@@ -2776,14 +2780,58 @@ function main(app, common, lang) {
             box.style.background = '#fff';
             box.style.fontSize = '14px';
             box.style.boxShadow = '0 2px 6px rgba(0,0,0,0.15)';
+            box.style.visibility = 'hidden';
+
+            box.addEventListener('mousedown', e => {
+                const li = e.target.closest('li');
+                if (!li) return;
+                e.preventDefault();
+                const index = Number(li.dataset.index);
+                selectValue(index);
+                hide();
+            });
+
+            box.addEventListener('mousemove', e => {
+                const li = e.target.closest('li');
+                if (!li) return;
+                const index = Number(li.dataset.index);
+                if (index !== activeIndex) {
+                    setActiveIndex(index);
+                }
+            });
+
             input.parentNode.appendChild(box);
         }
 
         function positionBox() {
-            const parent_rect = input.getBoundingClientRect();
-            const box_rect = box.getBoundingClientRect();
-            box.style.transform = `translate(0, ${parent_rect.height + box_rect.height / 2}px)`;
-            box.style.minWidth = `${parent_rect.width + 20}px`;
+            const rect = input.getBoundingClientRect();
+            box.style.left = `${rect.left}px`;
+            box.style.top = `${rect.bottom}px`;
+            box.style.minWidth = `${rect.width}px`;
+        }
+
+        function setActiveIndex(index) {
+            if (index < 0 || index >= currentItems.length) return;
+
+            prevActiveIndex = activeIndex;
+            activeIndex = index;
+            updateActive();
+        }
+
+        function updateActive() {
+            if (prevActiveIndex >= 0 && currentItems[prevActiveIndex]) {
+                currentItems[prevActiveIndex].style.background = '';
+            }
+            if (activeIndex >= 0 && currentItems[activeIndex]) {
+                currentItems[activeIndex].style.background = '#ccc';
+            }
+        }
+
+        function selectValue(index) {
+            const value = currentValues[index];
+            if (value == null) return;
+            input.value = value + ' ';
+            input.dispatchEvent(new Event('change'));
         }
 
         function show() {
@@ -2793,33 +2841,43 @@ function main(app, common, lang) {
             }
 
             input.setAttribute('autocomplete', 'off');
-
-            if (!suggestions || suggestions.length === 0) return;
+            if (!suggestions.length) return;
             if (!box) createBox();
-            box.innerHTML = '';
 
-            suggestions.forEach(text => {
+            const value = input.value.toLowerCase();
+            const filteredAll = value === ''
+                ? suggestions
+                : suggestions.filter(t => t.toLowerCase().includes(value));
+
+            const filtered = filteredAll.slice(0, maxVisible);
+
+            if (!filtered.length) {
+                hide();
+                return;
+            }
+
+            box.innerHTML = '';
+            activeIndex = -1;
+            prevActiveIndex = -1;
+            currentItems = [];
+            currentValues = filtered.slice();
+
+            if (filteredAll.length > maxVisible) {
+                box.style.maxHeight = `${maxVisible * 28}px`;
+                box.style.overflowY = 'auto';
+            } else {
+                box.style.maxHeight = '';
+                box.style.overflowY = '';
+            }
+
+            filtered.forEach((text, index) => {
                 const li = document.createElement('li');
                 li.textContent = text;
+                li.dataset.index = index;
                 li.style.padding = '4px 8px';
                 li.style.cursor = 'pointer';
-
-                li.addEventListener('mousedown', e => {
-                    e.preventDefault();
-                    input.value = text;
-                    input.dispatchEvent(new Event('change'));
-                    hide();
-                });
-
-                li.addEventListener('mouseenter', () => {
-                    li.style.background = '#ccc';
-                });
-
-                li.addEventListener('mouseleave', () => {
-                    li.style.background = '';
-                });
-
                 box.appendChild(li);
+                currentItems.push(li);
             });
 
             positionBox();
@@ -2828,19 +2886,47 @@ function main(app, common, lang) {
 
         function hide() {
             if (box) box.style.visibility = 'hidden';
+            activeIndex = -1;
+            prevActiveIndex = -1;
         }
 
-        input.addEventListener('focus', () => {
-            if (input.value === '') show();
+        input.addEventListener('focus', show);
+        input.addEventListener('click', show);
+        input.addEventListener('input', show);
+
+        input.addEventListener('keydown', e => {
+            if (!box || box.style.visibility !== 'visible') return;
+            if (!currentItems.length) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const next = (activeIndex + 1) % currentItems.length;
+                setActiveIndex(next);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const next = (activeIndex - 1 + currentItems.length) % currentItems.length;
+                setActiveIndex(next);
+            } else if (e.key === 'Enter') {
+                if (activeIndex >= 0) {
+                    e.preventDefault();
+                    selectValue(activeIndex);
+                    hide();
+                }
+            } else if (e.key === 'Tab') {
+                if (activeIndex >= 0) {
+                    e.preventDefault();
+                    selectValue(activeIndex);
+                    input.focus();
+                    const len = input.value.length;
+                    input.setSelectionRange(len, len);
+                    show();
+                }
+            } else if (e.key === 'Escape') {
+                hide();
+            }
         });
 
-        input.addEventListener('input', () => {
-            hide();
-        });
-
-        input.addEventListener('blur', () => {
-            hide();
-        });
+        input.addEventListener('blur', hide);
     }
 
     const default_tab = {
