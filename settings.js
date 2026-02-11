@@ -89,11 +89,17 @@ function createLabelInput(label, default_label, onChange, row, button_label_clea
     div.classList.add('label');
 
     if (default_label !== undefined) {
-        const input = rows > 1 ? createTextArea(label, default_label, onChange, row, input_class, rows) : createInputArea(label, default_label, onChange, row, input_class);
-        const clear = createClearButton(button_label_clear, input, default_label, onChange);
-        input.dispatchEvent(new Event('check'));
-        div.appendChild(input);
-        div.appendChild(clear);
+        if (rows <= 1) {
+            const input = createInputArea(label, default_label, onChange, row, input_class);
+            const clear = createClearButton(button_label_clear, input, default_label, onChange);
+            input.dispatchEvent(new Event('check'));
+            div.appendChild(input);
+            div.appendChild(clear);
+        } else {
+            const input = createTextArea(label, default_label, onChange, row, input_class, rows);
+            input.dispatchEvent(new Event('check'));
+            div.appendChild(input);
+        }
     } else {
         div.classList.add('svg-label');
         div.innerHTML = label;
@@ -155,6 +161,7 @@ export function createTextArea(label, default_label, onChange, row, input_class 
 
     input.style.resize = 'none';
     input.setAttribute('rows', rows);
+    input.setAttribute('cols', 20);
     input.classList.add(input_class);
 
     input.addEventListener('focus', () => {
