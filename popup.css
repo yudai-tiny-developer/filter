@@ -109,6 +109,15 @@ input.keyword_input {
     vertical-align: middle;
 }
 
+textarea.keyword_input {
+    width: 100%;
+    max-width: 150px;
+    height: 150px;
+    vertical-align: middle;
+    resize: none;
+    text-wrap: nowrap;
+}
+
 input.step {
     width: 100%;
     height: 30px;

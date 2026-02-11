@@ -3153,7 +3153,7 @@ function main(app, common, lang) {
                 });
 
                 li.addEventListener('mouseenter', () => {
-                    li.style.background = '#eee';
+                    li.style.background = '#ccc';
                 });
 
                 li.addEventListener('mouseleave', () => {

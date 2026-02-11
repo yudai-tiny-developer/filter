@@ -142,7 +142,7 @@ function createInputArea(label, default_label, onChange, row, input_class = 'lab
     }
 
     if (onChange) {
-        input.addEventListener('change', () => {
+        input.addEventListener('input', () => {
             onChange(input);
             input.dispatchEvent(new Event('check'));
         });
@@ -159,9 +159,7 @@ function createInputArea(label, default_label, onChange, row, input_class = 'lab
 export function createTextArea(label, default_label, onChange, row, input_class = 'label', rows) {
     const input = document.createElement('textarea');
 
-    input.style.resize = 'none';
     input.setAttribute('rows', rows);
-    input.setAttribute('cols', 20);
     input.classList.add(input_class);
 
     input.addEventListener('focus', () => {
@@ -183,7 +181,7 @@ export function createTextArea(label, default_label, onChange, row, input_class 
     }
 
     if (onChange) {
-        input.addEventListener('change', () => {
+        input.addEventListener('input', () => {
             onChange(input);
             input.dispatchEvent(new Event('check'));
         });
