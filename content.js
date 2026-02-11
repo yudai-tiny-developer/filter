@@ -2832,10 +2832,10 @@ function main(app, common, lang) {
             if (!suggestions.length) return;
             if (!box) createBox();
 
-            const value = input.value.toLowerCase();
+            const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
             const filteredAll = value === ''
                 ? suggestions
-                : suggestions.filter(t => t.toLowerCase().includes(value));
+                : suggestions.filter(t => t.toLowerCase().replaceAll(/\s+/g, ' ').trim().includes(value));
 
             const filtered = filteredAll.slice(0, maxVisible);
 
