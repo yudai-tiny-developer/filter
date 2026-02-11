@@ -2145,7 +2145,7 @@ function main(app, common, lang) {
                     const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                     if (existsMenu !== popupMenu.get(playlists)) {
                         if (!existsMenu) {
-                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true);
+                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true, undefined);
                             parent.append(menu);
                         } else {
                             existsMenu.containers.push(playlists);
@@ -2177,7 +2177,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels, false);
+                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels, false, 'absolute');
                         parent.insertBefore(menu, items);
                     } else {
                         existsMenu.containers.push(items);
@@ -2197,7 +2197,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false);
+                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false, undefined);
                         parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
                     } else {
                         existsMenu.containers.push(items);
@@ -2211,13 +2211,13 @@ function main(app, common, lang) {
         }
     }
 
-    function createPopupMenu(containers, expander, menu_class, settings, stopPropagation) {
+    function createPopupMenu(containers, expander, menu_class, settings, stopPropagation, positionOverride) {
         const menu = document.createElement('form');
         menu.classList.add('filter-popup', menu_class);
         menu.style.display = display(settings);
         menu.containers = containers;
 
-        const input = createPopupQueryInput(menu);
+        const input = createPopupQueryInput(menu, positionOverride);
         menu.appendChild(createPopupQueryInputArea(input, menu.containers));
         menu.appendChild(createPopupSearchButton(input, menu.containers));
 
@@ -2268,7 +2268,7 @@ function main(app, common, lang) {
         return inputArea;
     }
 
-    function createPopupQueryInput(menu) {
+    function createPopupQueryInput(menu, positionOverride) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
@@ -2278,7 +2278,7 @@ function main(app, common, lang) {
             menu.requestSubmit();
         });
 
-        attachSuggest(input);
+        attachSuggest(input, positionOverride);
 
         return input;
     }
@@ -2762,7 +2762,7 @@ function main(app, common, lang) {
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'without-chipbar');
     }
 
-    function attachSuggest(input, maxVisible = 20) {
+    function attachSuggest(input, positionOverride = undefined, maxVisible = 20) {
         let box = null;
         let activeIndex = -1;
         let prevActiveIndex = -1;
@@ -2772,6 +2772,9 @@ function main(app, common, lang) {
         function createBox() {
             box = document.createElement('ul');
             box.className = 'suggest-box';
+
+            // workaround: sidebar channels
+            box.style.position = positionOverride;
 
             box.addEventListener('mousedown', e => {
                 e.preventDefault();
