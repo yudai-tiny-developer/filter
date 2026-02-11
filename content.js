@@ -610,7 +610,7 @@ function main(app, common, lang) {
     }
 
     function matchQuery(text) {
-        const query = get_cache_query();
+        const query = get_cache_query()?.trim();
         if (!query) return true;
 
         const evaluator = createQueryEvaluator(query?.toLowerCase());
@@ -2743,7 +2743,7 @@ function main(app, common, lang) {
     }
 
     function get_cache_query() {
-        return active.query.get(cache_key(location.href))?.trim();
+        return active.query.get(cache_key(location.href));
     }
 
     function set_cache_query(query) {
