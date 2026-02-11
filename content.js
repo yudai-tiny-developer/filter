@@ -2145,7 +2145,7 @@ function main(app, common, lang) {
                     const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                     if (existsMenu !== popupMenu.get(playlists)) {
                         if (!existsMenu) {
-                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist);
+                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true);
                             parent.append(menu);
                         } else {
                             existsMenu.containers.push(playlists);
@@ -2177,7 +2177,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels);
+                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels, false);
                         parent.insertBefore(menu, items);
                     } else {
                         existsMenu.containers.push(items);
@@ -2197,7 +2197,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification);
+                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false);
                         parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
                     } else {
                         existsMenu.containers.push(items);
@@ -2211,7 +2211,7 @@ function main(app, common, lang) {
         }
     }
 
-    function createPopupMenu(containers, expander, menu_class, settings) {
+    function createPopupMenu(containers, expander, menu_class, settings, stopPropagation) {
         const menu = document.createElement('form');
         menu.classList.add('filter-popup', menu_class);
         menu.style.display = display(settings);
@@ -2221,7 +2221,9 @@ function main(app, common, lang) {
         menu.appendChild(createPopupQueryInputArea(input, menu.containers));
         menu.appendChild(createPopupSearchButton(input, menu.containers));
 
+        // workaround: add-playlist
         menu.addEventListener('click', e => {
+            if (!stopPropagation) return;
             e.preventDefault();
             e.stopPropagation();
             input.focus();
