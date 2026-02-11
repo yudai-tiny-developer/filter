@@ -82,6 +82,10 @@ div.header-label {
     vertical-align: middle;
 }
 
+div.header-keyword-4 {
+    padding-right: 36px;
+}
+
 div.spacer-label {
     display: table-cell;
     padding: 14px;
