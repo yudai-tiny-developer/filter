@@ -2793,10 +2793,10 @@ function main(app, common, lang) {
         }
 
         function positionBox() {
-            const rect = input.getBoundingClientRect();
-            box.style.left = `${rect.left}px`;
-            box.style.top = `${rect.bottom}px`;
-            box.style.minWidth = `${rect.width}px`;
+            const parent_rect = input.getBoundingClientRect();
+            const box_rect = box.getBoundingClientRect();
+            box.style.transform = `translate(0, ${parent_rect.height + box_rect.height / 2}px)`;
+            box.style.minWidth = `${parent_rect.width + 20}px`;
         }
 
         function setActiveIndex(index) {
