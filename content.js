@@ -2817,8 +2817,7 @@ function main(app, common, lang) {
 
         function selectValue(index) {
             const value = currentValues[index];
-            if (value == null) return;
-            input.value = value + ' ';
+            input.value = value ? value + ' ' : '';
             input.dispatchEvent(new Event('change'));
         }
 
@@ -2878,7 +2877,7 @@ function main(app, common, lang) {
         }
 
         input.addEventListener('focus', show);
-        input.addEventListener('click', show);
+        input.addEventListener('click', e => { e.preventDefault(); show(); });
         input.addEventListener('input', show);
 
         input.addEventListener('keydown', e => {
@@ -2895,9 +2894,7 @@ function main(app, common, lang) {
                 setActiveIndex(next);
             } else if (e.key === 'Enter') {
                 e.preventDefault();
-                if (activeIndex >= 0) {
-                    selectValue(activeIndex);
-                }
+                selectValue(activeIndex);
                 hide();
             } else if (e.key === 'Tab') {
                 if (activeIndex >= 0) {
