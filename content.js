@@ -2171,7 +2171,7 @@ function main(app, common, lang) {
         }
 
         // Sidebar Subscriptions
-        for (const items of node.querySelectorAll('div#items:has(ytd-guide-entry-renderer#expander-item), div#items:has(ytd-guide-entry-renderer#collapser-item), div#expandable-items:has(ytd-guide-entry-renderer#expander-item), div#expandable-items:has(ytd-guide-entry-renderer#collapser-item)')) {
+        for (const items of node.querySelectorAll('div#items:has(a#endpoint[href="/feed/subscriptions"])')) {
             const parent = items.parentNode;
             if (parent) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
