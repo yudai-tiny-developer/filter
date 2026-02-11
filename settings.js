@@ -477,7 +477,7 @@ function resetSettings(default_order) {
             }
         }
 
-        for (const input of settings_list.querySelectorAll('input.label, input.step, input.keyword_input')) {
+        for (const input of settings_list.querySelectorAll('input.label, input.step, input.keyword_input, textarea.keyword_input')) {
             input.dispatchEvent(new Event('reset'));
         }
     }
