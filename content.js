@@ -678,8 +678,9 @@ function main(app, common, lang) {
 
     function matchTextContent_Subscriptions_RichItemRenderer(node) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
-        if (title) {
-            return matchQuery(title.textContent);
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -948,8 +949,9 @@ function main(app, common, lang) {
 
     function matchTextContent_Home_RichGridMedia(node) {
         const title = node.querySelector('a#video-title-link');
-        if (title) {
-            return matchQuery(title.textContent);
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         // default: visible
@@ -1402,9 +1404,10 @@ function main(app, common, lang) {
     }
 
     function matchTextContent_Playlists_RichItemRenderer(node) {
-        const text_node = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
-        if (text_node) {
-            return matchQuery(text_node.textContent);
+        const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
         }
 
         // default: visible
