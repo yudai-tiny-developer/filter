@@ -2879,7 +2879,7 @@ function main(app, common, lang) {
         }
 
         input.addEventListener('focus', show);
-        input.addEventListener('click', e => { e.preventDefault(); show(); });
+        input.addEventListener('click', show);
         input.addEventListener('input', show);
 
         input.addEventListener('keydown', e => {
