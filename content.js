@@ -2743,7 +2743,7 @@ function main(app, common, lang) {
     }
 
     function get_cache_query() {
-        return active.query.get(cache_key(location.href));
+        return active.query.get(cache_key(location.href))?.trim();
     }
 
     function set_cache_query(query) {
@@ -2817,7 +2817,9 @@ function main(app, common, lang) {
 
         function selectValue(index) {
             const value = currentValues[index];
-            input.value = value ? value + ' ' : '';
+            if (value) {
+                input.value = value + ' ';
+            }
             input.dispatchEvent(new Event('change'));
         }
 
@@ -2881,22 +2883,26 @@ function main(app, common, lang) {
         input.addEventListener('input', show);
 
         input.addEventListener('keydown', e => {
-            if (!box || !box.classList.contains('is-visible')) return;
+            if (!box) return;
             if (!currentItems.length) return;
 
             if (e.key === 'ArrowDown') {
+                if (!box.classList.contains('is-visible')) show();
                 e.preventDefault();
                 const next = (activeIndex + 1) % currentItems.length;
                 setActiveIndex(next);
             } else if (e.key === 'ArrowUp') {
+                if (!box.classList.contains('is-visible')) show();
                 e.preventDefault();
-                const next = (activeIndex - 1 + currentItems.length) % currentItems.length;
+                const next = (Math.max(activeIndex, 0) - 1 + currentItems.length) % currentItems.length;
                 setActiveIndex(next);
             } else if (e.key === 'Enter') {
+                if (!box.classList.contains('is-visible')) return;
                 e.preventDefault();
                 selectValue(activeIndex);
                 hide();
             } else if (e.key === 'Tab') {
+                if (!box.classList.contains('is-visible')) return;
                 if (activeIndex >= 0) {
                     e.preventDefault();
                     selectValue(activeIndex);
@@ -2906,6 +2912,7 @@ function main(app, common, lang) {
                     show();
                 }
             } else if (e.key === 'Escape') {
+                if (!box.classList.contains('is-visible')) return;
                 hide();
             }
         });
