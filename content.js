@@ -607,6 +607,13 @@ function main(app, common, lang) {
         set_cache_query(query);
         browse.setAttribute('filter-query', query);
         browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
+
+        if (url_param_filter_mode_enabled && isUrlParamsTarget()) {
+            const url = new URL(location);
+            url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
+            url.searchParams.set('filter-query', query);
+            history.replaceState({}, '', url);
+        }
     }
 
     function matchQuery(text) {
@@ -2117,6 +2124,7 @@ function main(app, common, lang) {
             if (scroll) {
                 window.scroll({ top: 0, behavior: 'instant' });
             }
+            input.focus();
         });
         return span;
     }
@@ -2522,7 +2530,17 @@ function main(app, common, lang) {
     }
 
     function getActiveQuery(browse) {
-        const query = get_cache_query();
+        let query;
+
+        if (url_param_filter_mode_enabled) {
+            const url = new URL(location);
+            query = url.searchParams.get('filter-query');
+        }
+
+        if (!query) {
+            query = get_cache_query();
+        }
+
         if (query !== undefined) {
             return query;
         } else if (common.isSubscriptions(location.href)) {
@@ -2780,12 +2798,13 @@ function main(app, common, lang) {
                 e.preventDefault();
             });
 
-            box.addEventListener('click', e => {
+            document.addEventListener('mousedown', e => {
                 const li = e.target.closest('.suggest-item');
-                if (!li) return;
-                e.preventDefault();
-                const index = Number(li.dataset.index);
-                selectValue(index);
+                if (li) {
+                    e.preventDefault();
+                    const index = Number(li.dataset.index);
+                    selectValue(index);
+                }
                 hide();
             });
 
@@ -2881,7 +2900,8 @@ function main(app, common, lang) {
             box.classList.add('is-visible');
         }
 
-        function hide() {
+        function hide(e) {
+            if (e?.sourceCapabilities === null) return;
             if (box) box.classList.remove('is-visible');
             activeIndex = -1;
             prevActiveIndex = -1;
