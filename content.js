@@ -2124,6 +2124,7 @@ function main(app, common, lang) {
             if (scroll) {
                 window.scroll({ top: 0, behavior: 'instant' });
             }
+            input.focus();
         });
         return span;
     }
