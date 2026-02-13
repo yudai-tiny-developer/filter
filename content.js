@@ -2798,12 +2798,13 @@ function main(app, common, lang) {
                 e.preventDefault();
             });
 
-            box.addEventListener('click', e => {
+            document.addEventListener('mousedown', e => {
                 const li = e.target.closest('.suggest-item');
-                if (!li) return;
-                e.preventDefault();
-                const index = Number(li.dataset.index);
-                selectValue(index);
+                if (li) {
+                    e.preventDefault();
+                    const index = Number(li.dataset.index);
+                    selectValue(index);
+                }
                 hide();
             });
 
@@ -2899,7 +2900,8 @@ function main(app, common, lang) {
             box.classList.add('is-visible');
         }
 
-        function hide() {
+        function hide(e) {
+            if (e?.sourceCapabilities === null) return;
             if (box) box.classList.remove('is-visible');
             activeIndex = -1;
             prevActiveIndex = -1;
