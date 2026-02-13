@@ -607,6 +607,13 @@ function main(app, common, lang) {
         set_cache_query(query);
         browse.setAttribute('filter-query', query);
         browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
+
+        if (url_param_filter_mode_enabled && isUrlParamsTarget()) {
+            const url = new URL(location);
+            url.searchParams.set('app', url.searchParams.get('app') ?? 'desktop');
+            url.searchParams.set('filter-query', query);
+            history.replaceState({}, '', url);
+        }
     }
 
     function matchQuery(text) {
@@ -2522,7 +2529,17 @@ function main(app, common, lang) {
     }
 
     function getActiveQuery(browse) {
-        const query = get_cache_query();
+        let query;
+
+        if (url_param_filter_mode_enabled) {
+            const url = new URL(location);
+            query = url.searchParams.get('filter-query');
+        }
+
+        if (!query) {
+            query = get_cache_query();
+        }
+
         if (query !== undefined) {
             return query;
         } else if (common.isSubscriptions(location.href)) {
