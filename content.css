@@ -237,6 +237,7 @@ div.filter-button-load {
 .suggest-item {
     padding: 4px 8px;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .suggest-item.is-active {
