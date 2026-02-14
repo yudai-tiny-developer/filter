@@ -2958,10 +2958,10 @@ function main(app, common, lang) {
 
         function splitByDelimiters(str) {
             const normalized = str.replace(/[\p{P}]/gu, (m) => {
-                return /\s/.test(m) ? m : " ";
+                return /\t/.test(m) ? m : " ";
             });
             return normalized
-                .split(/\s+/)
+                .split(/\t+/)
                 .map(s => s.trim())
                 .filter(Boolean);
         }
