@@ -618,7 +618,7 @@ function main(app, common, lang) {
 
     function matchQuery(text) {
         const t = text?.toLowerCase() || '';
-        add_cache_suggestion_candidates(t);
+        suggestion_candidates.add(t);
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
@@ -2773,17 +2773,6 @@ function main(app, common, lang) {
         active.query.set(cache_key(location.href), query);
     }
 
-    function get_cache_suggestion_candidates() {
-        return active.suggestion_candidates.get(cache_key(location.href));
-    }
-
-    function add_cache_suggestion_candidates(suggestion_candidate) {
-        const key = cache_key(location.href);
-        const suggestion_candidates = active.suggestion_candidates.get(key) || new Set();
-        suggestion_candidates.add(suggestion_candidate);
-        active.suggestion_candidates.set(key, suggestion_candidates);
-    }
-
     function set_frosted_glass_mode() {
         document.getElementById('frosted-glass').classList.replace('without-chipbar', 'with-chipbar');
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'with-chipbar');
@@ -2813,6 +2802,7 @@ function main(app, common, lang) {
             });
 
             document.addEventListener('mousedown', e => {
+                if (!box?.classList.contains('is-visible')) return;
                 const li = e.target.closest('.suggest-item');
                 if (li) {
                     e.preventDefault();
@@ -2866,13 +2856,15 @@ function main(app, common, lang) {
         }
 
         function show() {
+            if (box && box.classList.contains('is-visible')) return;
+
             if (!suggest) {
                 input.setAttribute('autocomplete', 'on');
                 return;
             }
 
             input.setAttribute('autocomplete', 'off');
-            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(get_cache_suggestion_candidates());
+            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
             if (!box) createBox();
 
             const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
@@ -2985,7 +2977,7 @@ function main(app, common, lang) {
 
             return Array.from(frequencyMap.entries())
                 .sort((a, b) => b[1] - a[1])
-                .map(([substring, count]) => `"${substring}" `);
+                .map(([substring, count]) => `"${substring}"`);
         }
 
         return {
@@ -3014,7 +3006,6 @@ function main(app, common, lang) {
         mode: new Map(),
         mode_progress: new Map(),
         query: new Map(),
-        suggestion_candidates: new Map(),
     };
 
     let keyword = common.default_keyword;
@@ -3033,6 +3024,8 @@ function main(app, common, lang) {
     let url_param_filter_mode_enabled = common.default_url_param_filter_mode_enabled;
 
     const popupMenu = new Map();
+
+    let suggestion_candidates = new Set();
 
     let continuation_item;
     const load_button_container = document.createElement('div');
