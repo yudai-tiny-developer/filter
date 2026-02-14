@@ -2957,11 +2957,8 @@ function main(app, common, lang) {
         const processedSet = new Set();
 
         function splitByDelimiters(str) {
-            const normalized = str.replace(/[\p{P}]/gu, (m) => {
-                return /\s/.test(m) ? m : " ";
-            });
-            return normalized
-                .split(/\s+/)
+            return str
+                .split(/(?<![\p{L}\p{N}])['’\-・.．:：]|['’\-・.．:：](?![\p{L}\p{N}])|[^\p{L}\p{N} '’\-・.．:：]+/u)
                 .map(s => s.trim())
                 .filter(Boolean);
         }
