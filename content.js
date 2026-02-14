@@ -2966,10 +2966,11 @@ function main(app, common, lang) {
                 .filter(Boolean);
         }
 
-        function process(inputArray) {
-            for (const item of inputArray) {
-                if (processedSet.has(item)) continue;
+        function process(inputSet) {
+            for (const item of inputSet) {
+                const sizeBefore = processedSet.size;
                 processedSet.add(item);
+                if (processedSet.size === sizeBefore) continue;
 
                 const tokens = splitByDelimiters(item);
 
