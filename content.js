@@ -2856,8 +2856,6 @@ function main(app, common, lang) {
         }
 
         function show() {
-            if (box && box.classList.contains('is-visible')) return;
-
             if (!suggest) {
                 input.setAttribute('autocomplete', 'on');
                 return;
