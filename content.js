@@ -127,7 +127,7 @@ function main(app, common, lang) {
             keyword_sidebar_channels = common.value(data.keyword_sidebar_channels, common.default_keyword_sidebar_channels);
             keyword_notification = common.value(data.keyword_notification, common.default_keyword_notification);
             default_keyword = common.value(data.default_keyword, common.default_default_keyword);
-            suggestions = common.value(data.suggestions, common.default_suggestions).split(/\r?\n/).filter(line => line.trim() !== "");
+            default_suggestions = common.value(data.suggestions, common.default_suggestions).split(/\r?\n/).filter(line => line.trim() !== "");
 
             const filter_subscriptions = common.value(data.filter_subscriptions, common.default_filter_subscriptions);
             const filter_home = common.value(data.filter_home, common.default_filter_home);
@@ -617,11 +617,14 @@ function main(app, common, lang) {
     }
 
     function matchQuery(text) {
+        const t = text?.toLowerCase() || '';
+        suggestion_candidate_set.add(t);
+
         const query = get_cache_query()?.trim();
         if (!query) return true;
 
         const evaluator = createQueryEvaluator(query?.toLowerCase());
-        return evaluator(text?.toLowerCase());
+        return evaluator(t);
     }
 
     function onNodeLoaded_Subscriptions(node) {
@@ -2858,7 +2861,7 @@ function main(app, common, lang) {
             }
 
             input.setAttribute('autocomplete', 'off');
-            if (!suggestions.length) return;
+            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidate_set);
             if (!box) createBox();
 
             const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
@@ -2949,6 +2952,43 @@ function main(app, common, lang) {
         input.addEventListener('blur', hide);
     }
 
+    const SubstringFrequencyCounter = (() => {
+        const frequencyMap = new Map();
+        const processedSet = new Set();
+
+        function splitByDelimiters(str) {
+            const normalized = str.replace(/[\p{P}]/gu, (m) => {
+                return /\s/.test(m) ? m : " ";
+            });
+            return normalized
+                .split(/\s+/)
+                .map(s => s.trim())
+                .filter(Boolean);
+        }
+
+        function process(inputArray) {
+            for (const item of inputArray) {
+                if (processedSet.has(item)) continue;
+                processedSet.add(item);
+
+                const tokens = splitByDelimiters(item);
+
+                for (const token of tokens) {
+                    if (token.length <= 1) continue;
+                    frequencyMap.set(token, (frequencyMap.get(token) || 0) + 1);
+                }
+            }
+
+            return Array.from(frequencyMap.entries())
+                .sort((a, b) => b[1] - a[1])
+                .map(([substring, count]) => `"${substring}" `);
+        }
+
+        return {
+            process
+        };
+    })();
+
     const default_tab = {
         live: common.default_default_live,
         streamed: common.default_default_streamed,
@@ -2976,7 +3016,7 @@ function main(app, common, lang) {
     let default_keyword = undefined;
 
     let suggest;
-    let suggestions = undefined;
+    let default_suggestions = undefined;
 
     let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;
@@ -2988,6 +3028,8 @@ function main(app, common, lang) {
     let url_param_filter_mode_enabled = common.default_url_param_filter_mode_enabled;
 
     const popupMenu = new Map();
+
+    const suggestion_candidate_set = new Set();
 
     let continuation_item;
     const load_button_container = document.createElement('div');
