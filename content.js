@@ -3055,6 +3055,10 @@ function main(app, common, lang) {
         onResize();
     });
 
+    document.addEventListener('yt-navigate-start', () => {
+        suggestion_candidates.clear();
+    });
+
     document.addEventListener('yt-navigate-finish', () => {
         onViewChanged();
     });
