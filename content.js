@@ -618,7 +618,7 @@ function main(app, common, lang) {
 
     function matchQuery(text) {
         const t = text?.toLowerCase() || '';
-        suggestion_candidate_set.add(t);
+        add_cache_suggestion_candidates(t);
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
@@ -2773,6 +2773,17 @@ function main(app, common, lang) {
         active.query.set(cache_key(location.href), query);
     }
 
+    function get_cache_suggestion_candidates() {
+        return active.suggestion_candidates.get(cache_key(location.href));
+    }
+
+    function add_cache_suggestion_candidates(suggestion_candidate) {
+        const key = cache_key(location.href);
+        const suggestion_candidates = active.suggestion_candidates.get(key) || new Set();
+        suggestion_candidates.add(suggestion_candidate);
+        active.suggestion_candidates.set(key, suggestion_candidates);
+    }
+
     function set_frosted_glass_mode() {
         document.getElementById('frosted-glass').classList.replace('without-chipbar', 'with-chipbar');
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'with-chipbar');
@@ -2861,7 +2872,7 @@ function main(app, common, lang) {
             }
 
             input.setAttribute('autocomplete', 'off');
-            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidate_set);
+            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(get_cache_suggestion_candidates());
             if (!box) createBox();
 
             const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
@@ -2953,9 +2964,6 @@ function main(app, common, lang) {
     }
 
     const SubstringFrequencyCounter = (() => {
-        const frequencyMap = new Map();
-        const processedSet = new Set();
-
         function splitByDelimiters(str) {
             return str
                 .split(/(?<![\p{L}\p{N}])['’\-・.．:：]|['’\-・.．:：](?![\p{L}\p{N}])|[^\p{L}\p{N} '’\-・.．:：]+/u)
@@ -2964,11 +2972,9 @@ function main(app, common, lang) {
         }
 
         function process(inputSet) {
-            for (const item of inputSet) {
-                const sizeBefore = processedSet.size;
-                processedSet.add(item);
-                if (processedSet.size === sizeBefore) continue;
+            const frequencyMap = new Map();
 
+            for (const item of inputSet) {
                 const tokens = splitByDelimiters(item);
 
                 for (const token of tokens) {
@@ -3008,6 +3014,7 @@ function main(app, common, lang) {
         mode: new Map(),
         mode_progress: new Map(),
         query: new Map(),
+        suggestion_candidates: new Map(),
     };
 
     let keyword = common.default_keyword;
@@ -3026,8 +3033,6 @@ function main(app, common, lang) {
     let url_param_filter_mode_enabled = common.default_url_param_filter_mode_enabled;
 
     const popupMenu = new Map();
-
-    const suggestion_candidate_set = new Set();
 
     let continuation_item;
     const load_button_container = document.createElement('div');
