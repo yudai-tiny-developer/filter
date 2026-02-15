@@ -2672,35 +2672,47 @@ function main(app, common, lang) {
     function onResize() {
         if (isMenuTarget()) {
             if (responsive) {
-                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc), ytd-watch-flexy[role="main"] form.filter-menu:not(.filter-forCalc)')) {
-                    for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
-                        form.parentNode.insertBefore(calc, form);
-                        if (calc.scrollWidth <= form.parentNode.clientWidth) {
-                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                        } else {
-                            document.documentElement.style.setProperty('--filter-button-display', 'none');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                const root = document.documentElement;
+                const parents = new Set();
+
+                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')) {
+                    const parent = form.parentNode;
+                    parents.add(parent);
+
+                    const fragment = document.createDocumentFragment();
+
+                    for (const calc of parent.querySelectorAll('form.filter-forCalc')) {
+                        fragment.appendChild(calc);
+                    }
+
+                    parent.insertBefore(fragment, form);
+                }
+
+                requestAnimationFrame(() => {
+                    let shouldInline = false;
+
+                    for (const parent of parents) {
+                        const calc = parent.querySelector('form.filter-forCalc');
+                        const form = parent.querySelector('form.filter-menu:not(.filter-forCalc)');
+                        if (!calc || !form) continue;
+
+                        if (calc.scrollWidth <= parent.clientWidth) {
+                            shouldInline = true;
+                            break;
                         }
                     }
-                }
+
+                    if (shouldInline) {
+                        root.style.setProperty('--filter-button-display', 'inline-flex');
+                        root.style.setProperty('--filter-menu-display', 'none');
+                    } else {
+                        root.style.setProperty('--filter-button-display', 'none');
+                        root.style.setProperty('--filter-menu-display', 'block');
+                    }
+                });
             } else {
-                const form = app.querySelector('ytd-watch-flexy[role="main"] form.filter-menu:not(.filter-forCalc)');
-                if (form) { // video page filter must be responsive
-                    for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
-                        form.parentNode.insertBefore(calc, form);
-                        if (calc.scrollWidth <= form.parentNode.clientWidth) {
-                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                        } else {
-                            document.documentElement.style.setProperty('--filter-button-display', 'none');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
-                        }
-                    }
-                } else {
-                    document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                    document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                }
+                document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                document.documentElement.style.setProperty('--filter-menu-display', 'none');
             }
         }
     }

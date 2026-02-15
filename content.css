@@ -394,3 +394,30 @@ ytd-multi-page-menu-renderer[menu-style="multi-page-menu-style-type-notification
 ytd-multi-page-menu-renderer[menu-style="multi-page-menu-style-type-notifications"] ytd-continuation-item-renderer:has(div#spinnerContainer.active) {
     display: none !important;
 }
+
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer {
+    border-bottom: none !important
+}
+
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div.grid-subheader,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div.grid-subheader,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div.grid-subheader,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div.grid-subheader,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#content {
+    margin-top: 0 !important;
+}
+
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents > ytd-expanded-shelf-contents-renderer,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents > ytd-expanded-shelf-contents-renderer {
+    margin-bottom: 0 !important;
+}
+
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents > ytd-expanded-shelf-contents-renderer #grid-container.ytd-expanded-shelf-contents-renderer > .ytd-expanded-shelf-contents-renderer,
+ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents > ytd-expanded-shelf-contents-renderer #grid-container.ytd-expanded-shelf-contents-renderer > .ytd-expanded-shelf-contents-renderer {
+    margin-top: 16px !important;
+    margin-bottom: 0 !important;
+}
