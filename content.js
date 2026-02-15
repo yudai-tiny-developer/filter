@@ -618,7 +618,7 @@ function main(app, common, lang) {
 
     function matchQuery(text) {
         const t = text?.toLowerCase() || '';
-        suggestion_candidate_set.add(t);
+        suggestion_candidates.add(t);
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
@@ -2802,6 +2802,7 @@ function main(app, common, lang) {
             });
 
             document.addEventListener('mousedown', e => {
+                if (!box?.classList.contains('is-visible')) return;
                 const li = e.target.closest('.suggest-item');
                 if (li) {
                     e.preventDefault();
@@ -2861,7 +2862,7 @@ function main(app, common, lang) {
             }
 
             input.setAttribute('autocomplete', 'off');
-            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidate_set);
+            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
             if (!box) createBox();
 
             const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
@@ -2953,9 +2954,6 @@ function main(app, common, lang) {
     }
 
     const SubstringFrequencyCounter = (() => {
-        const frequencyMap = new Map();
-        const processedSet = new Set();
-
         function splitByDelimiters(str) {
             return str
                 .split(/(?<![\p{L}\p{N}])['’\-・.．:：]|['’\-・.．:：](?![\p{L}\p{N}])|[^\p{L}\p{N} '’\-・.．:：]+/u)
@@ -2964,11 +2962,9 @@ function main(app, common, lang) {
         }
 
         function process(inputSet) {
-            for (const item of inputSet) {
-                const sizeBefore = processedSet.size;
-                processedSet.add(item);
-                if (processedSet.size === sizeBefore) continue;
+            const frequencyMap = new Map();
 
+            for (const item of inputSet) {
                 const tokens = splitByDelimiters(item);
 
                 for (const token of tokens) {
@@ -2979,7 +2975,7 @@ function main(app, common, lang) {
 
             return Array.from(frequencyMap.entries())
                 .sort((a, b) => b[1] - a[1])
-                .map(([substring, count]) => `"${substring}" `);
+                .map(([substring, count]) => `"${substring}"`);
         }
 
         return {
@@ -3027,7 +3023,7 @@ function main(app, common, lang) {
 
     const popupMenu = new Map();
 
-    const suggestion_candidate_set = new Set();
+    let suggestion_candidates = new Set();
 
     let continuation_item;
     const load_button_container = document.createElement('div');
@@ -3055,6 +3051,10 @@ function main(app, common, lang) {
 
     document.addEventListener('yt-action', () => {
         onResize();
+    });
+
+    document.addEventListener('yt-navigate-start', () => {
+        suggestion_candidates.clear();
     });
 
     document.addEventListener('yt-navigate-finish', () => {
