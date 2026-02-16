@@ -244,7 +244,7 @@ div.filter-button-load {
     background: #ccc;
 }
 
-ytd-browse[filter-menu="true"] ytd-rich-section-renderer:has(.filter-hidden) {
+ytd-browse[filter-menu="true"] ytd-rich-section-renderer:not(:has(.filter-show)) {
     display: none !important;
 }
 
