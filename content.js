@@ -2976,7 +2976,7 @@ function main(app, common, lang) {
     const SubstringFrequencyCounter = (() => {
         function splitByDelimiters(str) {
             return str
-                .split(/(?<![\p{L}\p{N}])['’\-・.．:：]|['’\-・.．:：](?![\p{L}\p{N}])|[^\p{L}\p{N} '’\-・.．:：]+/u)
+                .split(/(?<![\p{L}\p{N}])['\-・.:]|['\-・.:](?![\p{L}\p{N}])|[^\p{L}\p{N} '\-・.:]+/u)
                 .map(s => s.trim())
                 .filter(Boolean);
         }
