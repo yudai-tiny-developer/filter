@@ -617,7 +617,11 @@ function main(app, common, lang) {
     }
 
     function normalizeText(text) {
-        return text?.toLowerCase().replace(/[！-～]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)).replaceAll(/\s+/g, ' ').trim() || '';
+        return text?.toLowerCase()
+            .normalize('NFKC')
+            .replaceAll(/\s+/g, ' ')
+            .trim()
+            || '';
     }
 
     function matchQuery(text) {
