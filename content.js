@@ -684,7 +684,7 @@ function main(app, common, lang) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -841,7 +841,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -956,7 +956,7 @@ function main(app, common, lang) {
         const title = node.querySelector('a#video-title-link');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1153,7 +1153,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -1223,7 +1223,7 @@ function main(app, common, lang) {
         const title = node.querySelector('h3.title-and-badge');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1299,7 +1299,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1353,7 +1353,7 @@ function main(app, common, lang) {
         const title = node.querySelector('a#video-title');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1457,7 +1457,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-formatted-string#video-title');
         const channel_name = node.querySelector('yt-formatted-string#text.ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -2876,11 +2876,28 @@ function main(app, common, lang) {
             if (!box) createBox();
 
             const value = normalizeText(input.value);
-            const filteredAll = value === ''
-                ? suggestions
-                : suggestions.filter(t => normalizeText(t).includes(value));
+            const filtered = [];
+            for (const t of suggestions) {
+                if (value !== '') {
+                    const normalized = normalizeText(t);
+                    if (!normalized.includes(value)) continue;
+                }
 
-            const filtered = filteredAll.slice(0, maxVisible);
+                const u = t.replace(/"/g, '');
+                let matched = false;
+
+                for (const suggestion_candidate of suggestion_candidates) {
+                    if (suggestion_candidate.includes(u)) {
+                        matched = true;
+                        break;
+                    }
+                }
+
+                if (matched) {
+                    filtered.push(t);
+                    if (filtered.length >= maxVisible) break;
+                }
+            }
 
             if (!filtered.length) {
                 hide();
@@ -2892,14 +2909,6 @@ function main(app, common, lang) {
             prevActiveIndex = -1;
             currentItems = [];
             currentValues = filtered.slice();
-
-            if (filteredAll.length > maxVisible) {
-                box.style.maxHeight = `${maxVisible * 28}px`;
-                box.style.overflowY = 'auto';
-            } else {
-                box.style.maxHeight = '';
-                box.style.overflowY = '';
-            }
 
             filtered.forEach((text, index) => {
                 const li = document.createElement('li');
