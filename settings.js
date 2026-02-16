@@ -112,6 +112,10 @@ function createInputArea(label, default_label, onChange, row, input_class = 'lab
     const input = document.createElement('input');
     input.setAttribute('type', 'text');
 
+    if (default_label) {
+        input.setAttribute('placeholder', `(${default_label})`);
+    }
+
     input.classList.add(input_class);
 
     input.addEventListener('focus', () => {
