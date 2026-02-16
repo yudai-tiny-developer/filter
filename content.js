@@ -619,7 +619,7 @@ function main(app, common, lang) {
     function normalizeText(text) {
         return text?.toLowerCase()
             .normalize('NFKC')
-            .replaceAll(/\s+/g, ' ')
+            .replaceAll(/[^\S\n]+/g, ' ')
             .trim()
             || '';
     }
@@ -2876,28 +2876,7 @@ function main(app, common, lang) {
             if (!box) createBox();
 
             const value = normalizeText(input.value);
-            const filtered = [];
-            for (const t of suggestions) {
-                if (value !== '') {
-                    const normalized = normalizeText(t);
-                    if (!normalized.includes(value)) continue;
-                }
-
-                const u = t.replace(/"/g, '');
-                let matched = false;
-
-                for (const suggestion_candidate of suggestion_candidates) {
-                    if (suggestion_candidate.includes(u)) {
-                        matched = true;
-                        break;
-                    }
-                }
-
-                if (matched) {
-                    filtered.push(t);
-                    if (filtered.length >= maxVisible) break;
-                }
-            }
+            const filtered = (value === '' ? suggestions : suggestions.filter(t => normalizeText(t).includes(value))).slice(0, maxVisible);
 
             if (!filtered.length) {
                 hide();
