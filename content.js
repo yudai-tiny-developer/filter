@@ -616,14 +616,18 @@ function main(app, common, lang) {
         }
     }
 
+    function normalizeText(text) {
+        return text?.toLowerCase().replace(/[！-～]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)).replaceAll(/\s+/g, ' ').trim() || '';
+    }
+
     function matchQuery(text) {
-        const t = text?.toLowerCase() || '';
+        const t = normalizeText(text);
         suggestion_candidates.add(t);
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
 
-        const evaluator = createQueryEvaluator(query?.toLowerCase());
+        const evaluator = createQueryEvaluator(normalizeText(query));
         return evaluator(t);
     }
 
@@ -1375,7 +1379,7 @@ function main(app, common, lang) {
             } else if (lang.isVideo_metadata(t)) {
                 const title = node.querySelector('div#meta a#video-title');
                 if (title) {
-                    const t = title.textContent.toLowerCase();
+                    const t = normalizeText(title.textContent);
                     if (t.includes('#shorts')) {
                         status.add('short');
                     } else {
@@ -1842,9 +1846,9 @@ function main(app, common, lang) {
         const query = active.query.get(getPopupKey(container));
         if (!query) return true;
 
-        const evaluator = createQueryEvaluator(query?.toLowerCase());
+        const evaluator = createQueryEvaluator(normalizeText(query));
         const text = target.querySelector('span.yt-core-attributed-string, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
-        return evaluator(text?.toLowerCase());
+        return evaluator(normalizeText(text));
     }
 
     function onAppNodeLoaded(node) {
@@ -2877,10 +2881,10 @@ function main(app, common, lang) {
             const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
             if (!box) createBox();
 
-            const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
+            const value = normalizeText(input.value);
             const filteredAll = value === ''
                 ? suggestions
-                : suggestions.filter(t => t.toLowerCase().replaceAll(/\s+/g, ' ').trim().includes(value));
+                : suggestions.filter(t => normalizeText(t).includes(value));
 
             const filtered = filteredAll.slice(0, maxVisible);
 
