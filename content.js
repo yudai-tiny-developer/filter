@@ -616,14 +616,22 @@ function main(app, common, lang) {
         }
     }
 
+    function normalizeText(text) {
+        return text?.toLowerCase()
+            .normalize('NFKC')
+            .replaceAll(/[^\S\n]+/g, ' ')
+            .trim()
+            || '';
+    }
+
     function matchQuery(text) {
-        const t = text?.toLowerCase() || '';
+        const t = normalizeText(text);
         suggestion_candidates.add(t);
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
 
-        const evaluator = createQueryEvaluator(query?.toLowerCase());
+        const evaluator = createQueryEvaluator(normalizeText(query));
         return evaluator(t);
     }
 
@@ -631,16 +639,6 @@ function main(app, common, lang) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node, matchTextContent_Subscriptions_RichItemRenderer, classifyModeStatus_Subscriptions_RichItemRenderer, classifyProgressStatus_Subscriptions_RichItemRenderer);
-                {
-                    const section = searchParentNode(node, 'YTD-RICH-SECTION-RENDERER');
-                    if (section) {
-                        const items = section.querySelectorAll('ytd-rich-item-renderer');
-                        if (items.length > 0) {
-                            const visibled_items = Array.from(items).filter(n => n.style.display !== 'none');
-                            section.style.display = visibled_items.length === 0 ? 'none' : '';
-                        }
-                    }
-                }
                 break;
             case 'YTD-BROWSE':
                 insertMenu_Subscriptions(node);
@@ -686,7 +684,7 @@ function main(app, common, lang) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -843,7 +841,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -958,7 +956,7 @@ function main(app, common, lang) {
         const title = node.querySelector('a#video-title-link');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1155,7 +1153,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
@@ -1225,7 +1223,7 @@ function main(app, common, lang) {
         const title = node.querySelector('h3.title-and-badge');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1301,7 +1299,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1355,7 +1353,7 @@ function main(app, common, lang) {
         const title = node.querySelector('a#video-title');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1375,7 +1373,7 @@ function main(app, common, lang) {
             } else if (lang.isVideo_metadata(t)) {
                 const title = node.querySelector('div#meta a#video-title');
                 if (title) {
-                    const t = title.textContent.toLowerCase();
+                    const t = normalizeText(title.textContent);
                     if (t.includes('#shorts')) {
                         status.add('short');
                     } else {
@@ -1459,7 +1457,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-formatted-string#video-title');
         const channel_name = node.querySelector('yt-formatted-string#text.ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent}\n${channel_name?.textContent}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
         }
 
         // default: visible
@@ -1842,9 +1840,9 @@ function main(app, common, lang) {
         const query = active.query.get(getPopupKey(container));
         if (!query) return true;
 
-        const evaluator = createQueryEvaluator(query?.toLowerCase());
+        const evaluator = createQueryEvaluator(normalizeText(query));
         const text = target.querySelector('span.yt-core-attributed-string, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
-        return evaluator(text?.toLowerCase());
+        return evaluator(normalizeText(text));
     }
 
     function onAppNodeLoaded(node) {
@@ -2672,35 +2670,47 @@ function main(app, common, lang) {
     function onResize() {
         if (isMenuTarget()) {
             if (responsive) {
-                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc), ytd-watch-flexy[role="main"] form.filter-menu:not(.filter-forCalc)')) {
-                    for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
-                        form.parentNode.insertBefore(calc, form);
-                        if (calc.scrollWidth <= form.parentNode.clientWidth) {
-                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                        } else {
-                            document.documentElement.style.setProperty('--filter-button-display', 'none');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
+                const root = document.documentElement;
+                const parents = new Set();
+
+                for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')) {
+                    const parent = form.parentNode;
+                    parents.add(parent);
+
+                    const fragment = document.createDocumentFragment();
+
+                    for (const calc of parent.querySelectorAll('form.filter-forCalc')) {
+                        fragment.appendChild(calc);
+                    }
+
+                    parent.insertBefore(fragment, form);
+                }
+
+                requestAnimationFrame(() => {
+                    let shouldInline = false;
+
+                    for (const parent of parents) {
+                        const calc = parent.querySelector('form.filter-forCalc');
+                        const form = parent.querySelector('form.filter-menu:not(.filter-forCalc)');
+                        if (!calc || !form) continue;
+
+                        if (calc.scrollWidth <= parent.clientWidth) {
+                            shouldInline = true;
+                            break;
                         }
                     }
-                }
+
+                    if (shouldInline) {
+                        root.style.setProperty('--filter-button-display', 'inline-flex');
+                        root.style.setProperty('--filter-menu-display', 'none');
+                    } else {
+                        root.style.setProperty('--filter-button-display', 'none');
+                        root.style.setProperty('--filter-menu-display', 'block');
+                    }
+                });
             } else {
-                const form = app.querySelector('ytd-watch-flexy[role="main"] form.filter-menu:not(.filter-forCalc)');
-                if (form) { // video page filter must be responsive
-                    for (const calc of form.parentNode.querySelectorAll('form.filter-forCalc')) {
-                        form.parentNode.insertBefore(calc, form);
-                        if (calc.scrollWidth <= form.parentNode.clientWidth) {
-                            document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                        } else {
-                            document.documentElement.style.setProperty('--filter-button-display', 'none');
-                            document.documentElement.style.setProperty('--filter-menu-display', 'block');
-                        }
-                    }
-                } else {
-                    document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
-                    document.documentElement.style.setProperty('--filter-menu-display', 'none');
-                }
+                document.documentElement.style.setProperty('--filter-button-display', 'inline-flex');
+                document.documentElement.style.setProperty('--filter-menu-display', 'none');
             }
         }
     }
@@ -2865,12 +2875,8 @@ function main(app, common, lang) {
             const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
             if (!box) createBox();
 
-            const value = input.value.toLowerCase().replaceAll(/\s+/g, ' ').trim();
-            const filteredAll = value === ''
-                ? suggestions
-                : suggestions.filter(t => t.toLowerCase().replaceAll(/\s+/g, ' ').trim().includes(value));
-
-            const filtered = filteredAll.slice(0, maxVisible);
+            const value = normalizeText(input.value);
+            const filtered = (value === '' ? suggestions : suggestions.filter(t => normalizeText(t).includes(value))).slice(0, maxVisible);
 
             if (!filtered.length) {
                 hide();
@@ -2882,14 +2888,6 @@ function main(app, common, lang) {
             prevActiveIndex = -1;
             currentItems = [];
             currentValues = filtered.slice();
-
-            if (filteredAll.length > maxVisible) {
-                box.style.maxHeight = `${maxVisible * 28}px`;
-                box.style.overflowY = 'auto';
-            } else {
-                box.style.maxHeight = '';
-                box.style.overflowY = '';
-            }
 
             filtered.forEach((text, index) => {
                 const li = document.createElement('li');
@@ -2956,7 +2954,7 @@ function main(app, common, lang) {
     const SubstringFrequencyCounter = (() => {
         function splitByDelimiters(str) {
             return str
-                .split(/(?<![\p{L}\p{N}])['’\-・.．:：]|['’\-・.．:：](?![\p{L}\p{N}])|[^\p{L}\p{N} '’\-・.．:：]+/u)
+                .split(/(?<![\p{L}\p{N}])['\-・.:]|['\-・.:](?![\p{L}\p{N}])|[^\p{L}\p{N} '\-・.:]+/u)
                 .map(s => s.trim())
                 .filter(Boolean);
         }

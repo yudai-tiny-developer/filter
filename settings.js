@@ -54,8 +54,9 @@ export function createRowKeyword(label, mode, setting, deafult_value, keyword, o
     div.appendChild(createLabelInput(label, undefined, undefined, undefined, undefined));
     div.appendChild(createToggle(mode, setting, deafult_value));
 
-    const keyword_input = createLabelInput(keyword, '', onChange, div, button_label_clear, 'keyword_input');
-    div.appendChild(keyword_input);
+    const input = createLabelInput(keyword, '', onChange, div, button_label_clear, 'keyword_input');
+    input.setAttribute('title', '" "  PHRASE search operator.   e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n ( )  Grouping operator.            e.g. Phrase1 (Phrase2 | Phrase3)');
+    div.appendChild(input);
 
     return div;
 }
@@ -67,8 +68,9 @@ export function createRowSuggestions(label, mode, setting, deafult_value, keywor
     div.appendChild(createLabelInput(label, undefined, undefined, undefined, undefined));
     div.appendChild(createToggle(mode, setting, deafult_value));
 
-    const keyword_input = createLabelInput(keyword, '', onChange, div, button_label_clear, 'keyword_input', 10);
-    div.appendChild(keyword_input);
+    const input = createLabelInput(keyword, '', onChange, div, button_label_clear, 'keyword_input', 10);
+    input.setAttribute('title', 'One query per line\n\n" "  PHRASE search operator.   e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n ( )  Grouping operator.            e.g. Phrase1 (Phrase2 | Phrase3)');
+    div.appendChild(input);
 
     return div;
 }
@@ -111,6 +113,10 @@ function createLabelInput(label, default_label, onChange, row, button_label_clea
 function createInputArea(label, default_label, onChange, row, input_class = 'label', minRate = undefined, maxRate = undefined, stepRate = undefined, limitRate = undefined) {
     const input = document.createElement('input');
     input.setAttribute('type', 'text');
+
+    if (default_label) {
+        input.setAttribute('placeholder', `(${default_label})`);
+    }
 
     input.classList.add(input_class);
 
