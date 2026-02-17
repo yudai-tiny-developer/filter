@@ -868,8 +868,6 @@ function main(app, common, lang) {
             return matchQuery(collection_metadata.textContent);
         }
 
-
-
         const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
         if (ad_metadata) {
             return matchQuery(ad_metadata.textContent);
