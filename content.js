@@ -2970,7 +2970,7 @@ function main(app, common, lang) {
 
                 for (const token of tokens) {
                     if (token.length <= 1) continue;
-                    frequencyMap.set(token, (frequencyMap.get(token) || 0) + 1);
+                    frequencyMap.set(token, (frequencyMap.get(token) ?? 0) + 1);
                 }
             }
 
