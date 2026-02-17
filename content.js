@@ -592,7 +592,9 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
+        if (main_browse && !main_browse.contains(node)) {
+            // skip
+        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
@@ -1901,6 +1903,7 @@ function main(app, common, lang) {
     }
 
     function onViewChanged() {
+        main_browse = document.body.querySelector('ytd-browse[role="main"]');
         for (const browse of app.querySelectorAll('ytd-browse, ytd-watch-flexy')) {
             onViewChanged_Node(browse);
         }
@@ -3041,6 +3044,7 @@ function main(app, common, lang) {
     const popupMenu = new Map();
 
     let suggestion_candidates = new Set();
+    let main_browse;
 
     let continuation_item;
     const load_button_container = document.createElement('div');
@@ -3070,7 +3074,7 @@ function main(app, common, lang) {
         onResize();
     });
 
-    document.addEventListener('yt-navigate-start', () => {
+    document.addEventListener('yt-page-type-changed', () => {
         suggestion_candidates.clear();
     });
 
