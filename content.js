@@ -2659,6 +2659,8 @@ function main(app, common, lang) {
                     const right = compile(ast?.right);
                     return text => left(text) || right(text);
                 }
+                default: // syntax error
+                    return text => true;
             }
         }
 
