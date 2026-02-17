@@ -573,7 +573,7 @@ function main(app, common, lang) {
         if (common.isSubscriptions(location.href)) {
             shallow ? onNodeLoaded_Subscriptions(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
         } else if (common.isHome(location.href)) {
-            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
+            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-POST-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
         } else if (common.isShorts(location.href)) {
             shallow ? onNodeLoaded_Shorts(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
         } else if (common.isHistory(location.href)) {
@@ -761,6 +761,14 @@ function main(app, common, lang) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node, matchTextContent_Home_RichItemRenderer, classifyModeStatus_Home_RichItemRenderer, classifyProgressStatus_Home_RichItemRenderer);
                 break;
+            case 'YTD-POST-RENDERER':
+                {
+                    const n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n, matchTextContent_Home_RichItemRenderer, classifyModeStatus_Home_RichItemRenderer, classifyProgressStatus_Home_RichItemRenderer);
+                    }
+                }
+                break;
             case 'YT-LOCKUP-VIEW-MODEL':
                 {
                     const n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
@@ -849,10 +857,17 @@ function main(app, common, lang) {
             return matchQuery(shorts_metadata.textContent);
         }
 
+        const post = node.querySelector('div#post-text');
+        if (post) {
+            return matchQuery(post.textContent);
+        }
+
         const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
         if (collection_metadata) {
             return matchQuery(collection_metadata.textContent);
         }
+
+
 
         const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
         if (ad_metadata) {
