@@ -621,7 +621,7 @@ function main(app, common, lang) {
             .normalize('NFKC')
             .replaceAll(/[^\S\n]+/g, ' ')
             .trim()
-            || '';
+            ?? '';
     }
 
     function matchQuery(text) {
@@ -2659,6 +2659,8 @@ function main(app, common, lang) {
                     const right = compile(ast?.right);
                     return text => left(text) || right(text);
                 }
+                default: // syntax error
+                    return text => true;
             }
         }
 
@@ -2872,11 +2874,14 @@ function main(app, common, lang) {
             }
 
             input.setAttribute('autocomplete', 'off');
-            const suggestions = (default_suggestions?.length || 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
+            const suggestions = (default_suggestions?.length ?? 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
             if (!box) createBox();
 
             const value = normalizeText(input.value);
-            const filtered = (value === '' ? suggestions : suggestions.filter(t => normalizeText(t).includes(value))).slice(0, maxVisible);
+            const filtered = (value === '' ? suggestions : suggestions.filter(t => {
+                const u = normalizeText(t);
+                return u !== value && u.includes(value);
+            })).slice(0, maxVisible);
 
             if (!filtered.length) {
                 hide();
@@ -2967,7 +2972,7 @@ function main(app, common, lang) {
 
                 for (const token of tokens) {
                     if (token.length <= 1) continue;
-                    frequencyMap.set(token, (frequencyMap.get(token) || 0) + 1);
+                    frequencyMap.set(token, (frequencyMap.get(token) ?? 0) + 1);
                 }
             }
 
