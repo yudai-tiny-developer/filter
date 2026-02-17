@@ -857,9 +857,10 @@ function main(app, common, lang) {
             return matchQuery(shorts_metadata.textContent);
         }
 
-        const post = node.querySelector('div#post-text');
-        if (post) {
-            return matchQuery(post.textContent);
+        const post_text = node.querySelector('div#post-text');
+        const post_author = node.querySelector('div#author');
+        if (post_text || post_author) {
+            return matchQuery(`${post_text?.textContent ?? ''}\n${post_author?.textContent ?? ''}`);
         }
 
         const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
