@@ -592,28 +592,26 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (main_browse?.contains(node)) {
-            const filtered = includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus);
+        const filtered = includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus);
 
-            const candidates = new Set();
-            if (matchTextContent(node, filtered, candidates)) {
-                node.style.display = '';
-                node.classList.add('filter-show');
-                node.classList.remove('filter-hidden');
-            } else {
-                node.style.cssText = 'display: none !important;';
-                node.classList.remove('filter-show');
-                node.classList.add('filter-hidden');
+        const candidates = new Set();
+        if (matchTextContent(node, filtered, candidates)) {
+            node.style.display = '';
+            node.classList.add('filter-show');
+            node.classList.remove('filter-hidden');
+        } else {
+            node.style.cssText = 'display: none !important;';
+            node.classList.remove('filter-show');
+            node.classList.add('filter-hidden');
+        }
+
+        if (filtered && !node.hasAttribute('hidden') && main_browse?.contains(node)) {
+            for (const value of candidates) {
+                suggestion_candidates.add(value);
             }
-
-            if (filtered) {
-                for (const value of candidates) {
-                    suggestion_candidates.add(value);
-                }
-            } else {
-                for (const value of candidates) {
-                    suggestion_candidates.delete(value);
-                }
+        } else {
+            for (const value of candidates) {
+                suggestion_candidates.delete(value);
             }
         }
     }
