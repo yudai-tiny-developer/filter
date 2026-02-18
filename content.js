@@ -596,7 +596,7 @@ function main(app, common, lang) {
             const filtered = includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus);
 
             const candidates = new Set();
-            if (matchTextContent(node, filtered, candidates) && filtered) {
+            if (matchTextContent(node, filtered, candidates)) {
                 node.style.display = '';
                 node.classList.add('filter-show');
                 node.classList.remove('filter-hidden');
@@ -643,7 +643,7 @@ function main(app, common, lang) {
         const t = normalizeText(text);
         candidates.add(t);
 
-        if (!filtered) return true;
+        if (!filtered) return false;
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
