@@ -592,16 +592,29 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (!isElementVisible(node)) {
-            // skip
-        } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
-            node.style.display = '';
-            node.classList.add('filter-show');
-            node.classList.remove('filter-hidden');
-        } else {
-            node.style.cssText = 'display: none !important;';
-            node.classList.remove('filter-show');
-            node.classList.add('filter-hidden');
+        if (main_browse?.contains(node)) {
+            const filtered = includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus);
+
+            const candidates = new Set();
+            if (matchTextContent(node, filtered, candidates) && filtered) {
+                node.style.display = '';
+                node.classList.add('filter-show');
+                node.classList.remove('filter-hidden');
+            } else {
+                node.style.cssText = 'display: none !important;';
+                node.classList.remove('filter-show');
+                node.classList.add('filter-hidden');
+            }
+
+            if (filtered) {
+                for (const value of candidates) {
+                    suggestion_candidates.add(value);
+                }
+            } else {
+                for (const value of candidates) {
+                    suggestion_candidates.delete(value);
+                }
+            }
         }
     }
 
@@ -626,9 +639,11 @@ function main(app, common, lang) {
             ?? '';
     }
 
-    function matchQuery(text) {
+    function matchQuery(text, filtered, candidates) {
         const t = normalizeText(text);
-        suggestion_candidates.add(t);
+        candidates.add(t);
+
+        if (!filtered) return true;
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
@@ -682,16 +697,16 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Subscriptions_RichItemRenderer(node) {
+    function matchTextContent_Subscriptions_RichItemRenderer(node, filtered, candidates) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_title) {
-            return matchQuery(shorts_title.textContent);
+            return matchQuery(shorts_title.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -847,32 +862,32 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Home_RichItemRenderer(node) {
+    function matchTextContent_Home_RichItemRenderer(node, filtered, candidates) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent);
+            return matchQuery(shorts_metadata.textContent, filtered, candidates);
         }
 
         const post_text = node.querySelector('div#post-text');
         const post_author = node.querySelector('div#author');
         if (post_text || post_author) {
-            return matchQuery(`${post_text?.textContent ?? ''}\n${post_author?.textContent ?? ''}`);
+            return matchQuery(`${post_text?.textContent ?? ''}\n${post_author?.textContent ?? ''}`, filtered, candidates);
         }
 
         const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
         if (collection_metadata) {
-            return matchQuery(collection_metadata.textContent);
+            return matchQuery(collection_metadata.textContent, filtered, candidates);
         }
 
         const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
         if (ad_metadata) {
-            return matchQuery(ad_metadata.textContent);
+            return matchQuery(ad_metadata.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -968,11 +983,11 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Home_RichGridMedia(node) {
+    function matchTextContent_Home_RichGridMedia(node, filtered, candidates) {
         const title = node.querySelector('a#video-title-link');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         // default: visible
@@ -1108,10 +1123,10 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Shorts_RichItemRenderer(node) {
+    function matchTextContent_Shorts_RichItemRenderer(node, filtered, candidates) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.getAttribute('aria-label'));
+            return matchQuery(metadata.getAttribute('aria-label'), filtered, candidates);
         }
 
         // default: visible
@@ -1165,16 +1180,16 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_History_LockupViewModel(node) {
+    function matchTextContent_History_LockupViewModel(node, filtered, candidates) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent);
+            return matchQuery(shorts_metadata.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1213,10 +1228,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_History_ShortsLockupViewModelV2(node) {
+    function matchTextContent_History_ShortsLockupViewModelV2(node, filtered, candidates) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1235,11 +1250,11 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_History_VideoRenderer(node) {
+    function matchTextContent_History_VideoRenderer(node, filtered, candidates) {
         const title = node.querySelector('h3.title-and-badge');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         // default: visible
@@ -1311,11 +1326,11 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Playlists_RichItemRenderer(node) {
+    function matchTextContent_Playlists_RichItemRenderer(node, filtered, candidates) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         // default: visible
@@ -1365,11 +1380,11 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Playlist_VideoRenderer(node) {
+    function matchTextContent_Playlist_VideoRenderer(node, filtered, candidates) {
         const title = node.querySelector('a#video-title');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         // default: visible
@@ -1469,11 +1484,11 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_HashTag_RichItemRenderer(node) {
+    function matchTextContent_HashTag_RichItemRenderer(node, filtered, candidates) {
         const title = node.querySelector('yt-formatted-string#video-title');
         const channel_name = node.querySelector('yt-formatted-string#text.ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
         }
 
         // default: visible
@@ -1584,10 +1599,10 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Channel_ChannelFeaturedContentRenderer(node) {
+    function matchTextContent_Channel_ChannelFeaturedContentRenderer(node, filtered, candidates) {
         const title = node.querySelector('a#video-title');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1611,10 +1626,10 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Channel_GridVideoRenderer(node) {
+    function matchTextContent_Channel_GridVideoRenderer(node, filtered, candidates) {
         const title = node.querySelector('a#video-title');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1638,10 +1653,10 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Channel_GridChannelRenderer(node) {
+    function matchTextContent_Channel_GridChannelRenderer(node, filtered, candidates) {
         const title = node.querySelector('span#title');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1656,10 +1671,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_PostRenderer(node) {
+    function matchTextContent_Channel_PostRenderer(node, filtered, candidates) {
         const text = node.querySelector('div#post-text');
         if (text) {
-            return matchQuery(text.textContent);
+            return matchQuery(text.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1674,10 +1689,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_ShortsLockupViewModelV2(node) {
+    function matchTextContent_Channel_ShortsLockupViewModelV2(node, filtered, candidates) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1692,15 +1707,15 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_RichItemRenderer(node) {
+    function matchTextContent_Channel_RichItemRenderer(node, filtered, candidates) {
         const title = node.querySelector('a#video-title-link');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, filtered, candidates);
         }
 
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1724,10 +1739,10 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Channel_LockupViewModel(node) {
+    function matchTextContent_Channel_LockupViewModel(node, filtered, candidates) {
         const metadata = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1742,10 +1757,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_BackstagePostThreadRenderer(node) {
+    function matchTextContent_Channel_BackstagePostThreadRenderer(node, filtered, candidates) {
         const content = node.querySelector('div#content');
         if (content) {
-            return matchQuery(content.textContent);
+            return matchQuery(content.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -1793,10 +1808,10 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Channels_ChannelRenderer(node) {
+    function matchTextContent_Channels_ChannelRenderer(node, filtered, candidates) {
         const info = node.querySelector('div#info');
         if (info) {
-            return matchQuery(info.textContent);
+            return matchQuery(info.textContent, filtered, candidates);
         }
 
         // default: visible
@@ -3001,10 +3016,6 @@ function main(app, common, lang) {
             process
         };
     })();
-
-    function isElementVisible(el) {
-        return el && main_browse?.contains(el) && (el.classList.contains('filter-hidden') || (el.getBoundingClientRect().width ?? 0) > 0);
-    }
 
     const default_tab = {
         live: common.default_default_live,
