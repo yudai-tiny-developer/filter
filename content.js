@@ -573,7 +573,7 @@ function main(app, common, lang) {
         if (common.isSubscriptions(location.href)) {
             shallow ? onNodeLoaded_Subscriptions(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
         } else if (common.isHome(location.href)) {
-            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
+            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-POST-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
         } else if (common.isShorts(location.href)) {
             shallow ? onNodeLoaded_Shorts(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
         } else if (common.isHistory(location.href)) {
@@ -592,7 +592,8 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
+        const matched_status = includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus);
+        if (matched_status && matchTextContent(node)) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
@@ -600,6 +601,14 @@ function main(app, common, lang) {
             node.style.cssText = 'display: none !important;';
             node.classList.remove('filter-show');
             node.classList.add('filter-hidden');
+        }
+
+        if (matched_status) {
+            node.classList.add('filter-matched-status');
+            node.classList.remove('filter-unmatched-status');
+        } else {
+            node.classList.remove('filter-matched-status');
+            node.classList.add('filter-unmatched-status');
         }
     }
 
@@ -624,9 +633,9 @@ function main(app, common, lang) {
             ?? '';
     }
 
-    function matchQuery(text) {
+    function matchQuery(text, node) {
         const t = normalizeText(text);
-        suggestion_candidates.add(t);
+        suggestion_candidates.set(t, node);
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
@@ -684,12 +693,12 @@ function main(app, common, lang) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_title) {
-            return matchQuery(shorts_title.textContent);
+            return matchQuery(shorts_title.textContent, node);
         }
 
         // default: visible
@@ -760,6 +769,14 @@ function main(app, common, lang) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node, matchTextContent_Home_RichItemRenderer, classifyModeStatus_Home_RichItemRenderer, classifyProgressStatus_Home_RichItemRenderer);
+                break;
+            case 'YTD-POST-RENDERER':
+                {
+                    const n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
+                    if (n) {
+                        updateTargetVisibility(n, matchTextContent_Home_RichItemRenderer, classifyModeStatus_Home_RichItemRenderer, classifyProgressStatus_Home_RichItemRenderer);
+                    }
+                }
                 break;
             case 'YT-LOCKUP-VIEW-MODEL':
                 {
@@ -841,22 +858,28 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent);
+            return matchQuery(shorts_metadata.textContent, node);
+        }
+
+        const post_text = node.querySelector('div#post-text');
+        const post_author = node.querySelector('div#author');
+        if (post_text || post_author) {
+            return matchQuery(`${post_text?.textContent ?? ''}\n${post_author?.textContent ?? ''}`, node);
         }
 
         const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
         if (collection_metadata) {
-            return matchQuery(collection_metadata.textContent);
+            return matchQuery(collection_metadata.textContent, node);
         }
 
         const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
         if (ad_metadata) {
-            return matchQuery(ad_metadata.textContent);
+            return matchQuery(ad_metadata.textContent, node);
         }
 
         // default: visible
@@ -956,7 +979,7 @@ function main(app, common, lang) {
         const title = node.querySelector('a#video-title-link');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1095,7 +1118,7 @@ function main(app, common, lang) {
     function matchTextContent_Shorts_RichItemRenderer(node) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.getAttribute('aria-label'));
+            return matchQuery(metadata.getAttribute('aria-label'), node);
         }
 
         // default: visible
@@ -1153,12 +1176,12 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent);
+            return matchQuery(shorts_metadata.textContent, node);
         }
 
         // default: visible
@@ -1200,7 +1223,7 @@ function main(app, common, lang) {
     function matchTextContent_History_ShortsLockupViewModelV2(node) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1223,7 +1246,7 @@ function main(app, common, lang) {
         const title = node.querySelector('h3.title-and-badge');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1299,7 +1322,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1353,7 +1376,7 @@ function main(app, common, lang) {
         const title = node.querySelector('a#video-title');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1457,7 +1480,7 @@ function main(app, common, lang) {
         const title = node.querySelector('yt-formatted-string#video-title');
         const channel_name = node.querySelector('yt-formatted-string#text.ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1553,7 +1576,7 @@ function main(app, common, lang) {
 
     function insertMenu_Channel(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse, true);
+            const menu = createMenu(browse, true, 'absolute');
 
             const referenceNode = browse.querySelector('ytd-two-column-browse-results-renderer');
             if (referenceNode) {
@@ -1571,7 +1594,7 @@ function main(app, common, lang) {
     function matchTextContent_Channel_ChannelFeaturedContentRenderer(node) {
         const title = node.querySelector('a#video-title');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, node);
         }
 
         // default: visible
@@ -1598,7 +1621,7 @@ function main(app, common, lang) {
     function matchTextContent_Channel_GridVideoRenderer(node) {
         const title = node.querySelector('a#video-title');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, node);
         }
 
         // default: visible
@@ -1625,7 +1648,7 @@ function main(app, common, lang) {
     function matchTextContent_Channel_GridChannelRenderer(node) {
         const title = node.querySelector('span#title');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, node);
         }
 
         // default: visible
@@ -1643,7 +1666,7 @@ function main(app, common, lang) {
     function matchTextContent_Channel_PostRenderer(node) {
         const text = node.querySelector('div#post-text');
         if (text) {
-            return matchQuery(text.textContent);
+            return matchQuery(text.textContent, node);
         }
 
         // default: visible
@@ -1661,7 +1684,7 @@ function main(app, common, lang) {
     function matchTextContent_Channel_ShortsLockupViewModelV2(node) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1679,12 +1702,12 @@ function main(app, common, lang) {
     function matchTextContent_Channel_RichItemRenderer(node) {
         const title = node.querySelector('a#video-title-link');
         if (title) {
-            return matchQuery(title.textContent);
+            return matchQuery(title.textContent, node);
         }
 
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1711,7 +1734,7 @@ function main(app, common, lang) {
     function matchTextContent_Channel_LockupViewModel(node) {
         const metadata = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         if (metadata) {
-            return matchQuery(metadata.textContent);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1729,7 +1752,7 @@ function main(app, common, lang) {
     function matchTextContent_Channel_BackstagePostThreadRenderer(node) {
         const content = node.querySelector('div#content');
         if (content) {
-            return matchQuery(content.textContent);
+            return matchQuery(content.textContent, node);
         }
 
         // default: visible
@@ -1780,7 +1803,7 @@ function main(app, common, lang) {
     function matchTextContent_Channels_ChannelRenderer(node) {
         const info = node.querySelector('div#info');
         if (info) {
-            return matchQuery(info.textContent);
+            return matchQuery(info.textContent, node);
         }
 
         // default: visible
@@ -1938,7 +1961,7 @@ function main(app, common, lang) {
         }
     }
 
-    function createMenu(browse, scroll) {
+    function createMenu(browse, scroll, positionOverride = undefined) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
         menu.classList.add('filter-menu');
@@ -1976,7 +1999,7 @@ function main(app, common, lang) {
         menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse, scroll));
         menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse, scroll));
 
-        const input = createQueryInput(menu, browse);
+        const input = createQueryInput(menu, browse, positionOverride);
         menu.appendChild(createQueryInputArea(input, browse, scroll));
         menu.appendChild(createSearchButton(input, browse, scroll));
 
@@ -2097,7 +2120,7 @@ function main(app, common, lang) {
         return inputArea;
     }
 
-    function createQueryInput(menu, browse) {
+    function createQueryInput(menu, browse, positionOverride = undefined) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
@@ -2109,7 +2132,7 @@ function main(app, common, lang) {
             menu.requestSubmit();
         });
 
-        attachSuggest(input);
+        attachSuggest(input, positionOverride);
 
         return input;
     }
@@ -2154,7 +2177,7 @@ function main(app, common, lang) {
                     const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                     if (existsMenu !== popupMenu.get(playlists)) {
                         if (!existsMenu) {
-                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true, undefined);
+                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true);
                             parent.append(menu);
                         } else {
                             existsMenu.containers.push(playlists);
@@ -2206,7 +2229,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false, undefined);
+                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false);
                         parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
                     } else {
                         existsMenu.containers.push(items);
@@ -2287,7 +2310,7 @@ function main(app, common, lang) {
             menu.requestSubmit();
         });
 
-        attachSuggest(input, positionOverride);
+        attachSuggest(input, positionOverride, false);
 
         return input;
     }
@@ -2795,7 +2818,7 @@ function main(app, common, lang) {
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'without-chipbar');
     }
 
-    function attachSuggest(input, positionOverride = undefined, maxVisible = 20) {
+    function attachSuggest(input, positionOverride = undefined, use_suggestion_candidates = true, maxVisible = 20) {
         let box = null;
         let activeIndex = -1;
         let prevActiveIndex = -1;
@@ -2806,8 +2829,10 @@ function main(app, common, lang) {
             box = document.createElement('ul');
             box.className = 'suggest-box';
 
-            // workaround: sidebar channels
-            box.style.position = positionOverride;
+            // workaround: sidebar channels, channel page
+            if (positionOverride) {
+                box.style.position = positionOverride;
+            }
 
             box.addEventListener('mousedown', e => {
                 e.preventDefault();
@@ -2874,7 +2899,7 @@ function main(app, common, lang) {
             }
 
             input.setAttribute('autocomplete', 'off');
-            const suggestions = (default_suggestions?.length ?? 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
+            const suggestions = !use_suggestion_candidates || (default_suggestions?.length ?? 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
             if (!box) createBox();
 
             const value = normalizeText(input.value);
@@ -2964,10 +2989,12 @@ function main(app, common, lang) {
                 .filter(Boolean);
         }
 
-        function process(inputSet) {
+        function process(inputMap) {
             const frequencyMap = new Map();
 
-            for (const item of inputSet) {
+            for (const [item, node] of inputMap.entries()) {
+                if (node.hasAttribute('hidden') || !main_browse?.contains(node) || node.classList.contains('filter-unmatched-status')) continue;
+
                 const tokens = splitByDelimiters(item);
 
                 for (const token of tokens) {
@@ -3026,7 +3053,8 @@ function main(app, common, lang) {
 
     const popupMenu = new Map();
 
-    let suggestion_candidates = new Set();
+    let suggestion_candidates = new Map();
+    let main_browse;
 
     let continuation_item;
     const load_button_container = document.createElement('div');
@@ -3056,15 +3084,15 @@ function main(app, common, lang) {
         onResize();
     });
 
-    document.addEventListener('yt-navigate-start', () => {
+    document.addEventListener('yt-page-data-updated', () => {
+        main_browse = document.body.querySelector('ytd-browse[role="main"]');
         suggestion_candidates.clear();
-    });
-
-    document.addEventListener('yt-navigate-finish', () => {
         onViewChanged();
     });
 
     document.addEventListener('yt-service-request-completed', () => {
+        main_browse = document.body.querySelector('ytd-browse[role="main"]');
+        suggestion_candidates.clear();
         onViewChanged();
     });
 
