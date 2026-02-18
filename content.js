@@ -3074,11 +3074,8 @@ function main(app, common, lang) {
         onResize();
     });
 
-    document.addEventListener('yt-page-type-changed', () => {
+    document.addEventListener('yt-page-data-updated', () => {
         suggestion_candidates.clear();
-    });
-
-    document.addEventListener('yt-navigate-finish', () => {
         onViewChanged();
     });
 
