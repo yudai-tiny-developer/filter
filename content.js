@@ -569,25 +569,36 @@ function main(app, common, lang) {
             ;
     }
 
-    function updateVisibility(node, shallow) {
+    function updateVisibility(node, deep = true) {
         if (common.isSubscriptions(location.href)) {
-            shallow ? onNodeLoaded_Subscriptions(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
+            onNodeLoaded_Subscriptions(node);
+            if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
         } else if (common.isHome(location.href)) {
-            shallow ? onNodeLoaded_Home(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-POST-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
+            onNodeLoaded_Home(node);
+            if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-POST-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
         } else if (common.isShorts(location.href)) {
-            shallow ? onNodeLoaded_Shorts(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
+            onNodeLoaded_Shorts(node);
+            if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
         } else if (common.isHistory(location.href)) {
-            shallow ? onNodeLoaded_History(node) : node.querySelectorAll('YT-LOCKUP-VIEW-MODEL,YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_History(n));
+            onNodeLoaded_History(node);
+            if (deep) node.querySelectorAll('YT-LOCKUP-VIEW-MODEL,YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_History(n));
         } else if (common.isPlaylists(location.href)) {
-            shallow ? onNodeLoaded_Playlists(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Playlists(n));
+            onNodeLoaded_Playlists(node);
+            if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Playlists(n));
         } else if (common.isPlaylist(location.href)) {
-            shallow ? onNodeLoaded_Playlist(node) : node.querySelectorAll('YTD-PLAYLIST-VIDEO-RENDERER, YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Playlist(n));
+            onNodeLoaded_Playlist(node);
+            if (deep) node.querySelectorAll('YTD-PLAYLIST-VIDEO-RENDERER, YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Playlist(n));
         } else if (common.isHashTag(location.href)) {
-            shallow ? onNodeLoaded_HashTag(node) : node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, TP-YT-APP-HEADER').forEach(n => onNodeLoaded_HashTag(n));
+            onNodeLoaded_HashTag(node);
+            if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, TP-YT-APP-HEADER').forEach(n => onNodeLoaded_HashTag(n));
         } else if (common.isChannel(location.href)) {
-            shallow ? onNodeLoaded_Channel(node) : node.querySelectorAll('YTD-CHANNEL-FEATURED-CONTENT-RENDERER, YTD-GRID-VIDEO-RENDERER, YTD-GRID-CHANNEL-RENDERER, YTD-POST-RENDERER, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-BACKSTAGE-POST-THREAD-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channel(n));
+            onNodeLoaded_Channel(node);
+            if (deep) node.querySelectorAll('YTD-CHANNEL-FEATURED-CONTENT-RENDERER, YTD-GRID-VIDEO-RENDERER, YTD-GRID-CHANNEL-RENDERER, YTD-POST-RENDERER, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-BACKSTAGE-POST-THREAD-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channel(n));
         } else if (common.isChannels(location.href)) {
-            shallow ? onNodeLoaded_Channels(node) : node.querySelectorAll('YTD-CHANNEL-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channels(n));
+            onNodeLoaded_Channels(node);
+            if (deep) node.querySelectorAll('YTD-CHANNEL-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channels(n));
+        } else {
+            reset_frosted_glass_mode();
         }
     }
 
@@ -2924,6 +2935,7 @@ function main(app, common, lang) {
                 li.textContent = text;
                 li.dataset.index = index;
                 li.className = 'suggest-item';
+                li.setAttribute('translate', 'no');
                 box.appendChild(li);
                 currentItems.push(li);
             });
@@ -3102,7 +3114,7 @@ function main(app, common, lang) {
 
     new MutationObserver((mutations, observer) => {
         for (const m of mutations) {
-            updateVisibility(m.target, true);
+            updateVisibility(m.target, false);
             onAppNodeLoaded(m.target);
         }
     }).observe(app, { subtree: true, childList: true });
