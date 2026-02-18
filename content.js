@@ -2924,6 +2924,7 @@ function main(app, common, lang) {
                 li.textContent = text;
                 li.dataset.index = index;
                 li.className = 'suggest-item';
+                li.setAttribute('translate', 'no');
                 box.appendChild(li);
                 currentItems.push(li);
             });
