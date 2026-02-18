@@ -592,7 +592,8 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
+        const matched_status = includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus);
+        if (matched_status && matchTextContent(node)) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
@@ -600,6 +601,14 @@ function main(app, common, lang) {
             node.style.cssText = 'display: none !important;';
             node.classList.remove('filter-show');
             node.classList.add('filter-hidden');
+        }
+
+        if (matched_status) {
+            node.classList.add('filter-matched-status');
+            node.classList.remove('filter-unmatched-status');
+        } else {
+            node.classList.remove('filter-matched-status');
+            node.classList.add('filter-unmatched-status');
         }
     }
 
@@ -2984,7 +2993,7 @@ function main(app, common, lang) {
             const frequencyMap = new Map();
 
             for (const [item, node] of inputMap.entries()) {
-                if (node.hasAttribute('hidden') || !main_browse?.contains(node)) continue;
+                if (node.hasAttribute('hidden') || !main_browse?.contains(node) || node.classList.contains('filter-unmatched-status')) continue;
 
                 const tokens = splitByDelimiters(item);
 
