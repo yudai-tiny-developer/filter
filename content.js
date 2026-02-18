@@ -592,10 +592,7 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        const filtered = includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus);
-
-        const candidates = new Set();
-        if (matchTextContent(node, filtered, candidates)) {
+        if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
@@ -603,16 +600,6 @@ function main(app, common, lang) {
             node.style.cssText = 'display: none !important;';
             node.classList.remove('filter-show');
             node.classList.add('filter-hidden');
-        }
-
-        if (filtered && !node.hasAttribute('hidden') && main_browse?.contains(node)) {
-            for (const value of candidates) {
-                suggestion_candidates.add(value);
-            }
-        } else {
-            for (const value of candidates) {
-                suggestion_candidates.delete(value);
-            }
         }
     }
 
@@ -637,11 +624,9 @@ function main(app, common, lang) {
             ?? '';
     }
 
-    function matchQuery(text, filtered, candidates) {
+    function matchQuery(text, node) {
         const t = normalizeText(text);
-        candidates.add(t);
-
-        if (!filtered) return false;
+        suggestion_candidates.set(t, node);
 
         const query = get_cache_query()?.trim();
         if (!query) return true;
@@ -695,16 +680,16 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Subscriptions_RichItemRenderer(node, filtered, candidates) {
+    function matchTextContent_Subscriptions_RichItemRenderer(node) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_title) {
-            return matchQuery(shorts_title.textContent, filtered, candidates);
+            return matchQuery(shorts_title.textContent, node);
         }
 
         // default: visible
@@ -860,32 +845,32 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Home_RichItemRenderer(node, filtered, candidates) {
+    function matchTextContent_Home_RichItemRenderer(node) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent, filtered, candidates);
+            return matchQuery(shorts_metadata.textContent, node);
         }
 
         const post_text = node.querySelector('div#post-text');
         const post_author = node.querySelector('div#author');
         if (post_text || post_author) {
-            return matchQuery(`${post_text?.textContent ?? ''}\n${post_author?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${post_text?.textContent ?? ''}\n${post_author?.textContent ?? ''}`, node);
         }
 
         const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
         if (collection_metadata) {
-            return matchQuery(collection_metadata.textContent, filtered, candidates);
+            return matchQuery(collection_metadata.textContent, node);
         }
 
         const ad_metadata = node.querySelector('feed-ad-metadata-view-model');
         if (ad_metadata) {
-            return matchQuery(ad_metadata.textContent, filtered, candidates);
+            return matchQuery(ad_metadata.textContent, node);
         }
 
         // default: visible
@@ -981,11 +966,11 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Home_RichGridMedia(node, filtered, candidates) {
+    function matchTextContent_Home_RichGridMedia(node) {
         const title = node.querySelector('a#video-title-link');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1121,10 +1106,10 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Shorts_RichItemRenderer(node, filtered, candidates) {
+    function matchTextContent_Shorts_RichItemRenderer(node) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.getAttribute('aria-label'), filtered, candidates);
+            return matchQuery(metadata.getAttribute('aria-label'), node);
         }
 
         // default: visible
@@ -1178,16 +1163,16 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_History_LockupViewModel(node, filtered, candidates) {
+    function matchTextContent_History_LockupViewModel(node) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) {
-            return matchQuery(shorts_metadata.textContent, filtered, candidates);
+            return matchQuery(shorts_metadata.textContent, node);
         }
 
         // default: visible
@@ -1226,10 +1211,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_History_ShortsLockupViewModelV2(node, filtered, candidates) {
+    function matchTextContent_History_ShortsLockupViewModelV2(node) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent, filtered, candidates);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1248,11 +1233,11 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_History_VideoRenderer(node, filtered, candidates) {
+    function matchTextContent_History_VideoRenderer(node) {
         const title = node.querySelector('h3.title-and-badge');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1324,11 +1309,11 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Playlists_RichItemRenderer(node, filtered, candidates) {
+    function matchTextContent_Playlists_RichItemRenderer(node) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1378,11 +1363,11 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Playlist_VideoRenderer(node, filtered, candidates) {
+    function matchTextContent_Playlist_VideoRenderer(node) {
         const title = node.querySelector('a#video-title');
         const channel_name = node.querySelector('ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1482,11 +1467,11 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_HashTag_RichItemRenderer(node, filtered, candidates) {
+    function matchTextContent_HashTag_RichItemRenderer(node) {
         const title = node.querySelector('yt-formatted-string#video-title');
         const channel_name = node.querySelector('yt-formatted-string#text.ytd-channel-name');
         if (title || channel_name) {
-            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, filtered, candidates);
+            return matchQuery(`${title?.textContent ?? ''}\n${channel_name?.textContent ?? ''}`, node);
         }
 
         // default: visible
@@ -1597,10 +1582,10 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Channel_ChannelFeaturedContentRenderer(node, filtered, candidates) {
+    function matchTextContent_Channel_ChannelFeaturedContentRenderer(node) {
         const title = node.querySelector('a#video-title');
         if (title) {
-            return matchQuery(title.textContent, filtered, candidates);
+            return matchQuery(title.textContent, node);
         }
 
         // default: visible
@@ -1624,10 +1609,10 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Channel_GridVideoRenderer(node, filtered, candidates) {
+    function matchTextContent_Channel_GridVideoRenderer(node) {
         const title = node.querySelector('a#video-title');
         if (title) {
-            return matchQuery(title.textContent, filtered, candidates);
+            return matchQuery(title.textContent, node);
         }
 
         // default: visible
@@ -1651,10 +1636,10 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Channel_GridChannelRenderer(node, filtered, candidates) {
+    function matchTextContent_Channel_GridChannelRenderer(node) {
         const title = node.querySelector('span#title');
         if (title) {
-            return matchQuery(title.textContent, filtered, candidates);
+            return matchQuery(title.textContent, node);
         }
 
         // default: visible
@@ -1669,10 +1654,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_PostRenderer(node, filtered, candidates) {
+    function matchTextContent_Channel_PostRenderer(node) {
         const text = node.querySelector('div#post-text');
         if (text) {
-            return matchQuery(text.textContent, filtered, candidates);
+            return matchQuery(text.textContent, node);
         }
 
         // default: visible
@@ -1687,10 +1672,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_ShortsLockupViewModelV2(node, filtered, candidates) {
+    function matchTextContent_Channel_ShortsLockupViewModelV2(node) {
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent, filtered, candidates);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1705,15 +1690,15 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_RichItemRenderer(node, filtered, candidates) {
+    function matchTextContent_Channel_RichItemRenderer(node) {
         const title = node.querySelector('a#video-title-link');
         if (title) {
-            return matchQuery(title.textContent, filtered, candidates);
+            return matchQuery(title.textContent, node);
         }
 
         const metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (metadata) {
-            return matchQuery(metadata.textContent, filtered, candidates);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1737,10 +1722,10 @@ function main(app, common, lang) {
         return status;
     }
 
-    function matchTextContent_Channel_LockupViewModel(node, filtered, candidates) {
+    function matchTextContent_Channel_LockupViewModel(node) {
         const metadata = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
         if (metadata) {
-            return matchQuery(metadata.textContent, filtered, candidates);
+            return matchQuery(metadata.textContent, node);
         }
 
         // default: visible
@@ -1755,10 +1740,10 @@ function main(app, common, lang) {
         return undefined;
     }
 
-    function matchTextContent_Channel_BackstagePostThreadRenderer(node, filtered, candidates) {
+    function matchTextContent_Channel_BackstagePostThreadRenderer(node) {
         const content = node.querySelector('div#content');
         if (content) {
-            return matchQuery(content.textContent, filtered, candidates);
+            return matchQuery(content.textContent, node);
         }
 
         // default: visible
@@ -1806,10 +1791,10 @@ function main(app, common, lang) {
         }
     }
 
-    function matchTextContent_Channels_ChannelRenderer(node, filtered, candidates) {
+    function matchTextContent_Channels_ChannelRenderer(node) {
         const info = node.querySelector('div#info');
         if (info) {
-            return matchQuery(info.textContent, filtered, candidates);
+            return matchQuery(info.textContent, node);
         }
 
         // default: visible
@@ -2995,10 +2980,12 @@ function main(app, common, lang) {
                 .filter(Boolean);
         }
 
-        function process(inputSet) {
+        function process(inputMap) {
             const frequencyMap = new Map();
 
-            for (const item of inputSet) {
+            for (const [item, node] of inputMap.entries()) {
+                if (node.hasAttribute('hidden') || !main_browse?.contains(node)) continue;
+
                 const tokens = splitByDelimiters(item);
 
                 for (const token of tokens) {
@@ -3057,7 +3044,7 @@ function main(app, common, lang) {
 
     const popupMenu = new Map();
 
-    let suggestion_candidates = new Set();
+    let suggestion_candidates = new Map();
     let main_browse;
 
     let continuation_item;
@@ -3095,6 +3082,8 @@ function main(app, common, lang) {
     });
 
     document.addEventListener('yt-service-request-completed', () => {
+        main_browse = document.body.querySelector('ytd-browse[role="main"]');
+        suggestion_candidates.clear();
         onViewChanged();
     });
 
