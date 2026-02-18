@@ -2304,7 +2304,7 @@ function main(app, common, lang) {
             menu.requestSubmit();
         });
 
-        attachSuggest(input, positionOverride);
+        attachSuggest(input, positionOverride, false);
 
         return input;
     }
@@ -2812,7 +2812,7 @@ function main(app, common, lang) {
         document.getElementById('masthead').setAttribute('frosted-glass-mode', 'without-chipbar');
     }
 
-    function attachSuggest(input, positionOverride = undefined, maxVisible = 20) {
+    function attachSuggest(input, positionOverride = undefined, use_suggestion_candidates = true, maxVisible = 20) {
         let box = null;
         let activeIndex = -1;
         let prevActiveIndex = -1;
@@ -2891,7 +2891,7 @@ function main(app, common, lang) {
             }
 
             input.setAttribute('autocomplete', 'off');
-            const suggestions = (default_suggestions?.length ?? 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
+            const suggestions = !use_suggestion_candidates || (default_suggestions?.length ?? 0) > 0 ? default_suggestions : SubstringFrequencyCounter.process(suggestion_candidates);
             if (!box) createBox();
 
             const value = normalizeText(input.value);
