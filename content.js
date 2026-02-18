@@ -3003,19 +3003,7 @@ function main(app, common, lang) {
     })();
 
     function isElementVisible(el) {
-        if (!el || !(el instanceof Element)) return false;
-
-        if (!document.documentElement.contains(el)) return false;
-
-        const style = window.getComputedStyle(el);
-
-        if (style.display === 'none') return false;
-        if (style.visibility === 'hidden' || style.visibility === 'collapse') return false;
-
-        const rect = el.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) return false;
-
-        return true;
+        return el && main_browse?.contains(el) && (el.classList.contains('filter-hidden') || (el.getBoundingClientRect().width ?? 0) > 0);
     }
 
     const default_tab = {
@@ -3059,6 +3047,7 @@ function main(app, common, lang) {
     const popupMenu = new Map();
 
     let suggestion_candidates = new Set();
+    let main_browse;
 
     let continuation_item;
     const load_button_container = document.createElement('div');
@@ -3089,6 +3078,7 @@ function main(app, common, lang) {
     });
 
     document.addEventListener('yt-page-data-updated', () => {
+        main_browse = document.body.querySelector('ytd-browse[role="main"]');
         suggestion_candidates.clear();
         onViewChanged();
     });
