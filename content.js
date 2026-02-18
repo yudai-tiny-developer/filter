@@ -1582,7 +1582,7 @@ function main(app, common, lang) {
 
     function insertMenu_Channel(browse) {
         if (!browse.querySelector('form.filter-menu:not(.filter-forCalc)')) {
-            const menu = createMenu(browse, true);
+            const menu = createMenu(browse, true, 'absolute');
 
             const referenceNode = browse.querySelector('ytd-two-column-browse-results-renderer');
             if (referenceNode) {
@@ -1967,7 +1967,7 @@ function main(app, common, lang) {
         }
     }
 
-    function createMenu(browse, scroll) {
+    function createMenu(browse, scroll, positionOverride = undefined) {
         const menu = document.createElement('form');
         menu.style.display = 'none';
         menu.classList.add('filter-menu');
@@ -2005,7 +2005,7 @@ function main(app, common, lang) {
         menu.appendChild(createButtonChannels(common.button_label.channels_personalized, 'channels_personalized', browse, scroll));
         menu.appendChild(createButtonChannels(common.button_label.channels_none, 'channels_none', browse, scroll));
 
-        const input = createQueryInput(menu, browse);
+        const input = createQueryInput(menu, browse, positionOverride);
         menu.appendChild(createQueryInputArea(input, browse, scroll));
         menu.appendChild(createSearchButton(input, browse, scroll));
 
@@ -2126,7 +2126,7 @@ function main(app, common, lang) {
         return inputArea;
     }
 
-    function createQueryInput(menu, browse) {
+    function createQueryInput(menu, browse, positionOverride = undefined) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
@@ -2138,7 +2138,7 @@ function main(app, common, lang) {
             menu.requestSubmit();
         });
 
-        attachSuggest(input);
+        attachSuggest(input, positionOverride);
 
         return input;
     }
@@ -2183,7 +2183,7 @@ function main(app, common, lang) {
                     const existsMenu = parent.querySelector('form.filter-popup.filter-add-playlist');
                     if (existsMenu !== popupMenu.get(playlists)) {
                         if (!existsMenu) {
-                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true, undefined);
+                            const menu = createPopupMenu([playlists], undefined, 'filter-add-playlist', keyword_add_playlist, true);
                             parent.append(menu);
                         } else {
                             existsMenu.containers.push(playlists);
@@ -2235,7 +2235,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-notification');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false, undefined);
+                        const menu = createPopupMenu([items], undefined, 'filter-notification', keyword_notification, false);
                         parent.insertBefore(menu, parent.querySelector('div#container') ?? parent.firstChild);
                     } else {
                         existsMenu.containers.push(items);
@@ -2835,8 +2835,10 @@ function main(app, common, lang) {
             box = document.createElement('ul');
             box.className = 'suggest-box';
 
-            // workaround: sidebar channels
-            box.style.position = positionOverride;
+            // workaround: sidebar channels, channel page
+            if (positionOverride) {
+                box.style.position = positionOverride;
+            }
 
             box.addEventListener('mousedown', e => {
                 e.preventDefault();
