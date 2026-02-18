@@ -592,7 +592,7 @@ function main(app, common, lang) {
     }
 
     function updateTargetVisibility(node, matchTextContent, classifyModeStatus, classifyProgressStatus) {
-        if (main_browse && !main_browse.contains(node)) {
+        if (!isElementVisible(node)) {
             // skip
         } else if (includesStatus(node, getActiveMode(), getActiveModeProgress(), classifyModeStatus, classifyProgressStatus) && matchTextContent(node)) {
             node.style.display = '';
@@ -1903,7 +1903,6 @@ function main(app, common, lang) {
     }
 
     function onViewChanged() {
-        main_browse = document.body.querySelector('ytd-browse[role="main"]');
         for (const browse of app.querySelectorAll('ytd-browse, ytd-watch-flexy')) {
             onViewChanged_Node(browse);
         }
@@ -3003,6 +3002,22 @@ function main(app, common, lang) {
         };
     })();
 
+    function isElementVisible(el) {
+        if (!el || !(el instanceof Element)) return false;
+
+        if (!document.documentElement.contains(el)) return false;
+
+        const style = window.getComputedStyle(el);
+
+        if (style.display === 'none') return false;
+        if (style.visibility === 'hidden' || style.visibility === 'collapse') return false;
+
+        const rect = el.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return false;
+
+        return true;
+    }
+
     const default_tab = {
         live: common.default_default_live,
         streamed: common.default_default_streamed,
@@ -3044,7 +3059,6 @@ function main(app, common, lang) {
     const popupMenu = new Map();
 
     let suggestion_candidates = new Set();
-    let main_browse;
 
     let continuation_item;
     const load_button_container = document.createElement('div');
