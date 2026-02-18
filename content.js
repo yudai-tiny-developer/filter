@@ -588,6 +588,8 @@ function main(app, common, lang) {
             shallow ? onNodeLoaded_Channel(node) : node.querySelectorAll('YTD-CHANNEL-FEATURED-CONTENT-RENDERER, YTD-GRID-VIDEO-RENDERER, YTD-GRID-CHANNEL-RENDERER, YTD-POST-RENDERER, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-RICH-ITEM-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-BACKSTAGE-POST-THREAD-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channel(n));
         } else if (common.isChannels(location.href)) {
             shallow ? onNodeLoaded_Channels(node) : node.querySelectorAll('YTD-CHANNEL-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Channels(n));
+        } else {
+            reset_frosted_glass_mode();
         }
     }
 
