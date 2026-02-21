@@ -664,7 +664,7 @@ function main(app, common, lang) {
                 insertMenu_Subscriptions(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
-                if (node.parentNode.children.length > limit) {
+                if (node.parentNode?.children.length > limit) {
                     load_button_container.style.display = '';
                     node.style.display = 'none';
                     node.classList.remove('filter-show');
