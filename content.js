@@ -2895,12 +2895,12 @@ function main(app, common, lang) {
             }
         }
 
-        function selectValue(index) {
+        function selectValue(index, silent) {
             const value = currentValues[index];
             if (value) {
                 input.value = value + ' ';
             }
-            input.dispatchEvent(new Event('change'));
+            if (!silent) input.dispatchEvent(new Event('change'));
         }
 
         function show() {
@@ -2978,7 +2978,7 @@ function main(app, common, lang) {
                 if (!box.classList.contains('is-visible')) return;
                 if (activeIndex >= 0) {
                     e.preventDefault();
-                    selectValue(activeIndex);
+                    selectValue(activeIndex, true);
                     input.focus();
                     const len = input.value.length;
                     input.setSelectionRange(len, len);
