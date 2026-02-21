@@ -24,7 +24,6 @@ export function createHeaderRow(button_label_visibility, button_label_default, h
 }
 
 export function createRow(label, default_label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined, onChange = undefined, button_label_clear = undefined, input_class = undefined, minRate = undefined, maxRate = undefined, stepRate = undefined, limitRate = undefined) {
-    console.log(input_class);
     const div = document.createElement('div');
     div.classList.add('row', mode);
     if (tab_group) {
