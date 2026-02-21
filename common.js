@@ -6,6 +6,7 @@ export const storage = [
     'scheduled',
     'notification_on',
     'notification_off',
+    'post',
 
     'progress_unwatched',
     'progress_watched',
@@ -26,6 +27,7 @@ export const storage = [
     'default_scheduled',
     'default_notification_on',
     'default_notification_off',
+    'default_post',
 
     'default_progress_unwatched',
     'default_progress_watched',
@@ -45,6 +47,7 @@ export const storage = [
     'button_label_scheduled',
     'button_label_notification_on',
     'button_label_notification_off',
+    'button_label_post',
     'button_label_progress_unwatched',
     'button_label_progress_watched',
 
@@ -78,6 +81,7 @@ export const default_order = [
     'scheduled',
     'notification_on',
     'notification_off',
+    'post',
 
     'progress_unwatched',
     'progress_watched',
@@ -105,6 +109,7 @@ export const button_label = {
     scheduled: chrome.i18n.getMessage('button_scheduled'),
     notification_on: chrome.i18n.getMessage('button_notification_on'),
     notification_off: chrome.i18n.getMessage('button_notification_off'),
+    post: chrome.i18n.getMessage('button_post'),
 
     progress_all: chrome.i18n.getMessage('button_progress_all'),
     progress_unwatched: chrome.i18n.getMessage('button_progress_unwatched'),
@@ -156,6 +161,7 @@ export const default_short = true;
 export const default_scheduled = true;
 export const default_notification_on = false;
 export const default_notification_off = false;
+export const default_post = false;
 
 export const default_progress_unwatched = true;
 export const default_progress_watched = true;
@@ -186,6 +192,7 @@ export const default_default_short = false;
 export const default_default_scheduled = false;
 export const default_default_notification_on = false;
 export const default_default_notification_off = false;
+export const default_default_post = false;
 
 export const default_default_progress_unwatched = false;
 export const default_default_progress_watched = false;
