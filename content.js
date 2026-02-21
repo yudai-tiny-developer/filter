@@ -3017,7 +3017,7 @@ function main(app, common, lang) {
 
             return Array.from(frequencyMap.entries())
                 .sort((a, b) => b[1] - a[1])
-                .map(([substring, count]) => `"${substring}"`);
+                .map(([substring, count]) => substring.includes(' ') ? `"${substring}"` : `${substring}`);
         }
 
         return {
