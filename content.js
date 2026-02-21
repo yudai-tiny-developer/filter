@@ -2251,7 +2251,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels, false, 'absolute');
+                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item, ytd-guide-entry-renderer#collapser-item', 'filter-sidebar-channels', keyword_sidebar_channels, false, 'absolute');
                         parent.insertBefore(menu, items);
                     } else {
                         existsMenu.containers.push(items);
@@ -2310,13 +2310,28 @@ function main(app, common, lang) {
 
             if (expander) {
                 for (const container of menu.containers) {
-                    const expander_node = container.querySelector(expander);
-                    if (expander_node) {
-                        expander_node.parentNode.insertBefore(spinner, expander_node);
-                        setTimeout(() => {
-                            expander_node.click();
-                            spinner.remove();
-                        }, 0);
+                    for (const expander_node of container.querySelectorAll(expander)) {
+                        if (expander_node.id === 'expander-item' && input.value !== '') {
+                            expander_node.parentNode.insertBefore(spinner, expander_node);
+                            setTimeout(() => {
+                                expander_node.click();
+                                spinner.remove();
+                            }, 0);
+                        }
+                    }
+                }
+            }
+        });
+
+        input.addEventListener('change', () => {
+            if (expander) {
+                for (const container of menu.containers) {
+                    for (const expander_node of container.querySelectorAll(expander)) {
+                        if (expander_node.id === 'collapser-item' && input.value === '') {
+                            setTimeout(() => {
+                                expander_node.click();
+                            }, 0);
+                        }
                     }
                 }
             }
@@ -2348,7 +2363,7 @@ function main(app, common, lang) {
         input.setAttribute('placeholder', 'Subscription Feed Filter');
         input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
         input.id = 'filter-query';
-        input.addEventListener('change', e => {
+        input.addEventListener('change', () => {
             menu.requestSubmit();
         });
 
@@ -2363,8 +2378,7 @@ function main(app, common, lang) {
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updatePopupQuery(containers, '');
-            updatePopupVisibility(containers);
+            input.dispatchEvent(new Event('change'));
         });
         return span;
     }
