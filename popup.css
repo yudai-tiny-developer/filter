@@ -66,6 +66,8 @@ div.label {
 
 div.svg-label {
     vertical-align: middle;
+    width: 100px;
+    text-align: center;
 }
 
 div.draggable-label {

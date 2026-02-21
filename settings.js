@@ -24,6 +24,7 @@ export function createHeaderRow(button_label_visibility, button_label_default, h
 }
 
 export function createRow(label, default_label, mode, setting, deafult_value, default_tab = undefined, tab_group = undefined, onChange = undefined, button_label_clear = undefined, input_class = undefined, minRate = undefined, maxRate = undefined, stepRate = undefined, limitRate = undefined) {
+    console.log(input_class);
     const div = document.createElement('div');
     div.classList.add('row', mode);
     if (tab_group) {
@@ -31,7 +32,7 @@ export function createRow(label, default_label, mode, setting, deafult_value, de
         div.setAttribute('draggable', 'true');
     }
     div.appendChild(createDraggableIcon(tab_group));
-    div.appendChild(createLabelInput(label, default_label, onChange, tab_group ? div : undefined, button_label_clear));
+    div.appendChild(createLabelInput(label, default_label, onChange, tab_group ? div : undefined, button_label_clear, input_class));
     switch (input_class) {
         case 'step':
             div.appendChild(createInputArea(setting, deafult_value, onChange, undefined, input_class, minRate, maxRate, stepRate, limitRate));
@@ -103,7 +104,7 @@ function createLabelInput(label, default_label, onChange, row, button_label_clea
             div.appendChild(input);
         }
     } else {
-        div.classList.add('svg-label');
+        if (input_class) div.classList.add(input_class);
         div.innerHTML = label;
     }
 

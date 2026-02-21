@@ -44,9 +44,9 @@ function main(common, settings, progress, data) {
     settings_list_3.appendChild(settings.createRowKeyword(common.button_label.keyword, 'keyword', data.keyword, true, data.default_keyword, input => chrome.storage.local.set({ default_keyword: input.value }), common.button_label.clear));
     settings_list_3.appendChild(settings.createRowSuggestions(common.button_label.suggestions, 'suggest', data.suggest, false, data.suggestions, input => chrome.storage.local.set({ suggestions: input.value }), common.button_label.clear));
 
-    settings_list_4.appendChild(settings.createRow(common.button_label.channels_all, undefined, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels'));
-    settings_list_4.appendChild(settings.createRow(common.button_label.channels_personalized, undefined, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels'));
-    settings_list_4.appendChild(settings.createRow(common.button_label.channels_none, undefined, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels'));
+    settings_list_4.appendChild(settings.createRow(common.button_label.channels_all, undefined, 'channels_all', data.channels_all, true, data.default_channels_all ? data.default_channels_all : false, 'channels', undefined, undefined, 'svg-label'));
+    settings_list_4.appendChild(settings.createRow(common.button_label.channels_personalized, undefined, 'channels_personalized', data.channels_personalized, true, data.default_channels_personalized ? data.default_channels_personalized : false, 'channels', undefined, undefined, 'svg-label'));
+    settings_list_4.appendChild(settings.createRow(common.button_label.channels_none, undefined, 'channels_none', data.channels_none, true, data.default_channels_none ? data.default_channels_none : false, 'channels', undefined, undefined, 'svg-label'));
 
     settings_list_5.appendChild(settings.createRow(common.button_label.multiselection, undefined, 'multiselection', data.multiselection, false));
     settings_list_5.appendChild(settings.createRow(common.button_label.responsive, undefined, 'responsive', data.responsive, true));
