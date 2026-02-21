@@ -986,7 +986,6 @@ function main(app, common, lang) {
 
         const post = node.querySelector('div#post-text');
         if (post) {
-            console.log('classifyModeStatus_Home_RichItemRenderer');
             status.add('post');
         }
 
@@ -1088,12 +1087,6 @@ function main(app, common, lang) {
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
-        }
-
-        const post = node.querySelector('div#post-text');
-        if (post) {
-            console.log('classifyModeStatus_Home_RichGridMedia');
-            status.add('post');
         }
 
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
