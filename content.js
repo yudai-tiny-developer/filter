@@ -13,6 +13,7 @@ function main(app, common, lang) {
     const scheduled_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path clip-rule="evenodd" d="M20.5 12c0 4.694-3.806 8.5-8.5 8.5S3.5 16.694 3.5 12 7.306 3.5 12 3.5s8.5 3.806 8.5 8.5Zm1.5 0c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Zm-9.25-5c0-.414-.336-.75-.75-.75s-.75.336-.75.75v5.375l.3.225 4 3c.331.248.802.181 1.05-.15.248-.331.181-.801-.15-1.05l-3.7-2.775V7Z" fill-rule="evenodd"></path></svg>';
     const notification_on_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="M21.5 8.99992H19.5V8.80992C19.5 6.89992 18.39 5.18991 16.6 4.32991L17.47 2.52991C19.96 3.71991 21.5 6.12992 21.5 8.80992V8.99992ZM4.5 8.80992C4.5 6.89992 5.61 5.18991 7.4 4.32991L6.53 2.52991C4.04 3.71991 2.5 6.12992 2.5 8.80992V8.99992H4.5V8.80992ZM12 21.9999C13.1 21.9999 14 21.0999 14 19.9999H10C10 21.0999 10.9 21.9999 12 21.9999ZM20 17.3499V18.9999H4V17.3499L6 15.4699V10.3199C6 7.39991 7.56 5.09992 10 4.33992V3.95991C10 2.53991 11.49 1.45991 12.99 2.19991C13.64 2.51991 14 3.22991 14 3.95991V4.34991C16.44 5.09991 18 7.40991 18 10.3299V15.4799L20 17.3499Z"></path></svg>';
     const notification_off_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="M3.85,3.15L3.15,3.85l3.48,3.48C6.22,8.21,6,9.22,6,10.32v5.15l-2,1.88V19h14.29l1.85,1.85l0.71-0.71L3.85,3.15z M5,18 v-0.23l2-1.88v-5.47c0-0.85,0.15-1.62,0.41-2.3L17.29,18H5z M10,20h4c0,1.1-0.9,2-2,2S10,21.1,10,20z M9.28,5.75l-0.7-0.7 c0.43-0.29,0.9-0.54,1.42-0.7V3.96c0-1.42,1.49-2.5,2.99-1.76C13.64,2.52,14,3.23,14,3.96v0.39c2.44,0.75,4,3.06,4,5.98v4.14l-1-1 v-3.05c0-2.47-1.19-4.36-3.13-5.1c-1.26-0.53-2.64-0.5-3.84,0.03C9.76,5.46,9.52,5.59,9.28,5.75z"></path></svg>';
+    const post_icon = '<svg style="width: 18px; height: 18px;" viewBox="0 0 26 26"><path d="M1 5v14a2 2 0 002 2h18a2 2 0 002-2V5a2 2 0 00-2-2H3a2 2 0 00-2 2Zm5 6h2a1 1 0 010 2H6a1 1 0 010-2Zm5 1a1 1 0 011-1h6a1 1 0 010 2h-6a1 1 0 01-1-1Zm4 4a1 1 0 011-1h2a1 1 0 010 2h-2a1 1 0 01-1-1Zm-9-1h6a1 1 0 010 2H6a1 1 0 010-2Z"></path></svg>';
 
     function updateButtonVisibility(browse) {
         chrome.storage.local.get(common.storage).then(data => {
@@ -59,6 +60,7 @@ function main(app, common, lang) {
                             case 'scheduled': icon = scheduled_icon; break;
                             case 'notification_on': icon = notification_on_icon; break;
                             case 'notification_off': icon = notification_off_icon; break;
+                            case 'post': icon = post_icon; break;
                         }
 
                         if (span_text !== undefined) {
@@ -94,6 +96,7 @@ function main(app, common, lang) {
             const scheduled = common.value(data.scheduled, common.default_scheduled);
             const notification_on = common.value(data.notification_on, common.default_notification_on);
             const notification_off = common.value(data.notification_off, common.default_notification_off);
+            const post = common.value(data.post, common.default_post);
 
             const progress_unwatched = common.value(data.progress_unwatched, common.default_progress_unwatched);
             const progress_watched = common.value(data.progress_watched, common.default_progress_watched);
@@ -112,6 +115,7 @@ function main(app, common, lang) {
             default_tab.scheduled = common.value(data.default_scheduled, common.default_default_scheduled);
             default_tab.notification_on = common.value(data.default_notification_on, common.default_default_notification_on);
             default_tab.notification_off = common.value(data.default_notification_off, common.default_default_notification_off);
+            default_tab.post = common.value(data.default_post, common.default_default_post);
 
             default_tab.progress_unwatched = common.value(data.default_progress_unwatched, common.default_default_progress_unwatched);
             default_tab.progress_watched = common.value(data.default_progress_watched, common.default_default_progress_watched);
@@ -151,6 +155,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', display(scheduled));
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', display(notification_on));
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', display(notification_off));
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
                     display_query(browse, 'option.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
@@ -161,6 +166,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', display(scheduled));
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', display(notification_on));
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', display(notification_off));
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
                     display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
@@ -181,7 +187,7 @@ function main(app, common, lang) {
                 }
             } else if (common.isHome(location.href)) {
                 if (filter_home) {
-                    display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                    display_query(browse, 'span.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off, post]));
                     display_query(browse, 'span.filter-button-subscriptions.live', display(live));
                     display_query(browse, 'span.filter-button-subscriptions.streamed', display(streamed));
                     display_query(browse, 'span.filter-button-subscriptions.video', display(video));
@@ -189,9 +195,10 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', display(scheduled));
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', display(notification_on));
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', display(notification_off));
+                    display_query(browse, 'span.filter-button-subscriptions.post', display(post));
 
-                    display_query(browse, 'select.filter-menu', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
-                    display_query(browse, 'option.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off]));
+                    display_query(browse, 'select.filter-menu', display_any([live, streamed, video, short, scheduled, notification_on, notification_off, post]));
+                    display_query(browse, 'option.filter-button-subscriptions.all', display_any([live, streamed, video, short, scheduled, notification_on, notification_off, post]));
                     display_query(browse, 'option.filter-button-subscriptions.live', display(live));
                     display_query(browse, 'option.filter-button-subscriptions.streamed', display(streamed));
                     display_query(browse, 'option.filter-button-subscriptions.video', display(video));
@@ -199,6 +206,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', display(scheduled));
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', display(notification_on));
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', display(notification_off));
+                    display_query(browse, 'option.filter-button-subscriptions.post', display(post));
 
                     display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
                     display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
@@ -227,6 +235,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.all', 'none');
@@ -237,6 +246,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', 'none');
                     display_query(browse, 'option.filter-button-progress.progress_all', 'none');
@@ -265,6 +275,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', '');
                     display_query(browse, 'option.filter-button-subscriptions.all', '');
@@ -275,6 +286,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', 'none');
                     display_query(browse, 'option.filter-button-progress.progress_all', 'none');
@@ -303,6 +315,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.all', 'none');
@@ -313,6 +326,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', 'none');
                     display_query(browse, 'option.filter-button-progress.progress_all', 'none');
@@ -341,6 +355,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', '');
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', '');
                     display_query(browse, 'option.filter-button-subscriptions.all', '');
@@ -351,6 +366,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', '');
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
                     display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
@@ -379,6 +395,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', display(scheduled));
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', display(notification_on));
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', display(notification_off));
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', '');
                     display_query(browse, 'option.filter-button-subscriptions.all', '');
@@ -389,6 +406,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', display(scheduled));
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', display(notification_on));
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', display(notification_off));
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
                     display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
@@ -417,6 +435,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.all', 'none');
@@ -427,6 +446,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', display_any([progress_unwatched, progress_watched]));
                     display_query(browse, 'option.filter-button-progress.progress_all', display_any([progress_unwatched, progress_watched]));
@@ -455,6 +475,7 @@ function main(app, common, lang) {
                     display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.all', 'none');
@@ -465,6 +486,7 @@ function main(app, common, lang) {
                     display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
                     display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+                    display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
                     display_query(browse, 'select.filter-menu-progress', 'none');
                     display_query(browse, 'option.filter-button-progress.progress_all', 'none');
@@ -521,6 +543,7 @@ function main(app, common, lang) {
         display_query(browse, 'span.filter-button-subscriptions.scheduled', 'none');
         display_query(browse, 'span.filter-button-subscriptions.notification_on', 'none');
         display_query(browse, 'span.filter-button-subscriptions.notification_off', 'none');
+        display_query(browse, 'span.filter-button-subscriptions.post', 'none');
 
         display_query(browse, 'select.filter-menu', 'none');
         display_query(browse, 'option.filter-button-subscriptions.all', 'none');
@@ -531,6 +554,7 @@ function main(app, common, lang) {
         display_query(browse, 'option.filter-button-subscriptions.scheduled', 'none');
         display_query(browse, 'option.filter-button-subscriptions.notification_on', 'none');
         display_query(browse, 'option.filter-button-subscriptions.notification_off', 'none');
+        display_query(browse, 'option.filter-button-subscriptions.post', 'none');
 
         display_query(browse, 'select.filter-menu-progress', 'none');
         display_query(browse, 'option.filter-button-progress.progress_all', 'none');
@@ -664,7 +688,7 @@ function main(app, common, lang) {
                 insertMenu_Subscriptions(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
-                if (node.parentNode.children.length > limit) {
+                if (node.parentNode?.children.length > limit) {
                     load_button_container.style.display = '';
                     node.style.display = 'none';
                     node.classList.remove('filter-show');
@@ -958,6 +982,11 @@ function main(app, common, lang) {
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
+        }
+
+        const post = node.querySelector('div#post-text');
+        if (post) {
+            status.add('post');
         }
 
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
@@ -1985,6 +2014,7 @@ function main(app, common, lang) {
         menu.appendChild(createButton(common.button_label.scheduled, 'scheduled', browse, scroll));
         menu.appendChild(createButton(common.button_label.notification_on, 'notification_on', browse, scroll));
         menu.appendChild(createButton(common.button_label.notification_off, 'notification_off', browse, scroll));
+        menu.appendChild(createButton(common.button_label.post, 'post', browse, scroll));
 
         const select = createSelect(browse, scroll);
         select.appendChild(createOption(common.button_label.placeholder));
@@ -1996,6 +2026,7 @@ function main(app, common, lang) {
         select.appendChild(createOption(common.button_label.scheduled, 'scheduled'));
         select.appendChild(createOption(common.button_label.notification_on, 'notification_on'));
         select.appendChild(createOption(common.button_label.notification_off, 'notification_off'));
+        select.appendChild(createOption(common.button_label.post, 'post'));
         menu.appendChild(select);
 
         const progress = createSelectProgress(browse, scroll);
@@ -2220,7 +2251,7 @@ function main(app, common, lang) {
                 const existsMenu = parent.querySelector('form.filter-popup.filter-sidebar-channels');
                 if (existsMenu !== popupMenu.get(items)) {
                     if (!existsMenu) {
-                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item', 'filter-sidebar-channels', keyword_sidebar_channels, false, 'absolute');
+                        const menu = createPopupMenu([items], 'ytd-guide-entry-renderer#expander-item, ytd-guide-entry-renderer#collapser-item', 'filter-sidebar-channels', keyword_sidebar_channels, false, 'absolute');
                         parent.insertBefore(menu, items);
                     } else {
                         existsMenu.containers.push(items);
@@ -2260,9 +2291,9 @@ function main(app, common, lang) {
         menu.style.display = display(settings);
         menu.containers = containers;
 
-        const input = createPopupQueryInput(menu, positionOverride);
-        menu.appendChild(createPopupQueryInputArea(input, menu.containers));
-        menu.appendChild(createPopupSearchButton(input, menu.containers));
+        const input = createPopupQueryInput(positionOverride);
+        menu.appendChild(createPopupQueryClearArea(input, menu));
+        menu.appendChild(createPopupSearchButton(menu));
 
         // workaround: add-playlist
         menu.addEventListener('click', e => {
@@ -2279,18 +2310,28 @@ function main(app, common, lang) {
 
             if (expander) {
                 for (const container of menu.containers) {
-                    const expander_node = container.querySelector(expander);
-                    if (expander_node) {
-                        expander_node.parentNode.insertBefore(spinner, expander_node);
-                        setTimeout(() => {
-                            expander_node.click();
-                            spinner.remove();
-                        }, 0);
+                    for (const expander_node of container.querySelectorAll(expander)) {
+                        if (expander_node.id === 'expander-item' && input.value !== '') {
+                            expander_node.parentNode.insertBefore(spinner, expander_node);
+                            setTimeout(() => {
+                                expander_node.click();
+                                expander_node.blur();
+                                spinner.remove();
+                            }, 0);
+                        } else if (expander_node.id === 'collapser-item' && input.value === '') {
+                            setTimeout(() => {
+                                expander_node.click();
+                                expander_node.blur();
+                            }, 0);
+                        } else {
+                            // do nothing
+                        }
                     }
                 }
             }
         });
 
+        // workaround: add-playlist
         menu.clearInput = () => {
             input.value = '';
             updatePopupQuery(menu.containers, '');
@@ -2303,48 +2344,43 @@ function main(app, common, lang) {
         return menu;
     }
 
-    function createPopupQueryInputArea(input, containers) {
+    function createPopupQueryClearArea(input, menu) {
         const inputArea = document.createElement('span');
         inputArea.classList.add('filter-query', 'area');
         inputArea.appendChild(input);
-        inputArea.appendChild(createPopupClearButton(input, containers));
+        inputArea.appendChild(createPopupClearButton(input, menu));
         return inputArea;
     }
 
-    function createPopupQueryInput(menu, positionOverride) {
+    function createPopupQueryInput(positionOverride) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
         input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
         input.id = 'filter-query';
-        input.addEventListener('change', e => {
-            menu.requestSubmit();
-        });
 
         attachSuggest(input, positionOverride, false);
 
         return input;
     }
 
-    function createPopupClearButton(input, containers) {
+    function createPopupClearButton(input, menu) {
         const span = document.createElement('span');
         span.classList.add('filter-clear');
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            updatePopupQuery(containers, '');
-            updatePopupVisibility(containers);
+            menu.requestSubmit();
         });
         return span;
     }
 
-    function createPopupSearchButton(input, containers) {
+    function createPopupSearchButton(menu) {
         const span = document.createElement('span');
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updatePopupQuery(containers, input.value);
-            updatePopupVisibility(containers);
+            menu.requestSubmit();
         });
         return span;
     }
@@ -2383,6 +2419,7 @@ function main(app, common, lang) {
                     if (default_tab.scheduled) modes.add('scheduled');
                     if (default_tab.notification_on) modes.add('notification_on');
                     if (default_tab.notification_off) modes.add('notification_off');
+                    if (default_tab.post) modes.add('post');
                     if (modes.size === 0) modes.add('all');
                 } else if (common.isChannels(location.href)) {
                     if (default_tab.channels_all) modes.add('channels_all');
@@ -2895,12 +2932,12 @@ function main(app, common, lang) {
             }
         }
 
-        function selectValue(index) {
+        function selectValue(index, silent) {
             const value = currentValues[index];
             if (value) {
                 input.value = value + ' ';
             }
-            input.dispatchEvent(new Event('change'));
+            if (!silent) input.dispatchEvent(new Event('change'));
         }
 
         function show() {
@@ -2978,7 +3015,7 @@ function main(app, common, lang) {
                 if (!box.classList.contains('is-visible')) return;
                 if (activeIndex >= 0) {
                     e.preventDefault();
-                    selectValue(activeIndex);
+                    selectValue(activeIndex, true);
                     input.focus();
                     const len = input.value.length;
                     input.setSelectionRange(len, len);
@@ -3017,7 +3054,7 @@ function main(app, common, lang) {
 
             return Array.from(frequencyMap.entries())
                 .sort((a, b) => b[1] - a[1])
-                .map(([substring, count]) => `"${substring}"`);
+                .map(([substring, count]) => substring.includes(' ') ? `"${substring}"` : `${substring}`);
         }
 
         return {
@@ -3033,6 +3070,7 @@ function main(app, common, lang) {
         scheduled: common.default_default_scheduled,
         notification_on: common.default_default_notification_on,
         notification_off: common.default_default_notification_off,
+        post: common.default_default_post,
 
         progress_unwatched: common.default_default_progress_unwatched,
         progress_watched: common.default_default_progress_watched,
