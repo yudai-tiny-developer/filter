@@ -2315,11 +2315,13 @@ function main(app, common, lang) {
                             expander_node.parentNode.insertBefore(spinner, expander_node);
                             setTimeout(() => {
                                 expander_node.click();
+                                expander_node.blur();
                                 spinner.remove();
                             }, 0);
                         } else if (expander_node.id === 'collapser-item' && input.value === '') {
                             setTimeout(() => {
                                 expander_node.click();
+                                expander_node.blur();
                             }, 0);
                         } else {
                             // do nothing
