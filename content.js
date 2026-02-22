@@ -2291,9 +2291,9 @@ function main(app, common, lang) {
         menu.style.display = display(settings);
         menu.containers = containers;
 
-        const input = createPopupQueryInput(menu, positionOverride);
-        menu.appendChild(createPopupQueryInputArea(input, menu.containers));
-        menu.appendChild(createPopupSearchButton(input, menu.containers));
+        const input = createPopupQueryInput(positionOverride);
+        menu.appendChild(createPopupQueryClearArea(input, menu));
+        menu.appendChild(createPopupSearchButton(menu));
 
         // workaround: add-playlist
         menu.addEventListener('click', e => {
@@ -2317,26 +2317,19 @@ function main(app, common, lang) {
                                 expander_node.click();
                                 spinner.remove();
                             }, 0);
-                        }
-                    }
-                }
-            }
-        });
-
-        input.addEventListener('change', () => {
-            if (expander) {
-                for (const container of menu.containers) {
-                    for (const expander_node of container.querySelectorAll(expander)) {
-                        if (expander_node.id === 'collapser-item' && input.value === '') {
+                        } else if (expander_node.id === 'collapser-item' && input.value === '') {
                             setTimeout(() => {
                                 expander_node.click();
                             }, 0);
+                        } else {
+                            // do nothing
                         }
                     }
                 }
             }
         });
 
+        // workaround: add-playlist
         menu.clearInput = () => {
             input.value = '';
             updatePopupQuery(menu.containers, '');
@@ -2349,47 +2342,43 @@ function main(app, common, lang) {
         return menu;
     }
 
-    function createPopupQueryInputArea(input, containers) {
+    function createPopupQueryClearArea(input, menu) {
         const inputArea = document.createElement('span');
         inputArea.classList.add('filter-query', 'area');
         inputArea.appendChild(input);
-        inputArea.appendChild(createPopupClearButton(input, containers));
+        inputArea.appendChild(createPopupClearButton(input, menu));
         return inputArea;
     }
 
-    function createPopupQueryInput(menu, positionOverride) {
+    function createPopupQueryInput(positionOverride) {
         const input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('placeholder', 'Subscription Feed Filter');
         input.setAttribute('title', '".."  PHRASE search operator.  e.g. "Phrase including spaces"\n |    OR search operator.           e.g. Phrase1 | Phrase2\n -    NOT search operator.        e.g. -Phrase\n\nNOTE: Queries that specify OR and NOT simultaneously are not supported.');
         input.id = 'filter-query';
-        input.addEventListener('change', () => {
-            menu.requestSubmit();
-        });
 
         attachSuggest(input, positionOverride, false);
 
         return input;
     }
 
-    function createPopupClearButton(input, containers) {
+    function createPopupClearButton(input, menu) {
         const span = document.createElement('span');
         span.classList.add('filter-clear');
         span.innerHTML = common.button_label.clear;
         span.addEventListener('click', () => {
             input.value = '';
-            input.dispatchEvent(new Event('change'));
+            menu.requestSubmit();
         });
         return span;
     }
 
-    function createPopupSearchButton(input, containers) {
+    function createPopupSearchButton(menu) {
         const span = document.createElement('span');
         span.classList.add('filter-query', 'search');
         span.innerHTML = common.button_label.search;
         span.addEventListener('click', () => {
-            updatePopupQuery(containers, input.value);
-            updatePopupVisibility(containers);
+            menu.requestSubmit();
         });
         return span;
     }
