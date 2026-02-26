@@ -2052,6 +2052,7 @@ function main(app, common, lang) {
             if (scroll) {
                 window.scroll({ top: 0, behavior: 'instant' });
             }
+            input.blur();
         });
 
         return menu;
