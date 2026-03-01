@@ -1969,7 +1969,6 @@ function main(app, common, lang) {
     function onViewChanged_Node(browse) {
         updateButtonVisibility(browse);
         display_query(browse, 'form.filter-menu, div.filter-menu', display(isMenuTarget()));
-        updateVisibility(browse);
     }
 
     function includesStatus(node, status_mode, status_progress, classifyModeStatus, classifyProgressStatus) {
