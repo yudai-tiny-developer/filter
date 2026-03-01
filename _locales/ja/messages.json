@@ -77,6 +77,12 @@
     "responsive": {
         "message": "レスポンシブ"
     },
+    "url_param_filter_mode_enabled": {
+        "message": "URLパラメーターを使用する"
+    },
+    "hide_most_relevant": {
+        "message": "「関連が強い」を非表示"
+    },
     "limit": {
         "message": "Limit of feeds"
     },
@@ -118,8 +124,5 @@
     },
     "filter_channels": {
         "message": "登録チャンネル一覧のフィルター"
-    },
-    "url_param_filter_mode_enabled": {
-        "message": "URLパラメーターを使用する"
     }
 }

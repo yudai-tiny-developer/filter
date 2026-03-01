@@ -37,8 +37,10 @@ export const storage = [
     'default_channels_none',
 
     'multiselection',
-
     'responsive',
+    'url_param_filter_mode_enabled',
+    'hide_most_relevant',
+    'limit',
 
     'button_label_live',
     'button_label_streamed',
@@ -54,8 +56,6 @@ export const storage = [
     'default_keyword',
     'suggestions',
 
-    'limit',
-
     'keyword_add_playlist',
     'keyword_sidebar_channels',
     'keyword_notification',
@@ -69,8 +69,6 @@ export const storage = [
     'filter_hashtag',
     'filter_channel',
     'filter_channels',
-
-    'url_param_filter_mode_enabled',
 ];
 
 export const default_order = [
@@ -130,11 +128,13 @@ export const button_label = {
 
     placeholder: chrome.i18n.getMessage('button_placeholder'),
     progress_placeholder: chrome.i18n.getMessage('button_progress_placeholder'),
+
     multiselection: chrome.i18n.getMessage('multiselection'),
-
     responsive: chrome.i18n.getMessage('responsive'),
-
+    url_param_filter_mode_enabled: chrome.i18n.getMessage('url_param_filter_mode_enabled'),
+    hide_most_relevant: chrome.i18n.getMessage('hide_most_relevant'),
     limit: chrome.i18n.getMessage('limit'),
+
     load: chrome.i18n.getMessage('load'),
 
     keyword_add_playlist: chrome.i18n.getMessage('keyword_add_playlist'),
@@ -150,8 +150,6 @@ export const button_label = {
     filter_hashtag: chrome.i18n.getMessage('filter_hashtag'),
     filter_channel: chrome.i18n.getMessage('filter_channel'),
     filter_channels: chrome.i18n.getMessage('filter_channels'),
-
-    url_param_filter_mode_enabled: chrome.i18n.getMessage('url_param_filter_mode_enabled'),
 };
 
 export const default_live = true;
@@ -175,6 +173,8 @@ export const default_suggest = false;
 
 export const default_multiselection = false;
 export const default_responsive = true;
+export const default_url_param_filter_mode_enabled = false;
+export const default_hide_most_relevant = false;
 
 export const default_keyword_add_playlist = true;
 export const default_keyword_sidebar_channels = true;
@@ -213,8 +213,6 @@ export const default_filter_playlists = true;
 export const default_filter_hashtag = true;
 export const default_filter_channel = true;
 export const default_filter_channels = true;
-
-export const default_url_param_filter_mode_enabled = false;
 
 export function value(value, defaultValue) {
     return value === undefined ? defaultValue : value;
