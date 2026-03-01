@@ -52,6 +52,7 @@ function main(common, settings, progress, data) {
     settings_list_5.appendChild(settings.createRow(common.button_label.multiselection, undefined, 'multiselection', data.multiselection, false));
     settings_list_5.appendChild(settings.createRow(common.button_label.responsive, undefined, 'responsive', data.responsive, true));
     settings_list_5.appendChild(settings.createRow(common.button_label.url_param_filter_mode_enabled, undefined, 'url_param_filter_mode_enabled', data.url_param_filter_mode_enabled, false));
+    settings_list_5.appendChild(settings.createRow(common.button_label.hide_most_relevant, undefined, 'hide_most_relevant', data.hide_most_relevant, false));
     settings_list_5.appendChild(settings.createRow(common.button_label.limit, undefined, 'limit', data.limit, common.defaultLimit, undefined, undefined, input => chrome.storage.local.set({ limit: common.limit(input.value, common.defaultLimit, common.minLimit, common.maxLimit, common.stepLimit) }), undefined, 'step', common.minLimit, common.maxLimit, common.stepLimit, common.limit));
 
     settings_list_6.appendChild(settings.createRow(common.button_label.filter_subscriptions, undefined, 'filter_subscriptions', data.filter_subscriptions, true));
