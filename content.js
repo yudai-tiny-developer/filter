@@ -679,6 +679,7 @@ function main(app, common, lang) {
         return evaluator(t);
     }
 
+    let continuation_timeout;
     function onNodeLoaded_Subscriptions(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
@@ -699,16 +700,22 @@ function main(app, common, lang) {
                 insertMenu_Subscriptions(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
-                if (node.parentNode?.children.length > limit) {
-                    load_button_container.style.display = '';
-                    node.style.display = 'none';
-                    node.classList.remove('filter-show');
-                    node.classList.add('filter-hidden');
-                    node.parentNode.parentNode.appendChild(load_button_container);
-                    continuation_item = node;
-                } else {
-                    // continuation
-                }
+                node.style.display = 'none';
+                clearTimeout(continuation_timeout);
+                continuation_timeout = setTimeout(() => {
+                    if (node.parentNode?.children.length > limit) {
+                        load_button_container.style.display = '';
+                        node.style.display = 'none';
+                        node.classList.remove('filter-show');
+                        node.classList.add('filter-hidden');
+                        node.parentNode.parentNode.appendChild(load_button_container);
+                        continuation_item = node;
+                    } else {
+                        node.style.display = '';
+                        node.classList.add('filter-show');
+                        node.classList.remove('filter-hidden');
+                    }
+                }, 500);
                 break;
         }
     }
