@@ -127,7 +127,6 @@ function main(app, common, lang) {
             multiselection = common.value(data.multiselection, common.default_multiselection);
             responsive = common.value(data.responsive, common.default_responsive);
             url_param_filter_mode_enabled = common.value(data.url_param_filter_mode_enabled, common.default_url_param_filter_mode_enabled);
-            hide_most_relevant = common.value(data.hide_most_relevant, common.default_hide_most_relevant);
             limit = common.value(data.limit, common.defaultLimit);
             keyword_add_playlist = common.value(data.keyword_add_playlist, common.default_keyword_add_playlist);
             keyword_sidebar_channels = common.value(data.keyword_sidebar_channels, common.default_keyword_sidebar_channels);
@@ -531,6 +530,13 @@ function main(app, common, lang) {
             for (const menu of app.querySelectorAll('form.filter-popup.filter-notification')) {
                 menu.style.display = display(keyword_notification);
             }
+
+            // Most relevant
+            if (common.value(data.hide_most_relevant, common.default_hide_most_relevant)) {
+                document.documentElement.style.setProperty('--filter-most-relevant-display', 'none');
+            } else {
+                document.documentElement.style.setProperty('--filter-most-relevant-display', 'flex');
+            }
         });
     }
 
@@ -596,7 +602,7 @@ function main(app, common, lang) {
     function updateVisibility(node, deep = true) {
         if (common.isSubscriptions(location.href)) {
             onNodeLoaded_Subscriptions(node);
-            if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-RICH-SECTION-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
+            if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Subscriptions(n));
         } else if (common.isHome(location.href)) {
             onNodeLoaded_Home(node);
             if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-POST-RENDERER, YT-LOCKUP-VIEW-MODEL, YTD-RICH-GRID-MEDIA, YTD-FEED-FILTER-CHIP-BAR-RENDERER, DIV').forEach(n => onNodeLoaded_Home(n));
@@ -683,17 +689,6 @@ function main(app, common, lang) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
                 updateTargetVisibility(node, matchTextContent_Subscriptions_RichItemRenderer, classifyModeStatus_Subscriptions_RichItemRenderer, classifyProgressStatus_Subscriptions_RichItemRenderer);
-                break;
-            case 'YTD-RICH-SECTION-RENDERER':
-                if (hide_most_relevant && node.querySelector('yt-lockup-view-model')) {
-                    node.style.cssText = 'display: none !important;';
-                    node.classList.remove('filter-show');
-                    node.classList.add('filter-hidden');
-                } else {
-                    node.style.display = '';
-                    node.classList.add('filter-show');
-                    node.classList.remove('filter-hidden');
-                }
                 break;
             case 'YTD-BROWSE':
                 insertMenu_Subscriptions(node);
@@ -3117,7 +3112,6 @@ function main(app, common, lang) {
     let multiselection = common.default_multiselection;
     let responsive = common.default_responsive;
     let url_param_filter_mode_enabled = common.default_url_param_filter_mode_enabled;
-    let hide_most_relevant = common.default_hide_most_relevant;
     let limit = common.defaultLimit;
 
     let keyword_add_playlist = common.default_keyword_add_playlist;
