@@ -679,7 +679,6 @@ function main(app, common, lang) {
         return evaluator(t);
     }
 
-    let continuation_timeout;
     function onNodeLoaded_Subscriptions(node) {
         switch (node.nodeName) {
             case 'YTD-RICH-ITEM-RENDERER':
@@ -3118,6 +3117,8 @@ function main(app, common, lang) {
     let keyword_add_playlist = common.default_keyword_add_playlist;
     let keyword_sidebar_channels = false; // anti-flicker
     let keyword_notification = common.default_keyword_notification;
+
+    let continuation_timeout;
 
     const popupMenu = new Map();
 
