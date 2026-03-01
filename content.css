@@ -1,6 +1,7 @@
 :root {
     --filter-button-display: inline-flex;
     --filter-menu-display: none;
+    --filter-most-relevant-display: flex;
 }
 
 span.filter-button {
@@ -420,4 +421,8 @@ ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels
 ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-query=""]) ytd-item-section-renderer ytd-shelf-renderer div#dismissible > div#contents > ytd-expanded-shelf-contents-renderer #grid-container.ytd-expanded-shelf-contents-renderer > .ytd-expanded-shelf-contents-renderer {
     margin-top: 16px !important;
     margin-bottom: 0 !important;
+}
+
+ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(yt-lockup-view-model) {
+    display: var(--filter-most-relevant-display) !important;
 }
