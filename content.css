@@ -1,7 +1,7 @@
 :root {
     --filter-button-display: inline-flex;
     --filter-menu-display: none;
-    --filter-most-relevant-display: flex;
+    --filter-most-relevant-display: none;
 }
 
 span.filter-button {

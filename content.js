@@ -1,7 +1,22 @@
 import(chrome.runtime.getURL('common.js')).then(common => {
+    chrome.storage.local.get(common.storage).then(data => {
+        // Most relevant
+        if (common.value(data.hide_most_relevant, common.default_hide_most_relevant)) {
+            document.documentElement.style.setProperty('--filter-most-relevant-display', 'none');
+        } else {
+            document.documentElement.style.setProperty('--filter-most-relevant-display', 'flex');
+        }
+    });
+
     const lang = document.documentElement.getAttribute('lang');
     import(chrome.runtime.getURL('lang/' + (lang ? lang : 'en') + '.js')).then(lang => {
-        main(document.querySelector('ytd-app') ?? document.body, common, lang);
+        const detect_interval = setInterval(() => {
+            const app = document.querySelector('ytd-app');
+            if (app) {
+                clearInterval(detect_interval);
+                main(app, common, lang);
+            }
+        }, 1000);
     });
 });
 
