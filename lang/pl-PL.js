@@ -38,15 +38,15 @@ export function isNotificationOff_button(text) {
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
 export function isChannelsAllNotifications(text) {
-	return text.includes('Wszystko');
+	return text.includes('wszystkich');
 }
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
 export function isChannelsPersonalizedNotifications(text) {
-	return text.includes('Spersonalizowane');
+	return text.includes('spersonalizowanych');
 }
 
 // ytd-subscription-notification-toggle-button-renderer button#button[aria-label]
 export function isChannelsNoNotifications(text) {
-	return text.includes('Żadne');
+	return text.includes('brak');
 }
