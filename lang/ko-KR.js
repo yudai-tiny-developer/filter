@@ -26,13 +26,6 @@ export function isLive_status_label(text) {
         || text === 'Premieres 동영상';
 }
 
-// span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
-export function isVideo_status_label(text) {
-    return text.endsWith('초')
-        || text.endsWith('분')
-        || text.endsWith('시간');
-}
-
 // ytd-toggle-button-renderer
 export function isNotificationOn_button(text) {
     return text === '알림 사용 중';
