@@ -26,15 +26,6 @@ export function isLive_status_label(text) {
         || text === 'Première';
 }
 
-// span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
-export function isVideo_status_label(text) {
-    return text.endsWith('sekonde')
-        || text.endsWith('sekondes')
-        || text.endsWith('minuut')
-        || text.endsWith('minute')
-        || text.endsWith('uur');
-}
-
 // ytd-toggle-button-renderer
 export function isNotificationOn_button(text) {
     return text === 'Kennisgewing is aan';

@@ -26,13 +26,6 @@ export function isLive_status_label(text) {
         || text === '首播';
 }
 
-// span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
-export function isVideo_status_label(text) {
-    return text.endsWith('秒')
-        || text.endsWith('分鐘')
-        || text.endsWith('小時');
-}
-
 // ytd-toggle-button-renderer
 export function isNotificationOn_button(text) {
     return text === '已開啟通知';

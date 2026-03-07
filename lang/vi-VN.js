@@ -26,13 +26,6 @@ export function isLive_status_label(text) {
 		|| text === 'Ngày công chiếu';
 }
 
-// span#text.ytd-thumbnail-overlay-time-status-renderer[aria-label]
-export function isVideo_status_label(text) {
-	return text.endsWith('giây')
-		|| text.endsWith('phút')
-		|| text.endsWith('giờ');
-}
-
 // ytd-toggle-button-renderer
 export function isNotificationOn_button(text) {
 	return text === 'Đã bật thông báo';
