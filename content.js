@@ -16,7 +16,7 @@ import(chrome.runtime.getURL('common.js')).then(common => {
                 clearInterval(detect_interval);
                 main(app, common, lang);
             }
-        }, 1000);
+        }, 500);
     });
 });
 
