@@ -709,17 +709,23 @@ function main(app, common, lang) {
                 insertMenu_Subscriptions(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
-                node.style.display = 'none';
+                if (node.parentNode?.children.length > limit) {
+                    node.style.display = 'none';
+                } else {
+                    node.style.visibility = 'hidden';
+                    node.style.display = '';
+                }
                 clearTimeout(continuation_timeout);
                 continuation_timeout = setTimeout(() => {
                     if (node.parentNode?.children.length > limit) {
-                        load_button_container.style.display = '';
+                        load_button_container.style.visibility = '';
                         node.style.display = 'none';
                         node.classList.remove('filter-show');
                         node.classList.add('filter-hidden');
                         node.parentNode.parentNode.appendChild(load_button_container);
                         continuation_item = node;
                     } else {
+                        node.style.visibility = '';
                         node.style.display = '';
                         node.classList.add('filter-show');
                         node.classList.remove('filter-hidden');
@@ -1146,17 +1152,23 @@ function main(app, common, lang) {
                 insertMenu_Shorts(node);
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
-                node.style.display = 'none';
+                if (node.parentNode?.children.length > limit) {
+                    node.style.display = 'none';
+                } else {
+                    node.style.visibility = 'hidden';
+                    node.style.display = '';
+                }
                 clearTimeout(continuation_timeout);
                 continuation_timeout = setTimeout(() => {
                     if (node.parentNode?.children.length > limit) {
-                        load_button_container.style.display = '';
+                        load_button_container.style.visibility = '';
                         node.style.display = 'none';
                         node.classList.remove('filter-show');
                         node.classList.add('filter-hidden');
                         node.parentNode.parentNode.appendChild(load_button_container);
                         continuation_item = node;
                     } else {
+                        node.style.visibility = '';
                         node.style.display = '';
                         node.classList.add('filter-show');
                         node.classList.remove('filter-hidden');
@@ -3148,9 +3160,10 @@ function main(app, common, lang) {
         load_button.innerText = common.button_label.load;
         load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
         load_button.addEventListener('click', () => {
-            load_button_container.style.display = 'none';
+            load_button_container.style.visibility = 'hidden';
 
             if (continuation_item) {
+                continuation_item.style.visibility = '';
                 continuation_item.style.display = '';
             }
 
