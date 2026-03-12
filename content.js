@@ -710,27 +710,15 @@ function main(app, common, lang) {
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 if (node.parentNode?.children.length > limit) {
+                    load_button_container.style.display = '';
                     node.style.display = 'none';
+                    node.classList.remove('filter-show');
+                    node.classList.add('filter-hidden');
+                    node.parentNode.parentNode.appendChild(load_button_container);
+                    continuation_item = node;
                 } else {
-                    node.style.visibility = 'hidden';
-                    node.style.display = '';
+                    // continuation
                 }
-                clearTimeout(continuation_timeout);
-                continuation_timeout = setTimeout(() => {
-                    if (node.parentNode?.children.length > limit) {
-                        load_button_container.style.visibility = '';
-                        node.style.display = 'none';
-                        node.classList.remove('filter-show');
-                        node.classList.add('filter-hidden');
-                        node.parentNode.parentNode.appendChild(load_button_container);
-                        continuation_item = node;
-                    } else {
-                        node.style.visibility = '';
-                        node.style.display = '';
-                        node.classList.add('filter-show');
-                        node.classList.remove('filter-hidden');
-                    }
-                }, 500);
                 break;
         }
     }
@@ -1153,27 +1141,15 @@ function main(app, common, lang) {
                 break;
             case 'YTD-CONTINUATION-ITEM-RENDERER':
                 if (node.parentNode?.children.length > limit) {
+                    load_button_container.style.display = '';
                     node.style.display = 'none';
+                    node.classList.remove('filter-show');
+                    node.classList.add('filter-hidden');
+                    node.parentNode.parentNode.appendChild(load_button_container);
+                    continuation_item = node;
                 } else {
-                    node.style.visibility = 'hidden';
-                    node.style.display = '';
+                    // continuation
                 }
-                clearTimeout(continuation_timeout);
-                continuation_timeout = setTimeout(() => {
-                    if (node.parentNode?.children.length > limit) {
-                        load_button_container.style.visibility = '';
-                        node.style.display = 'none';
-                        node.classList.remove('filter-show');
-                        node.classList.add('filter-hidden');
-                        node.parentNode.parentNode.appendChild(load_button_container);
-                        continuation_item = node;
-                    } else {
-                        node.style.visibility = '';
-                        node.style.display = '';
-                        node.classList.add('filter-show');
-                        node.classList.remove('filter-hidden');
-                    }
-                }, 500);
                 break;
         }
     }
@@ -3145,8 +3121,6 @@ function main(app, common, lang) {
     let keyword_sidebar_channels = false; // anti-flicker
     let keyword_notification = common.default_keyword_notification;
 
-    let continuation_timeout;
-
     const popupMenu = new Map();
 
     let suggestion_candidates = new Map();
@@ -3182,12 +3156,6 @@ function main(app, common, lang) {
     });
 
     document.addEventListener('yt-page-data-updated', () => {
-        main_browse = document.body.querySelector('ytd-browse[role="main"]');
-        suggestion_candidates.clear();
-        onViewChanged();
-    });
-
-    document.addEventListener('yt-service-request-completed', () => {
         main_browse = document.body.querySelector('ytd-browse[role="main"]');
         suggestion_candidates.clear();
         onViewChanged();
