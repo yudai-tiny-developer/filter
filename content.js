@@ -669,7 +669,7 @@ function main(app, common, lang) {
     }
 
     function updateQuery(browse, query) {
-        set_cache_query(query);
+        set_cache_query_evaluator(query);
         browse.setAttribute('filter-query', query);
         browse.querySelectorAll('form.filter-menu input#filter-query').forEach(e => e.value = query);
 
@@ -693,10 +693,9 @@ function main(app, common, lang) {
         const t = normalizeText(text);
         suggestion_candidates.set(t, node);
 
-        const query = get_cache_query()?.trim();
-        if (!query) return true;
+        const evaluator = get_cache_evaluator();
+        if (!evaluator) return true;
 
-        const evaluator = createQueryEvaluator(normalizeText(query));
         return evaluator(t);
     }
 
@@ -2636,17 +2635,21 @@ function main(app, common, lang) {
         if (query !== undefined) {
             return query;
         } else if (common.isSubscriptions(location.href)) {
-            set_cache_query(default_keyword);
+            set_cache_query_evaluator(default_keyword);
             browse.setAttribute('filter-query', default_keyword);
             return default_keyword;
         } else {
-            set_cache_query('');
+            set_cache_query_evaluator('');
             browse.setAttribute('filter-query', '');
             return '';
         }
     }
 
     function createQueryEvaluator(query) {
+        if (!query) {
+            return () => true;
+        }
+
         function tokenize(input) {
             const tokens = [];
             const regex = /\(|\)|\||-?"(?:\\"|[^"])*"|-?[^\s()|]+/g;
@@ -2751,7 +2754,7 @@ function main(app, common, lang) {
                     return text => left(text) || right(text);
                 }
                 default: // syntax error
-                    return text => true;
+                    return () => true;
             }
         }
 
@@ -2872,8 +2875,13 @@ function main(app, common, lang) {
         return active.query.get(cache_key(location.href));
     }
 
-    function set_cache_query(query) {
+    function set_cache_query_evaluator(query) {
         active.query.set(cache_key(location.href), query);
+        active.evaluator.set(cache_key(location.href), createQueryEvaluator(normalizeText(query)));
+    }
+
+    function get_cache_evaluator() {
+        return active.evaluator.get(cache_key(location.href));
     }
 
     function set_frosted_glass_mode() {
@@ -3104,6 +3112,7 @@ function main(app, common, lang) {
         mode: new Map(),
         mode_progress: new Map(),
         query: new Map(),
+        evaluator: new Map(),
     };
 
     let keyword = common.default_keyword;
