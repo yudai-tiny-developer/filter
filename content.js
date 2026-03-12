@@ -3161,6 +3161,12 @@ function main(app, common, lang) {
         onViewChanged();
     });
 
+    document.addEventListener('yt-service-request-completed', () => {
+        main_browse = document.body.querySelector('ytd-browse[role="main"]');
+        suggestion_candidates.clear();
+        onViewChanged();
+    });
+
     chrome.storage.onChanged.addListener((changes, namespace) => {
         onViewChanged();
     });
