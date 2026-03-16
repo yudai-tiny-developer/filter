@@ -3127,7 +3127,7 @@ function main(app, common, lang) {
         function mergeWhitespaceDiffEntries(frequencyMap) {
             const groups = new Map();
             for (const [key, set] of frequencyMap.entries()) {
-                const norm = key.slice(1, -1).replace(normRegex, "") || key;
+                const norm = key.replace(normRegex, "") || key;
                 let group = groups.get(norm);
                 if (group === undefined) {
                     groups.set(norm, { keys: [key], set: set });
