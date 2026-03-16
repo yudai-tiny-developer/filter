@@ -3093,6 +3093,37 @@ function main(app, common, lang) {
                 .filter(Boolean);
         }
 
+        function normalizeKey(key) {
+            return key.slice(1, -1);
+        }
+
+        function mergeWhitespaceDiffEntries(frequencyMap) {
+            const groups = new Map();
+
+            for (const [key, set] of frequencyMap.entries()) {
+                const norm = normalizeKey(key).replace(/[^\p{L}\p{N}]+/gu, "") || key;
+                let group = groups.get(norm);
+                if (!group) {
+                    group = { keys: [key], set: set };
+                    groups.set(norm, group);
+                } else {
+                    group.keys.push(key);
+                    for (const val of set) {
+                        group.set.add(val);
+                    }
+                }
+            }
+
+            for (const group of groups.values()) {
+                if (group.keys.length > 1) {
+                    for (const key of group.keys) {
+                        frequencyMap.delete(key);
+                    }
+                    frequencyMap.set(group.keys.join("|"), group.set);
+                }
+            }
+        }
+
         function process(inputMap) {
             const frequencyMap = new Map();
 
@@ -3103,14 +3134,15 @@ function main(app, common, lang) {
 
                 for (const token of tokens) {
                     if (token.length <= 1) continue;
-                    frequencyMap.set(token, (frequencyMap.get(token) ?? new Set()).add(node));
+                    frequencyMap.set(`"${token}"`, (frequencyMap.get(`"${token}"`) ?? new Set()).add(node));
                 }
             }
 
+            mergeWhitespaceDiffEntries(frequencyMap);
+
             return Array.from(frequencyMap.entries())
-                .filter(([substring, nodes]) => nodes.size >= 2)
-                .sort((a, b) => b[1].size - a[1].size)
-                .map(([substring, nodes]) => substring.includes(' ') ? `"${substring}"` : `${substring}`);
+                .sort((a, b) => a[1].size !== b[1].size ? b[1].size - a[1].size : b[0].length - a[0].length)
+                .map(([substring, nodes]) => substring.match(/[^"\p{L}\p{N}]/u) ? substring : normalizeKey(substring));
         }
 
         return {
