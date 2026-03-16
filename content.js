@@ -3103,13 +3103,14 @@ function main(app, common, lang) {
 
                 for (const token of tokens) {
                     if (token.length <= 1) continue;
-                    frequencyMap.set(token, (frequencyMap.get(token) ?? 0) + 1);
+                    frequencyMap.set(token, (frequencyMap.get(token) ?? new Set()).add(node));
                 }
             }
 
             return Array.from(frequencyMap.entries())
-                .sort((a, b) => b[1] - a[1])
-                .map(([substring, count]) => substring.includes(' ') ? `"${substring}"` : `${substring}`);
+                .filter(([substring, nodes]) => nodes.size >= 2)
+                .sort((a, b) => b[1].size - a[1].size)
+                .map(([substring, nodes]) => substring.includes(' ') ? `"${substring}"` : `${substring}`);
         }
 
         return {
