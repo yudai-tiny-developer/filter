@@ -3086,31 +3086,102 @@ function main(app, common, lang) {
     }
 
     const SubstringFrequencyCounter = (() => {
+        const splitRegex = /(?<![\p{L}\p{N}])['\-・.:]|['\-・.:](?![\p{L}\p{N}])|[^\p{L}\p{N} '\-・.:]+/u;
+        const normRegex = /[^\p{L}\p{N}]+/gu;
+        const unquoteRegex = /"([\p{L}\p{N}'\-・.:]+)"/gu;
+
         function splitByDelimiters(str) {
-            return str
-                .split(/(?<![\p{L}\p{N}])['\-・.:]|['\-・.:](?![\p{L}\p{N}])|[^\p{L}\p{N} '\-・.:]+/u)
-                .map(s => s.trim())
-                .filter(Boolean);
+            const parts = str.split(splitRegex);
+            const result = [];
+            for (let i = 0; i < parts.length; i++) {
+                const s = parts[i].trim();
+                if (s) {
+                    result.push(s);
+                }
+            }
+            return result;
         }
 
-        function process(inputMap) {
+        function createFrequencyMap(inputMap) {
             const frequencyMap = new Map();
-
             for (const [item, node] of inputMap.entries()) {
                 if (node.hasAttribute('hidden') || !main_browse?.contains(node) || node.classList.contains('filter-unmatched-status')) continue;
 
                 const tokens = splitByDelimiters(item);
-
-                for (const token of tokens) {
+                for (let i = 0; i < tokens.length; i++) {
+                    const token = tokens[i];
                     if (token.length <= 1) continue;
-                    frequencyMap.set(token, (frequencyMap.get(token) ?? new Set()).add(node));
+
+                    const key = `"${token}"`;
+                    let set = frequencyMap.get(key);
+                    if (set === undefined) {
+                        set = new Set();
+                        frequencyMap.set(key, set);
+                    }
+                    set.add(node);
+                }
+            }
+            return frequencyMap;
+        }
+
+        function mergeWhitespaceDiffEntries(frequencyMap) {
+            const groups = new Map();
+            for (const [key, set] of frequencyMap.entries()) {
+                const norm = key.replace(normRegex, "") || key;
+                let group = groups.get(norm);
+                if (group === undefined) {
+                    groups.set(norm, { keys: [key], set: set });
+                } else {
+                    group.keys.push(key);
+                    for (const val of set) {
+                        group.set.add(val);
+                    }
                 }
             }
 
-            return Array.from(frequencyMap.entries())
-                .filter(([substring, nodes]) => nodes.size >= 2)
-                .sort((a, b) => b[1].size - a[1].size)
-                .map(([substring, nodes]) => substring.includes(' ') ? `"${substring}"` : `${substring}`);
+            for (const group of groups.values()) {
+                const keys = group.keys;
+                if (keys.length > 1) {
+                    for (let i = 0; i < keys.length; i++) {
+                        frequencyMap.delete(keys[i]);
+                    }
+                    frequencyMap.set(keys.join("|"), group.set);
+                }
+            }
+        }
+
+        function score(str) {
+            const len = str.length;
+
+            if (len <= 4) {
+                return 0.041;
+            }
+
+            return 1 / len;
+        }
+
+        function result(frequencyMap) {
+            const entries = [];
+            for (const entry of frequencyMap.entries()) {
+                entries.push(entry);
+            }
+
+            entries.sort((a, b) => {
+                const diff = b[1].size - a[1].size;
+                return diff !== 0 ? diff : score(b[0]) - score(a[0]);
+            });
+
+            const result = new Array(entries.length);
+            for (let i = 0; i < entries.length; i++) {
+                result[i] = entries[i][0].replace(unquoteRegex, '$1');
+            }
+            return result;
+        }
+
+        function process(inputMap) {
+            const frequencyMap = createFrequencyMap(inputMap);
+            mergeWhitespaceDiffEntries(frequencyMap);
+            return result(frequencyMap);
         }
 
         return {
