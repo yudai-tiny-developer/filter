@@ -3088,7 +3088,7 @@ function main(app, common, lang) {
     const SubstringFrequencyCounter = (() => {
         const splitRegex = /(?<![\p{L}\p{N}])['\-・.:]|['\-・.:](?![\p{L}\p{N}])|[^\p{L}\p{N} '\-・.:]+/u;
         const normRegex = /[^\p{L}\p{N}]+/gu;
-        const matchRegex = /[^"\p{L}\p{N}]/u;
+        const unquoteRegex = /"([\p{L}\p{N}'\-・.:]+)"/gu;
 
         function splitByDelimiters(str) {
             const parts = str.split(splitRegex);
@@ -3171,10 +3171,9 @@ function main(app, common, lang) {
                 return diff !== 0 ? diff : score(b[0]) - score(a[0]);
             });
 
-            const result = [];
+            const result = new Array(entries.length);
             for (let i = 0; i < entries.length; i++) {
-                const substring = entries[i][0];
-                result.push(matchRegex.test(substring) ? substring : substring.slice(1, -1));
+                result[i] = entries[i][0].replace(unquoteRegex, '$1');
             }
             return result;
         }
