@@ -3243,7 +3243,7 @@ function main(app, common, lang) {
         load_button.innerText = common.button_label.load;
         load_button.classList.add('yt-spec-button-shape-next', 'yt-spec-button-shape-next--tonal', 'yt-spec-button-shape-next--mono', 'yt-spec-button-shape-next--size-m');
         load_button.addEventListener('click', () => {
-            load_button_container.style.visibility = 'hidden';
+            load_button_container.style.display = 'none';
 
             if (continuation_item) {
                 continuation_item.style.visibility = '';
