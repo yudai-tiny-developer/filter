@@ -3124,11 +3124,7 @@ function main(app, common, lang) {
 
         function score(str) {
             const len = str.length;
-
-            if (len <= 4) {
-                return 0.041;
-            }
-
+            if (len <= 4) return 0;
             return 1 / len;
         }
 
