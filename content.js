@@ -773,10 +773,10 @@ function main(app, common, lang) {
 
     function matchTextContent_Subscriptions_RichItemRenderer(node) {
         const title = node.querySelector('div#meta a#video-title-link') ?? node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         const shorts_title = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_title) return matchQuery(shorts_title.textContent, node, true);
@@ -936,19 +936,19 @@ function main(app, common, lang) {
 
     function matchTextContent_Home_RichItemRenderer(node) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div > h3'); // video: div:nth-child(2), collection: div:nth-child(1)
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) return matchQuery(shorts_metadata.textContent, node, true);
 
         const post_text = node.querySelector('div#post-text');
-        if (post_text) return matchQuery(post_text.textContent, node, true);
-
         const post_author = node.querySelector('div#author');
-        if (post_author) return matchQuery(post_author.textContent, node, false);
+        if (post_text || post_author) {
+            return matchQuery(post_text.textContent, node, true) || matchQuery(post_author.textContent, node, false);
+        }
 
         const collection_metadata = node.querySelector('yt-collection-thumbnail-view-model yt-lockup-metadata-view-model'); // old style collection
         if (collection_metadata) return matchQuery(collection_metadata.textContent, node, true);
@@ -1056,10 +1056,10 @@ function main(app, common, lang) {
 
     function matchTextContent_Home_RichGridMedia(node) {
         const title = node.querySelector('a#video-title-link');
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         // default: visible
         return true;
@@ -1252,10 +1252,10 @@ function main(app, common, lang) {
 
     function matchTextContent_History_LockupViewModel(node) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         const shorts_metadata = node.querySelector('h3.shortsLockupViewModelHostMetadataTitle');
         if (shorts_metadata) return matchQuery(shorts_metadata.textContent, node, true);
@@ -1318,10 +1318,10 @@ function main(app, common, lang) {
 
     function matchTextContent_History_VideoRenderer(node) {
         const title = node.querySelector('h3.title-and-badge');
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('ytd-channel-name');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         // default: visible
         return true;
@@ -1394,10 +1394,10 @@ function main(app, common, lang) {
 
     function matchTextContent_Playlists_RichItemRenderer(node) {
         const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(1) > h3');
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         // default: visible
         return true;
@@ -1448,10 +1448,10 @@ function main(app, common, lang) {
 
     function matchTextContent_Playlist_VideoRenderer(node) {
         const title = node.querySelector('a#video-title');
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('ytd-channel-name');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         // default: visible
         return true;
@@ -1552,10 +1552,10 @@ function main(app, common, lang) {
 
     function matchTextContent_HashTag_RichItemRenderer(node) {
         const title = node.querySelector('yt-formatted-string#video-title');
-        if (title) return matchQuery(title.textContent, node, true);
-
         const channel_name = node.querySelector('yt-formatted-string#text.ytd-channel-name');
-        if (channel_name) return matchQuery(channel_name.textContent, node, false);
+        if (title || channel_name) {
+            return matchQuery(title.textContent, node, true) || matchQuery(channel_name.textContent, node, false);
+        }
 
         // default: visible
         return true;
