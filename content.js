@@ -3077,7 +3077,7 @@ function main(app, common, lang) {
 
     const SubstringFrequencyCounter = (() => {
         const splitRegex = /(?<![\p{L}\p{N}])['\-・.:]|['\-・.:](?![\p{L}\p{N}])|[^\p{L}\p{N} '\-・.:]+/u;
-        const ignoreRegex = /[\p{N}]+/gu;
+        const ignoreRegex = /^[\p{N}]+$/u;
         const normRegex = /[^\p{L}\p{N}]+/gu;
         const unquoteRegex = /"([\p{L}\p{N}'\-・.:]+)"/gu;
 
