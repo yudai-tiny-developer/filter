@@ -788,15 +788,13 @@ function main(app, common, lang) {
     function classifyModeStatus_Subscriptions_RichItemRenderer(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('div#metadata-line') ?? node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div > span[role="text"]:last-child');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
@@ -809,6 +807,8 @@ function main(app, common, lang) {
                         status.add('notification_off');
                     }
                 }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                status.add('video');
             }
         }
 
@@ -816,17 +816,20 @@ function main(app, common, lang) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
+                status.delete('video');
             }
         }
 
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
+            status.delete('video');
         }
 
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
         if (collection) {
             status.add('collection');
+            status.delete('video');
         }
 
         return status;
@@ -963,15 +966,13 @@ function main(app, common, lang) {
     function classifyModeStatus_Home_RichItemRenderer(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div > span[role="text"]:last-child');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
@@ -984,6 +985,8 @@ function main(app, common, lang) {
                         status.add('notification_off');
                     }
                 }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                status.add('video');
             }
         }
 
@@ -994,8 +997,6 @@ function main(app, common, lang) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
@@ -1008,6 +1009,8 @@ function main(app, common, lang) {
                         status.add('notification_off');
                     }
                 }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                status.add('video');
             }
         }
 
@@ -1015,27 +1018,32 @@ function main(app, common, lang) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
+                status.delete('video');
             }
         }
 
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
+            status.delete('video');
         }
 
         const post = node.querySelector('div#post-text');
         if (post) {
             status.add('post');
+            status.delete('video');
         }
 
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
         if (collection) {
             status.add('collection');
+            status.delete('video');
         }
 
         const ad_slot = node.querySelector('ytd-ad-slot-renderer');
         if (ad_slot) {
             status.add('ad');
+            status.delete('video');
         }
 
         return status;
@@ -1068,15 +1076,13 @@ function main(app, common, lang) {
     function classifyModeStatus_Home_RichGridMedia(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div > span[role="text"]:last-child');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
@@ -1089,6 +1095,8 @@ function main(app, common, lang) {
                         status.add('notification_off');
                     }
                 }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                status.add('video');
             }
         }
 
@@ -1099,8 +1107,6 @@ function main(app, common, lang) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                status.add('video');
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
@@ -1113,6 +1119,8 @@ function main(app, common, lang) {
                         status.add('notification_off');
                     }
                 }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                status.add('video');
             }
         }
 
@@ -1120,17 +1128,20 @@ function main(app, common, lang) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
+                status.delete('video');
             }
         }
 
         const shorts = node.querySelector('ytm-shorts-lockup-view-model-v2');
         if (shorts) {
             status.add('short');
+            status.delete('video');
         }
 
         const collection = node.querySelector('yt-collection-thumbnail-view-model');
         if (collection) {
             status.add('collection');
+            status.delete('video');
         }
 
         return status;
@@ -1267,12 +1278,12 @@ function main(app, common, lang) {
     function classifyModeStatus_History_LockupViewModel(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(3)');
+        const metadata = node.querySelector('yt-content-metadata-view-model > div > span[role="text"]:last-child');
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
                 status.add('live');
-            } else if (lang.isVideo_metadata(t)) {
+            } else /*if (lang.isVideo_metadata(t))*/ {
                 status.add('video');
             }
         }
@@ -1281,6 +1292,7 @@ function main(app, common, lang) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
+                status.delete('video');
             }
         }
 
@@ -1335,8 +1347,10 @@ function main(app, common, lang) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
                 status.add('live');
-            } else if (lang.isVideo_metadata(t)) {
-                const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                const shorts =
+                    node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])') ??
+                    node.querySelector('badge-shape:has(path[d="m13.974 2.052-8 4.7a4 4 0 00.385 7.097l.942.423-1.327.78a4 4 0 004.053 6.898l8-4.7a4 4 0 00-.385-7.097L16.7 9.73l1.328-.78a4 4 0 00-4.053-6.898Z"])');
                 if (shorts) {
                     status.add('short');
                 } else {
@@ -1349,6 +1363,7 @@ function main(app, common, lang) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
+                status.delete('video');
             }
         }
 
@@ -1467,7 +1482,7 @@ function main(app, common, lang) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
+            } else /*if (lang.isVideo_metadata(t))*/ {
                 const title = node.querySelector('div#meta a#video-title');
                 if (title) {
                     const t = normalizeText(title.textContent);
@@ -1487,6 +1502,7 @@ function main(app, common, lang) {
             const t = metadata_line.textContent;
             if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
+                status.delete('video');
             }
         }
 
@@ -1494,6 +1510,7 @@ function main(app, common, lang) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
+                status.delete('video');
             }
         }
 
@@ -1571,13 +1588,6 @@ function main(app, common, lang) {
                 status.add('live');
             } else if (lang.isStreamed_metadata(t)) {
                 status.add('streamed');
-            } else if (lang.isVideo_metadata(t)) {
-                const shorts = node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])');
-                if (shorts) {
-                    status.add('short');
-                } else {
-                    status.add('video');
-                }
             } else if (lang.isScheduled_metadata(t)) {
                 status.add('scheduled');
 
@@ -1590,6 +1600,15 @@ function main(app, common, lang) {
                         status.add('notification_off');
                     }
                 }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                const shorts =
+                    node.querySelector('badge-shape:has(path[d="m17.77 10.32-1.2-.5L18 9.06c1.84-.96 2.53-3.23 1.56-5.06s-3.24-2.53-5.07-1.56L6 6.94c-1.29.68-2.07 2.04-2 3.49.07 1.42.93 2.67 2.22 3.25.03.01 1.2.5 1.2.5L6 14.93c-1.83.97-2.53 3.24-1.56 5.07.97 1.83 3.24 2.53 5.07 1.56l8.5-4.5c1.29-.68 2.06-2.04 1.99-3.49-.07-1.42-.94-2.68-2.23-3.25z"])') ??
+                    node.querySelector('badge-shape:has(path[d="m13.974 2.052-8 4.7a4 4 0 00.385 7.097l.942.423-1.327.78a4 4 0 004.053 6.898l8-4.7a4 4 0 00-.385-7.097L16.7 9.73l1.328-.78a4 4 0 00-4.053-6.898Z"])');
+                if (shorts) {
+                    status.add('short');
+                } else {
+                    status.add('video');
+                }
             }
         }
 
@@ -1597,6 +1616,7 @@ function main(app, common, lang) {
             const t = badge.textContent;
             if (lang.isLive_status_label(t)) {
                 status.add('live');
+                status.delete('video');
             }
         }
 
