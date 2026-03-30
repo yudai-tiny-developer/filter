@@ -677,18 +677,22 @@ function main(app, common, lang) {
             node.style.display = '';
             node.classList.add('filter-show');
             node.classList.remove('filter-hidden');
+            node.querySelectorAll('.filter-hidden').forEach(n => n.classList.remove('filter-hidden'));
         } else {
             node.style.cssText = 'display: none !important;';
-            node.classList.remove('filter-show');
             node.classList.add('filter-hidden');
+            node.classList.remove('filter-show');
+            node.querySelectorAll('.filter-show').forEach(n => n.classList.remove('filter-show'));
         }
 
         if (matched_status) {
             node.classList.add('filter-matched-status');
             node.classList.remove('filter-unmatched-status');
+            node.querySelectorAll('.filter-unmatched-status').forEach(n => n.classList.remove('filter-unmatched-status'));
         } else {
-            node.classList.remove('filter-matched-status');
             node.classList.add('filter-unmatched-status');
+            node.classList.remove('filter-matched-status');
+            node.querySelectorAll('.filter-matched-status').forEach(n => n.classList.remove('filter-matched-status'));
         }
     }
 
@@ -738,8 +742,9 @@ function main(app, common, lang) {
                 if (node.parentNode?.children.length > limit) {
                     load_button_container.style.display = '';
                     node.style.display = 'none';
-                    node.classList.remove('filter-show');
                     node.classList.add('filter-hidden');
+                    node.classList.remove('filter-show');
+                    node.querySelectorAll('.filter-show').forEach(n => n.classList.remove('filter-show'));
                     node.parentNode.parentNode.appendChild(load_button_container);
                     continuation_item = node;
                 } else {
@@ -1172,8 +1177,9 @@ function main(app, common, lang) {
                 if (node.parentNode?.children.length > limit) {
                     load_button_container.style.display = '';
                     node.style.display = 'none';
-                    node.classList.remove('filter-show');
                     node.classList.add('filter-hidden');
+                    node.classList.remove('filter-show');
+                    node.querySelectorAll('.filter-show').forEach(n => n.classList.remove('filter-show'));
                     node.parentNode.parentNode.appendChild(load_button_container);
                     continuation_item = node;
                 } else {
