@@ -1944,7 +1944,7 @@ function main(app, common, lang) {
         if (!query) return true;
 
         const evaluator = createQueryEvaluator(normalizeText(query));
-        const text = target.querySelector('span.yt-core-attributed-string, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
+        const text = target.querySelector('span[role="text"], span.yt-core-attributed-string, yt-formatted-string.ytd-notification-renderer.message, yt-formatted-string.ytd-guide-entry-renderer.title')?.textContent ?? '';
         return evaluator(normalizeText(text));
     }
 
