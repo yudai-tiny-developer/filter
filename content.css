@@ -24,14 +24,30 @@ span.filter-button {
     word-break: keep-all;
 }
 
+html[color-version="v2_0"] span.filter-button {
+    background-color: var(--yt-sys-color-baseline--additive-background);
+    color: var(--yt-sys-color-baseline--text-primary);
+    fill: var(--yt-sys-color-baseline--text-primary);
+}
+
 span.filter-button:hover {
     background-color: var(--yt-spec-button-chip-background-hover);
+}
+
+html[color-version="v2_0"] span.filter-button:hover {
+    background-color: var(--yt-sys-color-baseline--button-chip-background-hover);
 }
 
 span.filter-button.selected {
     background-color: var(--yt-spec-text-primary);
     color: var(--yt-spec-text-primary-inverse);
     fill: var(--yt-spec-text-primary-inverse);
+}
+
+html[color-version="v2_0"] span.filter-button.selected {
+    background-color: var(--yt-sys-color-baseline--text-primary);
+    color: var(--yt-sys-color-baseline--text-primary-inverse);
+    fill: var(--yt-sys-color-baseline--text-primary-inverse);
 }
 
 svg.filter-button {
@@ -105,6 +121,11 @@ span.filter-query.search {
     margin: 12px 6px 12px 0px;
 }
 
+html[color-version="v2_0"] span.filter-query.search {
+    color: var(--yt-sys-color-baseline--text-primary);
+    fill: var(--yt-sys-color-baseline--text-primary);
+}
+
 svg.filter-search {
     margin: 4px 15px 4px 10px;
     height: 20px;
@@ -150,16 +171,34 @@ select.filter-menu {
     word-break: keep-all;
 }
 
+html[color-version="v2_0"] select.filter-menu {
+    background-color: var(--yt-sys-color-baseline--text-primary);
+    color: var(--yt-sys-color-baseline--text-primary-inverse);
+    fill: var(--yt-sys-color-baseline--text-primary-inverse);
+}
+
 option.filter-button {
     background-color: var(--yt-spec-text-primary-inverse);
     color: var(--yt-spec-text-primary);
     fill: var(--yt-spec-text-primary);
 }
 
+html[color-version="v2_0"] option.filter-button {
+    background-color: var(--yt-sys-color-baseline--text-primary-inverse);
+    color: var(--yt-sys-color-baseline--text-primary);
+    fill: var(--yt-sys-color-baseline--text-primary);
+}
+
 option.filter-button.selected {
     background-color: var(--yt-spec-text-primary);
     color: var(--yt-spec-text-primary-inverse);
     fill: var(--yt-spec-text-primary-inverse);
+}
+
+html[color-version="v2_0"] option.filter-button.selected {
+    background-color: var(--yt-sys-color-baseline--text-primary);
+    color: var(--yt-sys-color-baseline--text-primary-inverse);
+    fill: var(--yt-sys-color-baseline--text-primary-inverse);
 }
 
 option.filter-button.placeholder {
@@ -205,6 +244,12 @@ button.filter-button-load {
     background-color: var(--yt-spec-additive-background) !important;
 }
 
+html[color-version="v2_0"] button.filter-button-load {
+    color: var(--yt-sys-color-baseline--text-primary) !important;
+    fill: var(--yt-sys-color-baseline--text-primary) !important;
+    background-color: var(--yt-sys-color-baseline--additive-background) !important;
+}
+
 .filter-spinner::before {
     content: "";
     display: block;
@@ -217,6 +262,11 @@ button.filter-button-load {
     border: 0.25em solid var(--yt-spec-text-primary);
     border-top-color: var(--yt-spec-text-primary-inverse);
     animation: spinner 1.25s linear infinite;
+}
+
+html[color-version="v2_0"] .filter-spinner::before {
+    border: 0.25em solid var(--yt-sys-color-baseline--text-primary);
+    border-top-color: var(--yt-sys-color-baseline--text-primary-inverse);
 }
 
 @keyframes spinner {
@@ -326,6 +376,10 @@ ytd-browse[filter-menu="true"][role="main"][page-subtype="playlist"] ytd-feed-fi
 
 ytd-browse[filter-menu="true"][role="main"][page-subtype="playlist"] form.filter-menu {
     background-color: var(--yt-spec-base-background);
+}
+
+html[color-version="v2_0"] ytd-browse[filter-menu="true"][role="main"][page-subtype="playlist"] form.filter-menu {
+    background-color: var(--yt-sys-color-baseline--base-background);
 }
 
 ytd-browse[filter-menu="true"][role="main"][page-subtype="subscriptions-channels"]:not([filter-mode="all"]) ytd-item-section-renderer:not(:has(yt-button-shape#subscribe-button-shape)) {
