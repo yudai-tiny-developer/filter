@@ -1663,7 +1663,10 @@ function main(app, common, lang) {
                 updateTargetVisibility(node, matchTextContent_Channel_RichItemRenderer, classifyModeStatus_Channel_RichItemRenderer, classifyProgressStatus_Channel_RichItemRenderer);
                 break;
             case 'YT-LOCKUP-VIEW-MODEL':
-                updateTargetVisibility(node, matchTextContent_Channel_LockupViewModel, classifyModeStatus_Channel_LockupViewModel, classifyProgressStatus_Channel_LockupViewModel);
+                const n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
+                if (n) {
+                    updateTargetVisibility(n, matchTextContent_Channel_LockupViewModel, classifyModeStatus_Channel_LockupViewModel, classifyProgressStatus_Channel_LockupViewModel);
+                }
                 break;
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
                 updateTargetVisibility(node, matchTextContent_Channel_BackstagePostThreadRenderer, classifyModeStatus_Channel_BackstagePostThreadRenderer, classifyProgressStatus_Channel_BackstagePostThreadRenderer);
