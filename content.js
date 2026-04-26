@@ -1666,6 +1666,8 @@ function main(app, common, lang) {
                 const n = searchParentNode(node, 'YTD-RICH-ITEM-RENDERER');
                 if (n) {
                     updateTargetVisibility(n, matchTextContent_Channel_LockupViewModel, classifyModeStatus_Channel_LockupViewModel, classifyProgressStatus_Channel_LockupViewModel);
+                } else {
+                    updateTargetVisibility(node, matchTextContent_Channel_LockupViewModel, classifyModeStatus_Channel_LockupViewModel, classifyProgressStatus_Channel_LockupViewModel);
                 }
                 break;
             case 'YTD-BACKSTAGE-POST-THREAD-RENDERER':
