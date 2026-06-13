@@ -650,13 +650,13 @@ function main(app, common, lang) {
             if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Shorts(n));
         } else if (common.isHistory(location.href)) {
             onNodeLoaded_History(node);
-            if (deep) node.querySelectorAll('YT-LOCKUP-VIEW-MODEL,YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_History(n));
+            if (deep) node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTM-SHORTS-LOCKUP-VIEW-MODEL-V2, YTD-VIDEO-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_History(n));
         } else if (common.isPlaylists(location.href)) {
             onNodeLoaded_Playlists(node);
             if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Playlists(n));
         } else if (common.isPlaylist(location.href)) {
             onNodeLoaded_Playlist(node);
-            if (deep) node.querySelectorAll('YTD-PLAYLIST-VIDEO-RENDERER, YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Playlist(n));
+            if (deep) node.querySelectorAll('YT-LOCKUP-VIEW-MODEL, YTD-PLAYLIST-VIDEO-RENDERER, YTD-THUMBNAIL-OVERLAY-RESUME-PLAYBACK-RENDERER, YTD-BROWSE').forEach(n => onNodeLoaded_Playlist(n));
         } else if (common.isHashTag(location.href)) {
             onNodeLoaded_HashTag(node);
             if (deep) node.querySelectorAll('YTD-RICH-ITEM-RENDERER, YTD-BROWSE, TP-YT-APP-HEADER').forEach(n => onNodeLoaded_HashTag(n));
@@ -1434,6 +1434,9 @@ function main(app, common, lang) {
 
     function onNodeLoaded_Playlist(node) {
         switch (node.nodeName) {
+            case 'YT-LOCKUP-VIEW-MODEL':
+                updateTargetVisibility(node, matchTextContent_Playlist_LockupViewModel, classifyModeStatus_Playlist_LockupViewModel, classifyProgressStatus_Playlist_LockupViewModel);
+                break;
             case 'YTD-PLAYLIST-VIDEO-RENDERER':
                 updateTargetVisibility(node, matchTextContent_Playlist_VideoRenderer, classifyModeStatus_Playlist_VideoRenderer, classifyProgressStatus_Playlist_VideoRenderer);
                 break;
@@ -1465,6 +1468,78 @@ function main(app, common, lang) {
         } else {
             // already exists
         }
+    }
+
+    function matchTextContent_Playlist_LockupViewModel(node) {
+        const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
+        const channel_name = node.querySelector('yt-content-metadata-view-model > div:nth-child(1) > span:nth-child(1)');
+        if (title || channel_name) {
+            return matchQuery(title?.textContent, node, true) || matchQuery(channel_name?.textContent, node, false);
+        }
+
+        // default: visible
+        return true;
+    }
+
+    function classifyModeStatus_Playlist_LockupViewModel(node) {
+        const status = new Set();
+
+        const metadata = node.querySelector('yt-content-metadata-view-model > div:nth-child(2)');
+        if (metadata) {
+            const t = metadata.textContent;
+            if (lang.isLive_metadata(t)) {
+                status.add('live');
+            } else if (lang.isStreamed_metadata(t)) {
+                status.add('streamed');
+            } else if (lang.isScheduled_metadata(t)) {
+                status.add('scheduled');
+
+                const notification_button = node.querySelector('lockup-attachments-view-model button');
+                if (notification_button) {
+                    const t = notification_button.textContent;
+                    if (lang.isNotificationOn_button(t)) {
+                        status.add('notification_on');
+                    } else if (lang.isNotificationOff_button(t)) {
+                        status.add('notification_off');
+                    }
+                }
+            } else /*if (lang.isVideo_metadata(t))*/ {
+                const title = node.querySelector('yt-lockup-metadata-view-model > div:nth-child(2) > h3');
+                if (title) {
+                    const t = normalizeText(title.textContent);
+                    if (t.includes('#shorts')) {
+                        status.add('short');
+                    } else {
+                        status.add('video');
+                    }
+                } else {
+                    status.add('video');
+                }
+            }
+        }
+
+        for (const badge of node.querySelectorAll('div.badge > p, yt-thumbnail-badge-view-model > badge-shape > div')) {
+            const t = badge.textContent;
+            if (lang.isLive_status_label(t)) {
+                status.add('live');
+                status.delete('video');
+            }
+        }
+
+        return status;
+    }
+
+    function classifyProgressStatus_Playlist_LockupViewModel(node) {
+        const status = new Set();
+
+        const progress = node.querySelector('yt-thumbnail-overlay-progress-bar-view-model');
+        if (progress) {
+            status.add('progress_watched');
+        } else {
+            status.add('progress_unwatched');
+        }
+
+        return status;
     }
 
     function matchTextContent_Playlist_VideoRenderer(node) {
