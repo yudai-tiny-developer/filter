@@ -2910,14 +2910,6 @@ function main(app, common, lang) {
                 for (const form of app.querySelectorAll('ytd-browse[role="main"] form.filter-menu:not(.filter-forCalc)')) {
                     const parent = form.parentNode;
                     parents.add(parent);
-
-                    const fragment = document.createDocumentFragment();
-
-                    for (const calc of parent.querySelectorAll('form.filter-forCalc')) {
-                        fragment.appendChild(calc);
-                    }
-
-                    parent.insertBefore(fragment, form);
                 }
 
                 requestAnimationFrame(() => {
