@@ -2391,9 +2391,11 @@ function main(app, common, lang) {
 
                     // workaround: prevents yt-refit
                     const dropdown = searchParentNode(node, 'TP-YT-IRON-DROPDOWN');
-                    dropdown.addEventListener('yt-refit', e => {
-                        e.stopPropagation();
-                    }, { capture: true });
+                    if (dropdown) {
+                        dropdown.addEventListener('yt-refit', e => {
+                            e.stopPropagation();
+                        }, { capture: true });
+                    }
                 }
             } else { // If a previously created "Save to playlist" dropdown menu was being reused as a different menu
                 const parent = node.querySelector('div.ytContextualSheetLayoutHeaderContainer');
