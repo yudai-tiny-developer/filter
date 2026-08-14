@@ -2388,6 +2388,12 @@ function main(app, common, lang) {
                         updatePopupVisibility([playlists]);
                         existsMenu.style.display = display(keyword_add_playlist);
                     }
+
+                    // workaround: prevents yt-refit
+                    const dropdown = searchParentNode(node, 'TP-YT-IRON-DROPDOWN');
+                    dropdown.addEventListener('yt-refit', e => {
+                        e.stopPropagation();
+                    }, { capture: true });
                 }
             } else { // If a previously created "Save to playlist" dropdown menu was being reused as a different menu
                 const parent = node.querySelector('div.ytContextualSheetLayoutHeaderContainer');
