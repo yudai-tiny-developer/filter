@@ -342,12 +342,8 @@ ytd-browse[filter-menu="true"][page-subtype="home"] div#scroll-container {
     width: 100% !important;
 }
 
-ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="home"] div#scroll-container) div#frosted-glass {
+ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="home"][role="main"]) div#frosted-glass {
     height: 168px !important;
-}
-
-ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="home"] div#header[hidden]) div#frosted-glass {
-    height: 56px !important;
 }
 
 ytd-browse[filter-menu="true"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#header {
@@ -486,4 +482,8 @@ ytd-browse[filter-menu="true"][page-subtype="subscriptions-channels"]:not([filte
 
 ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(yt-lockup-view-model) {
     display: var(--filter-most-relevant-display) !important;
+}
+
+ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="subscriptions"][role="main"]) div#frosted-glass {
+    height: 112px !important;
 }
