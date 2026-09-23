@@ -13,8 +13,8 @@ span.filter-button {
     box-sizing: border-box;
     cursor: pointer;
     display: inline-flex;
-    font-size: var(--ytd-user-comment-font-size);
-    font-weight: var(--ytd-user-comment-font-weight);
+    font-size: 1.4rem;
+    font-weight: 500;
     height: 32px;
     line-height: 20px;
     margin: 12px 6px 12px 6px;
@@ -162,8 +162,8 @@ select.filter-menu {
     border-radius: 8px;
     border-width: 0px;
     cursor: pointer;
-    font-size: var(--ytd-user-comment-font-size);
-    font-weight: var(--ytd-user-comment-font-weight);
+    font-size: 1.4rem;
+    font-weight: 500;
     height: 32px;
     margin: 12px 6px 12px 6px;
     outline: none;
@@ -342,12 +342,8 @@ ytd-browse[filter-menu="true"][page-subtype="home"] div#scroll-container {
     width: 100% !important;
 }
 
-ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="home"] div#scroll-container) div#frosted-glass {
+ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="home"][role="main"]) div#frosted-glass {
     height: 168px !important;
-}
-
-ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="home"] div#header[hidden]) div#frosted-glass {
-    height: 56px !important;
 }
 
 ytd-browse[filter-menu="true"][page-subtype="home"] > ytd-two-column-browse-results-renderer > div#primary > ytd-rich-grid-renderer > div#header {
@@ -486,4 +482,8 @@ ytd-browse[filter-menu="true"][page-subtype="subscriptions-channels"]:not([filte
 
 ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(yt-lockup-view-model) {
     display: var(--filter-most-relevant-display) !important;
+}
+
+ytd-app:has(ytd-browse[filter-menu="true"][page-subtype="subscriptions"][role="main"]) div#frosted-glass {
+    height: 112px !important;
 }
