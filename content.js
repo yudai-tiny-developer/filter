@@ -841,9 +841,18 @@ function main(app, common, lang) {
             status.delete('video');
         }
 
+        const ad_slot = node.querySelector('ytd-ad-slot-renderer');
+        if (ad_slot) {
+            status.add('ad');
+            status.delete('video');
+        }
+
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1060,9 +1069,12 @@ function main(app, common, lang) {
             status.delete('video');
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1163,9 +1175,18 @@ function main(app, common, lang) {
             status.delete('video');
         }
 
+        const ad_slot = node.querySelector('ytd-ad-slot-renderer');
+        if (ad_slot) {
+            status.add('ad');
+            status.delete('video');
+        }
+
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1321,9 +1342,12 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Member-only Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1392,9 +1416,12 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1550,9 +1577,12 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1624,9 +1654,12 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1735,9 +1768,12 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
+            console.log('Unknown status found for node:', node);
         }
 
         return status;
