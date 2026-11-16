@@ -852,7 +852,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1074,7 +1073,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1186,7 +1184,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1347,7 +1344,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1421,7 +1417,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1582,7 +1577,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1659,7 +1653,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
@@ -1773,7 +1766,6 @@ function main(app, common, lang) {
             status.add('live');
             status.add('streamed');
             status.add('video');
-            console.log('Unknown status found for node:', node);
         }
 
         return status;
