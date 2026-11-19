@@ -797,7 +797,7 @@ function main(app, common, lang) {
     function classifyModeStatus_Subscriptions_RichItemRenderer(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:last-child > span[role="text"]:last-child');
+        const metadata = [...node.querySelectorAll('yt-content-metadata-view-model > div > span[role="text"]:last-child')].at(-1);
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -841,8 +841,16 @@ function main(app, common, lang) {
             status.delete('video');
         }
 
+        const ad_slot = node.querySelector('ytd-ad-slot-renderer');
+        if (ad_slot) {
+            status.add('ad');
+            status.delete('video');
+        }
+
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
@@ -980,7 +988,7 @@ function main(app, common, lang) {
     function classifyModeStatus_Home_RichItemRenderer(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:last-child > span[role="text"]:last-child');
+        const metadata = [...node.querySelectorAll('yt-content-metadata-view-model > div > span[role="text"]:last-child')].at(-1);
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -1060,8 +1068,10 @@ function main(app, common, lang) {
             status.delete('video');
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
@@ -1095,7 +1105,7 @@ function main(app, common, lang) {
     function classifyModeStatus_Home_RichGridMedia(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:last-child > span[role="text"]:last-child');
+        const metadata = [...node.querySelectorAll('yt-content-metadata-view-model > div > span[role="text"]:last-child')].at(-1);
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -1163,8 +1173,16 @@ function main(app, common, lang) {
             status.delete('video');
         }
 
+        const ad_slot = node.querySelector('ytd-ad-slot-renderer');
+        if (ad_slot) {
+            status.add('ad');
+            status.delete('video');
+        }
+
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
@@ -1303,7 +1321,7 @@ function main(app, common, lang) {
     function classifyModeStatus_History_LockupViewModel(node) {
         const status = new Set();
 
-        const metadata = node.querySelector('yt-content-metadata-view-model > div:last-child > span[role="text"]:last-child');
+        const metadata = [...node.querySelectorAll('yt-content-metadata-view-model > div > span[role="text"]:last-child')].at(-1);
         if (metadata) {
             const t = metadata.textContent;
             if (lang.isLive_metadata(t)) {
@@ -1321,8 +1339,10 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Member-only Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
@@ -1392,8 +1412,10 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
@@ -1550,8 +1572,10 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
@@ -1624,8 +1648,10 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
@@ -1735,8 +1761,10 @@ function main(app, common, lang) {
             }
         }
 
+        // workaround for unknown status
         if (status.size === 0) {
-            // workaround: Members-first Video
+            status.add('live');
+            status.add('streamed');
             status.add('video');
         }
 
